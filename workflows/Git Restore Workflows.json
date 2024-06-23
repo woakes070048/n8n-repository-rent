@@ -131,7 +131,9 @@
   },
   "createdAt": "2024-06-23T10:54:44.107Z",
   "id": "1aAVTgSFoAxQhNDI",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "Git Restore Workflows",
   "nodes": [
     {
@@ -151,11 +153,11 @@
           "string": [
             {
               "name": "repo.owner",
-              "value": "n8n-io"
+              "value": "brandonblaze1"
             },
             {
               "name": "repo.name",
-              "value": "n8n-backups"
+              "value": "n8n-repository"
             },
             {
               "name": "repo.path",
@@ -280,7 +282,13 @@
         1360,
         500
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "tc844L9IUnwi1x61",
+          "name": "GitHub account"
+        }
+      }
     },
     {
       "parameters": {
@@ -293,7 +301,13 @@
         1140,
         840
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
     },
     {
       "parameters": {
@@ -320,7 +334,13 @@
         1780,
         620
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "githubApi": {
+          "id": "tc844L9IUnwi1x61",
+          "name": "GitHub account"
+        }
+      }
     },
     {
       "parameters": {
@@ -363,7 +383,13 @@
         2820,
         620
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
     },
     {
       "parameters": {
@@ -477,6 +503,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-06-23T10:54:59.000Z",
-  "versionId": "6f6f2cca-0add-4f6e-8724-b8fae38d0d52"
+  "updatedAt": "2024-06-23T11:37:06.000Z",
+  "versionId": "908d4c99-2d57-4df8-9a6a-fe38150b35c7"
 }
