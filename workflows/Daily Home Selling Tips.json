@@ -1,0 +1,155 @@
+{
+  "active": true,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-06-22T21:37:53.460Z",
+  "id": "R0RSTpdzWI0aPTKs",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Daily Home Selling Tips",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "1a414961-77e1-42d6-8b4e-7b498ba27ebb",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "brandon@blazeproperty.com",
+        "subject": "Daily Facebook Tip",
+        "message": "= {{ $('OpenAI').item.json.output }}",
+        "options": {
+          "appendAttribution": false,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {},
+              {}
+            ]
+          }
+        }
+      },
+      "id": "3b5ee1ec-0b93-4476-a474-df2016f53942",
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1340,
+        460
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=generate a complimentary image to pair with the subject: {{ $json.output }}. Do not generate text in the images and if necessary obfuscate the text to make it unreadable. ",
+        "options": {}
+      },
+      "id": "c8814fa6-fa75-46f6-89de-cc4d632f5b19",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        1120,
+        460
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_S6EJ4Zp1VbK9JDTyBUhNt62B",
+          "mode": "list",
+          "cachedResultName": "blazebackend"
+        },
+        "prompt": "define",
+        "text": "Provide a home buying or selling tip. Limit to one subject; buying or selling per creation. ",
+        "options": {}
+      },
+      "id": "8693bac5-6505-40b3-b5a7-b945d2829f4d",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        740,
+        460
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-06-23T10:43:15.000Z",
+  "versionId": "104fb8e3-105a-4d83-8d05-cb9ed76a06ea"
+}
