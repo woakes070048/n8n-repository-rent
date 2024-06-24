@@ -1,0 +1,256 @@
+{
+  "active": false,
+  "connections": {
+    "Format Contacts Data": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Contacts1": {
+      "main": [
+        [
+          {
+            "node": "Format Contacts Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Contacts1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-06-23T11:38:12.250Z",
+  "id": "9XxDlhQzs2P8rLc8",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Contacts to Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const formattedContacts = $input.all().map(contact => {\n  const emailAddresses = contact.json.emailAddresses ? contact.json.emailAddresses.map(e => e.value).join(', ') : '';\n  if (!emailAddresses) {\n    // Skip this contact if there are no email addresses\n    return null;\n  }\n  const names = contact.json.names ? contact.json.names.map(n => n.displayName).join(', ') : '';\n  const phoneNumbers = contact.json.phoneNumbers ? contact.json.phoneNumbers.map(p => p.value).join(', ') : '';\n  return {\n    json: {\n      Email: emailAddresses,\n      Name: names,\n      Phone: phoneNumbers\n    }\n  };\n}).filter(contact => contact !== null); // Filter out null values\n\nreturn formattedContacts;\n"
+      },
+      "name": "Format Contacts Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        200
+      ],
+      "id": "040bc568-a056-43f6-bef0-adcd10da3ca5"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "fields": [
+          "emailAddresses",
+          "names",
+          "phoneNumbers"
+        ],
+        "rawData": true,
+        "options": {
+          "sortOrder": ""
+        }
+      },
+      "name": "Google Contacts1",
+      "type": "n8n-nodes-base.googleContacts",
+      "typeVersion": 1,
+      "position": [
+        870,
+        200
+      ],
+      "id": "536f7f0f-95bc-46d5-bf38-1b0b2abb2ed4",
+      "credentials": {
+        "googleContactsOAuth2Api": {
+          "id": "86qqMgqknDKzbgMY",
+          "name": "Google Contacts account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1wzV_217f2m6wDm-h-rURz9v0pqcbqoZI113L75bIoVo",
+          "mode": "list",
+          "cachedResultName": "contacts-n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wzV_217f2m6wDm-h-rURz9v0pqcbqoZI113L75bIoVo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wzV_217f2m6wDm-h-rURz9v0pqcbqoZI113L75bIoVo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "resourceName",
+              "displayName": "resourceName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "etag",
+              "displayName": "etag",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "names",
+              "displayName": "names",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "contactId",
+              "displayName": "contactId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "myNewField",
+              "displayName": "myNewField",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phoneNumbers",
+              "displayName": "phoneNumbers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "emailAddresses",
+              "displayName": "emailAddresses",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d442c427-9fcf-4b80-93ac-ce87bae3c8dc",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.3,
+      "position": [
+        1340,
+        200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "82a9a470-e384-445a-b91e-6a26de048737",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        660,
+        200
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-06-23T18:29:09.000Z",
+  "versionId": "96f7a233-ede9-4146-a581-dcda50f754bb"
+}
