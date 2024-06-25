@@ -1,8 +1,58 @@
 {
   "active": false,
-  "connections": {},
-  "createdAt": "2024-06-23T18:33:27.586Z",
-  "id": "44mxfBW3wMUgA6UV",
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive - Upload": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reformat Data": {
+      "main": [
+        []
+      ]
+    },
+    "Google Drive - Upload Reformatted": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Delete Original",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Reformat Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-06-23T12:16:19.688Z",
+  "id": "w9ykYaJnGjZh17Ic",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -19,24 +69,103 @@
         },
         "simple": false,
         "filters": {
-          "q": "Notice to Vacate"
+          "q": ""
         },
-        "options": {}
+        "options": {
+          "downloadAttachments": true
+        }
       },
-      "id": "e0adc037-8894-47dc-ab24-d880a500a8fa",
       "name": "Gmail Trigger",
       "type": "n8n-nodes-base.gmailTrigger",
-      "typeVersion": 1.1,
+      "typeVersion": 1,
       "position": [
-        820,
-        360
+        2020,
+        920
       ],
+      "id": "78f95a33-8e2f-476a-9460-fdf8a554bea0",
       "credentials": {
         "gmailOAuth2": {
           "id": "LD5x69eYRRI6cdrn",
           "name": "Gmail account"
         }
       }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "binaryData": true,
+        "binaryPropertyName": "attachment_0",
+        "name": "guestcards",
+        "options": {}
+      },
+      "name": "Google Drive - Upload",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        2420,
+        920
+      ],
+      "id": "0a80508d-b7ad-48ba-8b2e-ac5054249eda",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json.data;\nconst output = [];\ndata.forEach(row => {\n  const propertyDetails = row['Property Name'].split(' - ');\n  const propertyName = propertyDetails[0];\n  const propertyAddress = propertyDetails[1];\n  const nameParts = row['Name'] ? row['Name'].split(' ') : ['', ''];\n  const [firstName, lastName] = nameParts;\n  const interestReceived = row['Interest Received'] ? row['Interest Received'].split(' ')[0] : '';\n  const bedBathParts = row['Bed Bath Preference'] ? row['Bed Bath Preference'].split('/') : ['', ''];\n  const [beds, baths] = bedBathParts;\n  const addressParts = propertyAddress ? propertyAddress.split(', ') : ['', '', '', ''];\n  const [address1, city, state, zip] = addressParts;\n  output.push({\n    'First Name': firstName,\n    'Last Name': lastName,\n    'Email Address': row['Email Address'],\n    'Phone Number': row['Phone Number'],\n    'Interest Received': interestReceived,\n    'Last Activity Date': row['Last Activity Date'],\n    'Last Activity Type': row['Last Activity Type'],\n    'Status': row['Status'],\n    'Move In Preference': row['Move In Preference'],\n    'Max Rent': row['Max Rent'],\n    'Beds': beds,\n    'Baths': baths,\n    'Pet Preference': row['Pet Preference'],\n    'Monthly Income': row['Monthly Income'],\n    'Credit Score': row['Credit Score'],\n    'Lead Type': row['Lead Type'],\n    'Source': row['Source'],\n    'Property Name': propertyName,\n    'Address 1': address1,\n    'City': city,\n    'State': state,\n    'Zip': zip,\n    'Unit': row['Unit'],\n    'Notes': row['Notes']\n  });\n});\nreturn output;"
+      },
+      "name": "Reformat Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        3020,
+        920
+      ],
+      "id": "25e91fe5-cfdf-4d98-aa7b-77807d171c93"
+    },
+    {
+      "parameters": {
+        "binaryData": true,
+        "options": {}
+      },
+      "name": "Google Drive - Upload Reformatted",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        3420,
+        920
+      ],
+      "id": "171c682f-3e7b-473f-812c-28933d4ec40c"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Google Drive - Delete Original",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        3620,
+        920
+      ],
+      "id": "3d219706-3f00-4e62-ae44-b97d6fb15f6d"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "id": "2ce525e1-a6ad-4098-89c5-f370685b9e46",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        2700,
+        920
+      ]
     }
   ],
   "pinData": {},
@@ -46,6 +175,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-06-23T18:33:27.586Z",
-  "versionId": "ea38f23f-5630-4b6a-b1ba-587252578bc0"
+  "updatedAt": "2024-06-23T14:39:39.000Z",
+  "versionId": "ae33bf77-5493-455d-8cd1-38cfe20e95a3"
 }
