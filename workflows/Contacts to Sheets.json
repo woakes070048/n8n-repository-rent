@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Format Contacts Data": {
       "main": [
@@ -35,8 +35,8 @@
       ]
     }
   },
-  "createdAt": "2024-06-23T11:38:12.250Z",
-  "id": "9XxDlhQzs2P8rLc8",
+  "createdAt": "2024-06-25T22:59:58.893Z",
+  "id": "6vKV4uH2S2g7wyJu",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -79,7 +79,7 @@
       "id": "536f7f0f-95bc-46d5-bf38-1b0b2abb2ed4",
       "credentials": {
         "googleContactsOAuth2Api": {
-          "id": "86qqMgqknDKzbgMY",
+          "id": "0KSjJKQ4ZQDhisZU",
           "name": "Google Contacts account"
         }
       }
@@ -248,9 +248,13 @@
   ],
   "pinData": {},
   "settings": {},
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2024-06-23T18:29:09.000Z",
-  "versionId": "96f7a233-ede9-4146-a581-dcda50f754bb"
+  "triggerCount": 1,
+  "updatedAt": "2024-06-25T23:01:38.000Z",
+  "versionId": "f276a987-8cb3-4ed1-b71a-75abb0c6bf8a"
 }
