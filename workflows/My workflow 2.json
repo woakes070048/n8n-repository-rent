@@ -1,0 +1,81 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-06-27T19:19:54.678Z",
+  "id": "JhXIxJ6WcmCZGdDR",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "Unit Directory Export Report"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "id": "e1c9d381-9d5f-425b-8232-133a2e9d1d79",
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        300,
+        380
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/data/unit_directory.csv",
+        "dataPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "d44545aa-9740-45ac-a4c5-c316ffd6dbb3",
+      "name": "Read/Write Files from Disk",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        520,
+        380
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-06-27T20:57:30.000Z",
+  "versionId": "afc2caba-f270-4ba2-ae19-f2f3ee55e4e6"
+}
