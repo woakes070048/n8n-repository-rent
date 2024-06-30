@@ -1,0 +1,123 @@
+{
+  "active": false,
+  "connections": {
+    "Get Rows": {
+      "main": [
+        [
+          {
+            "node": "Extract Addresses1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Addresses1": {
+      "main": [
+        [
+          {
+            "node": "Validate Address1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Address1": {
+      "main": [
+        [
+          {
+            "node": "Write Validated Addresses1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-06-25T23:21:59.878Z",
+  "id": "pVwTqrQaiGE2WnJH",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Address Validation Manual",
+  "nodes": [
+    {
+      "parameters": {
+        "sheetId": "1efqQrJdzCosY1EMY6r6LJscf13bLw0wN5wot1tHQHUE",
+        "range": "!A1:Z",
+        "rawData": true,
+        "options": {}
+      },
+      "name": "Get Rows",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        820,
+        500
+      ],
+      "id": "ae4d3d91-01bf-4cb1-bcd1-064d2eca09ae",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Extract Addresses1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        500
+      ],
+      "id": "2c4e0684-f093-4e64-97f4-c032469a3c35"
+    },
+    {
+      "parameters": {
+        "url": "https://addressvalidation.googleapis.com/v1:validateAddress",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": []
+        }
+      },
+      "name": "Validate Address1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        500
+      ],
+      "id": "44134b99-80be-4b1e-b3fd-ceb30b53d988"
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "sheetId": "your-google-sheet-id",
+        "range": "validated_addresses",
+        "options": {
+          "valueRenderMode": "UNFORMATTED_VALUE"
+        }
+      },
+      "name": "Write Validated Addresses1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        500
+      ],
+      "id": "7f58f3d2-b7ff-421b-8938-b44675e3b2fc"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-06-30T00:13:24.000Z",
+  "versionId": "c93c2e46-a135-472d-85b8-b32f9697393e"
+}
