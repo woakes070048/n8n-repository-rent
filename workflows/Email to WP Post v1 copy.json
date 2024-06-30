@@ -5,32 +5,14 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "Code",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "No Operation, do nothing",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
+    "Code": {
       "main": [
         [
           {
@@ -43,7 +25,13 @@
     },
     "Wordpress": {
       "main": [
-        []
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -78,75 +66,11 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict"
-          },
-          "conditions": [
-            {
-              "id": "32a758f3-2e62-4236-a202-181514757203",
-              "leftValue": "= {{ $json.subject }}",
-              "rightValue": "Post: ",
-              "operator": {
-                "type": "string",
-                "operation": "startsWith"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {
-          "ignoreCase": false,
-          "looseTypeValidation": false
-        }
-      },
-      "id": "92387cb7-0a5d-4e75-9c24-9abfee82cf8b",
-      "name": "If",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [
-        1040,
-        360
-      ],
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "212cfd61-2d59-432a-b510-9ec4b169abfe",
-              "name": "Title",
-              "value": "={{ $('Email Trigger (IMAP)').item.json.subject.replace(\"Post: \", \"\") }}\n",
-              "type": "string"
-            },
-            {
-              "id": "7b582b8b-59c9-409a-b9dd-d87a3044541c",
-              "name": "Body",
-              "value": "={{ $('Email Trigger (IMAP)').item.json.textPlain }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "92f22679-5592-4e11-bcf9-b111e65ddc2c",
-      "name": "Edit Fields",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.3,
-      "position": [
-        1260,
-        280
-      ]
-    },
-    {
-      "parameters": {
-        "title": "={{ $json.Title }}",
+        "title": "={{ $json.title }}",
         "additionalFields": {
           "content": "={{ $json.Body }}",
-          "status": "publish"
+          "status": "publish",
+          "categories": []
         }
       },
       "id": "8700c84a-e4a6-46b2-b141-344c01c2168e",
@@ -154,7 +78,7 @@
       "type": "n8n-nodes-base.wordpress",
       "typeVersion": 1,
       "position": [
-        1480,
+        1840,
         280
       ],
       "credentials": {
@@ -174,6 +98,55 @@
         1260,
         460
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the first item\nconst item = $input.all()[0];\n\nlet subject = item.json.subject;\n\n// Strip whitespace from the subject\nsubject = subject.trim();\n\n// Check if the subject starts with \"Post: \"\nif (!subject.startsWith(\"Post:\")) {\n  throw new Error('The subject does not start with \"Post: \".');\n}\n\n// Check if email has textPlain content, fallback to textHtml if not\nconst emailBody = item.json.textPlain || item.json.textHtml;\n\n// Ensure HTML content is converted to plain text\nconst plainTextBody = emailBody.replace(/<[^>]+>/g, '');\n\nconst lines = plainTextBody.split('\\n').map(line => line.trim());\n\nlet title = '';\nlet categories = [];\nlet content = '';\nlet isContent = false;\n\n// Adjusted logic to handle multiline content properly\nlines.forEach(line => {\n  if (line.startsWith('Title:')) {\n    title = line.replace('Title:', '').trim();\n  } else if (line.startsWith('Categories:')) {\n    categories = line.replace('Categories:', '').trim().split(',').map(cat => cat.trim());\n  } else if (line.startsWith('Content:')) {\n    isContent = true;\n    content = line.replace('Content:', '').trim(); // Start capturing content\n  } else if (isContent) {\n    content += ' ' + line; // Continue capturing content\n  }\n});\n\n// Clean up the content to remove any extra spaces\ncontent = content.trim();\n\nreturn [{\n  json: {\n    title,\n    categories,\n    content\n  }\n}];\n"
+      },
+      "id": "2e90c828-4582-452c-ab04-2d89c77d759a",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://blzres.com//wp-json/wp/v2/categories",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "categoryName",
+              "value": "={{ $('Code').item.json.categories }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f922dd1e-c80d-4b4b-9fa6-6b5601a74d01",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2060,
+        280
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        },
+        "httpBasicAuth": {
+          "id": "eRveX6BhqCl8xFCY",
+          "name": "Wordpress APP"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -187,6 +160,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-06-30T00:13:53.416Z",
-  "versionId": "14c54218-c543-47b1-8ca2-41664967be48"
+  "updatedAt": "2024-06-30T11:39:49.000Z",
+  "versionId": "cd9dc0f7-3360-4f6e-bba9-557407a6c8ee"
 }
