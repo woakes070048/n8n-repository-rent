@@ -1,0 +1,64 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Pipedrive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-06-30T16:23:47.847Z",
+  "id": "kQT30KNQsxRds0ud",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Create Deal",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        680,
+        500
+      ],
+      "typeVersion": 1,
+      "id": "18646c25-20ef-42b7-9304-12d541973731"
+    },
+    {
+      "parameters": {
+        "title": "4440 Main Street",
+        "additionalFields": {}
+      },
+      "name": "Pipedrive",
+      "type": "n8n-nodes-base.pipedrive",
+      "position": [
+        880,
+        500
+      ],
+      "typeVersion": 1,
+      "id": "ca8d0b8a-98fd-4ad0-89b7-2672126a633f",
+      "credentials": {
+        "pipedriveApi": {
+          "id": "dPx1Wzh4iYqHNjRF",
+          "name": "Pipedrive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-06-30T16:25:51.000Z",
+  "versionId": "20a4089a-53e0-4ae6-8af8-b2935f8e57d6"
+}
