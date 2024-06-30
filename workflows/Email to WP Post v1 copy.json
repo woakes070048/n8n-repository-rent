@@ -1,0 +1,192 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2024-06-30T00:13:53.416Z",
+  "id": "NRan53zPTISWYHQD",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Email to WP Post v1 copy",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\"]"
+        }
+      },
+      "id": "2b980bae-938c-4bef-af45-b8466fab0a53",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        820,
+        360
+      ],
+      "credentials": {
+        "imap": {
+          "id": "h1OfZbSEXn0O0gCv",
+          "name": "IMAP account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "32a758f3-2e62-4236-a202-181514757203",
+              "leftValue": "= {{ $json.subject }}",
+              "rightValue": "Post: ",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false,
+          "looseTypeValidation": false
+        }
+      },
+      "id": "92387cb7-0a5d-4e75-9c24-9abfee82cf8b",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        360
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "212cfd61-2d59-432a-b510-9ec4b169abfe",
+              "name": "Title",
+              "value": "={{ $('Email Trigger (IMAP)').item.json.subject.replace(\"Post: \", \"\") }}\n",
+              "type": "string"
+            },
+            {
+              "id": "7b582b8b-59c9-409a-b9dd-d87a3044541c",
+              "name": "Body",
+              "value": "={{ $('Email Trigger (IMAP)').item.json.textPlain }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "92f22679-5592-4e11-bcf9-b111e65ddc2c",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        1260,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "title": "={{ $json.Title }}",
+        "additionalFields": {
+          "content": "={{ $json.Body }}",
+          "status": "publish"
+        }
+      },
+      "id": "8700c84a-e4a6-46b2-b141-344c01c2168e",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        280
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "1e300467-85a2-4586-a51b-9279cfb9b948",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        460
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 4
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-06-30T00:13:53.416Z",
+  "versionId": "14c54218-c543-47b1-8ca2-41664967be48"
+}
