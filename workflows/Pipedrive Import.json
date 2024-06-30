@@ -1,0 +1,377 @@
+{
+  "active": false,
+  "connections": {
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Pipedrive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set": {
+      "main": [
+        [
+          {
+            "node": "Create Organization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Set",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pipedrive": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pipedrive1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Create Lead": {
+      "main": [
+        [
+          {
+            "node": "Create Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Spreadsheet File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Person": {
+      "main": [
+        [
+          {
+            "node": "Create Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Spreadsheet File": {
+      "main": [
+        [
+          {
+            "node": "Pipedrive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Organization": {
+      "main": [
+        [
+          {
+            "node": "Create Person",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-06-30T16:12:37.036Z",
+  "id": "6yV6S0QtSJpLkDTw",
+  "meta": null,
+  "name": "Pipedrive Import",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": "1uQ0YnGnQNzIaWGdTt2UBT58tTy8xDlpW",
+        "event": "fileCreated",
+        "options": {}
+      },
+      "id": "ee20c686-aeca-49fe-9433-940648a3dffb",
+      "name": "Google Drive Trigger",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "position": [
+        120,
+        280
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": "={{ $json[\"id\"] }}",
+        "options": {}
+      },
+      "id": "aa70848b-9f69-42fb-bacf-8b96973e3cdb",
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        280,
+        280
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "97647e75-9cb0-420f-b27e-93d97cb5a7c8",
+      "name": "Spreadsheet File",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "position": [
+        420,
+        280
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "lead",
+        "operation": "getAll",
+        "returnAll": true,
+        "filters": {}
+      },
+      "id": "764ae71e-a334-4109-8d4a-75d81b0f8763",
+      "name": "Pipedrive",
+      "type": "n8n-nodes-base.pipedrive",
+      "position": [
+        600,
+        480
+      ],
+      "executeOnce": true,
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "person",
+        "operation": "get",
+        "personId": "={{ $json[\"person_id\"] }}"
+      },
+      "id": "490591fc-f0c9-4149-a97d-6b73ff7ed42d",
+      "name": "Pipedrive1",
+      "type": "n8n-nodes-base.pipedrive",
+      "position": [
+        1060,
+        460
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json[\"person_id\"] }}",
+              "operation": "larger"
+            }
+          ]
+        }
+      },
+      "id": "643d718c-68ba-474f-a021-6e47ffc274ea",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        820,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "removeKeyMatches",
+        "propertyName1": "Email address",
+        "propertyName2": "email[0].value"
+      },
+      "id": "43f820f9-f389-4e94-a22a-e2db38630fed",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1140,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "company",
+              "value": "={{ $json[\"Company name\"] }}"
+            },
+            {
+              "name": "name",
+              "value": "={{ $json[\"First name\"] }} {{ $json[\"Last name\"] }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json[\"Email address\"] }}"
+            },
+            {
+              "name": "employees",
+              "value": "={{ $json[\"Company size\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2fc0e59b-3bb1-4926-8c6d-c850aa8e626c",
+      "name": "Set",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1280,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "organization",
+        "name": "={{ $json[\"company\"] }}",
+        "additionalFields": {}
+      },
+      "id": "eb7c1ffd-fd4b-4104-853b-13916d509e56",
+      "name": "Create Organization",
+      "type": "n8n-nodes-base.pipedrive",
+      "position": [
+        1440,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "person",
+        "name": "={{ $node[\"Set\"].json[\"name\"] }}",
+        "additionalFields": {
+          "customProperties": {
+            "property": [
+              {
+                "name": "0bf0c49725830779ff146f5a087853d959dee064",
+                "value": "LinkedIn_Ad"
+              }
+            ]
+          },
+          "email": [
+            "={{ $node[\"Set\"].json[\"email\"] }}"
+          ],
+          "org_id": "={{ $json[\"id\"] }}"
+        }
+      },
+      "id": "6142cb76-d41c-4168-a40e-97f4deaeb6b3",
+      "name": "Create Person",
+      "type": "n8n-nodes-base.pipedrive",
+      "position": [
+        1620,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "lead",
+        "title": "={{$node[\"Set\"].json[\"company\"]}} lead",
+        "organization_id": "={{$node[\"Create Organization\"].json.id}}",
+        "additionalFields": {
+          "owner_id": 12672788,
+          "person_id": "={{$json.id}}"
+        }
+      },
+      "id": "2ae8e8df-dc67-42d4-9b92-fd8703a16ae5",
+      "name": "Create Lead",
+      "type": "n8n-nodes-base.pipedrive",
+      "position": [
+        1800,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "note",
+        "content": "=\nCompany Size:\n{{$node[\"Set\"].json[\"employees\"]}}",
+        "additionalFields": {
+          "lead_id": "={{$json.id}}"
+        }
+      },
+      "id": "d720d1a0-766a-4347-9efa-9bbf056c7b53",
+      "name": "Create Note",
+      "type": "n8n-nodes-base.pipedrive",
+      "position": [
+        1960,
+        240
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-06-30T16:12:37.036Z",
+  "versionId": "ae4311e7-8517-4c42-830a-8f76d5395ac0"
+}
