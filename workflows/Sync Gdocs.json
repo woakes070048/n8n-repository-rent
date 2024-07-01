@@ -1,0 +1,184 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "List Files and Folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Files and Folders": {
+      "main": [
+        [
+          {
+            "node": "Set Base Path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Base Path": {
+      "main": [
+        [
+          {
+            "node": "IF Is Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Is Folder": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2024-07-01T12:32:12.248Z",
+  "id": "YZXvUhE5FT55Pz44",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Sync Gdocs",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e80e6785-fbd4-4051-9cf6-16e4bfe9e0d8",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        540,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "url": "https://www.googleapis.com/drive/v3/files",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "name": "List Files and Folders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        740,
+        320
+      ],
+      "id": "228db225-4870-4816-85ee-36c5104e5e66",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "basePath",
+              "value": "/"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Base Path",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        940,
+        340
+      ],
+      "id": "9353302b-1106-46d8-b54c-558c386e110f"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json[\"mimeType\"]}}",
+              "operation": "equal",
+              "value2": "application/vnd.google-apps.folder"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "IF Is Folder",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        320
+      ],
+      "id": "80c7d519-ba11-41bf-91f1-f0c6ec86b21b"
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "url": "https://www.googleapis.com/drive/v3/files/{{$json[\"id\"]}}?alt=media",
+        "options": {}
+      },
+      "name": "Download File",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        360
+      ],
+      "id": "47c34f91-fd2c-41e6-8a5f-8621ee7947e1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "protocol": "sftp",
+        "operation": "upload"
+      },
+      "id": "55b776a8-ae86-4c25-8181-1797d4396508",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        440,
+        640
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-01T12:55:21.000Z",
+  "versionId": "e9b40c8c-8cbe-4227-a1a0-0658b68761c2"
+}
