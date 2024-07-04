@@ -1,0 +1,84 @@
+{
+  "active": true,
+  "connections": {
+    "n8n Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-06-30T12:06:38.836Z",
+  "id": "CMhv4rvRSUZQKdEs",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Add Video to WP Video Page",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "update",
+        "pageId": "2312",
+        "updateFields": {
+          "content": "={{ $json.Title }}  -  {{ $json.Link }} - {{ $now }}"
+        }
+      },
+      "id": "f717f4dc-a786-47a0-8029-f2840ed8051f",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        320
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "bf02bf9e-1c3a-4a7e-a7ac-c77e84118541",
+        "formTitle": "Add video",
+        "formDescription": "Video Link and description",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Title"
+            },
+            {
+              "fieldLabel": "Link"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e360f28a-a93a-42ab-bece-cb5dfd4e46b7",
+      "name": "n8n Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2,
+      "position": [
+        760,
+        320
+      ],
+      "webhookId": "bf02bf9e-1c3a-4a7e-a7ac-c77e84118541"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 2,
+  "updatedAt": "2024-07-03T22:01:20.000Z",
+  "versionId": "c6786f86-26b0-4e1c-9ce5-7707333b7ae2"
+}
