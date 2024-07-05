@@ -1,0 +1,388 @@
+{
+  "active": false,
+  "connections": {
+    "Weekly Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Posts": {
+      "main": [
+        [
+          {
+            "node": "Fetch Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Images": {
+      "main": [
+        [
+          {
+            "node": "Combine Posts and Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Posts and Images": {
+      "main": [
+        [
+          {
+            "node": "Send to Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Process Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weekly Trigger1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Posts1": {
+      "main": [
+        [
+          {
+            "node": "Fetch Images1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Images1": {
+      "main": [
+        [
+          {
+            "node": "Combine Posts and Images1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Posts and Images1": {
+      "main": [
+        [
+          {
+            "node": "Send to Notion1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Process Posts1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-04T17:37:23.539Z",
+  "id": "Fhlof8G5rHwWpeqC",
+  "meta": null,
+  "name": "Social Media Posts Renters",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 9
+            }
+          ]
+        }
+      },
+      "name": "Weekly Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        420
+      ],
+      "id": "249d3123-610a-4cde-a1d4-c827d82262c9"
+    },
+    {
+      "parameters": {},
+      "name": "Process Posts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        420
+      ],
+      "id": "a0b208f9-2486-4ec5-bb15-cf2b8877549e"
+    },
+    {
+      "parameters": {
+        "authentication": {
+          "type": "headerAuth",
+          "properties": {
+            "name": "Authorization",
+            "value": "Client-ID YOUR_UNSPLASH_API_KEY"
+          }
+        },
+        "url": "https://api.unsplash.com/photos/random",
+        "options": {}
+      },
+      "name": "Fetch Images",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        420
+      ],
+      "id": "ef3cc290-107a-4e74-89a2-508dc2527022"
+    },
+    {
+      "parameters": {},
+      "name": "Combine Posts and Images",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1860,
+        420
+      ],
+      "id": "7b343566-9528-418d-895f-a48896642dc8"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": "YOUR_NOTION_DATABASE_ID",
+        "options": {}
+      },
+      "name": "Send to Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 1,
+      "position": [
+        2060,
+        420
+      ],
+      "id": "a6045df3-bb05-4745-8ea1-ec01c57a5e31"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Generate 7 social media posts in table format for renters looking for property. Include popular relevant hashtags. no open houses or short-term rental options. Highlight Blaze Real Estate benefits"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "f61e3c80-d4fd-430c-93a6-58f22976e1a6",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        1180,
+        220
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 9
+            }
+          ]
+        }
+      },
+      "name": "Weekly Trigger1",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        700
+      ],
+      "id": "2563a242-fd00-4610-8340-32e4367f89b4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = items[0].json.message.content.social_media_posts;\nreturn response.map(post => ({ json: post }));\n"
+      },
+      "name": "Process Posts1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1460,
+        700
+      ],
+      "id": "fb0069b2-3867-4c61-a4e9-58bb93ab7e93"
+    },
+    {
+      "parameters": {
+        "authentication": {
+          "type": "headerAuth",
+          "properties": {
+            "name": "Authorization",
+            "value": "Client-ID YOUR_UNSPLASH_API_KEY"
+          }
+        },
+        "url": "https://api.unsplash.com/photos/random",
+        "options": {}
+      },
+      "name": "Fetch Images1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        700
+      ],
+      "id": "8b542cf7-7e6d-4883-a177-7f1ea00f48c8"
+    },
+    {
+      "parameters": {},
+      "name": "Combine Posts and Images1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1860,
+        700
+      ],
+      "id": "cae94262-44dd-4795-bd46-fc493a71aea4"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": "YOUR_NOTION_DATABASE_ID",
+        "options": {}
+      },
+      "name": "Send to Notion1",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 1,
+      "position": [
+        2060,
+        700
+      ],
+      "id": "a5ad2e6a-23cf-4bed-ad8d-9f0c2ff8ab9f"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Generate 7 social media posts in table format for renters looking for property. Include popular relevant hashtags. no open houses or short-term rental options. Highlight Blaze Real Estate benefits"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "097e96ce-b2a8-486a-8d61-88b50551d8e0",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        1180,
+        980
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "b64c024f-04fd-403d-9b5f-9340f3c22e5a",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1,
+      "position": [
+        1660,
+        980
+      ],
+      "webhookId": "2c4259cd-bf3f-46ea-a2ad-42942ff52b1d"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "bcf9c47e-bdef-415e-990b-c9c2276bc311",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        1880,
+        980
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-04T17:48:31.000Z",
+  "versionId": "33476091-b8d5-4c8d-8a79-2d524e710a6b"
+}
