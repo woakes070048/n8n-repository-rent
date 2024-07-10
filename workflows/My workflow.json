@@ -1,33 +1,44 @@
 {
   "active": false,
   "connections": {
-    "Get Rows": {
+    "Get Posts": {
       "main": [
         [
           {
-            "node": "Extract Addresses1",
+            "node": "Filter New Posts",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Extract Addresses1": {
+    "Get Pages": {
       "main": [
         [
           {
-            "node": "Validate Address1",
+            "node": "Filter New Pages",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Validate Address1": {
+    "Filter New Posts": {
       "main": [
         [
           {
-            "node": "Write Validated Addresses1",
+            "node": "Send Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter New Pages": {
+      "main": [
+        [
+          {
+            "node": "Send Notification",
             "type": "main",
             "index": 0
           }
@@ -35,80 +46,79 @@
       ]
     }
   },
-  "createdAt": "2024-06-25T23:21:59.878Z",
-  "id": "pVwTqrQaiGE2WnJH",
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "createdAt": "2024-07-09T19:16:11.866Z",
+  "id": "9LuFK9K6DCxM9CQI",
+  "meta": null,
   "name": "My workflow",
   "nodes": [
     {
       "parameters": {
-        "sheetId": "1efqQrJdzCosY1EMY6r6LJscf13bLw0wN5wot1tHQHUE",
-        "range": "!A1:Z",
-        "rawData": true,
+        "url": "https://blzres.com/wp-json/wp/v2/posts",
         "options": {}
       },
-      "name": "Get Rows",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 2,
-      "position": [
-        820,
-        500
-      ],
-      "id": "ae4d3d91-01bf-4cb1-bcd1-064d2eca09ae",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "OPTs28HKagi0JBEs",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "name": "Extract Addresses1",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [
-        1020,
-        500
-      ],
-      "id": "2c4e0684-f093-4e64-97f4-c032469a3c35"
-    },
-    {
-      "parameters": {
-        "url": "https://addressvalidation.googleapis.com/v1:validateAddress",
-        "options": {},
-        "queryParametersUi": {
-          "parameter": []
-        }
-      },
-      "name": "Validate Address1",
+      "name": "Get Posts",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        1220,
-        500
+        800,
+        780
       ],
-      "id": "44134b99-80be-4b1e-b3fd-ceb30b53d988"
+      "id": "befd4c6b-09a9-43b7-b1db-bbe4cdbe6c8e"
     },
     {
       "parameters": {
-        "authentication": "serviceAccount",
-        "sheetId": "your-google-sheet-id",
-        "range": "validated_addresses",
-        "options": {
-          "valueRenderMode": "UNFORMATTED_VALUE"
-        }
+        "url": "https://blzres.com/wp-json/wp/v2/pages",
+        "options": {}
       },
-      "name": "Write Validated Addresses1",
-      "type": "n8n-nodes-base.googleSheets",
+      "name": "Get Pages",
+      "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        1420,
-        500
+        800,
+        580
       ],
-      "id": "7f58f3d2-b7ff-421b-8938-b44675e3b2fc"
+      "id": "21f499db-2698-4cfd-bbbb-9be8a7fc2455"
+    },
+    {
+      "parameters": {
+        "functionCode": "const newItems = [];\nconst currentTimestamp = new Date().getTime();\nconst oneHour = 3600000;\n\nitems[0].json.forEach(item => {\n  const itemTimestamp = new Date(item.date).getTime();\n  if (currentTimestamp - itemTimestamp < oneHour) {\n    newItems.push({ json: item });\n  }\n});\n\nreturn newItems;"
+      },
+      "name": "Filter New Posts",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1050,
+        780
+      ],
+      "id": "a3938e33-2fc8-4e6c-badd-92279acfa88b"
+    },
+    {
+      "parameters": {
+        "functionCode": "const newItems = [];\nconst currentTimestamp = new Date().getTime();\nconst oneHour = 3600000;\n\nitems[0].json.forEach(item => {\n  const itemTimestamp = new Date(item.date).getTime();\n  if (currentTimestamp - itemTimestamp < oneHour) {\n    newItems.push({ json: item });\n  }\n});\n\nreturn newItems;"
+      },
+      "name": "Filter New Pages",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 2,
+      "position": [
+        1050,
+        580
+      ],
+      "id": "090b42a8-024a-491b-896b-d43277c00afe"
+    },
+    {
+      "parameters": {
+        "subject": "New Post/Page on Blaze Real Estate",
+        "text": "New {{ $json.type }}: {{ $json.title.rendered }}\n\n{{ $json.excerpt.rendered }}\n\nRead more: {{ $json.link }}",
+        "options": {}
+      },
+      "name": "Send Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        680
+      ],
+      "id": "7d25a327-1937-423a-98ec-706a803d7886"
     }
   ],
   "pinData": {},
@@ -118,6 +128,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-06-25T23:21:59.878Z",
-  "versionId": "2f27050c-08af-4ae1-a71c-4e0fe1d763ed"
+  "updatedAt": "2024-07-09T19:16:11.866Z",
+  "versionId": "47deaf65-fea3-4604-aa9c-a2c02ca91a4a"
 }
