@@ -286,6 +286,39 @@
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v17.0",
+        "node": "/page/329129493627618",
+        "edge": "photo",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $('OpenAI1').item.json.output }}"
+              },
+              {}
+            ]
+          }
+        }
+      },
+      "id": "08318254-47ca-4f74-85c6-1537c60598a1",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        1880
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "a3LtRYzbJapkaeaV",
+          "name": "Facebook Graph account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -302,6 +335,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-14T16:10:42.000Z",
-  "versionId": "86a3ccf7-5a2d-4b4b-adc1-1e5ca3a8ba62"
+  "updatedAt": "2024-07-19T10:44:15.000Z",
+  "versionId": "9fb72f98-cdb6-40d4-98d0-436f69575bb0"
 }
