@@ -1,0 +1,75 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-19T02:24:28.500Z",
+  "id": "offziFCq7JHVdLNh",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Facebook Beginning",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c467197e-db2e-4dea-9578-841103423e35",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        620,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "node": "me",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "Test message for auto post"
+              }
+            ]
+          }
+        }
+      },
+      "id": "e0bdc89b-537d-4627-b6c5-2d44feb4c5d7",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        840,
+        240
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "a3LtRYzbJapkaeaV",
+          "name": "Facebook Graph account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-19T13:45:32.000Z",
+  "versionId": "80b99715-9ef0-40e4-a5c5-eaa2a6fc8767"
+}
