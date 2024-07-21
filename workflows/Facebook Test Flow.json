@@ -1,0 +1,118 @@
+{
+  "active": false,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-21T10:49:35.990Z",
+  "id": "v0hPVkA3ODZcr1cJ",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Facebook Test Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "3705ad6c-2351-490f-b4ef-64eface9a0d3",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appjhqJ167iJSxVJL",
+          "mode": "list",
+          "cachedResultName": "Content Operations",
+          "cachedResultUrl": "https://airtable.com/appjhqJ167iJSxVJL"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblOT83dMqx0xkXla",
+          "mode": "list",
+          "cachedResultName": "Imported table",
+          "cachedResultUrl": "https://airtable.com/appjhqJ167iJSxVJL/tblOT83dMqx0xkXla"
+        },
+        "options": {}
+      },
+      "id": "aed886e8-6b1a-46a7-9ed1-54aa4613c26d",
+      "name": "Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        380,
+        400
+      ],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "30MwKrZ0k7UFqdjN",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "admin@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "={{ $json['Unit Name'] }}",
+        "html": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title> {{ $json[\"Unit Address\"] }}</title>\n</head>\n<body>\n    <h1>Stunning Home Available for Rent!</h1>\n    <p>Looking for your next dream home? Blaze Property Management has an amazing option for you in Amarillo, TX. Check out this beautiful property:</p>\n    \n    <hr>\n    \n    <h2>{{ $json[\"Unit Address\"] }}] - {{$json[\"Marketing Title\"]}}</h2>\n    <p>{{$json[\"Marketing Description\"]}}</p>\n    <p><strong>Rent:</strong> ${{$json[\"Advertised Rent\"]}}/month</p>\n    <p><strong>Deposit:</strong> ${{$json[\"Default Deposit\"]}}</p>\n    <p><strong>Size:</strong> {{$json[\"Sqft\"]}} sqft</p>\n    <p><strong>Bedrooms:</strong> {{$json[\"Bedrooms\"]}}</p>\n    <p><strong>Bathrooms:</strong> {{$json[\"Bathrooms\"]}}</p>\n    <p><strong>Benefits:</strong> All Blaze Property Management residents are enrolled in the Resident Benefits Package (RBP). For program benefits, visit <a href=\"https://blazeproperty.com/resident-benefit-package/\">Resident Benefits Package</a>.</p>\n    <p><strong>Address:</strong> {{$json[\"Unit Address\"]}}</p>\n    <img src=\"{{$json[\"image\"]}}\" alt=\"{{$json[\"Unit Name\"]}}\" width=\"600\">\n    \n    <hr>\n    \n    <p>📞 <strong>Contact us today to schedule a showing or for more information!</strong> 🏠</p>\n    \n    <p>Stay connected with Blaze Property Management for more exciting rental opportunities!</p>\n</body>\n</html>\n",
+        "options": {}
+      },
+      "id": "19586639-dac5-45c8-90ff-ad6424ba2d6d",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        600,
+        400
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-21T11:05:18.000Z",
+  "versionId": "4cc91b2a-9cb5-4b35-9a51-92ccff81eee4"
+}
