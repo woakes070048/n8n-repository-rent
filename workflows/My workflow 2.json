@@ -1,33 +1,44 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
-    "When clicking ‘Test workflow’": {
+    "Fetch Properties": {
       "main": [
         [
           {
-            "node": "Google Drive",
+            "node": "Generate HTML Content",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Drive": {
+    "Generate HTML Content": {
       "main": [
         [
           {
-            "node": "Google Drive1",
+            "node": "Wordpress",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Drive1": {
+    "Schedule Trigger": {
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Fetch Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress": {
+      "main": [
+        [
+          {
+            "node": "Wordpress1",
             "type": "main",
             "index": 0
           }
@@ -35,83 +46,139 @@
       ]
     }
   },
-  "createdAt": "2024-07-21T14:23:39.523Z",
-  "id": "goV83vxtGZjz4XZv",
+  "createdAt": "2024-07-21T19:53:28.466Z",
+  "id": "FRaQXLWGHitER9ph",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 2",
   "nodes": [
     {
-      "parameters": {},
-      "id": "a91da0d6-009b-41ef-bf6a-efa3b38c7e17",
-      "name": "When clicking ‘Test workflow’",
-      "type": "n8n-nodes-base.manualTrigger",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM properties;"
+      },
+      "name": "Fetch Properties",
+      "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        420,
-        460
+        1540,
+        500
+      ],
+      "id": "401a1145-786f-4c26-afa7-85143937f518",
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const properties = items.map(item => item.json);\n\n// Get the current date\nconst now = new Date();\nconst formattedDate = now.toLocaleDateString('en-US');\n\nlet content = '<table>';\ncontent += '<tr><th>Property Name</th><th>Unit Name</th><th>Deposit</th><th>Bedrooms</th><th>Bathrooms</th><th>Rent</th><th>Image</th></tr>';\n\nproperties.forEach(property => {\n    const propertyLink = `${property.rentable_uid}`;\n    content += '<tr>';\n    content += `<td><a href=\"${propertyLink}\">${property.property_name}</a></td>`;\n    content += `<td>${property.unit_name}</td>`;\n    content += `<td>${property.default_deposit}</td>`;\n    content += `<td>${property.bedrooms}</td>`;\n    content += `<td>${property.bathrooms}</td>`;\n    content += `<td>${property.advertised_rent}</td>`;\n    content += `<td><img src=\"${property.image_url}\" alt=\"${property.property_name}\" style=\"width:100px;height:auto;\"></td>`;\n    content += '</tr>';\n});\n\ncontent += '</table>';\n\nreturn [{ json: { content, formattedDate } }];"
+      },
+      "name": "Generate HTML Content",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1790,
+        500
+      ],
+      "id": "75aa25e7-4c9c-4611-82fc-6cf975b3ae98"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "37d3dffc-6dbd-4817-8f81-42a1d29c4ad9",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        500
       ]
     },
     {
       "parameters": {
-        "resource": "fileFolder",
-        "queryString": "\"full-list.csv\"",
-        "limit": 1,
-        "filter": {},
-        "options": {}
+        "title": "=Daily Available Units {{ $json.formattedDate }}",
+        "additionalFields": {
+          "content": "={{ $json.content }}"
+        }
       },
-      "id": "37ecf14f-28a7-40ff-81a6-84b0c0bc91fd",
-      "name": "Google Drive",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
+      "id": "75d32ade-6aad-485b-af4a-2c04b16789f0",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
       "position": [
-        640,
-        460
+        2020,
+        500
       ],
       "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
         }
       }
     },
     {
       "parameters": {
-        "operation": "download",
-        "fileId": {
-          "__rl": true,
-          "value": "={{$json[\"id\"]}}",
-          "mode": "id"
-        },
-        "options": {}
+        "operation": "update",
+        "postId": "={{ $json.id }}",
+        "updateFields": {
+          "status": "publish"
+        }
       },
-      "id": "4a9d86be-5ab7-42f5-9e80-a13305491f25",
-      "name": "Google Drive1",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
+      "id": "cef85bf8-09f8-4a9e-ac8f-9c8d03616d49",
+      "name": "Wordpress1",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
       "position": [
-        860,
-        460
+        2240,
+        500
       ],
       "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "const binaryData = items[0].binary.data;\nconst csv = Buffer.from(binaryData.data, 'base64').toString('utf8');\nconst rows = csv.split('\\n').map(row => row.split(','));\n\n// Transform rows into key-value pairs if necessary\nconst headers = rows[0];\nconst dataRows = rows.slice(1).map(row => {\n  let rowData = {};\n  row.forEach((cell, index) => {\n    rowData[headers[index]] = cell;\n  });\n  return rowData;\n});\n\nreturn dataRows.map(row => ({ json: row }));\n"
+        "content": "## Get SQL Data\nGets sql data from hosted mysql database\nDatabase is updated daily at midnight to provide \nfull listing of blaze properties\n",
+        "height": 444,
+        "width": 445
       },
-      "id": "0b44adce-f6e2-4ded-95e6-cf2346033fc4",
-      "name": "Code",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "900c24de-0f18-4305-81b0-7316978c2023",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
       "position": [
-        1100,
-        460
+        1240,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Generate Wordpress post\nCreates a daily wordpress post that contains all of the \ninformation regarding available listings for that day. \n",
+        "height": 439,
+        "width": 773,
+        "color": 3
+      },
+      "id": "baaed8a7-f38c-49e3-a1d1-ed60aadf89d3",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        240
       ]
     }
   ],
@@ -119,9 +186,13 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2024-07-21T15:29:47.000Z",
-  "versionId": "f062ebe8-556a-4b67-9734-aadd57ed3cdd"
+  "triggerCount": 1,
+  "updatedAt": "2024-07-22T02:21:14.000Z",
+  "versionId": "3c7828d6-0e51-4624-a1a7-0dde5c8600e3"
 }
