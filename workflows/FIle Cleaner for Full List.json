@@ -63,6 +63,11 @@
             "node": "Execute Workflow",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Execute Workflow1",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -190,8 +195,22 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        1520,
+        1740,
         400
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "td0n49dakScAtuar",
+        "options": {}
+      },
+      "id": "2f392706-845b-4350-86be-a8abb8605448",
+      "name": "Execute Workflow1",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        620
       ]
     }
   ],
@@ -206,6 +225,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-23T10:40:52.000Z",
-  "versionId": "8c950104-92fc-4d4a-b541-efcb4c22b29b"
+  "updatedAt": "2024-07-23T17:58:27.000Z",
+  "versionId": "ed3fd577-3977-45e2-b441-74daa75f50d8"
 }
