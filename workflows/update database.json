@@ -1,0 +1,18 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2024-07-24T14:39:52.878Z",
+  "id": "lOTI9EBDDSH7itNC",
+  "meta": null,
+  "name": "update database",
+  "nodes": [],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-24T14:39:52.878Z",
+  "versionId": "42353df6-ff5f-43bf-9c61-5a10c4fb55c0"
+}
