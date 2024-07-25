@@ -1,0 +1,420 @@
+{
+  "active": true,
+  "connections": {
+    "Spreadsheet File": {
+      "main": [
+        [
+          {
+            "node": "Process CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process CSV": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract CSV Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract CSV Data": {
+      "main": [
+        [
+          {
+            "node": "Split CSV into Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Spreadsheet File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into MySQL": {
+      "main": [
+        [
+          {
+            "node": "Split CSV into Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Yourls": {
+      "main": [
+        [
+          {
+            "node": "Insert into MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Image URL": {
+      "main": [
+        [
+          {
+            "node": "Combine Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split CSV into Batches": {
+      "main": [
+        [
+          {
+            "node": "Fetch Image URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Data": {
+      "main": [
+        [
+          {
+            "node": "Yourls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-24T21:06:08.035Z",
+  "id": "Hi69cOhVATN621X5",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Email Update Database with URLS",
+  "nodes": [
+    {
+      "parameters": {
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "name": "Spreadsheet File",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 1,
+      "position": [
+        300,
+        500
+      ],
+      "id": "b4703a12-9fd6-4bc9-8775-d0b13460580f"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function to parse CSV string into an array of objects\nfunction parseCsv(csvString) {\n    const lines = csvString.split('\\n').filter(line => line.trim() !== '');\n    const headers = lines[0].split(',');\n    const rows = lines.slice(1).map(line => {\n        const values = line.split(',');\n        const row = {};\n        headers.forEach((header, index) => {\n            row[header] = values[index];\n        });\n        return row;\n    });\n    return { headers, rows };\n}\n\n// Function to convert array of objects to CSV string\nfunction arrayToCsv(headers, data) {\n    const csvString = headers.join(',') + '\\n' + data.map(row => {\n        return headers.map(header => row[header]).join(',');\n    }).join('\\n');\n    return csvString;\n}\n\nif (items[0].binary && items[0].binary.data) {\n    const input = items[0].binary.data; // Access the binary data\n    const csvString = Buffer.from(input.data, 'base64').toString('utf-8');\n\n    const { headers, rows } = parseCsv(csvString);\n\n    // Remove the second row and any row containing the word \"total\"\n    const filteredRows = rows.filter((row, index) => index !== 1 && !Object.values(row).some(value => value && value.toLowerCase().includes('total')));\n\n    const newCsvString = arrayToCsv(headers, filteredRows);\n\n    // Output the processed CSV string\n    items[0].binary.data.data = Buffer.from(newCsvString).toString('base64');\n}\n\nreturn items;\n"
+      },
+      "name": "Process CSV",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        500,
+        500
+      ],
+      "id": "7b9d375e-4cbe-4845-9b4f-07c22d8c534d"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "update_units.csv",
+        "options": {
+          "fileName": "update_units.csv"
+        }
+      },
+      "id": "a9b0e9cf-2506-4cc7-8369-e88152dd31e8",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "data/update_units.csv",
+        "binaryPropertyName": "update_units.csv"
+      },
+      "id": "d48e1994-f7b9-4a24-8614-88f6a2eaf836",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        860,
+        500
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "946fcd9a-e23b-4702-b89f-1bc7fda006ce",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1060,
+        500
+      ],
+      "webhookId": "dd9b4c7f-4621-4cba-bc1a-dd198a3fed84"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "update_units.csv",
+        "options": {}
+      },
+      "id": "76af9925-903b-42ce-aace-ae293fd1ef76",
+      "name": "Extract CSV Data",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        50,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "downloadAttachments": true,
+        "options": {}
+      },
+      "id": "7980263b-e554-431d-8801-a3a9fccf1bdb",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        100,
+        500
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('Extract CSV Data').item.json['Rentable UID'] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_name",
+              "value": "={{ $('Extract CSV Data').item.json['﻿Property Name'] }}"
+            },
+            {
+              "column": "unit_name",
+              "value": "={{ $('Extract CSV Data').item.json['Unit Name'] }}"
+            },
+            {
+              "column": "default_deposit",
+              "value": "={{ $('Extract CSV Data').item.json['Default Deposit'] }}"
+            },
+            {
+              "column": "bedrooms",
+              "value": "={{ $('Extract CSV Data').item.json.Bedrooms }}"
+            },
+            {
+              "column": "bathrooms",
+              "value": "={{ $('Extract CSV Data').item.json.Bathrooms }}"
+            },
+            {
+              "column": "advertised_rent",
+              "value": "={{ $('Extract CSV Data').item.json['Advertised Rent'] }}"
+            },
+            {
+              "column": "posted_to_website"
+            },
+            {
+              "column": "posted_to_internet"
+            },
+            {
+              "column": "marketing_title"
+            },
+            {
+              "column": "marketing_description"
+            },
+            {
+              "column": "application_fee"
+            },
+            {
+              "column": "unit_address"
+            },
+            {
+              "column": "property"
+            },
+            {
+              "column": "youtube_url"
+            },
+            {
+              "column": "appliances"
+            },
+            {
+              "column": "utilities"
+            },
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "48ffc74f-d400-430d-9cc2-71e885e5fa5d",
+      "name": "Insert into MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        700
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $('Split CSV into Batches').item.json['Rentable UID'] }}",
+        "additionalFields": {}
+      },
+      "id": "ef14c0bf-82dd-4153-8ae6-35157d305347",
+      "name": "Yourls",
+      "type": "n8n-nodes-base.yourls",
+      "typeVersion": 1,
+      "position": [
+        900,
+        700
+      ],
+      "credentials": {
+        "yourlsApi": {
+          "id": "TKN8hKISe25ZCk4B",
+          "name": "Yourls account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json['Rentable UID'] }}",
+        "options": {}
+      },
+      "id": "13c343f4-822f-43c6-8623-f801c033562d",
+      "name": "Fetch Image URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        700
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "748a6bd5-63f3-43f3-893c-0dbdcfbb9e7c",
+      "name": "Split CSV into Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        250,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Function to parse CSV string into an array of objects\nfunction parseCsv(csvString) {\n    const lines = csvString.split('\\n').filter(line => line.trim() !== '');\n    const headers = lines[0].split(',');\n    const rows = lines.slice(1).map(line => {\n        const values = line.split(',');\n        const row = {};\n        headers.forEach((header, index) => {\n            row[header] = values[index];\n        });\n        return row;\n    });\n    return { headers, rows };\n}\n\n// Function to convert array of objects to CSV string\nfunction arrayToCsv(headers, data) {\n    const csvString = headers.join(',') + '\\n' + data.map(row => {\n        return headers.map(header => row[header]).join(',');\n    }).join('\\n');\n    return csvString;\n}\n\nif (items[0].binary && items[0].binary.data) {\n    const input = items[0].binary.data.data; // Access the binary data\n    const csvString = Buffer.from(input, 'base64').toString('utf-8');\n\n    const { headers, rows } = parseCsv(csvString);\n\n    // Remove the second row and any row containing the word \"total\"\n    const filteredRows = rows.filter((row, index) => index !== 1 && !Object.values(row).some(value => value && value.toLowerCase().includes('total')));\n\n    const newCsvString = arrayToCsv(headers, filteredRows);\n\n    // Output the processed CSV string\n    items[0].binary.data.data = Buffer.from(newCsvString).toString('base64');\n} else {\n    throw new Error(\"Input binary data is missing or invalid\");\n}\n\nreturn items;\n"
+      },
+      "id": "203ade61-5648-4536-9177-7419246e5291",
+      "name": "Combine Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        720,
+        700
+      ],
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 77
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-07-25T14:22:13.000Z",
+  "versionId": "f9a6a4cb-887d-44eb-a696-1d044dbd3aee"
+}
