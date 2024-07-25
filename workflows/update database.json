@@ -1,11 +1,289 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "IMAP Email": {
+      "main": [
+        [
+          {
+            "node": "IF Subject Matches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Subject Matches": {
+      "main": [
+        [
+          {
+            "node": "IF Date Less Than 24 Hours",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Date Less Than 24 Hours": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2024-07-24T14:39:52.878Z",
   "id": "lOTI9EBDDSH7itNC",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "update database",
-  "nodes": [],
+  "nodes": [
+    {
+      "parameters": {
+        "downloadAttachments": true,
+        "options": {}
+      },
+      "name": "IMAP Email",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        780,
+        380
+      ],
+      "id": "ee37541c-739f-439b-871c-4aca7e52daa7",
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"subject\"]}}",
+              "operation": "contains",
+              "value2": "MYSQL Update"
+            }
+          ]
+        }
+      },
+      "name": "IF Subject Matches",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        920,
+        320
+      ],
+      "id": "d159823f-746a-4490-a321-441d81dc5ece"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{$json[\"date\"]}}",
+              "value2": "={{new Date(new Date().getTime() - 24*60*60*1000).toISOString()}}"
+            }
+          ]
+        }
+      },
+      "name": "IF Date Less Than 24 Hours",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        360
+      ],
+      "id": "439f8b6a-8476-4cf3-8290-c762520c8b0d"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "b85d6284-bde2-4e15-9b50-1536c4fe8ea2",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_listings",
+          "mode": "list",
+          "cachedResultName": "all_listings"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "Rentable_UID",
+        "valueToMatchOn": "={{ $json[\"Rentable UID\"] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "Unit_Name",
+              "value": "={{ $json[\"Unit Name\"] }}"
+            },
+            {
+              "column": "Default_Deposit",
+              "value": "={{ $json[\"Default Deposit\"] }}"
+            },
+            {
+              "column": "Bedrooms",
+              "value": "={{ $json.Bedrooms }}"
+            },
+            {
+              "column": "Bathrooms",
+              "value": "={{ $json.Bathrooms }}"
+            },
+            {
+              "column": "Advertised_Rent",
+              "value": "={{ $json[\"Advertised Rent\"] }}"
+            },
+            {
+              "column": "Posted_To_Website",
+              "value": "={{ $json[\"Posted To Website\"] }}"
+            },
+            {
+              "column": "Posted_To_Internet",
+              "value": "={{ $json[\"Posted To Internet\"] }}"
+            },
+            {
+              "column": "Marketing_Title",
+              "value": "={{ $json[\"Marketing Title\"] }}"
+            },
+            {
+              "column": "Marketing_Description",
+              "value": "={{ $json[\"Marketing Description\"] }}"
+            },
+            {
+              "column": "Sqft",
+              "value": "={{ $json.Sqft }}"
+            },
+            {
+              "column": "Application_Fee",
+              "value": "={{ $json[\"Application Fee\"] }}"
+            },
+            {
+              "column": "Unit_Address",
+              "value": "={{ $json[\"Unit Address\"] }}"
+            },
+            {
+              "column": "Property",
+              "value": "={{ $json.Property }}"
+            },
+            {
+              "column": "Unit_Street_Address_1",
+              "value": "={{ $json[\"Unit Street Address 1\"] }}"
+            },
+            {
+              "column": "Unit_Street_Address_2",
+              "value": "={{ $json[\"Unit Street Address 2\"] }}"
+            },
+            {
+              "column": "Unit_City",
+              "value": "={{ $json[\"Unit City\"] }}"
+            },
+            {
+              "column": "Unit_State",
+              "value": "={{ $json[\"Unit State\"] }}"
+            },
+            {
+              "column": "Unit_Zip",
+              "value": "={{ $json[\"Unit Zip\"] }}"
+            },
+            {
+              "column": "Market_Rent",
+              "value": "={{ $json[\"Market Rent\"] }}"
+            },
+            {
+              "column": "Tags",
+              "value": "={{ $json.Tags }}"
+            },
+            {
+              "column": "Unit_Type"
+            },
+            {
+              "column": "Revenue",
+              "value": "={{ $json.Revenue }}"
+            },
+            {
+              "column": "Utility_Billing_RUBS_Enabled",
+              "value": "={{ $json[\"Utility Billing (RUBS) Enabled\"] }}"
+            },
+            {
+              "column": "Description",
+              "value": "={{ $json.Description }}"
+            },
+            {
+              "column": "Rent_Ready",
+              "value": "={{ $json[\"Rent Ready\"] }}"
+            },
+            {
+              "column": "Computed_Market_Rent",
+              "value": "={{ $json[\"Computed Market Rent\"] }}"
+            },
+            {
+              "column": "Amenities"
+            },
+            {
+              "column": "Appliances",
+              "value": "={{ $json.Appliances }}"
+            },
+            {
+              "column": "Utilities",
+              "value": "={{ $json.Utilities }}"
+            },
+            {
+              "column": "Billed_As",
+              "value": "={{ $json[\"Billed As\"] }}"
+            },
+            {
+              "column": "Property_Name",
+              "value": "={{ $json[\"Property Name\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b1d1deac-e8d1-4fae-9541-f384a6c3e26f",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1620,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    }
+  ],
   "pinData": {},
   "settings": {
     "executionOrder": "v1"
@@ -13,6 +291,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-07-24T14:39:52.878Z",
-  "versionId": "42353df6-ff5f-43bf-9c61-5a10c4fb55c0"
+  "updatedAt": "2024-07-24T17:46:08.000Z",
+  "versionId": "80bf0f17-303f-4368-8a82-49f6c70a7e33"
 }
