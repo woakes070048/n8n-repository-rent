@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "Fetch Properties": {
       "main": [
@@ -193,6 +193,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-23T17:25:49.000Z",
+  "updatedAt": "2024-07-24T21:02:25.000Z",
   "versionId": "d215fb0c-7417-4672-957a-f6d121e2af4b"
 }
