@@ -1,0 +1,382 @@
+{
+  "active": false,
+  "connections": {
+    "Split CSV into Batches": {
+      "main": [
+        [
+          {
+            "node": "Fetch Image URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into MySQL": {
+      "main": [
+        [
+          {
+            "node": "Split CSV into Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "IF Subject Matches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Subject Matches": {
+      "main": [
+        [
+          {
+            "node": "IF Date Less Than 24 Hours",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Date Less Than 24 Hours": {
+      "main": [
+        [
+          {
+            "node": "Extract CSV Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract CSV Data": {
+      "main": [
+        [
+          {
+            "node": "Split CSV into Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Image URL": {
+      "main": [
+        [
+          {
+            "node": "Combine Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Data": {
+      "main": [
+        [
+          {
+            "node": "Insert into MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-24T20:38:54.678Z",
+  "id": "BBUMnRnDz3DiVTf5",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Database 1",
+  "nodes": [
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "b4c37427-01d1-4e10-9e5c-8fe25813200d",
+      "name": "Split CSV into Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "properties",
+          "mode": "list",
+          "cachedResultName": "properties"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_name",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Property Name\"] }}"
+            },
+            {
+              "column": "unit_name",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Unit Name\"] }}"
+            },
+            {
+              "column": "default_deposit",
+              "value": "="
+            },
+            {
+              "column": "bedrooms",
+              "value": "={{ $('Split CSV into Batches').item.json.Bedrooms }}"
+            },
+            {
+              "column": "bathrooms",
+              "value": "={{ $('Split CSV into Batches').item.json.Bathrooms }}"
+            },
+            {
+              "column": "advertised_rent",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Advertised Rent\"] }}"
+            },
+            {
+              "column": "posted_to_website",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Posted To Website\"] }}"
+            },
+            {
+              "column": "posted_to_internet",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Posted To Internet\"] }}"
+            },
+            {
+              "column": "marketing_title",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Marketing Title\"] }}"
+            },
+            {
+              "column": "marketing_description",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Marketing Description\"] }}"
+            },
+            {
+              "column": "sqft",
+              "value": "={{ $('Split CSV into Batches').item.json.Sqft }}"
+            },
+            {
+              "column": "application_fee",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Application Fee\"] }}"
+            },
+            {
+              "column": "rentable_uid",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $('Split CSV into Batches').item.json[\"Rentable UID\"] }}"
+            },
+            {
+              "column": "image_url",
+              "value": "={{ $json['Image URL'] }}"
+            },
+            {
+              "column": "address",
+              "value": "null"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "90675134-aba8-4317-80ab-ab7f0e3c57b8",
+      "name": "Insert into MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        2060,
+        680
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Clear Database\nremoves all entries in the properties database table before creating new daily entries\n",
+        "height": 397.15363881401635
+      },
+      "id": "5afec8b5-22ff-4ab8-b262-907f05ea7477",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Get all properties\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+        "height": 393.3692722371961,
+        "width": 504.9056603773588,
+        "color": 6
+      },
+      "id": "aa528702-2772-4a34-bc8f-19dbfe576aee",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        720,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Generate Table\nloops through all records, generates the required data for use in posting \nand scrapes for the first image of the record to allow posting elsewhere. \n\n",
+        "height": 393.3692722371961,
+        "width": 941.3692722371975,
+        "color": 3
+      },
+      "id": "53df0a8c-016e-4f48-9618-bf2ee212e9e0",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1260,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "downloadAttachments": true,
+        "options": {}
+      },
+      "id": "a99d1231-e975-45f4-8d81-5f8e5b1dd8dc",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        380,
+        680
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"subject\"]}}",
+              "operation": "contains",
+              "value2": "MYSQL Update"
+            }
+          ]
+        }
+      },
+      "name": "IF Subject Matches",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        560,
+        680
+      ],
+      "id": "e2086361-1920-46f4-8cb3-5c3c05e8a668"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{$json[\"date\"]}}",
+              "value2": "={{new Date(new Date().getTime() - 24*60*60*1000).toISOString()}}"
+            }
+          ]
+        }
+      },
+      "name": "IF Date Less Than 24 Hours",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        800,
+        680
+      ],
+      "id": "204263b9-1cdb-4bb4-88a4-e4f57086912a"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "0db21960-a179-4475-b427-d935115951bf",
+      "name": "Extract CSV Data",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json['Rentable UID'] }}",
+        "options": {}
+      },
+      "id": "66d6330a-5cf7-40fe-a0fb-7e7961da8797",
+      "name": "Fetch Image URL",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1480,
+        680
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "functionCode": "const csvData = $node[\"Split CSV into Batches\"].json[0];\nconst htmlContent = items[0].json.data;\n\nconst imageRegex = /https:\\/\\/images\\.cdn\\.appfolio\\.com\\/blazepropertymanagement\\/images\\/[a-f0-9\\\\-]+\\/[a-z]+\\.jpg/g;\nconst images = htmlContent.match(imageRegex);\n\nlet firstImageUrl = null;\nif (images && images.length > 0) {\n  firstImageUrl = images[0];\n}\n\nreturn [{\n  json: { ...csvData, 'Image URL': firstImageUrl || '' }\n}];\n"
+      },
+      "id": "7407f146-f122-436f-bbe1-fda6d5c43324",
+      "name": "Combine Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1810,
+        680
+      ]
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "id": "ea47f2df-a700-409f-a6e7-588ae22611b6",
+      "name": "Yourls",
+      "type": "n8n-nodes-base.yourls",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        740
+      ],
+      "credentials": {
+        "yourlsApi": {
+          "id": "TKN8hKISe25ZCk4B",
+          "name": "Yourls account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-24T20:53:24.000Z",
+  "versionId": "42948abf-dafa-49fb-a012-b1b19501cc9b"
+}
