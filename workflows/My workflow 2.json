@@ -1,44 +1,55 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
-    "Fetch Properties": {
+    "Email Trigger (IMAP)": {
       "main": [
         [
           {
-            "node": "Generate HTML Content",
+            "node": "IF Subject Matches",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Generate HTML Content": {
+    "IF Subject Matches": {
       "main": [
         [
           {
-            "node": "Wordpress",
+            "node": "IF Date Less Than 24 Hours",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Schedule Trigger": {
+    "IF Date Less Than 24 Hours": {
       "main": [
         [
           {
-            "node": "Fetch Properties",
+            "node": "Extract CSV Data",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Wordpress": {
+    "Extract CSV Data": {
       "main": [
         [
           {
-            "node": "Wordpress1",
+            "node": "Generate Short URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Short URL": {
+      "main": [
+        [
+          {
+            "node": "Insert Short URL",
             "type": "main",
             "index": 0
           }
@@ -46,153 +57,145 @@
       ]
     }
   },
-  "createdAt": "2024-07-21T19:53:28.466Z",
-  "id": "FRaQXLWGHitER9ph",
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "createdAt": "2024-07-24T20:53:51.147Z",
+  "id": "D7N3pmaQGf57dpLt",
+  "meta": null,
   "name": "My workflow 2",
   "nodes": [
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT * FROM properties;"
+        "query": "INSERT INTO your_table_name (original_url, short_url) VALUES ('{{ $json[\"original_url\"] }}', '{{ $json[\"shorturl\"] }}');"
       },
-      "name": "Fetch Properties",
+      "name": "Insert Short URL",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
-        1540,
-        500
+        1380,
+        460
       ],
-      "id": "401a1145-786f-4c26-afa7-85143937f518",
+      "id": "ec7cba43-f9b5-48db-92ab-e2cd0ab18d3f"
+    },
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {}
+      },
+      "id": "ef7cc4d7-28a1-4ed2-8881-46090cf3e8d9",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        60,
+        380
+      ],
       "credentials": {
-        "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "IMAP account"
         }
       }
     },
     {
       "parameters": {
-        "functionCode": "const properties = items.map(item => item.json);\n\n// Get the current date\nconst now = new Date();\nconst formattedDate = now.toLocaleDateString('en-US');\n\nlet content = '<table>';\ncontent += '<tr><th>Property Name</th><th>Unit Name</th><th>Deposit</th><th>Bedrooms</th><th>Bathrooms</th><th>Rent</th><th>Image</th></tr>';\n\nproperties.forEach(property => {\n    const propertyLink = `${property.rentable_uid}`;\n    content += '<tr>';\n    content += `<td><a href=\"${propertyLink}\">${property.property_name}</a></td>`;\n    content += `<td>${property.unit_name}</td>`;\n    content += `<td>${property.default_deposit}</td>`;\n    content += `<td>${property.bedrooms}</td>`;\n    content += `<td>${property.bathrooms}</td>`;\n    content += `<td>${property.advertised_rent}</td>`;\n    content += `<td><img src=\"${property.image_url}\" alt=\"${property.property_name}\" style=\"width:100px;height:auto;\"></td>`;\n    content += '</tr>';\n});\n\ncontent += '</table>';\n\nreturn [{ json: { content, formattedDate } }];"
-      },
-      "name": "Generate HTML Content",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [
-        1790,
-        500
-      ],
-      "id": "75aa25e7-4c9c-4611-82fc-6cf975b3ae98"
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
+        "conditions": {
+          "string": [
             {
-              "triggerAtHour": 9
+              "value1": "={{$json[\"subject\"]}}",
+              "operation": "contains",
+              "value2": "MYSQL Update"
             }
           ]
         }
       },
-      "id": "37d3dffc-6dbd-4817-8f81-42a1d29c4ad9",
-      "name": "Schedule Trigger",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        1280,
-        500
-      ]
-    },
-    {
-      "parameters": {
-        "title": "=Daily Available Units {{ $json.formattedDate }}",
-        "additionalFields": {
-          "content": "={{ $json.content }}"
-        }
-      },
-      "id": "75d32ade-6aad-485b-af4a-2c04b16789f0",
-      "name": "Wordpress",
-      "type": "n8n-nodes-base.wordpress",
+      "name": "IF Subject Matches",
+      "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2020,
-        500
+        240,
+        380
       ],
-      "credentials": {
-        "wordpressApi": {
-          "id": "VXzYYztQ5s3nKwus",
-          "name": "Wordpress account"
-        }
-      }
+      "id": "5ac8e605-73b4-4e15-a229-cd14a8f777a5"
     },
     {
       "parameters": {
-        "operation": "update",
-        "postId": "={{ $json.id }}",
-        "updateFields": {
-          "status": "publish"
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{$json[\"date\"]}}",
+              "value2": "={{new Date(new Date().getTime() - 24*60*60*1000).toISOString()}}"
+            }
+          ]
         }
       },
-      "id": "cef85bf8-09f8-4a9e-ac8f-9c8d03616d49",
-      "name": "Wordpress1",
-      "type": "n8n-nodes-base.wordpress",
+      "name": "IF Date Less Than 24 Hours",
+      "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2240,
-        500
+        480,
+        460
       ],
-      "credentials": {
-        "wordpressApi": {
-          "id": "VXzYYztQ5s3nKwus",
-          "name": "Wordpress account"
+      "id": "b6559068-3dfd-4e49-8dbf-7ac2f31f911e"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "215ac544-ac00-466f-88ee-1dd41951c230",
+      "name": "Extract CSV Data",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        680,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "url": "https://blazeproperty.com/urls/yourls-api.php",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "signature",
+              "value": "93623f6f8"
+            },
+            {
+              "name": "action",
+              "value": "shorturl"
+            },
+            {
+              "name": "url",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json['Rentable UID'] }}"
+            },
+            {
+              "name": "format",
+              "value": "json"
+            }
+          ]
         }
-      }
-    },
-    {
-      "parameters": {
-        "content": "## Get SQL Data\nGets sql data from hosted mysql database\nDatabase is updated daily at midnight to provide \nfull listing of blaze properties\n",
-        "height": 444,
-        "width": 445
       },
-      "id": "900c24de-0f18-4305-81b0-7316978c2023",
-      "name": "Sticky Note",
-      "type": "n8n-nodes-base.stickyNote",
+      "name": "Generate Short URL",
+      "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        1240,
-        240
-      ]
-    },
-    {
-      "parameters": {
-        "content": "## Generate Wordpress post\nCreates a daily wordpress post that contains all of the \ninformation regarding available listings for that day. \n",
-        "height": 439,
-        "width": 773,
-        "color": 3
-      },
-      "id": "baaed8a7-f38c-49e3-a1d1-ed60aadf89d3",
-      "name": "Sticky Note1",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1700,
-        240
-      ]
+        920,
+        460
+      ],
+      "id": "2bf56c8c-9261-4d2f-bf5f-139896112259",
+      "onError": "continueRegularOutput"
     }
   ],
   "pinData": {},
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": {
-    "node:Schedule Trigger": {
-      "recurrencyRules": []
-    }
-  },
+  "staticData": null,
   "tags": [],
-  "triggerCount": 1,
-  "updatedAt": "2024-07-22T02:21:14.000Z",
-  "versionId": "3c7828d6-0e51-4624-a1a7-0dde5c8600e3"
+  "triggerCount": 0,
+  "updatedAt": "2024-07-24T21:02:09.000Z",
+  "versionId": "57e4b82b-d5ea-4334-a17a-3aad2ebae813"
 }
