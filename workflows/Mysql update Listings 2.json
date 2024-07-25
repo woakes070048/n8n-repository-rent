@@ -1,0 +1,301 @@
+{
+  "active": false,
+  "connections": {
+    "Read From File": {
+      "main": [
+        [
+          {
+            "node": "Convert To Spreadsheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "IF Subject Matches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Read From File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Subject Matches": {
+      "main": [
+        [
+          {
+            "node": "IF Date Less Than 24 Hours",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Date Less Than 24 Hours": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert To Spreadsheet": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-24T17:38:56.379Z",
+  "id": "Yeci2pAlJtTnn2xB",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Mysql update Listings 2",
+  "nodes": [
+    {
+      "parameters": {
+        "filePath": "/data/mysql.csv",
+        "dataPropertyName": "attachment_0"
+      },
+      "id": "05193eb8-3b5e-4dfe-8a79-e22350a1f2ee",
+      "name": "Read From File",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "position": [
+        980,
+        420
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "attachment_0",
+        "options": {
+          "rawData": true,
+          "readAsString": true
+        }
+      },
+      "id": "0246f6ef-1d36-447d-8d28-b94f36ef466a",
+      "name": "Convert To Spreadsheet",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "position": [
+        1200,
+        420
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "downloadAttachments": true,
+        "options": {}
+      },
+      "id": "185bdd8d-7eaf-4c95-83bc-b549f1c60b24",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        140,
+        440
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/data/mysql.csv",
+        "dataPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "28c39a7a-83c5-45be-b720-4ff664a194f7",
+      "name": "Read/Write Files from Disk",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        780,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"subject\"]}}",
+              "operation": "contains",
+              "value2": "MYSQL Update"
+            }
+          ]
+        }
+      },
+      "name": "IF Subject Matches",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        340,
+        440
+      ],
+      "id": "ebf6cd80-0818-417c-b536-5afcc72c56ac"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "dateTime": [
+            {
+              "value1": "={{$json[\"date\"]}}",
+              "value2": "={{new Date(new Date().getTime() - 24*60*60*1000).toISOString()}}"
+            }
+          ]
+        }
+      },
+      "name": "IF Date Less Than 24 Hours",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        520,
+        420
+      ],
+      "id": "b7eda09e-f3ba-416d-bf00-297fbce72ae3"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $json[\"Rentable UID\"] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_name",
+              "value": "={{ $json[\"Property Name\"] }}"
+            },
+            {
+              "column": "unit_name",
+              "value": "={{ $json[\"Unit Name\"] }}"
+            },
+            {
+              "column": "default_deposit",
+              "value": "={{ $json[\"Default Deposit\"] }}"
+            },
+            {
+              "column": "bedrooms",
+              "value": "={{ $json.Bedrooms }}"
+            },
+            {
+              "column": "bathrooms",
+              "value": "={{ $json.Bathrooms }}"
+            },
+            {
+              "column": "advertised_rent",
+              "value": "={{ $json[\"Advertised Rent\"] }}"
+            },
+            {
+              "column": "posted_to_website",
+              "value": "={{ $json[\"Posted To Website\"] }}"
+            },
+            {
+              "column": "posted_to_internet",
+              "value": "={{ $json[\"Posted To Internet\"] }}"
+            },
+            {
+              "column": "marketing_title",
+              "value": "={{ $json[\"Marketing Title\"] }}"
+            },
+            {
+              "column": "marketing_description",
+              "value": "={{ $json[\"Marketing Description\"] }}"
+            },
+            {
+              "column": "application_fee",
+              "value": "={{ $json[\"Application Fee\"] }}"
+            },
+            {
+              "column": "unit_address",
+              "value": "={{ $json[\"Unit Address\"] }}"
+            },
+            {
+              "column": "property",
+              "value": "={{ $json.Property }}"
+            },
+            {
+              "column": "market_rent",
+              "value": "={{ $json[\"Market Rent\"] }}"
+            },
+            {
+              "column": "youtube_url"
+            },
+            {
+              "column": "appliances",
+              "value": "={{ $json.Appliances }}"
+            },
+            {
+              "column": "utilities",
+              "value": "={{ $json.Utilities }}"
+            },
+            {
+              "column": "last_update",
+              "value": "={{ $now }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1a3ba55e-2b69-4ead-b84b-dc77ae5b95bb",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1420,
+        420
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-24T20:19:22.000Z",
+  "versionId": "b3d8fb2b-7f16-48da-82f5-2324a61090ea"
+}
