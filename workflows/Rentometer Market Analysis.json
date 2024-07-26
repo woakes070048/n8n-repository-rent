@@ -1,0 +1,458 @@
+{
+  "active": true,
+  "connections": {
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-25T18:24:16.352Z",
+  "id": "F0NCDEXdf3zhhVCW",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Rentometer Market Analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "9ecc55bc-1b4a-4711-b31f-59994ba8317b",
+      "name": "Extract from File1",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "7744bce0-3e90-434b-ac7d-697ffdcf98a7",
+              "leftValue": "={{ $json.Sqft }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "77b137f4-bb51-4b5c-a3ed-fd0b254c9879",
+              "leftValue": "={{ $json.Bathrooms }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2448cf0a-2cdb-4a88-882c-b5c39aede2b8",
+      "name": "Filter1",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "651aad38-4203-4b62-bef3-b6957eb6b8a6",
+              "name": "Sqft",
+              "value": "={{ $json.Sqft }}",
+              "type": "number"
+            },
+            {
+              "id": "0a309328-c25d-4a4c-9ab5-d01c09d10ac3",
+              "name": "address",
+              "value": "={{ $json['Property Address'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f18c2d1e-4f39-4f73-b33c-db44b0bf4ea5",
+              "name": "bedrooms",
+              "value": "={{ $json.Bedrooms }}",
+              "type": "number"
+            },
+            {
+              "id": "7080f0be-0792-466d-a25c-212869c3ee6f",
+              "name": "baths",
+              "value": "={{ $json[\"Bathrooms\"] === 2 ? 1.5 : $json[\"Bathrooms\"] }}\n",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bc3754c6-e694-49f7-8401-c9ff87bad899",
+      "name": "Edit Fields2",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        160,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "09c977f8-9cd7-43e6-9169-38a045ede906",
+      "name": "Loop Over Items1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        360,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://www.rentometer.com/api/v1/summary",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "api_key",
+              "value": "Cr15iD45UOTqz6x-arwScw"
+            },
+            {
+              "name": "address",
+              "value": "={{ $json.address }}"
+            },
+            {
+              "name": "=bedrooms",
+              "value": "={{ $json.bedrooms }}"
+            },
+            {
+              "name": "baths",
+              "value": "={{ $json.baths }}"
+            },
+            {
+              "name": "building_type",
+              "value": "house"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "20abd9c0-a4e5-48db-86d2-66a51f499f03",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        100
+      ],
+      "executeOnce": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "id": "d2b3fc26-320b-4dc1-9b6a-91c5dd4b473c",
+      "name": "Wait1",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        740,
+        80
+      ],
+      "webhookId": "6ff20e9a-b76d-4536-bb59-6bc9bb68fe63"
+    },
+    {
+      "parameters": {
+        "options": {
+          "fileName": "new_rents.csv",
+          "headerRow": true
+        }
+      },
+      "id": "dfee4195-240f-4545-be81-42d2a4e1abed",
+      "name": "Convert to File1",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "Up For Lease Renewal"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "id": "5382fc5a-5bbc-444f-9075-8c55441c5030",
+      "name": "Gmail Trigger1",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -380,
+        100
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dff3c578-759f-4bd1-909a-1e08999d86c9",
+              "name": "address",
+              "value": "={{ $json.address }}",
+              "type": "string"
+            },
+            {
+              "id": "191689e8-1564-42da-9b60-c7838706bfc2",
+              "name": "bedrooms",
+              "value": "={{ $json.bedrooms }}",
+              "type": "number"
+            },
+            {
+              "id": "7da4595a-7eb6-48ce-b46e-accc527fd82b",
+              "name": "baths",
+              "value": "={{ $json.baths }}",
+              "type": "string"
+            },
+            {
+              "id": "26212ff8-ab38-4981-a711-b3d5c8f7a781",
+              "name": "mean",
+              "value": "={{ $json.mean }}",
+              "type": "number"
+            },
+            {
+              "id": "974da237-a4af-4c3b-859f-1d2e720079b0",
+              "name": "median",
+              "value": "={{ $json.median }}",
+              "type": "number"
+            },
+            {
+              "id": "ff31403c-e43f-4d0e-aca1-7ef88ed3d0a9",
+              "name": "min",
+              "value": "={{ $json.min }}",
+              "type": "number"
+            },
+            {
+              "id": "436ecd51-c5d0-4ea7-be60-86bf83a9e6cb",
+              "name": "max",
+              "value": "={{ $json.max }}",
+              "type": "number"
+            },
+            {
+              "id": "71b99b39-b95b-4593-a5b4-5dd1bce558f0",
+              "name": "percentile_25",
+              "value": "={{ $json.percentile_25 }}",
+              "type": "number"
+            },
+            {
+              "id": "80094eb5-cf86-43f1-9f42-c677664d8940",
+              "name": "percentile_75",
+              "value": "={{ $json.percentile_75 }}",
+              "type": "number"
+            },
+            {
+              "id": "3f61198a-8e9e-4fef-89d8-38414fc8097c",
+              "name": "samples",
+              "value": "={{ $json.samples }}",
+              "type": "number"
+            },
+            {
+              "id": "5134eae7-2d07-4539-b7ca-76b74fa88958",
+              "name": "Current_Rent",
+              "value": "={{ $('Filter1').item.json.Rent }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "65068176-214c-4c5e-8224-f0cbecd61e2f",
+      "name": "Edit Fields3",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        880,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Rentometer Pricing",
+        "options": {
+          "attachments": "data"
+        }
+      },
+      "id": "17b2b36d-6025-4c57-bd94-35efa7b1ac3c",
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        980,
+        -80
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Gmail Trigger1": {
+      "Gmail Trigger1": {
+        "lastTimeChecked": 1721953704
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-07-26T00:28:24.000Z",
+  "versionId": "a53d8ae0-b15b-42c9-b122-4627fdcd46b4"
+}
