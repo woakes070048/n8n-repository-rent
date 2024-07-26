@@ -1,0 +1,172 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Zoho CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zoho CRM1": {
+      "main": [
+        [
+          {
+            "node": "Zoho CRM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-26T10:38:53.285Z",
+  "id": "nXmo65KDx9UFBOzX",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Email Guest Cards to CRM",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "from:guestcards@appfolio.com, \"New Lead:\""
+        },
+        "options": {}
+      },
+      "id": "6be87f04-b0db-4144-9493-12907e6efebf",
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        360
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = items[0].json.text;\nconst subject = items[0].json.subject;\n\nfunction capitalizeFirstLetter(name) {\n    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();\n}\n\nfunction parseLead(input, subject) {\n    // Extract first and last name from the subject\n    const nameMatch = subject.match(/New Lead: (.*?) interested in/);\n    const fullName = nameMatch ? nameMatch[1] : 'N/A';\n    const [firstName, lastName] = fullName.split(' ').map(capitalizeFirstLetter);\n\n    // Split input into lines and trim\n    const lines = input.split('\\n').map(line => line.trim()).filter(line => line !== '');\n\n    const emailMatch = input.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[a-zA-Z0-9._-]+)/);\n    const phoneMatch = input.match(/(\\(\\d{3}\\) \\d{3}-\\d{4})/);\n    const sourceMatch = input.match(/Source: (.*)/);\n    const interestMatch = input.match(/Interested in: (.*)/);\n\n    const email = emailMatch ? emailMatch[1] : 'N/A';\n    const phone = phoneMatch ? phoneMatch[1] : 'N/A';\n    const source = sourceMatch ? sourceMatch[1].trim() : 'N/A';\n    const interest = interestMatch ? interestMatch[1].trim() : 'N/A';\n\n    return { firstName, lastName, email, phone, source, interest };\n}\n\nconst leadInfo = parseLead(input, subject);\n\nreturn [{ json: leadInfo }];\n"
+      },
+      "id": "d71fdacc-98e6-4563-a61a-d2b321af8f7b",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "lead",
+        "Company": "Rental",
+        "lastName": "={{ $json.lastName }}",
+        "additionalFields": {
+          "Email": "={{ $json.email }}",
+          "First_Name": "={{ $json.firstName }}",
+          "Lead_Source": "={{ $json.source }}",
+          "Mobile": "={{ $json.phone }}"
+        }
+      },
+      "id": "579c8e27-8762-4161-b368-05a0b30247f1",
+      "name": "Zoho CRM",
+      "type": "n8n-nodes-base.zohoCrm",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        360
+      ],
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "oFsMev3Fm7IhzJD9",
+          "name": "Zoho account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "additionalFields": {}
+      },
+      "id": "b1978c4a-fc88-42f2-aeaa-30f0b78aef1c",
+      "name": "Zoho CRM1",
+      "type": "n8n-nodes-base.zohoCrm",
+      "typeVersion": 1,
+      "position": [
+        700,
+        360
+      ],
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "oFsMev3Fm7IhzJD9",
+          "name": "Zoho account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "zohoOAuth2Api",
+        "options": {}
+      },
+      "id": "f1c6ff17-32af-4b90-8e33-695372e3f43d",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1220,
+        360
+      ],
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "oFsMev3Fm7IhzJD9",
+          "name": "Zoho account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-26T13:55:44.000Z",
+  "versionId": "4f2a18e2-8b85-401d-a0c5-86c2670c4ae7"
+}
