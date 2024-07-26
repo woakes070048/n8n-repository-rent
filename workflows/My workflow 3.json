@@ -1,22 +1,44 @@
 {
   "active": false,
   "connections": {
-    "MySQL Query": {
+    "Gmail": {
       "main": [
         [
           {
-            "node": "Airtable",
+            "node": "SplitInBatches",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "When clicking ‘Test workflow’": {
+    "SplitInBatches": {
       "main": [
         [
           {
-            "node": "MySQL Query",
+            "node": "Delete Old Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Gmail": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
             "type": "main",
             "index": 0
           }
@@ -24,299 +46,82 @@
       ]
     }
   },
-  "createdAt": "2024-07-22T10:34:47.254Z",
-  "id": "td0n49dakScAtuar",
+  "createdAt": "2024-07-26T10:15:22.383Z",
+  "id": "wJShJpXCmdjgHgOA",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 3",
   "nodes": [
     {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        1080,
+        300
+      ],
+      "typeVersion": 1,
+      "id": "0e4e6e77-bcc1-473b-a074-bd47e307e814"
+    },
+    {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT * FROM `properties`",
+        "resource": "message",
+        "operation": "getAll",
+        "additionalFields": {
+          "format": "ids",
+          "q": "-in:chats unsubscribe -license -key -password"
+        }
+      },
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1270,
+        300
+      ],
+      "typeVersion": 1,
+      "id": "a76b7f11-2226-46b3-8770-206baa8e4c5d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "delete",
+        "messageId": "={{$json[\"id\"]}}"
+      },
+      "name": "Delete Old Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1620,
+        470
+      ],
+      "typeVersion": 1,
+      "id": "c9a4d482-fe64-411c-b42f-5be620c98caf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
         "options": {}
       },
-      "id": "55faa55f-4627-4d11-9d6d-739c951b0819",
-      "type": "n8n-nodes-base.mySql",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
       "position": [
-        740,
-        460
+        1430,
+        300
       ],
-      "name": "MySQL Query",
-      "credentials": {
-        "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "upsert",
-        "base": {
-          "__rl": true,
-          "value": "appjhqJ167iJSxVJL",
-          "mode": "list",
-          "cachedResultName": "Content Operations",
-          "cachedResultUrl": "https://airtable.com/appjhqJ167iJSxVJL"
-        },
-        "table": {
-          "__rl": true,
-          "value": "tblOT83dMqx0xkXla",
-          "mode": "list",
-          "cachedResultName": "Imported table",
-          "cachedResultUrl": "https://airtable.com/appjhqJ167iJSxVJL/tblOT83dMqx0xkXla"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "Unit Name": "={{ $json.unit_name }}",
-            "Market Rent": "={{ $json.advertised_rent }}",
-            "image": "={{ $json.image_url }}",
-            "Rentable UID": "={{ $json.rentable_uid }}",
-            "Posted To Internet": "={{ $json.posted_to_internet }}",
-            "Posted To Website": "={{ $json.posted_to_website }}",
-            "Marketing Description": "={{ $json.marketing_description }}",
-            "Marketing Title": "={{ $json.marketing_title }}",
-            "Advertised Rent": "={{ $json.advertised_rent }}",
-            "Property": "={{ $json.property_name }}",
-            "Bathrooms": "={{ $json.bathrooms }}",
-            "Bedrooms": "={{ $json.bedrooms }}"
-          },
-          "matchingColumns": [
-            "Unit Name"
-          ],
-          "schema": [
-            {
-              "id": "id",
-              "displayName": "id",
-              "required": false,
-              "defaultMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": true
-            },
-            {
-              "id": "Unit Name",
-              "displayName": "Unit Name",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Market Rent",
-              "displayName": "Market Rent",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Default Deposit",
-              "displayName": "Default Deposit",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "number",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Sqft",
-              "displayName": "Sqft",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "number",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Bedrooms",
-              "displayName": "Bedrooms",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "number",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Bathrooms",
-              "displayName": "Bathrooms",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "number",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Property",
-              "displayName": "Property",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Unit Address",
-              "displayName": "Unit Address",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": true
-            },
-            {
-              "id": "Marketing Title",
-              "displayName": "Marketing Title",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Marketing Description",
-              "displayName": "Marketing Description",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Advertised Rent",
-              "displayName": "Advertised Rent",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Posted To Website",
-              "displayName": "Posted To Website",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "options",
-              "options": [
-                {
-                  "name": "",
-                  "value": ""
-                },
-                {
-                  "name": "Yes",
-                  "value": "Yes"
-                }
-              ],
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Posted To Internet",
-              "displayName": "Posted To Internet",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "options",
-              "options": [
-                {
-                  "name": "",
-                  "value": ""
-                },
-                {
-                  "name": "Yes",
-                  "value": "Yes"
-                },
-                {
-                  "name": "No",
-                  "value": "No"
-                }
-              ],
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "Rentable UID",
-              "displayName": "Rentable UID",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "image",
-              "displayName": "image",
-              "required": false,
-              "defaultMatch": false,
-              "canBeUsedToMatch": true,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            }
-          ]
-        },
-        "options": {
-          "updateAllMatches": true
-        }
-      },
-      "id": "8857332d-93de-42d9-a623-660a3be5ffe8",
-      "name": "Airtable",
-      "type": "n8n-nodes-base.airtable",
-      "typeVersion": 2.1,
-      "position": [
-        960,
-        460
-      ],
-      "credentials": {
-        "airtableTokenApi": {
-          "id": "30MwKrZ0k7UFqdjN",
-          "name": "Airtable Personal Access Token account"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "id": "c7dd936a-799c-4611-95c2-b9b27afad49f",
-      "name": "When clicking ‘Test workflow’",
-      "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [
-        180,
-        460
-      ]
+      "id": "af34398b-3d36-41ea-b96c-b3c7ac2dad28"
     }
   ],
   "pinData": {},
@@ -326,6 +131,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-07-22T11:58:47.000Z",
-  "versionId": "6fc6a863-021b-4053-b303-0a25cfbe13b9"
+  "updatedAt": "2024-07-26T10:15:22.383Z",
+  "versionId": "65a4b117-3b95-405d-913a-be2dd8b61c4a"
 }
