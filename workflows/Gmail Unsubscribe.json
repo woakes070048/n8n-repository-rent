@@ -1,0 +1,179 @@
+{
+  "active": false,
+  "connections": {
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-26T13:56:36.732Z",
+  "id": "N5zqsOjdqeE2eXtx",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Gmail Unsubscribe",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Function to check if headers contain the unsubscribe keyword\nconst checkHeadersForUnsubscribe = (headers) => {\n  return Object.keys(headers).some(key => {\n    const value = headers[key];\n    return key.toLowerCase().includes('unsubscribe') || \n           (value && value.toLowerCase().includes('unsubscribe'));\n  });\n};\n\n// Function to extract unsubscribe link\nconst extractUnsubscribeLink = (headers, html, text) => {\n  const unsubscribeLinkFromHeaders = checkHeadersForUnsubscribe(headers);\n  \n  if (unsubscribeLinkFromHeaders) {\n    return true;\n  }\n\n  const unsubscribeLinkFromHtml = html.match(/<a[^>]+href=\"([^\"]+)\"[^>]*>[^<]*unsubscribe[^<]*<\\/a>/i);\n  const unsubscribeLinkFromText = text.match(/(https?:\\/\\/[^ \\n]+.*unsubscribe)/i);\n  \n  return unsubscribeLinkFromHtml || unsubscribeLinkFromText;\n};\n\n// Filter and extract relevant details\nconst filteredEmails = items.filter(item => {\n  const headers = item.json.headers || {};\n  const html = item.json.html || \"\";\n  const text = item.json.text || \"\";\n\n  return extractUnsubscribeLink(headers, html, text);\n});\n\n// Return filtered emails\nreturn filteredEmails;\n"
+      },
+      "id": "ad7d9952-0b66-4b9a-9bc0-8bfabd3b02ad",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        520
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "226b8e85-e482-46f7-9831-027e6bee37ae",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        180,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 200,
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ],
+          "receivedBefore": "2024-06-01T08:59:07"
+        },
+        "options": {}
+      },
+      "id": "5f685b97-4dcc-4ae1-af91-313ecacccdcf",
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        340,
+        520
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "Label_5526335326320262633"
+        ]
+      },
+      "id": "c0639390-3c5a-41eb-ab2f-c24f1f6ed8bf",
+      "name": "Gmail1",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        520
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $('Code').item.json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "id": "d459c761-0d74-4dcb-b525-0178a55d7a89",
+      "name": "Gmail2",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        820,
+        520
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Gmail Unsubscribe Classify\nThis is to capture a specified number of emails from a gmail account, \nFilter emails for unsubscribe link\nLabel the emails as @Unsubscribe\nRemove from INBOX. \n\nThis will allow for later unsubscribing from unwanted emails. \n",
+        "height": 244,
+        "width": 972
+      },
+      "id": "76703dbb-8f16-4b70-8d69-457f155cd32c",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        220
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-26T16:25:54.000Z",
+  "versionId": "698912b6-9051-492a-9df0-e3cb620ab4ff"
+}
