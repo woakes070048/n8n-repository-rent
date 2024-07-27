@@ -1,0 +1,191 @@
+{
+  "active": false,
+  "connections": {
+    "Read Owner Directory CSV": {
+      "main": [
+        [
+          {
+            "node": "Convert Owner Directory CSV to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Owner Directory CSV to JSON": {
+      "main": [
+        [
+          {
+            "node": "Merge Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Property Directory CSV": {
+      "main": [
+        [
+          {
+            "node": "Convert Property Directory CSV to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Property Directory CSV to JSON": {
+      "main": [
+        [
+          {
+            "node": "Merge Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Data": {
+      "main": [
+        [
+          {
+            "node": "Format Data to CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data to CSV": {
+      "main": [
+        [
+          {
+            "node": "Write CSV to Server",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-26T17:24:45.578Z",
+  "id": "qxNPWc5wW8OlKeXh",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Combine Appfolio data for Jobber Import",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "fe717f29-4466-4b92-8b4b-fd361b23169b",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        300,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "filePath": "/mnt/data/owner_directory-20240726.csv"
+      },
+      "name": "Read Owner Directory CSV",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        580,
+        280
+      ],
+      "id": "8e3f4d79-1fcd-49e6-a1fe-8e17a8457ab5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Convert Owner Directory CSV to JSON",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 1,
+      "position": [
+        780,
+        280
+      ],
+      "id": "95288c6a-3a02-4436-b6ac-b11f73cc9cb3"
+    },
+    {
+      "parameters": {
+        "filePath": "/mnt/data/property_directory-20240726.csv"
+      },
+      "name": "Read Property Directory CSV",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        580,
+        480
+      ],
+      "id": "80daa52a-ea73-42ac-b573-8b45112c5012"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Convert Property Directory CSV to JSON",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 1,
+      "position": [
+        780,
+        480
+      ],
+      "id": "ea7ec2e8-6e9d-44ac-9469-73f0c7896695"
+    },
+    {
+      "parameters": {
+        "mode": "mergeByFields"
+      },
+      "name": "Merge Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        980,
+        380
+      ],
+      "id": "335c974d-97ae-434a-9910-985f188475be"
+    },
+    {
+      "parameters": {
+        "functionCode": "const mergedData = $node[\"Merge Data\"].json;\n\n// Convert to CSV\nconst csv = mergedData.map(row => {\n  return Object.values(row).join(',');\n}).join('\\n');\n\nreturn csv;"
+      },
+      "name": "Format Data to CSV",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        380
+      ],
+      "id": "3681d90b-6d46-4faf-ac1d-fd5a194bfca0"
+    },
+    {
+      "parameters": {
+        "url": "http://your_server_path/all_directory.csv",
+        "options": {}
+      },
+      "name": "Write CSV to Server",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        380
+      ],
+      "id": "272f62d4-bd77-4e5f-b4a0-2441d4d95e65"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-26T17:24:45.578Z",
+  "versionId": "1fe71ee2-495b-4648-adf8-16bc32e3e7d8"
+}
