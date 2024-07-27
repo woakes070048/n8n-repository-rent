@@ -1,0 +1,584 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Node": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Upload Media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Media": {
+      "main": [
+        [
+          {
+            "node": "X",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "X": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron 8am": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cron 10am": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron 12": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron 14": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron 16": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-27T12:09:04.683Z",
+  "id": "pJkTEdcB4Ibh7Siy",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "SQL to Twitter Post 5x",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6c0fb945-be97-47f0-9d80-58c4218dfe92",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        800,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "459465c3-257f-46d6-982a-f4196a47b121",
+              "leftValue": "={{ $json.property_link }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "bb3fed69-3387-41b8-8b15-6c9a85e0d6e0",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT property_name, unit_name, bedrooms, bathrooms, advertised_rent, marketing_title, marketing_description, sqft, application_fee, rentable_uid, unit_address, posted_to_website, appliances, utilities, property_link, image_link, last_posted FROM advertising_list"
+      },
+      "id": "b3eaf49b-6922-4f32-903a-95776265a46f",
+      "type": "n8n-nodes-base.mySql",
+      "name": "MySQL Node",
+      "typeVersion": 1,
+      "position": [
+        720,
+        540
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('MySQL Node').item.json.image_link }}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "b5d1f0b4-335f-4afd-839c-3e4508f433db",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "twitterOAuth1Api",
+        "requestMethod": "POST",
+        "url": "https://upload.twitter.com/1.1/media/upload.json",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "multipart-form-data"
+        },
+        "sendBinaryData": true,
+        "binaryPropertyName": "media:data"
+      },
+      "id": "2da072c1-30dc-4970-a94c-de4e65dad6d3",
+      "name": "Upload Media",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        520
+      ],
+      "credentials": {
+        "twitterOAuth1Api": {
+          "id": "EN6IVlrvUvcdLRMf",
+          "name": "X OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "advertising_list",
+          "mode": "list",
+          "cachedResultName": "advertising_list"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('MySQL Node').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "last_posted",
+              "value": "={{ $today }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c54ef42f-6629-466b-81d8-1bc2d51f9c7e",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1420,
+        840
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "3b3b4028-d280-4cdc-9da3-b73c5e21f0eb",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        780,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1db1a60-0572-4f37-9148-89f88a42b375",
+              "name": "property_name",
+              "value": "={{ $('MySQL Node').item.json.property_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9c456f0c-c98b-4172-a342-75b5720fea6b",
+              "name": "advertised_rent",
+              "value": "={{ $('MySQL Node').item.json.advertised_rent }}",
+              "type": "string"
+            },
+            {
+              "id": "4b6deb3b-b4cd-485d-93f5-02102cd5ccf4",
+              "name": "marketing_description",
+              "value": "={{ $json.marketing_description }} {{ $('MySQL Node').item.json.marketing_title }}",
+              "type": "string"
+            },
+            {
+              "id": "51058094-5ac3-476b-adec-f01fc3eeef9c",
+              "name": "rentable_uid",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json.rentable_uid }}",
+              "type": "string"
+            },
+            {
+              "id": "846ec8db-3f37-4d6c-adee-6b706218ab16",
+              "name": "image_link",
+              "value": "={{ $json.image_link }}",
+              "type": "string"
+            },
+            {
+              "id": "f08b8595-411d-4d9c-9651-f1bb209e5693",
+              "name": "property_link",
+              "value": "={{ $json.property_link }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2c5f1868-1c24-4901-afc1-98fb12ec5c3a",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        920,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = items[0].json.choices[0].message.content.tweet;\n\n// Ensure the response is always a string\nlet trimmedResponse = typeof response === 'string' ? response : JSON.stringify(response);\n\n// Function to trim the last hashtag\nconst trimLastHashtag = (text) => {\n  const hashtagIndex = text.lastIndexOf('#');\n  if (hashtagIndex !== -1) {\n    const nextSpaceIndex = text.indexOf(' ', hashtagIndex);\n    if (nextSpaceIndex !== -1) {\n      return text.slice(0, hashtagIndex) + text.slice(nextSpaceIndex).trim();\n    } else {\n      return text.slice(0, hashtagIndex).trim();\n    }\n  }\n  return text;\n};\n\n// Trim the response if it exceeds 240 characters\nwhile (trimmedResponse.length > 240) {\n  const previousTrimmedResponse = trimmedResponse;\n  trimmedResponse = trimLastHashtag(trimmedResponse);\n\n  // If no more hashtags are left to trim, break the loop to avoid infinite loop\n  if (trimmedResponse === previousTrimmedResponse) {\n    break;\n  }\n}\n\n// Final trimming to ensure the response is within 240 characters\nif (trimmedResponse.length > 240) {\n  trimmedResponse = trimmedResponse.substring(0, 240).trim();\n}\n\nreturn [{ json: { originalResponse: response, trimmedResponse: trimmedResponse } }];\n"
+      },
+      "id": "2eac3194-3b3a-4784-a05d-87306ddc449b",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1420,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "text": "={{ $('Code').item.json.trimmedResponse }} {{ $('Edit Fields').item.json.property_link }} ",
+        "additionalFields": {
+          "attachments": "={{ $json.media_id_string }}"
+        }
+      },
+      "id": "fef5efa7-9763-447a-b75f-c23f43f2f1d2",
+      "name": "X",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        2020,
+        520
+      ],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "hKOdSPH52LqHwyeH",
+          "name": "X account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Use the following text about a property for lease with Blaze Real Estate to make a humorous tweet. Humor level high. Emojis are encouraged. Please generate a response that is exactly 240 characters or fewer. Never, under any circumstances, exceed the 240-character limit. This character limit is strict and non-negotiable. Your response must always adhere to this maximum character count, do not reference or suggest amenities that are not explicitly stated in the original text : {{ $json.marketing_description }}\n"
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "0a965fb7-25b8-44bf-ad5d-0c9dcad239e4",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        1100,
+        520
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "e550316d-2ccf-47e7-8e1e-dcc060542e93",
+      "name": "Cron 8am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "bfaf292f-4ba4-493f-9d0d-28e028462b44",
+      "name": "cron 10am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 12 * * *"
+            }
+          ]
+        }
+      },
+      "id": "9c475ea9-d7f9-48e4-ad3e-d7eb14b3f97b",
+      "name": "Cron 12",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 14 * * *"
+            }
+          ]
+        }
+      },
+      "id": "8c3684a7-46ed-4a07-92d6-8d672648ba01",
+      "name": "Cron 14",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 16 * * *"
+            }
+          ]
+        }
+      },
+      "id": "eea4a97e-0a2d-4a56-b67e-7a902df784dd",
+      "name": "Cron 16",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        460,
+        860
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Cron 8am": {
+      "recurrencyRules": []
+    },
+    "node:cron 10am": {
+      "recurrencyRules": []
+    },
+    "node:Cron 12": {
+      "recurrencyRules": []
+    },
+    "node:Cron 14": {
+      "recurrencyRules": []
+    },
+    "node:Cron 16": {
+      "recurrencyRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 5,
+  "updatedAt": "2024-07-27T14:48:04.000Z",
+  "versionId": "b12f9ca2-f275-4496-b99e-53edaf1b2d08"
+}
