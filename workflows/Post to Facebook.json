@@ -1,0 +1,509 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Node": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron 8am": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cron 10am": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron 12": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron 14": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron 16": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-27T16:19:33.526Z",
+  "id": "P3ISKmZXlewueHpe",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Post to Facebook",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3c31aa2c-ec6c-47e5-89c6-b44da6d6bdc6",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        580,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "459465c3-257f-46d6-982a-f4196a47b121",
+              "leftValue": "={{ $json.property_link }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "dafae179-4592-4224-ac87-04a6002e7de6",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        860,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT property_name, unit_name, bedrooms, bathrooms, advertised_rent, marketing_title, marketing_description, sqft, application_fee, rentable_uid, unit_address, posted_to_website, appliances, utilities, property_link, image_link, last_posted FROM advertising_list"
+      },
+      "id": "bca18b4f-44c1-4f51-8071-edf67b5fbc21",
+      "type": "n8n-nodes-base.mySql",
+      "name": "MySQL Node",
+      "typeVersion": 1,
+      "position": [
+        500,
+        840
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('MySQL Node').item.json.image_link }}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "927db19c-b369-4057-8695-d8404d1c999e",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "advertising_list",
+          "mode": "list",
+          "cachedResultName": "advertising_list"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('MySQL Node').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "last_posted",
+              "value": "={{ $today }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8f08d1fc-c2b2-4fc4-93b0-a18d91fb716e",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1920,
+        980
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "b66a4a4d-949a-4042-8dd0-d617952a1ce7",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        560,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1db1a60-0572-4f37-9148-89f88a42b375",
+              "name": "property_name",
+              "value": "={{ $('MySQL Node').item.json.property_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9c456f0c-c98b-4172-a342-75b5720fea6b",
+              "name": "advertised_rent",
+              "value": "={{ $('MySQL Node').item.json.advertised_rent }}",
+              "type": "string"
+            },
+            {
+              "id": "4b6deb3b-b4cd-485d-93f5-02102cd5ccf4",
+              "name": "marketing_description",
+              "value": "={{ $json.marketing_description }} {{ $('MySQL Node').item.json.marketing_title }}",
+              "type": "string"
+            },
+            {
+              "id": "51058094-5ac3-476b-adec-f01fc3eeef9c",
+              "name": "rentable_uid",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json.rentable_uid }}",
+              "type": "string"
+            },
+            {
+              "id": "846ec8db-3f37-4d6c-adee-6b706218ab16",
+              "name": "image_link",
+              "value": "={{ $json.image_link }}",
+              "type": "string"
+            },
+            {
+              "id": "f08b8595-411d-4d9c-9651-f1bb209e5693",
+              "name": "property_link",
+              "value": "={{ $json.property_link }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "179b304f-8354-44a6-b5d9-908a495d5bae",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        700,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Use the following text about a property for lease with Blaze Real Estate to make a humorous post. Humor level high. Emojis are encouraged. Please generate a response that is exactly 240 characters or fewer. Never, under any circumstances, exceed the 240-character limit. This character limit is strict and non-negotiable. Your response must always adhere to this maximum character count, do not reference or suggest amenities that are not explicitly stated in the original text : {{ $json.marketing_description }}\n"
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "045b11cd-7979-4d87-a243-0da5515f4097",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        880,
+        820
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "4e34c070-2c68-4951-bcd0-b16444292a63",
+      "name": "Cron 8am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "00d41d83-4cd3-4fad-811c-6fc2c1e99464",
+      "name": "cron 10am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 12 * * *"
+            }
+          ]
+        }
+      },
+      "id": "20901c95-ac16-454b-b103-02b242a2b9aa",
+      "name": "Cron 12",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        760
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 14 * * *"
+            }
+          ]
+        }
+      },
+      "id": "af94f91c-c877-40b1-bc75-9bf76b16f0a9",
+      "name": "Cron 14",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        960
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 16 * * *"
+            }
+          ]
+        }
+      },
+      "id": "06586a47-6d2a-4da9-bc4c-f162b78ee446",
+      "name": "Cron 16",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        1160
+      ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v13.0",
+        "node": "/329129493627618",
+        "edge": "feed",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=\"message\"",
+                "value": "={{ $('OpenAI2').item.json.choices[0].message.content.post }}"
+              },
+              {
+                "name": "link",
+                "value": "={{ $('Edit Fields').item.json.property_link }}"
+              },
+              {}
+            ]
+          }
+        }
+      },
+      "id": "16a5653b-d190-4f93-9041-f1518362e3d2",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        820
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "a3LtRYzbJapkaeaV",
+          "name": "Facebook Blaze Real Estate"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-27T16:54:08.000Z",
+  "versionId": "083d7953-8614-4003-9e9f-d54330d4678c"
+}
