@@ -1,0 +1,18 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2024-07-26T22:05:39.587Z",
+  "id": "tqP3n3RuZSx9uBqS",
+  "meta": null,
+  "name": "Reports Workflow",
+  "nodes": [],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-26T22:05:39.587Z",
+  "versionId": "8e94c6e9-fb73-4f3a-ac2f-b7d59d263c7c"
+}
