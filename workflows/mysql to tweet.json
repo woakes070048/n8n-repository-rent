@@ -183,28 +183,6 @@
     },
     {
       "parameters": {
-        "text": "={{ $json.choices[0].message.content.tweet }}   {{ $('If').item.json.property_link }}",
-        "additionalFields": {
-          "attachments": ""
-        }
-      },
-      "id": "5c8b64be-84b1-497b-8829-063c2112a73c",
-      "name": "X",
-      "type": "n8n-nodes-base.twitter",
-      "typeVersion": 2,
-      "position": [
-        1060,
-        -520
-      ],
-      "credentials": {
-        "twitterOAuth2Api": {
-          "id": "hKOdSPH52LqHwyeH",
-          "name": "X account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "modelId": {
           "__rl": true,
           "value": "gpt-4o",
@@ -239,17 +217,25 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "options": {}
+        "text": "={{ $json.choices[0].message.content.tweet }}   {{ $('If').item.json.property_link }}",
+        "additionalFields": {
+          "attachments": ""
+        }
       },
-      "id": "57b87a6b-ca8b-4c75-ab49-050e2d755af0",
-      "name": "HTTP Request",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "id": "76b86b1c-fb12-4d71-becd-6d84ab88a385",
+      "name": "X",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
       "position": [
-        920,
-        -440
-      ]
+        1060,
+        -520
+      ],
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "hKOdSPH52LqHwyeH",
+          "name": "X account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -259,6 +245,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-07-25T17:28:03.000Z",
-  "versionId": "1d665154-86b4-475b-a465-1943e880b6f6"
+  "updatedAt": "2024-07-27T11:50:15.000Z",
+  "versionId": "9fc6c0b0-31dc-4b04-a249-00a1a142a517"
 }
