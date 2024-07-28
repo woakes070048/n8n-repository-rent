@@ -1,0 +1,540 @@
+{
+  "active": false,
+  "connections": {
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "End1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SplitInBatches1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [
+          {
+            "node": "End1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "RSS Feed Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "MongoDB: Insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "MongoDB: Insert1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Feed Read": {
+      "main": [
+        [
+          {
+            "node": "IF realtors or real estate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "MongoDB: Find Article",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB: Insert": {
+      "main": [
+        [
+          {
+            "node": "Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches1": {
+      "main": [
+        [
+          {
+            "node": "MongoDB: Find Article1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF restaurant(s)": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB: Insert1": {
+      "main": [
+        [
+          {
+            "node": "Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB: Find Article": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "RSS Feed Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB: Find Article1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "IF realtors or real estate": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF restaurant(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-28T14:32:21.549Z",
+  "id": "z0liRScYnVsqvnuf",
+  "meta": {
+    "templateId": "159"
+  },
+  "name": "Send RSS feed data to webhook",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        380,
+        420
+      ],
+      "typeVersion": 1,
+      "id": "d115f04e-7721-4c00-8fc7-24d88bedc84f"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        }
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "bec7505c-40d2-4d27-b473-6a57b3802a45"
+    },
+    {
+      "parameters": {
+        "url": "https://www.biggerpockets.com/blog/feed",
+        "options": {}
+      },
+      "name": "RSS Feed Read",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "position": [
+        580,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "7604c94e-12b9-40b5-9549-b67e6df59f89"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "SplitInBatches1",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        990,
+        600
+      ],
+      "typeVersion": 1,
+      "id": "5e1fc640-1e3f-431a-a339-ee512d86b8af"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [],
+          "boolean": [
+            {
+              "value1": true,
+              "value2": "={{$node[\"SplitInBatches1\"].context[\"noItemsLeft\"]}}"
+            }
+          ]
+        }
+      },
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1460,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "3f71f7cf-e800-45e0-970d-8ad814e2f006"
+    },
+    {
+      "parameters": {},
+      "name": "End1",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1830,
+        410
+      ],
+      "typeVersion": 1,
+      "id": "f460d8c0-b090-4b89-9a97-d6fc87e2c7e9"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [],
+          "boolean": [
+            {
+              "value1": true,
+              "value2": "={{$node[\"SplitInBatches1\"].context[\"noItemsLeft\"]}}"
+            }
+          ]
+        }
+      },
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1460,
+        50
+      ],
+      "typeVersion": 1,
+      "id": "12262080-6c17-45a4-b931-6e64ccaece7f"
+    },
+    {
+      "parameters": {
+        "mode": "removeKeyMatches",
+        "propertyName1": "link",
+        "propertyName2": "link"
+      },
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1350,
+        620
+      ],
+      "typeVersion": 1,
+      "id": "c827f070-f237-4053-8ff0-a6400b7b6e68"
+    },
+    {
+      "parameters": {
+        "mode": "removeKeyMatches",
+        "propertyName1": "link",
+        "propertyName2": "link"
+      },
+      "name": "Merge1",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1340,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "0e365a7b-ea98-4558-8c6c-b4ce3daf2a69"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"RSS Feed Read\"].data[\"title\"]}}",
+              "operation": "regex",
+              "value2": "/(realtors|real estate)/i"
+            }
+          ]
+        }
+      },
+      "name": "IF realtors or real estate",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        790,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "19d0e1ae-cf93-4507-a388-e2c57ecf89c0"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"IF realtors or real estate\"].data[\"title\"]}}",
+              "operation": "regex",
+              "value2": "/restaurant[\\s]*/i"
+            }
+          ]
+        }
+      },
+      "name": "IF restaurant(s)",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        790,
+        620
+      ],
+      "typeVersion": 1,
+      "id": "d0cc8f44-c079-4a53-8174-8d040efd1fb0"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        990,
+        220
+      ],
+      "typeVersion": 1,
+      "id": "2dc7751a-6e98-4ad4-a4e3-f842b266d3e3"
+    },
+    {
+      "parameters": {
+        "collection": "articles",
+        "options": {},
+        "query": "={\"link\":{\"$regex\":\"{{$node[\"SplitInBatches\"].data[\"link\"]}}\",\"$options\":\"i\"}}"
+      },
+      "name": "MongoDB: Find Article",
+      "type": "n8n-nodes-base.mongoDb",
+      "position": [
+        1160,
+        360
+      ],
+      "typeVersion": 1,
+      "id": "1de4fed9-1dc2-4487-8e43-5e3eadbd00ca"
+    },
+    {
+      "parameters": {
+        "collection": "articles",
+        "options": {},
+        "query": "={\"link\":{\"$regex\":\"{{$node[\"SplitInBatches1\"].data[\"link\"]}}\",\"$options\":\"i\"}}"
+      },
+      "name": "MongoDB: Find Article1",
+      "type": "n8n-nodes-base.mongoDb",
+      "position": [
+        1160,
+        750
+      ],
+      "typeVersion": 1,
+      "id": "b82478a0-d6f1-4864-bb33-4ff38ce9ed0e",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "articles",
+        "fields": "title,link",
+        "options": {}
+      },
+      "name": "MongoDB: Insert",
+      "type": "n8n-nodes-base.mongoDb",
+      "position": [
+        1570,
+        620
+      ],
+      "typeVersion": 1,
+      "id": "32a11709-ef45-43bb-ac38-db76629940bf"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "articles",
+        "fields": "title,link",
+        "options": {}
+      },
+      "name": "MongoDB: Insert1",
+      "type": "n8n-nodes-base.mongoDb",
+      "position": [
+        1570,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "7bfef670-2e36-4d59-af18-a1cab609761a"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://webhook.site/fe77b392-7b8a-4801-aeca-4531c14da5fd",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "bodyParametersJson": "={\"text\": \"{{$node[\"MongoDB: Insert1\"].data[\"link\"]}}\"}"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1830,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "1158bbf5-4642-4f21-aa3b-9b638917bc7a"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "http://webhook.site/fe77b392-7b8a-4801-aeca-4531c14da5fd",
+        "allowUnauthorizedCerts": true,
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "bodyParametersJson": "={\"text\": \"{{$node[\"MongoDB: Insert\"].data[\"link\"]}}\"}"
+      },
+      "name": "Webhook1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1830,
+        620
+      ],
+      "typeVersion": 1,
+      "id": "5c26ff03-8558-47cc-8f3e-93985740ddb8"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-28T14:32:21.549Z",
+  "versionId": "0b4ae3b7-a680-4008-b4d6-4449dcd303a8"
+}
