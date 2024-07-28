@@ -251,12 +251,12 @@
   "staticData": {
     "node:Schedule Trigger": {
       "recurrencyRules": [
-        7
+        19
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-27T12:00:00.000Z",
+  "updatedAt": "2024-07-28T00:00:00.000Z",
   "versionId": "f276a987-8cb3-4ed1-b71a-75abb0c6bf8a"
 }
