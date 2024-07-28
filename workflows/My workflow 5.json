@@ -33,10 +33,19 @@
     },
     {
       "parameters": {
+        "httpRequestMethod": "POST",
         "graphApiVersion": "v17.0",
         "node": "329129493627618",
-        "edge": "feed",
-        "options": {}
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message"
+              }
+            ]
+          }
+        }
       },
       "id": "ae133809-bf5a-4b6b-a322-756f2cd2d9ce",
       "name": "Facebook Graph API",
@@ -61,6 +70,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-07-27T16:54:54.823Z",
-  "versionId": "da22a5c0-7664-4a61-a90d-76b7a10eb879"
+  "updatedAt": "2024-07-27T20:12:12.000Z",
+  "versionId": "6e8f6eb9-5583-47f5-b0b7-d6141b7753a7"
 }
