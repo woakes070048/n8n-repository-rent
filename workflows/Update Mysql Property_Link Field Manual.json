@@ -1,0 +1,183 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-29T14:48:11.136Z",
+  "id": "jYpAoa1Dr35n4aXO",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Mysql Property_Link Field Manual",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "94ab588d-054a-4717-9293-a118feb4ff1e",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "path": "data/yourls_export.csv"
+      },
+      "id": "745aa75e-0ec7-4099-bb95-3f32b27c8f31",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        340
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2b0dab42-e7dc-4a20-aeb5-ea0d580e29ec",
+              "name": "property_link",
+              "value": "=https://blazeproperty.com/urls{{ $json.source }}",
+              "type": "string"
+            },
+            {
+              "id": "c38f9d04-8368-4499-8935-3add4c21cff9",
+              "name": "rentable_uid",
+              "value": "={{ $json.target.replace('https://blazepropertymanagement.appfolio.com/listings/detail/', '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c412bf51-1491-4d8f-bf53-3b96906b9da9",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        320,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "id": "fa5e874a-f1df-4738-a7ae-9b2abc6d1df8",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        140,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_link",
+              "value": "={{ $json.property_link }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "da13e90b-0460-4086-b388-31d0379a098a",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        540,
+        340
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-29T15:15:45.000Z",
+  "versionId": "06eeea0b-60ba-4b0a-8612-710cb1b46dc5"
+}
