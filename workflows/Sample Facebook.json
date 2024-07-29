@@ -1,0 +1,394 @@
+{
+  "active": false,
+  "connections": {
+    "Facebook Trigger": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF": {
+      "main": [
+        [],
+        [
+          {
+            "node": "IF2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "YouTube": {
+      "main": [
+        [
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Twitter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-27T16:22:42.479Z",
+  "id": "EfuaqAJIj9nK0r83",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Sample Facebook",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        140,
+        620
+      ],
+      "id": "34336205-31c8-42cb-abae-abcd1795cfb1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "appId": "669644831096087",
+        "object": "page",
+        "fields": [
+          "feed"
+        ],
+        "options": {
+          "includeValues": true
+        }
+      },
+      "name": "Facebook Trigger",
+      "type": "n8n-nodes-base.facebookTrigger",
+      "typeVersion": 1,
+      "position": [
+        150,
+        410
+      ],
+      "webhookId": "392279c3-4c59-4916-a260-d05a7966a697",
+      "id": "8065c5c5-9a33-43c0-93b5-812ca89e107e",
+      "credentials": {
+        "facebookGraphAppApi": {
+          "id": null,
+          "name": "Marin Homeless Union Virtual Megaphone App"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"changes\"][0][\"value\"][\"message\"]}}",
+              "operation": "isEmpty"
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{$json[\"changes\"][0][\"value\"][\"published\"]}}",
+              "operation": "notEqual",
+              "value2": 1
+            }
+          ]
+        }
+      },
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        380,
+        440
+      ],
+      "id": "783e2186-757b-4c2d-a209-063e32c4b6d2",
+      "notes": "If not (the post has a message and it is published) then don't publish it to twitter, else tweet it!"
+    },
+    {
+      "parameters": {
+        "text": "={{$json[\"changes\"][0][\"value\"][\"message\"]}}",
+        "additionalFields": {
+          "attachments": "photo"
+        }
+      },
+      "name": "Twitter",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 1,
+      "position": [
+        1270,
+        490
+      ],
+      "id": "7911501f-0239-4c80-af8b-effc7a27ce2e",
+      "credentials": {
+        "twitterOAuth1Api": {
+          "id": null,
+          "name": "Marin Homeless API"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        280,
+        640
+      ],
+      "id": "4011ba7c-ffa3-4f0c-a5ca-7fed622b6328"
+    },
+    {
+      "parameters": {
+        "fromEmail": "\"n8n Rashi Abramson\" <rashi.abramson@gmail.com>",
+        "toEmail": "roshkins@gmail.com",
+        "subject": "= {{$json[\"workflow\"][\"name\"]}} - Error",
+        "text": "={{Object.values($json[\"execution\"]).join('\\n ')}} \n\n{{Object.values($json[\"execution\"][\"error\"]).join('\\n')}}",
+        "options": {}
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        480,
+        640
+      ],
+      "id": "adde9635-1e82-49f4-9d02-73d243fa1d01",
+      "credentials": {
+        "smtp": {
+          "id": null,
+          "name": "Rashi.Abramson Gmail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"changes\"][0][\"value\"][\"video_id\"]}}",
+              "operation": "isEmpty"
+            }
+          ]
+        }
+      },
+      "name": "IF1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        350,
+        280
+      ],
+      "id": "6cf8a2ca-b79c-47a7-ad54-6fcf593c9c4f"
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{$json[\"changes\"][0][\"value\"][\"message\"]}}",
+        "regionCode": "US",
+        "categoryId": "22",
+        "binaryProperty": "video",
+        "options": {
+          "defaultLanguage": "en",
+          "description": "={{$node[\"Facebook Trigger\"].json[\"changes\"][0][\"value\"][\"message\"]}}",
+          "notifySubscribers": true,
+          "privacyStatus": "private"
+        }
+      },
+      "name": "YouTube",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        960,
+        230
+      ],
+      "id": "180e8d47-fb98-4fba-af70-9db7d629ea38",
+      "credentials": {
+        "youTubeOAuth2Api": {
+          "id": null,
+          "name": "Upload to Youtube"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"changes\"][0][\"value\"][\"link\"]}}",
+        "responseFormat": "file",
+        "dataPropertyName": "video",
+        "options": {}
+      },
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        690,
+        250
+      ],
+      "id": "3c22f65d-0dcb-41a3-a410-86c5504a273d"
+    },
+    {
+      "parameters": {
+        "fromEmail": "rashi.abramson@gmail.com",
+        "toEmail": "roshkins@gmail.com",
+        "ccEmail": "robbiepowelson@gmail.com",
+        "subject": "=Youtube Video ready to publish: {{$json[\"snippet\"][\"title\"]}}",
+        "text": "=Please edit title and description so that it's ready for a public audience.\n\nhttps://youtu.be/{{$json[\"id\"]}}",
+        "options": {}
+      },
+      "name": "Send Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        230
+      ],
+      "id": "a5578fef-f78b-4452-a3d9-416ac7c23ebc",
+      "credentials": {
+        "smtp": {
+          "id": null,
+          "name": "Rashi.Abramson Gmail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"changes\"][0][\"value\"][\"link\"]}}",
+        "responseFormat": "file",
+        "dataPropertyName": "photo",
+        "options": {}
+      },
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        890,
+        410
+      ],
+      "id": "a1eaa5bd-cc90-424c-8788-caa5d8a4e841",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"changes\"][0][\"value\"][\"item\"]}}",
+              "value2": "photo"
+            }
+          ]
+        }
+      },
+      "name": "IF2",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        620,
+        480
+      ],
+      "id": "3c594169-dcfc-4b3c-9c49-f411c29534bc"
+    },
+    {
+      "parameters": {
+        "text": "={{$json[\"changes\"][0][\"value\"][\"message\"]}}",
+        "additionalFields": {}
+      },
+      "name": "Twitter1",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        540
+      ],
+      "id": "76dc3425-63e5-47fc-acd4-442ffcce10bf",
+      "credentials": {
+        "twitterOAuth1Api": {
+          "id": null,
+          "name": "Marin Homeless API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-07-29T13:52:43.000Z",
+  "versionId": "9a7a5009-6336-438d-b0d9-ea5c65857b80"
+}
