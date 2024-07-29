@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "Spreadsheet File": {
       "main": [
@@ -410,11 +410,11 @@
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
-      "lastMessageUid": 83
+      "lastMessageUid": 86
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-28T10:40:51.000Z",
+  "updatedAt": "2024-07-29T15:20:26.000Z",
   "versionId": "f9a6a4cb-887d-44eb-a696-1d044dbd3aee"
 }
