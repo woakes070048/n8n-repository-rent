@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -413,6 +413,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-07-27T22:16:26.000Z",
+  "updatedAt": "2024-07-30T15:36:14.000Z",
   "versionId": "e9af3389-9c31-4daf-90af-194a940bbb57"
 }
