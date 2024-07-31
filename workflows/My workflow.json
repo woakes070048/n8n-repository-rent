@@ -1,44 +1,22 @@
 {
   "active": false,
   "connections": {
-    "Get Posts": {
+    "HTTP Request": {
       "main": [
         [
           {
-            "node": "Filter New Posts",
+            "node": "Extract Title",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Get Pages": {
+    "When clicking ‘Test workflow’": {
       "main": [
         [
           {
-            "node": "Filter New Pages",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter New Posts": {
-      "main": [
-        [
-          {
-            "node": "Send Notification",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter New Pages": {
-      "main": [
-        [
-          {
-            "node": "Send Notification",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -46,79 +24,51 @@
       ]
     }
   },
-  "createdAt": "2024-07-09T19:16:11.866Z",
-  "id": "9LuFK9K6DCxM9CQI",
-  "meta": null,
+  "createdAt": "2024-07-31T12:30:38.134Z",
+  "id": "yDnCmUPY4jy32Vbk",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "My workflow",
   "nodes": [
     {
       "parameters": {
-        "url": "https://blzres.com/wp-json/wp/v2/posts",
+        "url": "https://example.com",
+        "responseFormat": "string",
         "options": {}
       },
-      "name": "Get Posts",
+      "name": "HTTP Request",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        800,
-        780
+        1020,
+        340
       ],
-      "id": "befd4c6b-09a9-43b7-b1db-bbe4cdbe6c8e"
+      "id": "03487863-99dd-4032-9b59-757fa691e9e3"
     },
     {
       "parameters": {
-        "url": "https://blzres.com/wp-json/wp/v2/pages",
-        "options": {}
+        "functionCode": "const cheerio = require('cheerio');\nconst html = $node[\"HTTP Request\"].json[\"body\"];\nconst $ = cheerio.load(html);\nconst title = $('title').text();\nreturn [{ json: { title } }];"
       },
-      "name": "Get Pages",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        800,
-        580
-      ],
-      "id": "21f499db-2698-4cfd-bbbb-9be8a7fc2455"
-    },
-    {
-      "parameters": {
-        "functionCode": "const newItems = [];\nconst currentTimestamp = new Date().getTime();\nconst oneHour = 3600000;\n\nitems[0].json.forEach(item => {\n  const itemTimestamp = new Date(item.date).getTime();\n  if (currentTimestamp - itemTimestamp < oneHour) {\n    newItems.push({ json: item });\n  }\n});\n\nreturn newItems;"
-      },
-      "name": "Filter New Posts",
+      "name": "Extract Title",
       "type": "n8n-nodes-base.function",
-      "typeVersion": 2,
+      "typeVersion": 1,
       "position": [
-        1050,
-        780
+        1220,
+        340
       ],
-      "id": "a3938e33-2fc8-4e6c-badd-92279acfa88b"
+      "id": "656fc913-8ac4-423a-af33-5f423e00fccd"
     },
     {
-      "parameters": {
-        "functionCode": "const newItems = [];\nconst currentTimestamp = new Date().getTime();\nconst oneHour = 3600000;\n\nitems[0].json.forEach(item => {\n  const itemTimestamp = new Date(item.date).getTime();\n  if (currentTimestamp - itemTimestamp < oneHour) {\n    newItems.push({ json: item });\n  }\n});\n\nreturn newItems;"
-      },
-      "name": "Filter New Pages",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 2,
+      "parameters": {},
+      "id": "ee866a6f-607f-41e6-bc4d-df14fe03c765",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
       "position": [
-        1050,
-        580
-      ],
-      "id": "090b42a8-024a-491b-896b-d43277c00afe"
-    },
-    {
-      "parameters": {
-        "subject": "New Post/Page on Blaze Real Estate",
-        "text": "New {{ $json.type }}: {{ $json.title.rendered }}\n\n{{ $json.excerpt.rendered }}\n\nRead more: {{ $json.link }}",
-        "options": {}
-      },
-      "name": "Send Notification",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2,
-      "position": [
-        1300,
-        680
-      ],
-      "id": "7d25a327-1937-423a-98ec-706a803d7886"
+        820,
+        360
+      ]
     }
   ],
   "pinData": {},
@@ -128,6 +78,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-07-09T19:16:11.866Z",
-  "versionId": "47deaf65-fea3-4604-aa9c-a2c02ca91a4a"
+  "updatedAt": "2024-07-31T12:30:38.134Z",
+  "versionId": "0c826283-4a95-45c2-bb7c-92368439d08e"
 }
