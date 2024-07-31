@@ -69,8 +69,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        320,
-        460
+        160,
+        380
       ],
       "id": "1f5feb04-fc72-4416-beaa-da2cd0a2dfd9"
     },
@@ -84,8 +84,8 @@
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        120,
-        460
+        -20,
+        360
       ],
       "credentials": {
         "imap": {
@@ -105,8 +105,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        500,
-        440
+        420,
+        360
       ]
     },
     {
@@ -128,8 +128,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        880,
-        440
+        840,
+        360
       ],
       "credentials": {
         "mySql": {
@@ -235,8 +235,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
       "position": [
-        680,
-        440
+        660,
+        360
       ]
     }
   ],
@@ -247,6 +247,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-29T15:19:56.000Z",
-  "versionId": "52d95dee-5d10-4508-96da-267f0b543d3e"
+  "updatedAt": "2024-07-30T18:32:02.000Z",
+  "versionId": "23e5c3ac-745f-401b-a603-67858bf48d14"
 }
