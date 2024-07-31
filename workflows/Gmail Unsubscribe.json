@@ -85,8 +85,7 @@
         "filters": {
           "labelIds": [
             "INBOX"
-          ],
-          "receivedBefore": "2024-06-01T08:59:07"
+          ]
         },
         "options": {}
       },
@@ -172,8 +171,15 @@
     "executionOrder": "v1"
   },
   "staticData": null,
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2024-07-30T18:57:17.908Z",
+      "updatedAt": "2024-07-30T18:57:17.908Z",
+      "id": "X5ZVhc1ljy0iQegY",
+      "name": "7/30/2024"
+    }
+  ],
   "triggerCount": 0,
-  "updatedAt": "2024-07-26T16:25:54.000Z",
-  "versionId": "698912b6-9051-492a-9df0-e3cb620ab4ff"
+  "updatedAt": "2024-07-30T18:57:19.000Z",
+  "versionId": "9b1fdcce-9463-4964-9ce0-1eac7487e071"
 }
