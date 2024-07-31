@@ -330,7 +330,8 @@
       "recurrencyRules": []
     },
     "node:Schedule Trigger1": {
-      "recurrencyRules": []
+      "recurrencyRules": [],
+      "recurrenceRules": []
     }
   },
   "tags": [],
