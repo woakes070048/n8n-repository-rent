@@ -1,22 +1,122 @@
 {
   "active": false,
   "connections": {
-    "HTTP Request": {
+    "Schedule Trigger": {
       "main": [
         [
           {
-            "node": "Extract Title",
+            "node": "FTP",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "When clicking ‘Test workflow’": {
+    "Extract CSV Data": {
+      "main": [
+        [
+          {
+            "node": "Split CSV into Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split CSV into Batches": {
+      "main": [
+        [
+          {
+            "node": "Fetch HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch HTML": {
+      "main": [
+        [
+          {
+            "node": "Check Invalid URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Invalid URL": {
+      "main": [
+        [
+          {
+            "node": "Combine Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Split CSV into Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Data": {
       "main": [
         [
           {
             "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert into MySQL": {
+      "main": [
+        [
+          {
+            "node": "Split CSV into Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        []
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract CSV Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "FTP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP1": {
+      "main": [
+        [
+          {
+            "node": "Insert into MySQL",
             "type": "main",
             "index": 0
           }
@@ -33,42 +133,289 @@
   "nodes": [
     {
       "parameters": {
-        "url": "https://example.com",
-        "responseFormat": "string",
-        "options": {}
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
       },
-      "name": "HTTP Request",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
+      "id": "65e897a4-00e6-4e62-929f-03dd6a38d3b6",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
       "position": [
-        1020,
-        340
-      ],
-      "id": "03487863-99dd-4032-9b59-757fa691e9e3"
+        1800,
+        860
+      ]
     },
     {
       "parameters": {
-        "functionCode": "const cheerio = require('cheerio');\nconst html = $node[\"HTTP Request\"].json[\"body\"];\nconst $ = cheerio.load(html);\nconst title = $('title').text();\nreturn [{ json: { title } }];"
+        "operation": "xls",
+        "options": {}
       },
-      "name": "Extract Title",
+      "id": "8301e329-db24-435d-82f7-980ec5019eab",
+      "name": "Extract CSV Data",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        860
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "5679e67f-898e-4888-9e4b-09c6b88d3c3a",
+      "name": "Split CSV into Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json['Rentable UID'] }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "maxRedirects": 2
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "23e82867-a3c8-467b-a6ec-da323e04097a",
+      "name": "Fetch HTML",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2600,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "aab56bdf-79d2-4749-b9a1-9e96dd037215",
+              "leftValue": "={{ $json.statusCode }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6da055cb-e800-4cb7-9432-59543bab5a47",
+      "name": "Check Invalid URL",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2780,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const csvData = $node[\"Split CSV into Batches\"].json[0];\nconst htmlContent = items[0].json.data;\n\nconst imageRegex = /https:\\/\\/images\\.cdn\\.appfolio\\.com\\/blazepropertymanagement\\/images\\/[a-f0-9\\\\-]+\\/[a-z]+\\.jpg/g;\nconst images = htmlContent.match(imageRegex);\n\nlet firstImageUrl = null;\nif (images && images.length > 0) {\n  firstImageUrl = images[0];\n}\n\nreturn [{\n  json: { ...csvData, 'Image URL': firstImageUrl || '' }\n}];\n"
+      },
+      "id": "c06e1136-c550-4d3e-b932-c20b3493c8e0",
+      "name": "Combine Data",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        1220,
-        340
+        3000,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "properties",
+          "mode": "list",
+          "cachedResultName": "properties"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_name",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Property Name\"] }}"
+            },
+            {
+              "column": "unit_name",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Unit Name\"] }}"
+            },
+            {
+              "column": "default_deposit",
+              "value": "="
+            },
+            {
+              "column": "bedrooms",
+              "value": "={{ $('Split CSV into Batches').item.json.Bedrooms }}"
+            },
+            {
+              "column": "bathrooms",
+              "value": "={{ $('Split CSV into Batches').item.json.Bathrooms }}"
+            },
+            {
+              "column": "advertised_rent",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Advertised Rent\"] }}"
+            },
+            {
+              "column": "posted_to_website",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Posted To Website\"] }}"
+            },
+            {
+              "column": "posted_to_internet",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Posted To Internet\"] }}"
+            },
+            {
+              "column": "marketing_title",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Marketing Title\"] }}"
+            },
+            {
+              "column": "marketing_description",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Marketing Description\"] }}"
+            },
+            {
+              "column": "sqft",
+              "value": "={{ $('Split CSV into Batches').item.json.Sqft }}"
+            },
+            {
+              "column": "application_fee",
+              "value": "={{ $('Split CSV into Batches').item.json[\"Application Fee\"] }}"
+            },
+            {
+              "column": "rentable_uid",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $('Split CSV into Batches').item.json[\"Rentable UID\"] }}"
+            },
+            {
+              "column": "image_url",
+              "value": "=https://blzres.com/data/images/{{ $('Split CSV into Batches').item.json[\"Rentable UID\"] }}.jpg"
+            },
+            {
+              "column": "address",
+              "value": "null"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ef457846-46b3-490f-b337-ab8943615b37",
+      "name": "Insert into MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        3680,
+        860
       ],
-      "id": "656fc913-8ac4-423a-af33-5f423e00fccd"
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Update to get images\nThis workflow needs to be updated to download the full-list.csv file and \npull the image urls. \nThen download first image on the page and reneame it to rentable_uid.jpg for error control later. \nBeing able to match the image to the property url. \nChallenge is getting only images of the properties realted to the uid. On an error page the first image could be another property. \nNeed a searchable term on the page to disqualify the page for image import and move to next record. \nRemove delete table\nREmove download csv and replace with ftp download. \n\n\n",
+        "height": 393.3692722371961,
+        "width": 941.3692722371975,
+        "color": 3
+      },
+      "id": "f5c29ae6-59a3-4855-af17-1e3b5968a8f9",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        600
+      ]
     },
     {
       "parameters": {},
-      "id": "ee866a6f-607f-41e6-bc4d-df14fe03c765",
-      "name": "When clicking ‘Test workflow’",
-      "type": "n8n-nodes-base.manualTrigger",
+      "id": "23f57853-6d4b-405d-9b94-bac9bcdc5596",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        820,
-        360
+        1300,
+        1220
       ]
+    },
+    {
+      "parameters": {
+        "path": "/blzres.com/data/full-list.csv"
+      },
+      "id": "8d861d20-6a90-408b-bbf7-61c623949cf6",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        1940,
+        860
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json[\"Image URL\"] }}",
+        "options": {}
+      },
+      "id": "b58c6552-053f-43b1-bc8d-fcebfecc1934",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3220,
+        840
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/blzres.com/data/images/{{ $('Split CSV into Batches').item.json['Rentable UID'] }}.jpg",
+        "binaryPropertyName": "=data"
+      },
+      "id": "f2d2360a-3092-4ed7-a273-7f41eeaa7a99",
+      "name": "FTP1",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        3440,
+        840
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -78,6 +425,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-07-31T12:30:38.134Z",
-  "versionId": "0c826283-4a95-45c2-bb7c-92368439d08e"
+  "updatedAt": "2024-08-04T14:48:46.000Z",
+  "versionId": "2ef40f5d-1d68-407b-a193-5cd17944cafa"
 }
