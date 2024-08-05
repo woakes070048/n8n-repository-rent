@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -401,7 +401,8 @@
       "recurrencyRules": []
     },
     "node:Schedule Trigger": {
-      "recurrencyRules": []
+      "recurrencyRules": [],
+      "recurrenceRules": []
     }
   },
   "tags": [
@@ -413,6 +414,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-07-30T15:36:14.000Z",
+  "updatedAt": "2024-08-05T14:48:47.000Z",
   "versionId": "e9af3389-9c31-4daf-90af-194a940bbb57"
 }
