@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -144,7 +144,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        740,
+        700,
         560
       ]
     },
@@ -322,8 +322,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
       "position": [
-        1020,
-        580
+        840,
+        340
       ]
     },
     {
@@ -356,7 +356,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Use the following text about a unit for lease at Cottonwood Townhomes to make a humorous post. Humor level medium. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-223-1444. : {{ $json.marketing_description }}\n"
+              "content": "=Use the following text about a unit for lease at Cottonwood Townhomes to make a humorous post. Humor level medium. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-414-6021. : {{ $json.marketing_description }}\n"
             }
           ]
         },
@@ -401,7 +401,8 @@
       "recurrencyRules": []
     },
     "node:Schedule Trigger": {
-      "recurrencyRules": []
+      "recurrencyRules": [],
+      "recurrenceRules": []
     }
   },
   "tags": [
@@ -413,6 +414,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-07-30T15:36:13.000Z",
-  "versionId": "07157bf4-e99c-4dae-a188-2474ca84691e"
+  "updatedAt": "2024-08-05T16:07:55.000Z",
+  "versionId": "1f936ca5-2751-4659-9a9a-1c176940e09b"
 }
