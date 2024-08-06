@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -562,23 +562,28 @@
   },
   "staticData": {
     "node:Cron 8am": {
-      "recurrencyRules": []
+      "recurrencyRules": [],
+      "recurrenceRules": []
     },
     "node:cron 10am": {
-      "recurrencyRules": []
+      "recurrencyRules": [],
+      "recurrenceRules": []
     },
     "node:Cron 12": {
-      "recurrencyRules": []
+      "recurrencyRules": [],
+      "recurrenceRules": []
     },
     "node:Cron 14": {
-      "recurrencyRules": []
+      "recurrencyRules": [],
+      "recurrenceRules": []
     },
     "node:Cron 16": {
-      "recurrencyRules": []
+      "recurrencyRules": [],
+      "recurrenceRules": []
     }
   },
   "tags": [],
   "triggerCount": 5,
-  "updatedAt": "2024-07-30T15:36:16.000Z",
+  "updatedAt": "2024-08-05T18:06:09.000Z",
   "versionId": "b12f9ca2-f275-4496-b99e-53edaf1b2d08"
 }
