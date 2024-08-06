@@ -1,22 +1,11 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Fetch Properties": {
       "main": [
         [
           {
-            "node": "Generate HTML Content",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Generate HTML Content": {
-      "main": [
-        [
-          {
-            "node": "Wordpress",
+            "node": "Generate HTML Content1",
             "type": "main",
             "index": 0
           }
@@ -44,6 +33,17 @@
           }
         ]
       ]
+    },
+    "Generate HTML Content1": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2024-07-21T19:53:28.466Z",
@@ -56,7 +56,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT * FROM properties;"
+        "query": "SELECT * FROM advertising_list;"
       },
       "name": "Fetch Properties",
       "type": "n8n-nodes-base.mySql",
@@ -72,19 +72,6 @@
           "name": "MySQL account"
         }
       }
-    },
-    {
-      "parameters": {
-        "functionCode": "const properties = items.map(item => item.json);\n\n// Get the current date\nconst now = new Date();\nconst formattedDate = now.toLocaleDateString('en-US');\n\nlet content = '<table>';\ncontent += '<tr><th>Property Name</th><th>Unit Name</th><th>Deposit</th><th>Bedrooms</th><th>Bathrooms</th><th>Rent</th><th>Image</th></tr>';\n\nproperties.forEach(property => {\n    const propertyLink = `${property.rentable_uid}`;\n    content += '<tr>';\n    content += `<td><a href=\"${propertyLink}\">${property.property_name}</a></td>`;\n    content += `<td>${property.unit_name}</td>`;\n    content += `<td>${property.default_deposit}</td>`;\n    content += `<td>${property.bedrooms}</td>`;\n    content += `<td>${property.bathrooms}</td>`;\n    content += `<td>${property.advertised_rent}</td>`;\n    content += `<td><img src=\"${property.image_url}\" alt=\"${property.property_name}\" style=\"width:100px;height:auto;\"></td>`;\n    content += '</tr>';\n});\n\ncontent += '</table>';\n\nreturn [{ json: { content, formattedDate } }];"
-      },
-      "name": "Generate HTML Content",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [
-        1790,
-        500
-      ],
-      "id": "75aa25e7-4c9c-4611-82fc-6cf975b3ae98"
     },
     {
       "parameters": {
@@ -152,7 +139,7 @@
     },
     {
       "parameters": {
-        "content": "## Get SQL Data\nGets sql data from hosted mysql database\nDatabase is updated daily at midnight to provide \nfull listing of blaze properties\n",
+        "content": "## Get SQL Data\nGets sql data from hosted mysql database\nDatabase is updated daily at in early am. \n9am post of all available properties to WP Intranet\n\n",
         "height": 444,
         "width": 445
       },
@@ -180,6 +167,19 @@
         1700,
         240
       ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const properties = items.map(item => item.json);\n\n// Get the current date\nconst now = new Date();\nconst formattedDate = now.toLocaleDateString('en-US');\n\nlet content = '<table border=\"1\" style=\"border-collapse: collapse; width: 100%;\">';\ncontent += '<tr><th>Property Name</th><th>Unit Name</th><th>Bedrooms</th><th>Bathrooms</th><th>Advertised Rent</th><th>Image</th></tr>';\n\nproperties.forEach(property => {\n    const propertyLink = property.property_link ? `<a href=\"${property.property_link}\">${property.property_name}</a>` : property.property_name;\n    content += '<tr>';\n    content += `<td>${propertyLink}</td>`;\n    content += `<td>${property.unit_name}</td>`;\n    content += `<td>${property.bedrooms}</td>`;\n    content += `<td>${property.bathrooms}</td>`;\n    content += `<td>${property.advertised_rent}</td>`;\n    content += `<td><img src=\"${property.image_link}\" alt=\"${property.property_name}\" style=\"width:100px;height:auto;\"></td>`;\n    content += '</tr>';\n});\n\ncontent += '</table>';\n\nreturn [{ json: { content, formattedDate } }];"
+      },
+      "name": "Generate HTML Content1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        500
+      ],
+      "id": "ff671827-6609-4feb-bfc2-27395d74635e"
     }
   ],
   "pinData": {},
@@ -188,11 +188,12 @@
   },
   "staticData": {
     "node:Schedule Trigger": {
-      "recurrencyRules": []
+      "recurrencyRules": [],
+      "recurrenceRules": []
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-30T18:47:33.000Z",
-  "versionId": "9866481d-4c3b-4d04-8dcf-e3c686de65d6"
+  "updatedAt": "2024-08-05T18:03:50.000Z",
+  "versionId": "9a20bd8d-6778-4ea5-b12f-7f916d89e997"
 }
