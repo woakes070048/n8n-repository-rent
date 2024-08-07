@@ -12,33 +12,66 @@
         ]
       ]
     },
-    "Extract CSV Data": {
-      "main": [
-        [
-          {
-            "node": "Split CSV into Batches",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Split CSV into Batches": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "FTP": {
       "main": [
         [
           {
             "node": "Extract CSV Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "FTP Upload Renamed Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP Upload Renamed Image": {
+      "main": [
+        [
+          {
+            "node": "IUpdate all_listing table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract CSV Data": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Split CSV into Batches",
             "type": "main",
             "index": 0
           }
@@ -78,7 +111,7 @@
         ],
         [
           {
-            "node": "Split CSV into Batches",
+            "node": "MySQL1",
             "type": "main",
             "index": 0
           }
@@ -96,22 +129,11 @@
         ]
       ]
     },
-    "Download Image": {
+    "Split CSV into Batches": {
       "main": [
         [
           {
-            "node": "FTP Upload Renamed Image",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "FTP Upload Renamed Image": {
-      "main": [
-        [
-          {
-            "node": "IUpdate all_listing table",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -129,11 +151,22 @@
         ]
       ]
     },
-    "Execute Workflow Trigger": {
+    "MySQL1": {
       "main": [
         [
           {
-            "node": "FTP",
+            "node": "Split CSV into Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Split CSV into Batches",
             "type": "main",
             "index": 0
           }
@@ -152,17 +185,6 @@
         [
           {
             "node": "MySQL",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MySQL": {
-      "main": [
-        [
-          {
-            "node": "Split CSV into Batches",
             "type": "main",
             "index": 0
           }
@@ -199,34 +221,6 @@
     },
     {
       "parameters": {
-        "operation": "xls",
-        "options": {}
-      },
-      "id": "657470cc-92a0-48cc-b7a0-825974efcbe6",
-      "name": "Extract CSV Data",
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        2300,
-        640
-      ]
-    },
-    {
-      "parameters": {
-        "batchSize": 1,
-        "options": {}
-      },
-      "id": "fbea6c99-8a9b-4c41-884c-36928c283e63",
-      "name": "Split CSV into Batches",
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 1,
-      "position": [
-        1740,
-        900
-      ]
-    },
-    {
-      "parameters": {
         "content": "## Update to get images\nGet full-list.csv from https://data.blzres.com/data and parse\nbinary to xslx \nBuild webpage url from rentable_uid and fetch\nCheck if redirected due to unavailable unit\nAvaialble unit get first image\nupload first image to https://data.blzres.com/images and name rentable_uid.jpg\n\n\n\nSeries 2 workflow\n",
         "height": 251.39252805115,
         "width": 941.3692722371975,
@@ -237,8 +231,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1620,
-        620
+        2180,
+        360
       ]
     },
     {
@@ -273,7 +267,235 @@
     },
     {
       "parameters": {
-        "url": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json['Rentable UID'] }}",
+        "url": "={{ $json[\"Image URL\"] }}",
+        "options": {}
+      },
+      "id": "490980d5-a448-477c-8e30-573c497858ac",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3160,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/blzres.com/data/images/{{ $('Split CSV into Batches').item.json['Rentable UID'] }}.jpg",
+        "binaryPropertyName": "=data"
+      },
+      "id": "73c2dbc8-0139-4439-9f6e-454607026777",
+      "name": "FTP Upload Renamed Image",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        3320,
+        640
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "id": "657470cc-92a0-48cc-b7a0-825974efcbe6",
+      "name": "Extract CSV Data",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        2300,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "919bbb04-19a7-4287-9180-6d74baea8c7f",
+              "name": "property_name",
+              "value": "={{ $json['Property Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f0c47bc0-8f39-4c36-95c0-1e362b64bc7f",
+              "name": "unit_name",
+              "value": "={{ $json['Unit Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3cf17249-0413-40b0-90d8-c8035ee0f998",
+              "name": "default_deposit",
+              "value": "={{ $json['Default Deposit'] }}",
+              "type": "string"
+            },
+            {
+              "id": "54c67700-8b56-4fa8-9fc0-92ff1db0a1b0",
+              "name": "bedrooms",
+              "value": "={{ $json.Bedrooms }}",
+              "type": "string"
+            },
+            {
+              "id": "4ef8586c-1985-44e1-aa2e-c658d73adee5",
+              "name": "bathrooms",
+              "value": "={{ $json.Bathrooms }}",
+              "type": "string"
+            },
+            {
+              "id": "b9f914fe-c6fe-4b89-8006-c4626c859c3e",
+              "name": "advertised_rent",
+              "value": "={{ $json['Advertised Rent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a0a22b6a-7308-4a39-b45b-e10b047310cd",
+              "name": "posted_to_website",
+              "value": "={{ $json['Posted To Website'] }}",
+              "type": "string"
+            },
+            {
+              "id": "40b2081b-d6cb-4570-bb2b-eedbad7a61c4",
+              "name": "posted_to_internet",
+              "value": "={{ $json['Posted To Internet'] }}",
+              "type": "string"
+            },
+            {
+              "id": "98a1c00a-435e-4e69-8dee-152ea794a006",
+              "name": "marketing_title",
+              "value": "={{ $json['Marketing Title'] }}",
+              "type": "string"
+            },
+            {
+              "id": "33be0296-8b2a-4755-b30d-688ffbacac52",
+              "name": "marketing_description",
+              "value": "={{ $json['Marketing Description'] }}",
+              "type": "string"
+            },
+            {
+              "id": "035637e0-8a22-41ee-be11-8c245005449a",
+              "name": "sqft",
+              "value": "={{ $json.Sqft }}",
+              "type": "string"
+            },
+            {
+              "id": "b53ed45d-763d-4eb8-8232-2073ffc4ea5a",
+              "name": "application_fee",
+              "value": "={{ $json['Application Fee'] }}",
+              "type": "string"
+            },
+            {
+              "id": "89df92fa-eeac-47b6-9ac8-30cc21c8f6fe",
+              "name": "rentable_uid",
+              "value": "={{ $json['Rentable UID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "5fb918ff-2115-45de-9841-f7c2239f8fbe",
+              "name": "unit_address",
+              "value": "={{ $json['Unit Address'] }}",
+              "type": "string"
+            },
+            {
+              "id": "74e8a678-df01-4d7b-b809-6cefae738acf",
+              "name": "property",
+              "value": "={{ $json['Property Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a5aab8c8-be1d-40f9-a7f7-03738e192472",
+              "name": "unit_street_address_1",
+              "value": "={{ $json['Unit Street Address 1'] }}",
+              "type": "string"
+            },
+            {
+              "id": "17129901-38f8-4fc9-bf2d-825e65b0039b",
+              "name": "unit_street_address_2",
+              "value": "={{ $json['Unit Street Address 2'] }}",
+              "type": "string"
+            },
+            {
+              "id": "73f51585-32be-4afc-bbee-c26a43f8c924",
+              "name": "unit_city",
+              "value": "={{ $json['Unit City'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4107a3fc-92bd-48ab-86c8-80457fcb9ef5",
+              "name": "unit_state",
+              "value": "={{ $json['Unit State'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e45b55c9-8f87-4a8c-b981-95244585c37e",
+              "name": "unit_zip",
+              "value": "={{ $json['Unit Zip'] }}",
+              "type": "string"
+            },
+            {
+              "id": "8d2cc5d9-4c42-4020-962c-bcfd3e66be0d",
+              "name": "market_rent",
+              "value": "={{ $json['Market Rent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "fe633545-52c8-45b4-a427-2c7727a8c006",
+              "name": "tags",
+              "value": "={{ $json.Tags }}",
+              "type": "string"
+            },
+            {
+              "id": "b467b5ca-d9ef-4862-8f8a-aaa3555903e3",
+              "name": "created_on",
+              "value": "={{ $json['Created On'] }}",
+              "type": "number"
+            },
+            {
+              "id": "7bc5b829-e955-401d-8aeb-c7decf829c8b",
+              "name": "description",
+              "value": "={{ $json.Description }}",
+              "type": "string"
+            },
+            {
+              "id": "575b32ec-d981-4d3b-9b94-97ca029821bd",
+              "name": "appliances",
+              "value": "={{ $json.Appliances }}",
+              "type": "string"
+            },
+            {
+              "id": "e8cb4d39-9a6f-4cd3-aa17-f829a5d0a797",
+              "name": "utilities",
+              "value": "={{ $json.Utilities }}",
+              "type": "string"
+            },
+            {
+              "id": "2d298412-28f7-49de-a658-53f5fa98127e",
+              "name": "property_link",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json['Rentable UID'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ae476662-5849-40f6-b0da-9c4b2855c781",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1480,
+        900
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Edit Fields1').item.json.property_link }}",
         "options": {
           "redirect": {
             "redirect": {
@@ -292,7 +514,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2160,
+        2380,
         900
       ]
     },
@@ -305,7 +527,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2400,
+        2620,
         900
       ]
     },
@@ -337,7 +559,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        2640,
+        2860,
         900
       ]
     },
@@ -350,115 +572,141 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        2880,
+        3100,
         880
       ]
     },
     {
       "parameters": {
-        "url": "={{ $json[\"Image URL\"] }}",
+        "batchSize": 1,
         "options": {}
       },
-      "id": "490980d5-a448-477c-8e30-573c497858ac",
-      "name": "Download Image",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "id": "fbea6c99-8a9b-4c41-884c-36928c283e63",
+      "name": "Split CSV into Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
       "position": [
-        2940,
-        640
+        1740,
+        900
       ]
     },
     {
       "parameters": {
-        "operation": "upload",
-        "path": "=/blzres.com/data/images/{{ $('Split CSV into Batches').item.json['Rentable UID'] }}.jpg",
-        "binaryPropertyName": "=data"
-      },
-      "id": "73c2dbc8-0139-4439-9f6e-454607026777",
-      "name": "FTP Upload Renamed Image",
-      "type": "n8n-nodes-base.ftp",
-      "typeVersion": 1,
-      "position": [
-        3100,
-        640
-      ],
-      "credentials": {
-        "ftp": {
-          "id": "87ZwJT7N7b5rycj4",
-          "name": "FTP account"
-        }
-      }
-    },
-    {
-      "parameters": {
+        "operation": "upsert",
         "table": {
           "__rl": true,
-          "value": "properties",
+          "value": "all_rental_properties",
           "mode": "list",
-          "cachedResultName": "properties"
+          "cachedResultName": "all_rental_properties"
         },
         "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('Split CSV into Batches').item.json.rentable_uid }}",
         "valuesToSend": {
           "values": [
             {
               "column": "property_name",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Property Name\"] }}"
+              "value": "={{ $('Split CSV into Batches').item.json.property_name }}"
             },
             {
               "column": "unit_name",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Unit Name\"] }}"
+              "value": "={{ $('Split CSV into Batches').item.json.unit_name }}"
             },
             {
               "column": "default_deposit",
-              "value": "="
+              "value": "={{ $('Split CSV into Batches').item.json.default_deposit }}"
             },
             {
               "column": "bedrooms",
-              "value": "={{ $('Split CSV into Batches').item.json.Bedrooms }}"
+              "value": "={{ $('Split CSV into Batches').item.json.bedrooms }}"
             },
             {
               "column": "bathrooms",
-              "value": "={{ $('Split CSV into Batches').item.json.Bathrooms }}"
+              "value": "={{ $('Split CSV into Batches').item.json.bathrooms }}"
             },
             {
               "column": "advertised_rent",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Advertised Rent\"] }}"
+              "value": "={{ $('Split CSV into Batches').item.json.advertised_rent }}"
             },
             {
               "column": "posted_to_website",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Posted To Website\"] }}"
+              "value": "={{ $('Split CSV into Batches').item.json.posted_to_website }}"
             },
             {
               "column": "posted_to_internet",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Posted To Internet\"] }}"
+              "value": "={{ $('Split CSV into Batches').item.json.posted_to_internet }}"
             },
             {
               "column": "marketing_title",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Marketing Title\"] }}"
+              "value": "={{ $('Split CSV into Batches').item.json.marketing_title }}"
             },
             {
               "column": "marketing_description",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Marketing Description\"] }}"
+              "value": "={{ $('Split CSV into Batches').item.json.marketing_description }}"
             },
             {
               "column": "sqft",
-              "value": "={{ $('Split CSV into Batches').item.json.Sqft }}"
+              "value": "={{ $('Split CSV into Batches').item.json.sqft }}"
             },
             {
               "column": "application_fee",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Application Fee\"] }}"
+              "value": "={{ $('Split CSV into Batches').item.json.application_fee }}"
             },
             {
-              "column": "rentable_uid",
-              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $('Split CSV into Batches').item.json[\"Rentable UID\"] }}"
+              "column": "image_link",
+              "value": "=https://data.blzres.com/data/images/{{ $('Split CSV into Batches').item.json.rentable_uid }}.jpg"
             },
             {
-              "column": "image_url",
-              "value": "=https://blzres.com/data/images/{{ $('Split CSV into Batches').item.json[\"Rentable UID\"] }}.jpg"
+              "column": "unit_address",
+              "value": "={{ $('Split CSV into Batches').item.json.unit_address }}"
             },
             {
-              "column": "address",
-              "value": "null"
+              "column": "property",
+              "value": "={{ $('Split CSV into Batches').item.json.property }}"
+            },
+            {
+              "column": "unit_street_address_1",
+              "value": "={{ $('Split CSV into Batches').item.json.unit_street_address_1 }}"
+            },
+            {
+              "column": "unit_street_address_2",
+              "value": "={{ $('Split CSV into Batches').item.json.unit_street_address_2 }}"
+            },
+            {
+              "column": "unit_city",
+              "value": "={{ $('Split CSV into Batches').item.json.unit_city }}"
+            },
+            {
+              "column": "unit_state",
+              "value": "={{ $('Split CSV into Batches').item.json.unit_state }}"
+            },
+            {
+              "column": "unit_zip",
+              "value": "={{ $('Split CSV into Batches').item.json.unit_zip }}"
+            },
+            {
+              "column": "market_rent",
+              "value": "={{ $('Split CSV into Batches').item.json.market_rent }}"
+            },
+            {
+              "column": "tags",
+              "value": "={{ $('Split CSV into Batches').item.json.tags }}"
+            },
+            {
+              "column": "description",
+              "value": "={{ $('Split CSV into Batches').item.json.description }}"
+            },
+            {
+              "column": "appliances",
+              "value": "={{ $('Split CSV into Batches').item.json.appliances }}"
+            },
+            {
+              "column": "utilities",
+              "value": "={{ $('Split CSV into Batches').item.json.utilities }}"
+            },
+            {
+              "column": "property_link",
+              "value": "={{ $('Split CSV into Batches').item.json.property_link }}"
             }
           ]
         },
@@ -469,9 +717,136 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2,
       "position": [
-        3120,
+        3340,
         880
       ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('Edit Fields1').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "posted_to_website",
+              "value": "No"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6b3efcb6-70ab-4dde-bdcb-e5d913a22cec",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        2820,
+        1200
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('Edit Fields1').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "unit_name",
+              "value": "={{ $('Edit Fields1').item.json.unit_name }}"
+            },
+            {
+              "column": "market_rent",
+              "value": "={{ $('Edit Fields1').item.json.market_rent }}"
+            },
+            {
+              "column": "default_deposit",
+              "value": "={{ $('Edit Fields1').item.json.default_deposit }}"
+            },
+            {
+              "column": "bedrooms",
+              "value": "={{ $('Edit Fields1').item.json.bedrooms }}"
+            },
+            {
+              "column": "bathrooms",
+              "value": "={{ $('Edit Fields1').item.json.bathrooms }}"
+            },
+            {
+              "column": "marketing_title",
+              "value": "={{ $('Edit Fields1').item.json.marketing_title }}"
+            },
+            {
+              "column": "marketing_description",
+              "value": "={{ $('Edit Fields1').item.json.marketing_description }}"
+            },
+            {
+              "column": "advertised_rent",
+              "value": "={{ $('Edit Fields1').item.json.advertised_rent }}"
+            },
+            {
+              "column": "posted_to_website",
+              "value": "={{ $('Edit Fields1').item.json.posted_to_website }}"
+            },
+            {
+              "column": "posted_to_internet",
+              "value": "={{ $('Edit Fields1').item.json.posted_to_internet }}"
+            },
+            {
+              "column": "appliances",
+              "value": "={{ $('Edit Fields1').item.json.appliances }}"
+            },
+            {
+              "column": "utilities",
+              "value": "={{ $('Edit Fields1').item.json.utilities }}"
+            },
+            {
+              "column": "sqft",
+              "value": "={{ $('Edit Fields1').item.json.sqft }}"
+            },
+            {
+              "column": "unit_address",
+              "value": "={{ $('Edit Fields1').item.json.unit_address }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7b6c00d4-6531-4b0f-a40a-871b880a7e81",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        2160,
+        1120
+      ],
+      "alwaysOutputData": true,
       "credentials": {
         "mySql": {
           "id": "Cxxv6w2tRXt2wyu4",
@@ -490,7 +865,7 @@
           "conditions": [
             {
               "id": "de035c01-bcd0-46b7-af13-82f6d258ce13",
-              "leftValue": "={{ $json['Posted To Website'] }}",
+              "leftValue": "={{ $json.posted_to_website }}",
               "rightValue": "Yes",
               "operator": {
                 "type": "string",
@@ -508,94 +883,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1920,
+        2060,
         900
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "table": {
-          "__rl": true,
-          "value": "all_rental_properties",
-          "mode": "list",
-          "cachedResultName": "all_rental_properties"
-        },
-        "dataMode": "defineBelow",
-        "columnToMatchOn": "rentable_uid",
-        "valueToMatchOn": "={{ $('Extract CSV Data').item.json['Rentable UID'] }}",
-        "valuesToSend": {
-          "values": [
-            {
-              "column": "unit_name",
-              "value": "={{ $('Extract CSV Data').item.json['Unit Name'] }}"
-            },
-            {
-              "column": "market_rent",
-              "value": "={{ $('Extract CSV Data').item.json['Market Rent'] }}"
-            },
-            {
-              "column": "default_deposit",
-              "value": "={{ $('Extract CSV Data').item.json['Default Deposit'] }}"
-            },
-            {
-              "column": "bedrooms",
-              "value": "={{ $('Extract CSV Data').item.json.Bedrooms }}"
-            },
-            {
-              "column": "bathrooms",
-              "value": "={{ $('Extract CSV Data').item.json.Bathrooms }}"
-            },
-            {
-              "column": "marketing_title",
-              "value": "={{ $('Extract CSV Data').item.json['Marketing Title'] }}"
-            },
-            {
-              "column": "marketing_description",
-              "value": "={{ $('Extract CSV Data').item.json['Marketing Description'] }}"
-            },
-            {
-              "column": "advertised_rent",
-              "value": "={{ $('Extract CSV Data').item.json['Advertised Rent'] }}"
-            },
-            {
-              "column": "posted_to_website",
-              "value": "={{ $('Extract CSV Data').item.json['Posted To Website'] }}"
-            },
-            {
-              "column": "posted_to_internet",
-              "value": "={{ $('Extract CSV Data').item.json['Posted To Internet'] }}"
-            },
-            {
-              "column": "appliances",
-              "value": "={{ $('Extract CSV Data').item.json.Appliances }}"
-            },
-            {
-              "column": "utilities",
-              "value": "={{ $('Extract CSV Data').item.json.Utilities }}"
-            },
-            {
-              "column": "sqft",
-              "value": "={{ $('Extract CSV Data').item.json.Sqft }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "7b6c00d4-6531-4b0f-a40a-871b880a7e81",
-      "name": "MySQL",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1840,
-        1120
       ],
-      "credentials": {
-        "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
-        }
-      }
+      "onError": "continueRegularOutput"
     }
   ],
   "pinData": {},
@@ -609,6 +900,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-05T15:14:50.000Z",
-  "versionId": "ccb7b7a9-6a98-4a98-a8dc-2ece8815e2d7"
+  "updatedAt": "2024-08-06T21:56:17.000Z",
+  "versionId": "6adb5592-94d6-4827-8e36-0d643de6cd0c"
 }
