@@ -1,7 +1,40 @@
 {
   "active": false,
   "connections": {
-    "On clicking 'execute'": {
+    "Process Responses": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Process Responses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
       "main": [
         [
           {
@@ -16,52 +49,129 @@
   "createdAt": "2024-08-08T01:25:41.652Z",
   "id": "xFbUhB6YUzlLaYkP",
   "meta": {
-    "templateId": "584"
+    "templateId": "584",
+    "templateCredsSetupCompleted": true
   },
   "name": "Send an email",
   "nodes": [
     {
-      "name": "On clicking 'execute'",
-      "type": "n8n-nodes-base.manualTrigger",
-      "position": [
-        380,
-        240
-      ],
-      "parameters": {},
+      "parameters": {
+        "functionCode": "function calculateStars(ratings) {\n  const total = ratings.reduce((acc, rating) => acc + rating, 0);\n  const average = total / ratings.length;\n  return Math.round(average);\n}\n\nfunction generateFeedback(responses, comments) {\n  const feedback = [];\n  \n  if (responses['ctw44'] < 4) {\n    feedback.push(\"Improve the overall move-in experience by ensuring all paperwork is clear and assistance is available for any questions.\");\n  }\n  \n  if (responses['a4clj'] < 4) {\n    feedback.push(\"Ensure the condition of the unit meets tenants' expectations before move-in by conducting thorough inspections and addressing any issues promptly.\");\n  }\n  \n  if (responses['6g3zv'] < 4) {\n    feedback.push(\"Enhance the interactions with the property management team by providing additional training on customer service and responsiveness.\");\n  }\n  \n  if (responses['y78xb'] < 4) {\n    feedback.push(\"Maintain cleanliness and upkeep of common areas regularly to meet tenants' standards.\");\n  }\n  \n  if (feedback.length === 0) {\n    feedback.push(\"Thank you for your positive feedback! We strive to maintain high standards and continuously improve our services.\");\n  } else {\n    feedback.push(\"We value your feedback and will work on the mentioned areas to enhance your living experience.\");\n  }\n  \n  if (comments) {\n    feedback.push(`Additional Comments: ${comments}`);\n  }\n  \n  return feedback.join(\" \");\n}\n\n// Collect responses\nconst responses = {\n  'ctw44': parseInt($json[\"body\"]['[ctw44]'], 10),\n  'a4clj': parseInt($json[\"body\"]['[a4clj]'], 10),\n  '6g3zv': parseInt($json[\"body\"]['[6g3zv]'], 10),\n  'y78xb': parseInt($json[\"body\"]['[y78xb]'], 10)\n};\n\n// Check for any null values and handle them appropriately\nconst ratings = Object.values(responses).filter(rating => !isNaN(rating));\nconst comments = $json[\"body\"]['[ghrqk]'] || \"\";\n\nconst stars = calculateStars(ratings);\nconst feedback = generateFeedback(responses, comments);\n\nreturn [{\n  json: {\n    \"Stars\": stars,\n    \"Feedback\": feedback\n  }\n}];\n"
+      },
+      "id": "d5fdff5a-9113-4242-8ed4-4a5e679037cc",
+      "name": "Process Responses",
+      "type": "n8n-nodes-base.function",
       "typeVersion": 1,
-      "id": "1870d23d-be63-40da-81ed-d6a5f332a9cb"
+      "position": [
+        1040,
+        320
+      ]
     },
     {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dbdf4a19-ffb4-480b-9902-2dad46caf977",
+        "options": {}
+      },
+      "id": "51f797f3-121b-4c66-8d86-5e16adab5e25",
+      "name": "Webhook1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        860,
+        460
+      ],
+      "webhookId": "dbdf4a19-ffb4-480b-9902-2dad46caf977"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "a696c4c6-714f-44f2-b4fd-a129e0bb77af",
+              "leftValue": "={{ $json.Stars }}",
+              "rightValue": 4,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "fe9219f4-b7ab-4a60-845b-0904c6701810",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7b8b37d7-270e-41c5-ac14-cfb429b01ad2",
       "name": "Send Email",
       "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
       "position": [
-        580,
-        240
+        2040,
+        440
       ],
-      "parameters": {
-        "text": "This is a message to demonstrate the n8n Send Email workflow!",
-        "options": {
-          "allowUnauthorizedCerts": false
-        },
-        "subject": "n8n rocks!",
-        "toEmail": "user@example.com",
-        "fromEmail": "user@from.email"
-      },
       "credentials": {
         "smtp": {
           "id": "CT7TQcD1DuyTHPFu",
           "name": "SMTP account"
         }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Generate an html formatted email that thanks the resident and addresses the resident directly and invites them to provide a google review. "
+            }
+          ]
+        },
+        "options": {}
       },
-      "typeVersion": 1,
-      "id": "c344587b-1970-4942-8309-bb20a091ece0"
+      "id": "3194f1a8-22b9-4ab6-80c4-9f8bba021bd4",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        1400,
+        440
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
-  "pinData": null,
-  "settings": null,
+  "pinData": {},
+  "settings": {},
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-08T01:25:41.652Z",
-  "versionId": "70c8602a-17ef-428c-9e19-6e4605d8f25c"
+  "updatedAt": "2024-08-08T12:49:45.000Z",
+  "versionId": "890936e6-3325-4650-90a7-a08d82e51f1a"
 }
