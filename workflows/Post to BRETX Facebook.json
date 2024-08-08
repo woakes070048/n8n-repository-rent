@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -264,8 +264,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
       "position": [
-        560,
-        600
+        480,
+        760
       ]
     },
     {
@@ -326,8 +326,8 @@
         "rule": {
           "interval": [
             {
-              "field": "cronExpression",
-              "expression": "0 8 * * *"
+              "field": "hours",
+              "triggerAtMinute": null
             }
           ]
         }
@@ -347,7 +347,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 10 * * *"
+              "expression": "={{ Math.floor(Math.random() * 60) }}"
             }
           ]
         }
@@ -367,7 +367,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 12 * * *"
+              "expression": "={{ Math.floor(Math.random() * 60) }}"
             }
           ]
         }
@@ -387,7 +387,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 14 * * *"
+              "expression": "={{ Math.floor(Math.random() * 60) }}"
             }
           ]
         }
@@ -407,7 +407,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "0 17 * * *"
+              "expression": "={{ Math.floor(Math.random() * 60) }}"
             }
           ]
         }
@@ -540,6 +540,6 @@
     }
   ],
   "triggerCount": 5,
-  "updatedAt": "2024-08-07T01:06:46.000Z",
-  "versionId": "7904d75d-42fd-4700-8f7b-8610fd137aae"
+  "updatedAt": "2024-08-07T18:44:20.000Z",
+  "versionId": "f13c2511-601d-4cc2-a3b2-704ea5e0515e"
 }
