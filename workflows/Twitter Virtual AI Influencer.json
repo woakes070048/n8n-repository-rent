@@ -1,17 +1,6 @@
 {
   "active": false,
   "connections": {
-    "Generate tweet content": {
-      "main": [
-        [
-          {
-            "node": "Verify tweet constraints",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Trigger posting manually": {
       "main": [
         [
@@ -62,16 +51,33 @@
           }
         ]
       ]
+    },
+    "Generate tweet content": {
+      "main": [
+        [
+          {
+            "node": "Verify tweet constraints",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2024-08-07T17:44:26.814Z",
   "id": "fK54YpP436X8y5j0",
   "meta": {
-    "templateId": "2139"
+    "templateId": "2139",
+    "templateCredsSetupCompleted": true
   },
   "name": "Twitter Virtual AI Influencer",
   "nodes": [
     {
+      "parameters": {
+        "content": "## Scheduled posting \nWrite a tweet every 6 hours and randomize the minutes that it's posted at to make it seem natural.\n",
+        "height": 265,
+        "width": 389
+      },
       "id": "ea9ddb4c-af49-480c-8b73-221b3741069d",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
@@ -79,14 +85,13 @@
         380,
         240
       ],
-      "parameters": {
-        "width": 389,
-        "height": 265,
-        "content": "## Scheduled posting \nWrite a tweet every 6 hours and randomize the minutes that it's posted at to make it seem natural.\n"
-      },
       "typeVersion": 1
     },
     {
+      "parameters": {
+        "text": "={{ $json.message.content.tweet }}",
+        "additionalFields": {}
+      },
       "id": "9650b047-7d5e-4ed2-948c-d5be77a94b5d",
       "name": "Post tweet",
       "type": "n8n-nodes-base.twitter",
@@ -94,26 +99,15 @@
         2400,
         360
       ],
-      "parameters": {
-        "text": "={{ $json.message.content.tweet }}",
-        "additionalFields": {}
-      },
+      "typeVersion": 2,
       "credentials": {
         "twitterOAuth2Api": {
           "id": "hKOdSPH52LqHwyeH",
           "name": "X account"
         }
-      },
-      "typeVersion": 2
+      }
     },
     {
-      "id": "fd7fc941-37de-4f88-87c0-f62ad1ebe2d6",
-      "name": "Schedule posting every 6 hours",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "position": [
-        600,
-        340
-      ],
       "parameters": {
         "rule": {
           "interval": [
@@ -125,9 +119,17 @@
           ]
         }
       },
+      "id": "fd7fc941-37de-4f88-87c0-f62ad1ebe2d6",
+      "name": "Schedule posting every 6 hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        600,
+        340
+      ],
       "typeVersion": 1.1
     },
     {
+      "parameters": {},
       "id": "107fd741-5c17-4cd6-98aa-088bf8df523d",
       "name": "Trigger posting manually",
       "type": "n8n-nodes-base.manualTrigger",
@@ -135,10 +137,14 @@
         600,
         660
       ],
-      "parameters": {},
       "typeVersion": 1
     },
     {
+      "parameters": {
+        "content": "## Configure influencer profile \nSet your target niche, writing style, and inspiration.\n",
+        "height": 265,
+        "width": 389
+      },
       "id": "831cd431-56e5-482e-a8a5-e5c5ac078ba4",
       "name": "Sticky Note1",
       "type": "n8n-nodes-base.stickyNote",
@@ -146,14 +152,14 @@
         820,
         240
       ],
-      "parameters": {
-        "width": 389,
-        "height": 265,
-        "content": "## Configure influencer profile \nSet your target niche, writing style, and inspiration.\n"
-      },
       "typeVersion": 1
     },
     {
+      "parameters": {
+        "content": "## Generate tweet\nGenerate a potentially viral tweet based on your configuration.",
+        "height": 265,
+        "width": 389
+      },
       "id": "791c0be9-6396-4768-ab6b-3ca7fe49fbea",
       "name": "Sticky Note3",
       "type": "n8n-nodes-base.stickyNote",
@@ -161,14 +167,14 @@
         1260,
         240
       ],
-      "parameters": {
-        "width": 389,
-        "height": 265,
-        "content": "## Generate tweet\nGenerate a potentially viral tweet based on your configuration."
-      },
       "typeVersion": 1
     },
     {
+      "parameters": {
+        "content": "## Validate tweet\nIf the generated tweet does not meet length constraints, regenerate it.",
+        "height": 265,
+        "width": 389
+      },
       "id": "3b2872cf-38f9-4cfd-befd-ad792219c313",
       "name": "Sticky Note4",
       "type": "n8n-nodes-base.stickyNote",
@@ -176,14 +182,14 @@
         1700,
         240
       ],
-      "parameters": {
-        "width": 389,
-        "height": 265,
-        "content": "## Validate tweet\nIf the generated tweet does not meet length constraints, regenerate it."
-      },
       "typeVersion": 1
     },
     {
+      "parameters": {
+        "content": "## Post the tweet\nPost the tweet to your X account.",
+        "height": 265,
+        "width": 389
+      },
       "id": "364310a1-0367-4ce2-a91b-9a9c4d9387a0",
       "name": "Sticky Note5",
       "type": "n8n-nodes-base.stickyNote",
@@ -191,23 +197,10 @@
         2140,
         240
       ],
-      "parameters": {
-        "width": 389,
-        "height": 265,
-        "content": "## Post the tweet\nPost the tweet to your X account."
-      },
       "typeVersion": 1
     },
     {
-      "id": "c666ba9f-d28d-449b-8e20-65c0150cba5b",
-      "name": "Verify tweet constraints",
-      "type": "n8n-nodes-base.if",
-      "position": [
-        1940,
-        340
-      ],
       "parameters": {
-        "options": {},
         "conditions": {
           "options": {
             "leftValue": "",
@@ -226,11 +219,24 @@
               "rightValue": 280
             }
           ]
-        }
+        },
+        "options": {}
       },
+      "id": "c666ba9f-d28d-449b-8e20-65c0150cba5b",
+      "name": "Verify tweet constraints",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1940,
+        340
+      ],
       "typeVersion": 2
     },
     {
+      "parameters": {
+        "content": "## On-demand posting \nWrite a tweet on demand, when you manually run your workflow.\n",
+        "height": 265,
+        "width": 389
+      },
       "id": "9bf25238-98ba-4201-aecc-22be27f095c8",
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
@@ -238,67 +244,34 @@
         380,
         560
       ],
-      "parameters": {
-        "width": 389,
-        "height": 265,
-        "content": "## On-demand posting \nWrite a tweet on demand, when you manually run your workflow.\n"
-      },
       "typeVersion": 1
     },
     {
-      "id": "4b95c041-a70e-42f9-9467-26de2abe6b7a",
-      "name": "Generate tweet content",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "position": [
-        1360,
-        340
-      ],
       "parameters": {
-        "modelId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4-turbo-preview",
-          "cachedResultName": "GPT-4-TURBO-PREVIEW"
-        },
-        "options": {},
-        "messages": {
-          "values": [
+        "assignments": {
+          "assignments": [
             {
-              "role": "system",
-              "content": "=You are a successful modern Twitter influencer. Your tweets always go viral. "
+              "id": "45268b04-68a1-420f-9ad2-950844d16af1",
+              "name": "niche",
+              "type": "string",
+              "value": "Property Management, you post about property management"
             },
             {
-              "role": "system",
-              "content": "=You have a specific writing style: {{ $json.style }}"
+              "id": "d95f4a1c-ab1c-4eca-8732-3d7a087f82d8",
+              "name": "style",
+              "type": "string",
+              "value": "Business -like "
             },
             {
-              "role": "system",
-              "content": "=You follow the principles described in your inspiration sources closely and you write your tweets based on that: {{ $json.inspiration }}"
-            },
-            {
-              "role": "system",
-              "content": "=You have a very specific niche: {{ $json.niche }}"
-            },
-            {
-              "role": "system",
-              "content": "=Answer with the viral tweet and nothing else as a response. Keep the tweet within 280 characters. Current date and time are {{DateTime.now()}}. Add hashtags and emojis where relevant."
-            },
-            {
-              "content": "Write a tweet that is certain to go viral. Take your time in writing it. Think. Use the vast knowledge you have."
+              "id": "1ee088f7-7021-48c0-bcb7-d1011eb0db3d",
+              "name": "inspiration",
+              "type": "string",
+              "value": "Your inspiration comes from the many stories on the internet regarding tenant and manager experiences"
             }
           ]
         },
-        "jsonOutput": true
+        "options": {}
       },
-      "credentials": {
-        "openAiApi": {
-          "id": "Navm9hDUnjwpRcbB",
-          "name": "OpenAi account"
-        }
-      },
-      "typeVersion": 1
-    },
-    {
       "id": "18f1af3a-58b3-4a4d-a8ad-3657da9c41ba",
       "name": "Configure your influencer profile",
       "type": "n8n-nodes-base.set",
@@ -306,39 +279,67 @@
         1040,
         340
       ],
+      "typeVersion": 3.3
+    },
+    {
       "parameters": {
-        "options": {},
-        "assignments": {
-          "assignments": [
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4-turbo-preview",
+          "cachedResultName": "GPT-4-TURBO-PREVIEW"
+        },
+        "messages": {
+          "values": [
             {
-              "id": "45268b04-68a1-420f-9ad2-950844d16af1",
-              "name": "niche",
-              "type": "string",
-              "value": "Modern Stoicism. You tweet about the greatest stoics, their ideas, their quotes, and how their wisdom applies in today's modern life. You love sharing personal stories and experiences."
+              "content": "=You are a successful modern Twitter influencer. Your tweets always go viral. ",
+              "role": "system"
             },
             {
-              "id": "d95f4a1c-ab1c-4eca-8732-3d7a087f82d8",
-              "name": "style",
-              "type": "string",
-              "value": "All of your tweets are very personal. "
+              "content": "=You have a specific writing style: {{ $json.style }}",
+              "role": "system"
             },
             {
-              "id": "1ee088f7-7021-48c0-bcb7-d1011eb0db3d",
-              "name": "inspiration",
-              "type": "string",
-              "value": "Your inspiration comes from tens of books on stoicism, psychology, and how to influence people. Books such as \"Contagious\" by Jonah Bergen, \"How To Be Internet Famous\" by Brendan Cox, \"How to Win Friends and Influence People\" by Dale Carnegie, and \"Influencers and Creators\" by  Robert V Kozinets, Ulrike Gretzel, Rossella Gambetti strongly influence the way you write your tweets. "
+              "content": "=You follow the principles described in your inspiration sources closely and you write your tweets based on that: {{ $json.inspiration }}",
+              "role": "system"
+            },
+            {
+              "content": "=You have a very specific niche: {{ $json.niche }}",
+              "role": "system"
+            },
+            {
+              "content": "=Answer with the viral tweet and nothing else as a response. Keep the tweet within 280 characters. Current date and time are {{DateTime.now()}}. Add hashtags and emojis where relevant.",
+              "role": "system"
+            },
+            {
+              "content": "Write a tweet that is certain to go viral. Take your time in writing it. Think. Use the vast knowledge you have."
             }
           ]
-        }
+        },
+        "jsonOutput": true,
+        "options": {}
       },
-      "typeVersion": 3.3
+      "id": "4b95c041-a70e-42f9-9467-26de2abe6b7a",
+      "name": "Generate tweet content",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1360,
+        340
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
-  "pinData": null,
-  "settings": null,
+  "pinData": {},
+  "settings": {},
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-07T17:44:26.814Z",
-  "versionId": "1201da9d-0fa0-4e52-94e9-e0f2f5faef45"
+  "updatedAt": "2024-08-07T18:44:46.000Z",
+  "versionId": "d1ec519c-90c6-4581-abf8-90642254f6f2"
 }
