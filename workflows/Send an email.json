@@ -1,0 +1,67 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-08T01:25:41.652Z",
+  "id": "xFbUhB6YUzlLaYkP",
+  "meta": {
+    "templateId": "584"
+  },
+  "name": "Send an email",
+  "nodes": [
+    {
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        380,
+        240
+      ],
+      "parameters": {},
+      "typeVersion": 1,
+      "id": "1870d23d-be63-40da-81ed-d6a5f332a9cb"
+    },
+    {
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [
+        580,
+        240
+      ],
+      "parameters": {
+        "text": "This is a message to demonstrate the n8n Send Email workflow!",
+        "options": {
+          "allowUnauthorizedCerts": false
+        },
+        "subject": "n8n rocks!",
+        "toEmail": "user@example.com",
+        "fromEmail": "user@from.email"
+      },
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      },
+      "typeVersion": 1,
+      "id": "c344587b-1970-4942-8309-bb20a091ece0"
+    }
+  ],
+  "pinData": null,
+  "settings": null,
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-08T01:25:41.652Z",
+  "versionId": "70c8602a-17ef-428c-9e19-6e4605d8f25c"
+}
