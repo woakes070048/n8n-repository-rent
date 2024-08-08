@@ -1,0 +1,231 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Mautic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-08T12:56:04.576Z",
+  "id": "3R5G29jOfBW34ouM",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Mautic",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "469a0965-7ae6-41dd-883c-ce91764fba6c",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        120,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "path": "/data.blzres.com/data/tenant_directory.csv"
+      },
+      "id": "e658683b-0f30-4da8-933d-2d32576622e5",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        280,
+        360
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ",",
+          "headerRow": true,
+          "includeEmptyCells": true,
+          "fromLine": 1
+        }
+      },
+      "id": "cc0c98fd-fb76-488a-932a-dd32ca84a520",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        500,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "email": "={{ $('Filter').item.json.Emails }}",
+        "firstName": "={{ $('Filter').item.json['First Name'] }}",
+        "lastName": "={{ $('Filter').item.json['Last Name'] }}",
+        "company": "Blaze Real Estate PM",
+        "additionalFields": {
+          "addressUi": {
+            "addressValues": {
+              "address1": "={{ $('Filter').item.json['Tenant Street Address 1'] }}",
+              "address2": "={{ $('Filter').item.json['Tenant Street Address 2'] }}",
+              "city": "={{ $('Filter').item.json['Tenant City'] }}",
+              "state": "={{ $('Filter').item.json['Tenant State'] }}",
+              "zipCode": "={{ $('Filter').item.json['Tenant Zip'] }}"
+            }
+          },
+          "customFieldsUi": {
+            "customFieldValues": [
+              {
+                "fieldId": "birthdate",
+                "fieldValue": "={{ $('Filter').item.json['Tenant Birthdate'] }}"
+              },
+              {
+                "fieldId": "move_in_date",
+                "fieldValue": "={{ $('Filter').item.json['Move-in'] }}"
+              },
+              {
+                "fieldId": "lease_end_date",
+                "fieldValue": "={{ $('Filter').item.json['Lease To'] }}"
+              },
+              {
+                "fieldId": "property",
+                "fieldValue": "={{ $('Filter').item.json.Property }}"
+              },
+              {
+                "fieldId": "unit",
+                "fieldValue": "={{ $('Filter').item.json.Unit }}"
+              }
+            ]
+          },
+          "mobile": "={{ $json.extractedPhoneNumber }}"
+        },
+        "options": {}
+      },
+      "id": "cfa21e88-6f1c-4bc3-8194-a7b4217edb00",
+      "name": "Mautic",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        360
+      ],
+      "credentials": {
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "41c309e2-ed6c-48c3-8006-c32226a1f2e4",
+              "leftValue": "={{ $json.Emails }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ac49ef8e-60ab-47f0-992d-d00c9926b6fa",
+      "name": "Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        700,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the input data from the previous node\nconst input = $json[\"Phone Numbers\"];\n\n// Check if input is valid\nif (input) {\n  // Regular expression to extract the phone number\n  const phoneNumber = input.match(/(\\+?\\d{1,2})?\\s?\\(?\\d{3}\\)?[\\s\\-]?\\d{3}[\\s\\-]?\\d{4}/);\n\n  // Return the extracted phone number, trimmed of any leading or trailing whitespace, or null if not found\n  return [\n    {\n      json: {\n        extractedPhoneNumber: phoneNumber ? phoneNumber[0].trim() : null,\n        originalPhoneNumbers: input\n      }\n    }\n  ];\n} else {\n  // Return null if input is not valid\n  return [\n    {\n      json: {\n        extractedPhoneNumber: null,\n        originalPhoneNumbers: input\n      }\n    }\n  ];\n}\n"
+      },
+      "id": "e4f92767-78b2-4bfa-bd25-386371224a5c",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        360
+      ],
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-08T16:17:11.000Z",
+  "versionId": "ed141fa7-b38f-41b5-8cac-f222c2e5bbac"
+}
