@@ -1,22 +1,11 @@
 {
   "active": true,
   "connections": {
-    "Fetch Properties": {
-      "main": [
-        [
-          {
-            "node": "Generate HTML Content1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Schedule Trigger": {
       "main": [
         [
           {
-            "node": "Fetch Properties",
+            "node": "MySQL",
             "type": "main",
             "index": 0
           }
@@ -44,6 +33,17 @@
           }
         ]
       ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Generate HTML Content1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2024-07-21T19:53:28.466Z",
@@ -53,26 +53,6 @@
   },
   "name": "WP Available List",
   "nodes": [
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT * FROM advertising_list;"
-      },
-      "name": "Fetch Properties",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 1,
-      "position": [
-        1540,
-        500
-      ],
-      "id": "401a1145-786f-4c26-afa7-85143937f518",
-      "credentials": {
-        "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
-        }
-      }
-    },
     {
       "parameters": {
         "rule": {
@@ -170,7 +150,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const properties = items.map(item => item.json);\n\n// Get the current date\nconst now = new Date();\nconst formattedDate = now.toLocaleDateString('en-US');\n\nlet content = '<table border=\"1\" style=\"border-collapse: collapse; width: 100%;\">';\ncontent += '<tr><th>Property Name</th><th>Unit Name</th><th>Bedrooms</th><th>Bathrooms</th><th>Advertised Rent</th><th>Image</th></tr>';\n\nproperties.forEach(property => {\n    const propertyLink = property.property_link ? `<a href=\"${property.property_link}\">${property.property_name}</a>` : property.property_name;\n    content += '<tr>';\n    content += `<td>${propertyLink}</td>`;\n    content += `<td>${property.unit_name}</td>`;\n    content += `<td>${property.bedrooms}</td>`;\n    content += `<td>${property.bathrooms}</td>`;\n    content += `<td>${property.advertised_rent}</td>`;\n    content += `<td><img src=\"${property.image_link}\" alt=\"${property.property_name}\" style=\"width:100px;height:auto;\"></td>`;\n    content += '</tr>';\n});\n\ncontent += '</table>';\n\nreturn [{ json: { content, formattedDate } }];"
+        "functionCode": "const properties = items.map(item => item.json);\n\n// Get the current date\nconst now = new Date();\nconst formattedDate = now.toLocaleDateString('en-US');\n\nlet content = '<table border=\"1\" style=\"border-collapse: collapse; width: 100%;\">';\ncontent += '<tr><th>Property Name</th><th>Unit Name</th><th>Bedrooms</th><th>Bathrooms</th><th>Advertised Rent</th><th>Image</th></tr>';\n\nproperties.forEach(property => {\n    const propertyLink = property.property_link ? `<a href=\"${property.property_link}\">${property.property_name}</a>` : property.property_name;\n    content += '<tr>';\n    content += `<td>${propertyLink}</td>`;\n    content += `<td>${property.unit_name}</td>`;\n    content += `<td>${property.bedrooms}</td>`;\n    content += `<td>${property.bathrooms}</td>`;\n    content += `<td>${property.advertised_rent}</td>`;\n    content += `<td>\n    <a href=\"${property.image_link}\" target=\"_blank\">\n        <img src=\"${property.image_link}\" alt=\"Property Image\" />\n    </a>\n</td>`;\n    content += '</tr>';\n});\n\ncontent += '</table>';\n\nreturn [{ json: { content, formattedDate } }];"
       },
       "name": "Generate HTML Content1",
       "type": "n8n-nodes-base.function",
@@ -180,6 +160,27 @@
         500
       ],
       "id": "ff671827-6609-4feb-bfc2-27395d74635e"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM all_rental_properties\nWHERE posted_to_website = 'yes';\n",
+        "options": {}
+      },
+      "id": "c8720486-a25b-427b-aed4-793d2b843195",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1500,
+        500
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -194,6 +195,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-05T18:03:50.000Z",
-  "versionId": "9a20bd8d-6778-4ea5-b12f-7f916d89e997"
+  "updatedAt": "2024-08-10T16:49:28.000Z",
+  "versionId": "cf438d31-6e85-45e9-ab43-7a6ee47aa13d"
 }
