@@ -12,17 +12,6 @@
         ]
       ]
     },
-    "Webhook1": {
-      "main": [
-        [
-          {
-            "node": "Process Responses",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If": {
       "main": [
         [
@@ -39,6 +28,17 @@
         [
           {
             "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Process Responses",
             "type": "main",
             "index": 0
           }
@@ -63,25 +63,9 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        1040,
-        320
-      ]
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "dbdf4a19-ffb4-480b-9902-2dad46caf977",
-        "options": {}
-      },
-      "id": "51f797f3-121b-4c66-8d86-5e16adab5e25",
-      "name": "Webhook1",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [
-        860,
+        1020,
         460
-      ],
-      "webhookId": "dbdf4a19-ffb4-480b-9902-2dad46caf977"
+      ]
     },
     {
       "parameters": {
@@ -124,8 +108,8 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        2040,
-        440
+        1740,
+        460
       ],
       "credentials": {
         "smtp": {
@@ -156,8 +140,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.4,
       "position": [
-        1400,
-        440
+        1420,
+        460
       ],
       "credentials": {
         "openAiApi": {
@@ -165,6 +149,22 @@
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dbdf4a19-ffb4-480b-9902-2dad46caf977",
+        "options": {}
+      },
+      "id": "51f797f3-121b-4c66-8d86-5e16adab5e25",
+      "name": "Webhook1",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        860,
+        460
+      ],
+      "webhookId": "dbdf4a19-ffb4-480b-9902-2dad46caf977"
     }
   ],
   "pinData": {},
@@ -172,6 +172,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-08T12:49:45.000Z",
-  "versionId": "890936e6-3325-4650-90a7-a08d82e51f1a"
+  "updatedAt": "2024-08-10T16:52:33.000Z",
+  "versionId": "2954f396-f435-4a2d-bbc8-f1ac2bcc8db6"
 }
