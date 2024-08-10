@@ -1,6 +1,91 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Client Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Client Details": {
+      "main": [
+        [
+          {
+            "node": "Create Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Email Content": {
+      "main": [
+        [
+          {
+            "node": "Send Review Request Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Review Request Email": {
+      "main": [
+        [
+          {
+            "node": "Wait 7 Days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 7 Days": {
+      "main": [
+        [
+          {
+            "node": "Check Review Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Review Exists": {
+      "main": [
+        [
+          {
+            "node": "Review Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Review Exists?": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-Up Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Thank You Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2024-08-07T18:38:06.975Z",
   "id": "L1KtOu5227qpIrRv",
   "meta": {
@@ -169,6 +254,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-07T21:55:26.000Z",
-  "versionId": "4471fe60-8248-4dde-afc5-fd47ae7857c8"
+  "updatedAt": "2024-08-10T16:52:56.000Z",
+  "versionId": "f42fe988-f2ba-4974-a7d6-1c7a8f743d65"
 }
