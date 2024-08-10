@@ -1,17 +1,6 @@
 {
   "active": true,
   "connections": {
-    "Check Filename": {
-      "main": [
-        [
-          {
-            "node": "FTP",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Email Trigger (IMAP)": {
       "main": [
         [
@@ -23,15 +12,42 @@
         ]
       ]
     },
-    "FTP": {
+    "Check Filename": {
       "main": [
         [
           {
-            "node": "Execute Workflow",
+            "node": "Extract from File",
             "type": "main",
             "index": 0
           }
         ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        []
       ]
     }
   },
@@ -44,37 +60,17 @@
   "nodes": [
     {
       "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{$binary.attachment_0.fileName}}",
-              "operation": "regex",
-              "value2": "^unit_directory-\\d{8}\\.csv$"
-            }
-          ]
-        }
-      },
-      "name": "Check Filename",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        0,
-        280
-      ],
-      "id": "1f5feb04-fc72-4416-beaa-da2cd0a2dfd9"
-    },
-    {
-      "parameters": {
+        "postProcessAction": "nothing",
         "downloadAttachments": true,
         "options": {}
       },
-      "id": "9a038909-b350-4a21-b30f-af05bbbf3abf",
+      "id": "4f373a71-419a-4f86-9f0d-ab3d80799f35",
       "name": "Email Trigger (IMAP)",
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        -200,
-        380
+        -460,
+        360
       ],
       "credentials": {
         "imap": {
@@ -85,17 +81,37 @@
     },
     {
       "parameters": {
-        "operation": "upload",
-        "path": "/data.blzres.com/data/full-list.csv",
-        "binaryPropertyName": "attachment_0"
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$binary.attachment_0.fileName}}",
+              "operation": "regex",
+              "value2": "^report_builder-unit_directory-\\d{8}\\.csv$"
+            }
+          ]
+        }
       },
-      "id": "08c41ec5-e3de-47e5-91c2-8c13db251aa7",
+      "name": "Check Filename",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        360
+      ],
+      "id": "f7931fe5-0b50-44b4-a4de-399ab4a126e2"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "data.blzres.com/data/full-list.csv"
+      },
+      "id": "447f3fb3-4b91-4ab8-a075-54f5b1b5c302",
       "name": "FTP",
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        200,
-        260
+        240,
+        340
       ],
       "credentials": {
         "ftp": {
@@ -106,16 +122,30 @@
     },
     {
       "parameters": {
-        "workflowId": "wjzuMIMLlf8RnA4S",
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
         "options": {}
       },
-      "id": "0c08494a-00c2-4757-b3b1-cde016a570bb",
-      "name": "Execute Workflow",
-      "type": "n8n-nodes-base.executeWorkflow",
+      "id": "d82edb81-d9e5-4ac1-93a4-ab305c83a336",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        440,
-        260
+        -100,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d7dcbc3d-a6ff-4e6f-a229-8ec3b4ed3de6",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        340
       ]
     }
   ],
@@ -125,11 +155,11 @@
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
-      "lastMessageUid": 110
+      "lastMessageUid": 114
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-05T14:33:30.000Z",
-  "versionId": "007d833c-9de1-4af5-ae66-6bc87802e477"
+  "updatedAt": "2024-08-10T01:59:59.000Z",
+  "versionId": "5236ef58-7ed5-48b4-8006-9d70304e3ff5"
 }
