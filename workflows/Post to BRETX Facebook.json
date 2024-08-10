@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -75,50 +75,6 @@
       ]
     },
     "Cron 8am": {
-      "main": [
-        [
-          {
-            "node": "MySQL Node",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "cron 10am": {
-      "main": [
-        [
-          {
-            "node": "MySQL Node",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Cron 12": {
-      "main": [
-        [
-          {
-            "node": "MySQL Node",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Cron 14": {
-      "main": [
-        [
-          {
-            "node": "MySQL Node",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Cron 16": {
       "main": [
         [
           {
@@ -327,7 +283,7 @@
           "interval": [
             {
               "field": "hours",
-              "triggerAtMinute": null
+              "hoursInterval": 3
             }
           ]
         }
@@ -339,86 +295,6 @@
       "position": [
         -160,
         800
-      ]
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "cronExpression",
-              "expression": "={{ Math.floor(Math.random() * 60) }}"
-            }
-          ]
-        }
-      },
-      "id": "00d41d83-4cd3-4fad-811c-6fc2c1e99464",
-      "name": "cron 10am",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -160,
-        1020
-      ]
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "cronExpression",
-              "expression": "={{ Math.floor(Math.random() * 60) }}"
-            }
-          ]
-        }
-      },
-      "id": "20901c95-ac16-454b-b103-02b242a2b9aa",
-      "name": "Cron 12",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -160,
-        1220
-      ]
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "cronExpression",
-              "expression": "={{ Math.floor(Math.random() * 60) }}"
-            }
-          ]
-        }
-      },
-      "id": "af94f91c-c877-40b1-bc75-9bf76b16f0a9",
-      "name": "Cron 14",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        60,
-        1220
-      ]
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "cronExpression",
-              "expression": "={{ Math.floor(Math.random() * 60) }}"
-            }
-          ]
-        }
-      },
-      "id": "06586a47-6d2a-4da9-bc4c-f162b78ee446",
-      "name": "Cron 16",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        280,
-        1220
       ]
     },
     {
@@ -512,7 +388,9 @@
   "staticData": {
     "node:Cron 8am": {
       "recurrencyRules": [],
-      "recurrenceRules": []
+      "recurrenceRules": [
+        0
+      ]
     },
     "node:cron 10am": {
       "recurrencyRules": [],
@@ -539,7 +417,7 @@
       "name": "Facebook"
     }
   ],
-  "triggerCount": 5,
-  "updatedAt": "2024-08-07T18:44:20.000Z",
-  "versionId": "f13c2511-601d-4cc2-a3b2-704ea5e0515e"
+  "triggerCount": 1,
+  "updatedAt": "2024-08-09T20:38:40.000Z",
+  "versionId": "42620c8c-34af-4a75-a463-51ddc3b22316"
 }
