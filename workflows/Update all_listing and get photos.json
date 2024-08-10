@@ -56,17 +56,6 @@
         ]
       ]
     },
-    "Extract CSV Data": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Edit Fields1": {
       "main": [
         [
@@ -82,36 +71,7 @@
       "main": [
         [
           {
-            "node": "Is Valid Page",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Is Valid Page": {
-      "main": [
-        [
-          {
-            "node": "Kick if Invalid",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Kick if Invalid": {
-      "main": [
-        [
-          {
             "node": "Locate First Image URL",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "MySQL1",
             "type": "main",
             "index": 0
           }
@@ -190,6 +150,17 @@
           }
         ]
       ]
+    },
+    "Extract CSV Data": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2024-08-04T14:49:12.164Z",
@@ -215,8 +186,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        1260,
-        640
+        1360,
+        500
       ]
     },
     {
@@ -231,8 +202,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2180,
-        360
+        1500,
+        980
       ]
     },
     {
@@ -242,20 +213,20 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        1920,
-        380
+        1360,
+        640
       ]
     },
     {
       "parameters": {
-        "path": "/blzres.com/data/full-list.csv"
+        "path": "data.blzres.com/data/full-list.csv"
       },
       "id": "e0276d47-4584-4f32-b920-c24e9ac25ebc",
       "name": "FTP",
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        2120,
+        1920,
         640
       ],
       "credentials": {
@@ -275,8 +246,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3160,
-        640
+        2640,
+        840
       ]
     },
     {
@@ -290,8 +261,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        3320,
-        640
+        2980,
+        840
       ],
       "credentials": {
         "ftp": {
@@ -299,20 +270,6 @@
           "name": "FTP account"
         }
       }
-    },
-    {
-      "parameters": {
-        "operation": "xls",
-        "options": {}
-      },
-      "id": "657470cc-92a0-48cc-b7a0-825974efcbe6",
-      "name": "Extract CSV Data",
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        2300,
-        640
-      ]
     },
     {
       "parameters": {
@@ -479,6 +436,12 @@
               "name": "property_link",
               "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json['Rentable UID'] }}",
               "type": "string"
+            },
+            {
+              "id": "fce5f14c-8a15-415d-998c-9bb74c24cfe3",
+              "name": "Status",
+              "value": "={{ $json.Status }}",
+              "type": "string"
             }
           ]
         },
@@ -489,8 +452,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1480,
-        900
+        1580,
+        840
       ]
     },
     {
@@ -514,53 +477,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2380,
-        900
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "const htmlContent = $node['Get Property page'].json.data;\n\nif (htmlContent.includes('Current Listings')) {\n  return [{ json: { status: 'fail' } }];\n} else {\n  return [{ json: { status: 'pass', data: htmlContent } }];\n}\n"
-      },
-      "id": "97e26184-3d0d-47cc-a3d9-5aeac85b7b2a",
-      "name": "Is Valid Page",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2620,
-        900
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict"
-          },
-          "conditions": [
-            {
-              "id": "aab56bdf-79d2-4749-b9a1-9e96dd037215",
-              "leftValue": "={{ $json.status }}",
-              "rightValue": "fail",
-              "operator": {
-                "type": "string",
-                "operation": "notEquals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "215cfc75-54fd-4de9-af8d-1a43ba41fb60",
-      "name": "Kick if Invalid",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [
-        2860,
-        900
+        2140,
+        840
       ]
     },
     {
@@ -572,8 +490,8 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        3100,
-        880
+        2360,
+        840
       ]
     },
     {
@@ -586,8 +504,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
       "position": [
-        1740,
-        900
+        1760,
+        840
       ]
     },
     {
@@ -707,6 +625,10 @@
             {
               "column": "property_link",
               "value": "={{ $('Split CSV into Batches').item.json.property_link }}"
+            },
+            {
+              "column": "status",
+              "value": "={{ $('Edit Fields1').item.json.Status }}"
             }
           ]
         },
@@ -717,8 +639,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2,
       "position": [
-        3340,
-        880
+        2980,
+        1020
       ],
       "credentials": {
         "mySql": {
@@ -754,8 +676,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        2820,
-        1200
+        2560,
+        1180
       ],
       "credentials": {
         "mySql": {
@@ -833,6 +755,10 @@
             {
               "column": "unit_address",
               "value": "={{ $('Edit Fields1').item.json.unit_address }}"
+            },
+            {
+              "column": "status",
+              "value": "={{ $('Edit Fields1').item.json.Status }}"
             }
           ]
         },
@@ -843,8 +769,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        2160,
-        1120
+        2120,
+        1040
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -874,7 +800,7 @@
               }
             }
           ],
-          "combinator": "and"
+          "combinator": "or"
         },
         "options": {}
       },
@@ -883,10 +809,38 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        2060,
-        900
+        1940,
+        840
       ],
       "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Check and process binary data\nif ($binary && $binary.data) {\n    const binaryData = $binary.data;\n    const csvContent = Buffer.from(binaryData.data, binaryData.encoding).toString('utf-8');\n\n    if (!csvContent) {\n        throw new Error(\"CSV content is empty after conversion.\");\n    }\n\n    // Split the CSV content into an array of lines\n    let lines = csvContent.split('\\n');\n\n    // Ensure there are enough lines to perform the operation\n    if (lines.length < 3) {\n        throw new Error(\"The CSV file does not have enough lines to remove the specified rows.\");\n    }\n\n    // Remove line 2 (index 1 in zero-based index)\n    lines.splice(1, 1);\n\n    // Remove the last line (which is the \"total\" line)\n    lines.pop();\n\n    // Join the remaining lines back into a single string\n    const outputCsv = lines.join('\\n');\n\n    // Return the result\n    return {\n        output_csv: outputCsv\n    };\n} else {\n    throw new Error(\"Binary data is not available in the expected format.\");\n}\n"
+      },
+      "id": "157cdc82-3249-46f4-9739-b6488d233128",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2760,
+        1160
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "id": "aa50c2a1-a52c-4ccd-a71b-b90ab28e59f9",
+      "name": "Extract CSV Data",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        2260,
+        640
+      ]
     }
   ],
   "pinData": {},
@@ -900,6 +854,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-06T21:56:17.000Z",
-  "versionId": "6adb5592-94d6-4827-8e36-0d643de6cd0c"
+  "updatedAt": "2024-08-10T03:27:33.000Z",
+  "versionId": "bbb9c18a-86af-4d2a-a9d9-96170c7abacb"
 }
