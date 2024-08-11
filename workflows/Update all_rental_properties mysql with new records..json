@@ -44,6 +44,17 @@
           }
         ]
       ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2024-07-29T14:03:56.712Z",
@@ -56,7 +67,9 @@
     {
       "parameters": {
         "downloadAttachments": true,
-        "options": {}
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Daily List\"]]"
+        }
       },
       "id": "4f373a71-419a-4f86-9f0d-ab3d80799f35",
       "name": "Email Trigger (IMAP)",
@@ -118,7 +131,9 @@
       "parameters": {
         "operation": "xls",
         "binaryPropertyName": "attachment_0",
-        "options": {}
+        "options": {
+          "headerRow": true
+        }
       },
       "id": "d82edb81-d9e5-4ac1-93a4-ab305c83a336",
       "name": "Extract from File",
@@ -141,6 +156,22 @@
         80,
         340
       ]
+    },
+    {
+      "parameters": {
+        "workflowId": "J1zqBM7eFPvcL9Md",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "51b3492e-584f-401d-a41b-0e6e5e1a6ee3",
+      "name": "Execute Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        480,
+        340
+      ]
     }
   ],
   "pinData": {},
@@ -149,11 +180,11 @@
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
-      "lastMessageUid": 119
+      "lastMessageUid": 125
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-10T18:31:14.000Z",
-  "versionId": "6235641b-b558-4921-8464-a6cd38d83b7a"
+  "updatedAt": "2024-08-11T12:23:32.000Z",
+  "versionId": "aed3d8fb-3aeb-4e71-a0c6-b1d183a08e9f"
 }
