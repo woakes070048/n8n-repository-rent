@@ -165,6 +165,17 @@
           }
         ]
       ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2024-08-07T02:35:05.896Z",
@@ -221,7 +232,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT property_name, unit_name, bedrooms, bathrooms, advertised_rent, marketing_title, marketing_description, sqft, application_fee, rentable_uid, unit_address, posted_to_website, appliances, utilities, property_link, image_link, last_posted FROM advertising_list"
+        "query": "SELECT \n    property_name, \n    unit_name, \n    bedrooms, \n    bathrooms, \n    advertised_rent, \n    marketing_title, \n    marketing_description, \n    sqft, \n    application_fee, \n    rentable_uid, \n    unit_address, \n    posted_to_website, \n    appliances, \n    utilities, \n    property_link, \n    image_link, \n    last_posted \nFROM \n    advertising_list\nWHERE \n    last_posted IS NULL \n    OR last_posted < NOW() - INTERVAL 4 DAY;\n"
       },
       "id": "d79cf432-ac22-4107-839e-6891837bc9ed",
       "type": "n8n-nodes-base.mySql",
@@ -292,12 +303,12 @@
         },
         "dataMode": "defineBelow",
         "columnToMatchOn": "rentable_uid",
-        "valueToMatchOn": "={{ $('MySQL Node').item.json.rentable_uid }}",
+        "valueToMatchOn": "={{ $node[\"Edit Fields\"].json.rentable_uid }}\n",
         "valuesToSend": {
           "values": [
             {
               "column": "last_posted",
-              "value": "={{ $today }}"
+              "value": "={{ $now }}"
             }
           ]
         },
@@ -358,7 +369,7 @@
             {
               "id": "51058094-5ac3-476b-adec-f01fc3eeef9c",
               "name": "rentable_uid",
-              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json.rentable_uid }}",
+              "value": "={{ $json.rentable_uid }}",
               "type": "string"
             },
             {
@@ -371,6 +382,12 @@
               "id": "f08b8595-411d-4d9c-9651-f1bb209e5693",
               "name": "property_link",
               "value": "={{ $json.property_link }}",
+              "type": "string"
+            },
+            {
+              "id": "af637ec7-777c-4043-a065-939262d0efc1",
+              "name": "last_posted",
+              "value": "={{ $json.last_posted }}",
               "type": "string"
             }
           ]
@@ -401,7 +418,7 @@
     },
     {
       "parameters": {
-        "text": "={{ $('Code').item.json.trimmedResponse }} {{ $('Edit Fields').item.json.property_link }} ",
+        "text": "={{ $node[\"Code\"].json[\"trimmedResponse\"] }}\n{{ $node[\"If\"].json[\"property_link\"] || \"default link\" }}\n",
         "additionalFields": {
           "attachments": "={{ $json.media_id_string }}"
         }
@@ -411,7 +428,7 @@
       "type": "n8n-nodes-base.twitter",
       "typeVersion": 2,
       "position": [
-        2020,
+        2220,
         520
       ],
       "credentials": {
@@ -584,6 +601,6 @@
   },
   "tags": [],
   "triggerCount": 5,
-  "updatedAt": "2024-08-07T13:48:11.000Z",
-  "versionId": "b71ccb3f-93db-4143-9db7-f2e0bae6470f"
+  "updatedAt": "2024-08-10T20:47:00.000Z",
+  "versionId": "1b42b253-3206-4545-a820-49e7d7b2d3c5"
 }
