@@ -44,11 +44,6 @@
           }
         ]
       ]
-    },
-    "FTP": {
-      "main": [
-        []
-      ]
     }
   },
   "createdAt": "2024-07-29T14:03:56.712Z",
@@ -60,7 +55,6 @@
   "nodes": [
     {
       "parameters": {
-        "postProcessAction": "nothing",
         "downloadAttachments": true,
         "options": {}
       },
@@ -155,11 +149,11 @@
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
-      "lastMessageUid": 116
+      "lastMessageUid": 119
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-10T01:59:59.000Z",
-  "versionId": "5236ef58-7ed5-48b4-8006-9d70304e3ff5"
+  "updatedAt": "2024-08-10T18:31:14.000Z",
+  "versionId": "6235641b-b558-4921-8464-a6cd38d83b7a"
 }
