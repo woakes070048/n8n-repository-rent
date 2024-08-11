@@ -58,7 +58,13 @@
     },
     "If": {
       "main": [
-        [],
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Loop Over Items",
@@ -654,8 +660,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        3080,
-        1600
+        2700,
+        1460
       ],
       "alwaysOutputData": true,
       "credentials": {
@@ -1020,6 +1026,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-10T16:49:39.000Z",
-  "versionId": "846ecde1-2704-4b27-8fd4-210f76828eef"
+  "updatedAt": "2024-08-10T19:04:41.000Z",
+  "versionId": "c83cc69f-191a-4e0d-8b23-205ab4161ef3"
 }
