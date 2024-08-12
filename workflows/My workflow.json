@@ -1,7 +1,29 @@
 {
   "active": false,
   "connections": {
-    "Schedule Trigger": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
       "main": [
         [
           {
@@ -11,121 +33,10 @@
           }
         ]
       ]
-    },
-    "Extract CSV Data": {
-      "main": [
-        [
-          {
-            "node": "Split CSV into Batches",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Split CSV into Batches": {
-      "main": [
-        [
-          {
-            "node": "Fetch HTML",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Fetch HTML": {
-      "main": [
-        [
-          {
-            "node": "Check Invalid URL",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Check Invalid URL": {
-      "main": [
-        [
-          {
-            "node": "Combine Data",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Split CSV into Batches",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Combine Data": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert into MySQL": {
-      "main": [
-        [
-          {
-            "node": "Split CSV into Batches",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute Workflow Trigger": {
-      "main": [
-        []
-      ]
-    },
-    "FTP": {
-      "main": [
-        [
-          {
-            "node": "Extract CSV Data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "FTP1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "FTP1": {
-      "main": [
-        [
-          {
-            "node": "Insert into MySQL",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
-  "createdAt": "2024-07-31T12:30:38.134Z",
-  "id": "yDnCmUPY4jy32Vbk",
+  "createdAt": "2024-08-12T13:09:04.093Z",
+  "id": "QkOaic4SNAPYvP31",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -133,282 +44,253 @@
   "nodes": [
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {}
-          ]
-        }
-      },
-      "id": "65e897a4-00e6-4e62-929f-03dd6a38d3b6",
-      "name": "Schedule Trigger",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        1800,
-        860
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "xls",
-        "options": {}
-      },
-      "id": "8301e329-db24-435d-82f7-980ec5019eab",
-      "name": "Extract CSV Data",
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        2120,
-        860
-      ]
-    },
-    {
-      "parameters": {
-        "batchSize": 1,
-        "options": {}
-      },
-      "id": "5679e67f-898e-4888-9e4b-09c6b88d3c3a",
-      "name": "Split CSV into Batches",
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 1,
-      "position": [
-        2380,
-        840
-      ]
-    },
-    {
-      "parameters": {
-        "url": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json['Rentable UID'] }}",
+        "format": "resolved",
         "options": {
-          "redirect": {
-            "redirect": {
-              "maxRedirects": 2
-            }
-          },
-          "response": {
-            "response": {
-              "fullResponse": true
-            }
-          }
+          "customEmailConfig": "[\"UNSEEN\"]"
         }
       },
-      "id": "23e82867-a3c8-467b-a6ec-da323e04097a",
-      "name": "Fetch HTML",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2600,
-        840
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict"
-          },
-          "conditions": [
-            {
-              "id": "aab56bdf-79d2-4749-b9a1-9e96dd037215",
-              "leftValue": "={{ $json.statusCode }}",
-              "rightValue": 200,
-              "operator": {
-                "type": "number",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "6da055cb-e800-4cb7-9432-59543bab5a47",
-      "name": "Check Invalid URL",
-      "type": "n8n-nodes-base.if",
+      "id": "f99d0d72-6bd4-42d3-8a27-dec1456e742e",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        2780,
-        840
-      ]
+        600,
+        360
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
     },
     {
       "parameters": {
-        "functionCode": "const csvData = $node[\"Split CSV into Batches\"].json[0];\nconst htmlContent = items[0].json.data;\n\nconst imageRegex = /https:\\/\\/images\\.cdn\\.appfolio\\.com\\/blazepropertymanagement\\/images\\/[a-f0-9\\\\-]+\\/[a-z]+\\.jpg/g;\nconst images = htmlContent.match(imageRegex);\n\nlet firstImageUrl = null;\nif (images && images.length > 0) {\n  firstImageUrl = images[0];\n}\n\nreturn [{\n  json: { ...csvData, 'Image URL': firstImageUrl || '' }\n}];\n"
-      },
-      "id": "c06e1136-c550-4d3e-b932-c20b3493c8e0",
-      "name": "Combine Data",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [
-        3000,
-        840
-      ]
-    },
-    {
-      "parameters": {
-        "table": {
-          "__rl": true,
-          "value": "properties",
-          "mode": "list",
-          "cachedResultName": "properties"
-        },
-        "dataMode": "defineBelow",
-        "valuesToSend": {
+        "rules": {
           "values": [
             {
-              "column": "property_name",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Property Name\"] }}"
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.headers.subject }}",
+                    "rightValue": "Courtyard Pampa Daily Delinquency",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             },
             {
-              "column": "unit_name",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Unit Name\"] }}"
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "97b45473-176e-4ebc-b2aa-f71ca18fd693",
+                    "leftValue": "={{ $json.headers.subject }}",
+                    "rightValue": "Cross Keys Daily Delinquency",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             },
             {
-              "column": "default_deposit",
-              "value": "="
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "f06db94d-f9c0-4d4c-92f6-f8fea21a6948",
+                    "leftValue": "{{ $json.headers.subject }}",
+                    "rightValue": "RiverEdge Daily Delinquency",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             },
             {
-              "column": "bedrooms",
-              "value": "={{ $('Split CSV into Batches').item.json.Bedrooms }}"
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "c09ad83a-ee52-44fa-8707-3d7b6deb02a9",
+                    "leftValue": "{{ $json.headers.subject }}",
+                    "rightValue": "Adobe Trail Daily Delinquency",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             },
             {
-              "column": "bathrooms",
-              "value": "={{ $('Split CSV into Batches').item.json.Bathrooms }}"
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "1510e363-0f48-4f7d-8dc7-55d9cc95965d",
+                    "leftValue": "{{ $json.headers.subject }}",
+                    "rightValue": "Jefferson Square Daily Delinquency",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             },
             {
-              "column": "advertised_rent",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Advertised Rent\"] }}"
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "1f1615af-f677-4f9c-acdd-4ed9f9c71a2a",
+                    "leftValue": "{{ $json.headers.subject }}",
+                    "rightValue": "RiverEdge Daily Delinquency",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             },
             {
-              "column": "posted_to_website",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Posted To Website\"] }}"
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "70198a54-3e37-4e9f-822c-0d5e6131dabd",
+                    "leftValue": "{{ $json.headers.subject }}",
+                    "rightValue": "NorthPark Daily Delinquency",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             },
             {
-              "column": "posted_to_internet",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Posted To Internet\"] }}"
-            },
-            {
-              "column": "marketing_title",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Marketing Title\"] }}"
-            },
-            {
-              "column": "marketing_description",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Marketing Description\"] }}"
-            },
-            {
-              "column": "sqft",
-              "value": "={{ $('Split CSV into Batches').item.json.Sqft }}"
-            },
-            {
-              "column": "application_fee",
-              "value": "={{ $('Split CSV into Batches').item.json[\"Application Fee\"] }}"
-            },
-            {
-              "column": "rentable_uid",
-              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $('Split CSV into Batches').item.json[\"Rentable UID\"] }}"
-            },
-            {
-              "column": "image_url",
-              "value": "=https://blzres.com/data/images/{{ $('Split CSV into Batches').item.json[\"Rentable UID\"] }}.jpg"
-            },
-            {
-              "column": "address",
-              "value": "null"
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "1c7af5f3-1b09-4f6d-9f0f-a18b153b97ab",
+                    "leftValue": "{{ $json.headers.subject }}",
+                    "rightValue": "Oak Terrace Daily Delinquency",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             }
           ]
         },
         "options": {}
       },
-      "id": "ef457846-46b3-490f-b337-ab8943615b37",
-      "name": "Insert into MySQL",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2,
+      "id": "13a5b5e2-c0e2-4ea4-9bf3-1eccb1f9e725",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
       "position": [
-        3680,
-        860
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "## Update to get images\nThis workflow needs to be updated to download the full-list.csv file and \npull the image urls. \nThen download first image on the page and reneame it to rentable_uid.jpg for error control later. \nBeing able to match the image to the property url. \nChallenge is getting only images of the properties realted to the uid. On an error page the first image could be another property. \nNeed a searchable term on the page to disqualify the page for image import and move to next record. \nRemove delete table\nREmove download csv and replace with ftp download. \n\n\n",
-        "height": 393.3692722371961,
-        "width": 941.3692722371975,
-        "color": 3
-      },
-      "id": "f5c29ae6-59a3-4855-af17-1e3b5968a8f9",
-      "name": "Sticky Note2",
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1380,
-        600
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "23f57853-6d4b-405d-9b94-bac9bcdc5596",
-      "name": "Execute Workflow Trigger",
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1,
-      "position": [
-        1300,
-        1220
+        820,
+        320
       ]
     },
     {
       "parameters": {
-        "path": "/blzres.com/data/full-list.csv"
-      },
-      "id": "8d861d20-6a90-408b-bbf7-61c623949cf6",
-      "name": "FTP",
-      "type": "n8n-nodes-base.ftp",
-      "typeVersion": 1,
-      "position": [
-        1940,
-        860
-      ],
-      "credentials": {
-        "ftp": {
-          "id": "87ZwJT7N7b5rycj4",
-          "name": "FTP account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "url": "={{ $json[\"Image URL\"] }}",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "10369723-cc55-48db-92dc-cee042432a12",
+              "name": "property",
+              "value": "Courtyard",
+              "type": "string"
+            }
+          ]
+        },
         "options": {}
       },
-      "id": "b58c6552-053f-43b1-bc8d-fcebfecc1934",
-      "name": "HTTP Request",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "id": "5cf98a3f-f05b-42f1-b23b-15d53683c8da",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
       "position": [
-        3220,
-        840
+        1100,
+        320
       ]
     },
     {
       "parameters": {
         "operation": "upload",
-        "path": "=/blzres.com/data/images/{{ $('Split CSV into Batches').item.json['Rentable UID'] }}.jpg",
-        "binaryPropertyName": "=data"
+        "path": "=data.blzres.com/data/{{ $json.property }}-delinquency.csv",
+        "binaryPropertyName": "attachment_0"
       },
-      "id": "f2d2360a-3092-4ed7-a273-7f41eeaa7a99",
-      "name": "FTP1",
+      "id": "a8376721-8a38-4d53-a914-eb2224002377",
+      "name": "FTP",
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        3440,
-        840
+        1320,
+        320
       ],
       "credentials": {
         "ftp": {
@@ -425,6 +307,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-04T14:48:46.000Z",
-  "versionId": "2ef40f5d-1d68-407b-a193-5cd17944cafa"
+  "updatedAt": "2024-08-12T13:16:06.000Z",
+  "versionId": "9ab61bff-a0f8-4cf2-94b6-1fc860ad12f2"
 }
