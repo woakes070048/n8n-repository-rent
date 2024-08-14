@@ -1,0 +1,215 @@
+{
+  "active": true,
+  "connections": {
+    "List Google Drive MP4 Files": {
+      "main": [
+        [
+          {
+            "node": "Generate HTML2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress1": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate HTML2": {
+      "main": [
+        [
+          {
+            "node": "Wordpress1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "List Google Drive MP4 Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "List Google Drive MP4 Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-14T02:15:50.810Z",
+  "id": "6ibLmAMZpIiAbhDB",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Advertising Video Page with New Videos in Google Drive",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "list",
+        "useQueryString": true,
+        "queryString": "'15mKmsoAYTYjzzTqZoZETdJYsceIubHuR' in parents and (mimeType = 'video/mp4' or mimeType = 'video/webm' or mimeType = 'video/quicktime')",
+        "options": {
+          "fields": [
+            "id",
+            "mimeType",
+            "webViewLink",
+            "thumbnailLink",
+            "name",
+            "exportLinks"
+          ]
+        }
+      },
+      "name": "List Google Drive MP4 Files",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        660,
+        520
+      ],
+      "id": "c9ff01d1-83f1-4b16-b542-945bec4a301c",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "update",
+        "pageId": "=3414",
+        "updateFields": {
+          "content": "={{ $('Generate HTML2').item.json.html }}"
+        }
+      },
+      "id": "5c82898a-20fe-4ad0-8285-5fa29cdc72d9",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        520
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "get",
+        "pageId": "3414",
+        "options": {}
+      },
+      "id": "f8ac66fe-763b-40f1-813f-de55877b4265",
+      "name": "Wordpress1",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        980,
+        520
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px;\">';\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block;\" />\n      <p style=\"text-align: center; margin-top: 8px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\nhtml += '</div>';\nreturn [{ json: { html } }];"
+      },
+      "name": "Generate HTML2",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        820,
+        520
+      ],
+      "id": "50fd1eda-8231-42cf-8185-201c60ed6c53"
+    },
+    {
+      "parameters": {},
+      "id": "49444a5b-a9bd-426c-ac65-d2722b2f9776",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        440,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {}
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "15mKmsoAYTYjzzTqZoZETdJYsceIubHuR",
+          "mode": "list",
+          "cachedResultName": "Advertising Videos",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/15mKmsoAYTYjzzTqZoZETdJYsceIubHuR"
+        },
+        "event": "folderUpdated"
+      },
+      "id": "b153129b-e5df-43f8-a339-b48c3660a4f4",
+      "name": "Google Drive Trigger",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        440,
+        520
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Google Drive Trigger": {
+      "lastTimeChecked": "2024-08-14T02:42:35Z"
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-08-14T02:42:35.000Z",
+  "versionId": "da69f4f2-23da-4518-b1e7-262b09994557"
+}
