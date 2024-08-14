@@ -45,7 +45,7 @@
         ]
       ]
     },
-    "Google Drive Trigger": {
+    "Schedule Trigger": {
       "main": [
         [
           {
@@ -69,7 +69,7 @@
         "authentication": "oAuth2",
         "operation": "list",
         "useQueryString": true,
-        "queryString": "'16VDu9xXkq7v6H25WVQU-c4fAVYuX5A7R' in parents and (mimeType = 'video/mp4' or mimeType = 'video/webm' or mimeType = 'video/quicktime')",
+        "queryString": "'16VDu9xXkq7v6H25WVQU-c4fAVYuX5A7R' in parents and trashed = false and (mimeType = 'video/mp4' or mimeType = 'video/webm' or mimeType = 'video/quicktime')",
         "options": {
           "fields": [
             "id",
@@ -100,7 +100,7 @@
       "parameters": {
         "resource": "page",
         "operation": "update",
-        "pageId": "=3394",
+        "pageId": "=3402",
         "updateFields": {
           "content": "={{ $('Generate HTML2').item.json.html }}"
         }
@@ -144,7 +144,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px;\">';\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block;\" />\n      <p style=\"text-align: center; margin-top: 8px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\nhtml += '</div>';\nreturn [{ json: { html } }];"
+        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;\">';\n\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); max-width: calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block; border-radius: 8px;\" />\n      <p style=\"text-align: center; margin-top: 8px; font-size: 14px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\n\nhtml += '</div>';\n\nreturn [{ json: { html } }];\n"
       },
       "name": "Generate HTML2",
       "type": "n8n-nodes-base.function",
@@ -168,35 +168,23 @@
     },
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
-            {}
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 3,
+              "triggerAtMinute": 30
+            }
           ]
-        },
-        "triggerOn": "specificFolder",
-        "folderToWatch": {
-          "__rl": true,
-          "value": "16VDu9xXkq7v6H25WVQU-c4fAVYuX5A7R",
-          "mode": "list",
-          "cachedResultName": "Apartment Videos",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/16VDu9xXkq7v6H25WVQU-c4fAVYuX5A7R"
-        },
-        "event": "folderUpdated"
-      },
-      "id": "167116d2-37de-45e0-abdd-d02c436f3907",
-      "name": "Google Drive Trigger",
-      "type": "n8n-nodes-base.googleDriveTrigger",
-      "typeVersion": 1,
-      "position": [
-        440,
-        520
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
         }
-      }
+      },
+      "id": "e2b8ca3b-122f-482b-a43e-7cb4854447e8",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        520
+      ]
     }
   ],
   "pinData": {},
@@ -205,11 +193,14 @@
   },
   "staticData": {
     "node:Google Drive Trigger": {
-      "lastTimeChecked": "2024-08-13T18:53:01Z"
+      "lastTimeChecked": "2024-08-14T12:02:39Z"
+    },
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-13T18:53:01.000Z",
-  "versionId": "254dc383-9e3c-4df2-b927-d262477a13f9"
+  "updatedAt": "2024-08-14T12:05:45.000Z",
+  "versionId": "77c44a57-391d-4ebc-bce1-f3897852165a"
 }
