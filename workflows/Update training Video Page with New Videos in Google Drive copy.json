@@ -45,7 +45,7 @@
         ]
       ]
     },
-    "Google Drive Trigger": {
+    "Schedule Trigger": {
       "main": [
         [
           {
@@ -69,7 +69,7 @@
         "authentication": "oAuth2",
         "operation": "list",
         "useQueryString": true,
-        "queryString": "'1xUWYRslb0l-bn47snIAaLCgLqy7wrPE0' in parents and (mimeType = 'video/mp4' or mimeType = 'video/webm' or mimeType = 'video/quicktime')",
+        "queryString": "'1xUWYRslb0l-bn47snIAaLCgLqy7wrPE0' in parents and trashed = false and (mimeType = 'video/mp4' or mimeType = 'video/webm' or mimeType = 'video/quicktime')",
         "options": {
           "fields": [
             "id",
@@ -85,7 +85,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 1,
       "position": [
-        660,
+        640,
         520
       ],
       "id": "f968364e-83a1-49a8-aaac-a6d1323eb687",
@@ -100,7 +100,7 @@
       "parameters": {
         "resource": "page",
         "operation": "update",
-        "pageId": "=3394",
+        "pageId": "=3431",
         "updateFields": {
           "content": "={{ $('Generate HTML2').item.json.html }}"
         }
@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.wordpress",
       "typeVersion": 1,
       "position": [
-        1400,
+        1180,
         520
       ],
       "credentials": {
@@ -124,7 +124,7 @@
       "parameters": {
         "resource": "page",
         "operation": "get",
-        "pageId": "3404",
+        "pageId": "3431",
         "options": {}
       },
       "id": "ca3934e0-e190-46a0-b80d-297916775820",
@@ -144,7 +144,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px;\">';\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block;\" />\n      <p style=\"text-align: center; margin-top: 8px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\nhtml += '</div>';\nreturn [{ json: { html } }];"
+        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;\">';\n\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); max-width: calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block; border-radius: 8px;\" />\n      <p style=\"text-align: center; margin-top: 8px; font-size: 14px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\n\nhtml += '</div>';\n\nreturn [{ json: { html } }];\n"
       },
       "name": "Generate HTML2",
       "type": "n8n-nodes-base.function",
@@ -168,36 +168,23 @@
     },
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
-            {}
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 3,
+              "triggerAtMinute": 15
+            }
           ]
-        },
-        "triggerOn": "specificFolder",
-        "folderToWatch": {
-          "__rl": true,
-          "value": "1xUWYRslb0l-bn47snIAaLCgLqy7wrPE0",
-          "mode": "list",
-          "cachedResultName": "Training Videos",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1xUWYRslb0l-bn47snIAaLCgLqy7wrPE0"
-        },
-        "event": "fileUpdated",
-        "options": {}
-      },
-      "id": "b53ecf0e-eccf-4e20-a404-b321dbcb20fd",
-      "name": "Google Drive Trigger",
-      "type": "n8n-nodes-base.googleDriveTrigger",
-      "typeVersion": 1,
-      "position": [
-        480,
-        520
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
         }
-      }
+      },
+      "id": "cefdc208-994a-4d16-b23b-f63908ef46e0",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        420,
+        520
+      ]
     }
   ],
   "pinData": {},
@@ -206,11 +193,14 @@
   },
   "staticData": {
     "node:Google Drive Trigger": {
-      "lastTimeChecked": "2024-08-13T19:47:57Z"
+      "lastTimeChecked": "2024-08-14T10:43:11Z"
+    },
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-13T19:47:56.000Z",
-  "versionId": "734183d5-d3c3-4cb1-b46e-93bd7937345b"
+  "updatedAt": "2024-08-14T12:05:13.000Z",
+  "versionId": "d605b1b9-eeac-4aee-ac2c-feed4a5d50d9"
 }
