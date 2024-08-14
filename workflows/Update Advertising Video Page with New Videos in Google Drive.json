@@ -45,7 +45,7 @@
         ]
       ]
     },
-    "Google Drive Trigger": {
+    "Schedule Trigger": {
       "main": [
         [
           {
@@ -69,7 +69,7 @@
         "authentication": "oAuth2",
         "operation": "list",
         "useQueryString": true,
-        "queryString": "'15mKmsoAYTYjzzTqZoZETdJYsceIubHuR' in parents and (mimeType = 'video/mp4' or mimeType = 'video/webm' or mimeType = 'video/quicktime')",
+        "queryString": "'15mKmsoAYTYjzzTqZoZETdJYsceIubHuR'  in parents and trashed = false and (mimeType = 'video/mp4' or mimeType = 'video/webm' or mimeType = 'video/quicktime')",
         "options": {
           "fields": [
             "id",
@@ -144,7 +144,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px;\">';\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block;\" />\n      <p style=\"text-align: center; margin-top: 8px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\nhtml += '</div>';\nreturn [{ json: { html } }];"
+        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;\">';\n\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); max-width: calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block; border-radius: 8px;\" />\n      <p style=\"text-align: center; margin-top: 8px; font-size: 14px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\n\nhtml += '</div>';\n\nreturn [{ json: { html } }];\n"
       },
       "name": "Generate HTML2",
       "type": "n8n-nodes-base.function",
@@ -168,35 +168,23 @@
     },
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
-            {}
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 3,
+              "triggerAtMinute": 25
+            }
           ]
-        },
-        "triggerOn": "specificFolder",
-        "folderToWatch": {
-          "__rl": true,
-          "value": "15mKmsoAYTYjzzTqZoZETdJYsceIubHuR",
-          "mode": "list",
-          "cachedResultName": "Advertising Videos",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/15mKmsoAYTYjzzTqZoZETdJYsceIubHuR"
-        },
-        "event": "folderUpdated"
+        }
       },
-      "id": "b153129b-e5df-43f8-a339-b48c3660a4f4",
-      "name": "Google Drive Trigger",
-      "type": "n8n-nodes-base.googleDriveTrigger",
-      "typeVersion": 1,
+      "id": "2d3bdde0-5812-486a-a605-74e5da38de24",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
       "position": [
         440,
         520
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
+      ]
     }
   ],
   "pinData": {},
@@ -205,11 +193,14 @@
   },
   "staticData": {
     "node:Google Drive Trigger": {
-      "lastTimeChecked": "2024-08-14T02:42:35Z"
+      "lastTimeChecked": "2024-08-14T12:03:01Z"
+    },
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-14T02:42:35.000Z",
-  "versionId": "da69f4f2-23da-4518-b1e7-262b09994557"
+  "updatedAt": "2024-08-14T12:04:52.000Z",
+  "versionId": "d9063bb8-3b7b-4c66-bef8-c19957e69704"
 }
