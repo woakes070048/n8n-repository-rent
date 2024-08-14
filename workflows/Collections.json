@@ -1,0 +1,354 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-13T19:48:10.111Z",
+  "id": "J1HDi7Ak03TcYsxn",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Collections",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ea8f8b9a-e79e-4320-a9ff-92d8f2282aa8",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        120,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "path": "data.blzres.com/data/collections.csv"
+      },
+      "id": "b959625e-be73-45df-859d-cd09cbf48bbf",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        320,
+        360
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "id": "f85a3e5f-d412-4785-b9be-b93fcfb41685",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        540,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8425c1c8-eeec-4c35-9b6d-c98e7c0e0c35",
+              "name": "Unit",
+              "value": "={{ $json.Unit }}",
+              "type": "string"
+            },
+            {
+              "id": "b450c4cc-dc6c-4dcf-a880-d46444f8a18f",
+              "name": "Name",
+              "value": "={{ $json.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "df9c3715-9ae6-46d4-8550-6dc8919a2f8b",
+              "name": "First_Name",
+              "value": "={{ $json['First Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "680cf5f8-be77-4fd5-8a03-48ee5a7eef21",
+              "name": "Last_Name",
+              "value": "={{ $json['Last Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ac45cb9e-9177-4c96-91a8-157048da469b",
+              "name": "Tenant_Status",
+              "value": "={{ $json['Tenant Status'] }}",
+              "type": "string"
+            },
+            {
+              "id": "222d54c3-f562-4158-8ff7-b83eedd8c252",
+              "name": "Primary_Tenant",
+              "value": "={{ $json['Primary Tenant'] }}",
+              "type": "string"
+            },
+            {
+              "id": "cd064055-1dc5-4e63-bfc2-db3029a1b3c7",
+              "name": "Tenant_Address",
+              "value": "={{ $json['Tenant Address'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c0fb2c92-0b87-4d4f-ba2e-dec1ace2941d",
+              "name": "Phone_Numbers",
+              "value": "={{ $json[\"Phone Numbers\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "64cc8ff7-2a18-4b72-9a76-e8b9a5d95e16",
+              "name": "Move_Out",
+              "value": "={{ $json['Move Out'] }}",
+              "type": "string"
+            },
+            {
+              "id": "5c77b8f5-8977-4c83-b1d1-f1e34b5aa41e",
+              "name": "Deposit",
+              "value": "={{ $json.Deposit }}",
+              "type": "number"
+            },
+            {
+              "id": "279a7eb3-bd3c-4da7-baa1-6cab81549413",
+              "name": "Primary_Tenant_Email",
+              "value": "={{ $json['Primary Tenant Email'] }}",
+              "type": "string"
+            },
+            {
+              "id": "be956f8c-ae7a-4e8a-8565-7430ea9baba0",
+              "name": "Amount_Receivable",
+              "value": "={{ $json['Amount Receivable'] }}",
+              "type": "number"
+            },
+            {
+              "id": "4880da02-051d-4b88-bf83-ecc81903a1dc",
+              "name": "30+",
+              "value": "={{ $json['30+'] }}",
+              "type": "number"
+            },
+            {
+              "id": "4b248c1a-7250-40a3-a2a2-eb9c15600296",
+              "name": "Last_Payment",
+              "value": "={{ $json['Last Payment'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b93fd614-b4d9-4850-9f43-5f66c8f511cf",
+              "name": "Certified_Funds_Only",
+              "value": "={{ $json['Certified Funds Only'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c33c9506-1b99-47bf-bf58-03109e1083d4",
+              "name": "In_Collections",
+              "value": "={{ $json['In Collections'] }}",
+              "type": "string"
+            },
+            {
+              "id": "54d21362-7f05-4394-9603-4255b6e8af94",
+              "name": "Collections_Agency",
+              "value": "={{ $json['Collections Agency'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c695c1b4-0828-49cd-8e05-30f9047c5483",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        940,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "blaze_collections",
+          "mode": "list",
+          "cachedResultName": "blaze_collections"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "primary_tenant_email",
+        "valueToMatchOn": "={{ $json.Primary_Tenant_Email }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "unit",
+              "value": "={{ $json.Unit }}"
+            },
+            {
+              "column": "name",
+              "value": "={{ $json.Name }}"
+            },
+            {
+              "column": "first_name",
+              "value": "={{ $json.First_Name }}"
+            },
+            {
+              "column": "last_name",
+              "value": "={{ $json.Last_Name }}"
+            },
+            {
+              "column": "tenant_status",
+              "value": "={{ $json.Tenant_Status }}"
+            },
+            {
+              "column": "primary_tenant",
+              "value": "={{ $json.Primary_Tenant }}"
+            },
+            {
+              "column": "tenant_address",
+              "value": "={{ $json.Tenant_Address }}"
+            },
+            {
+              "column": "phone_numbers",
+              "value": "=\n {{ $json.Phone_Numbers }}"
+            },
+            {
+              "column": "move_out",
+              "value": "={{ $json.Move_Out }}"
+            },
+            {
+              "column": "deposit",
+              "value": "={{ $json.Deposit }}"
+            },
+            {
+              "column": "amount_receivable",
+              "value": "={{ $json.Amount_Receivable }}"
+            },
+            {
+              "column": "over_30",
+              "value": "={{ $json['30+'] }}"
+            },
+            {
+              "column": "last_payment",
+              "value": "={{ $json.Last_Payment }}"
+            },
+            {
+              "column": "certified_funds_only",
+              "value": "={{ $json.Certified_Funds_Only }}"
+            },
+            {
+              "column": "in_collections",
+              "value": "={{ $json.In_Collections }}"
+            },
+            {
+              "column": "collections_agency",
+              "value": "={{ $json.Collections_Agency }}"
+            },
+            {
+              "column": "date_added",
+              "value": "={{ $now }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b7e4cd36-40e9-4c72-83f5-ef97bea5f2df",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1200,
+        360
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const excelDateToJSDate = (excelDate) => {\n    if (typeof excelDate !== 'number' || isNaN(excelDate)) {\n        return null; // Return null if the input is not a valid Excel date\n    }\n    const date = new Date(Math.round((excelDate - 25569) * 86400 * 1000));\n    const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD format\n    return dateString;\n};\n\nreturn items.map(item => {\n    // Ensure phoneNumbers field is a string\n    const phoneNumbers = item.json[\"Phone Numbers\"] ? String(item.json[\"Phone Numbers\"]) : '';\n    \n    // Safely apply regex to extract phone number\n    const extractedPhone = phoneNumbers.match(/\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}/);\n    \n    const moveOutDate = excelDateToJSDate(item.json[\"Move Out\"]);\n    const lastPaymentDate = excelDateToJSDate(item.json[\"Last Payment\"]);\n\n    return {\n        json: {\n            ...item.json,\n            \"Phone Numbers\": extractedPhone ? extractedPhone[0] : null,\n            \"Move Out\": moveOutDate,\n            \"Last Payment\": lastPaymentDate\n        }\n    };\n});\n"
+      },
+      "id": "cbdbd6a9-09b5-4d38-84c6-8e6f9c971204",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        360
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-13T20:29:59.000Z",
+  "versionId": "e017cc7e-f794-4260-ba40-f0788f29d3cc"
+}
