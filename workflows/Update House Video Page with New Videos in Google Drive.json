@@ -49,6 +49,17 @@
       "main": [
         [
           {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
             "node": "List Google Drive MP4 Files",
             "type": "main",
             "index": 0
@@ -85,8 +96,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 1,
       "position": [
-        660,
-        520
+        820,
+        480
       ],
       "id": "3bc50816-7fa1-47cb-8a99-1b9c7871529e",
       "credentials": {
@@ -110,8 +121,8 @@
       "type": "n8n-nodes-base.wordpress",
       "typeVersion": 1,
       "position": [
-        1400,
-        520
+        1340,
+        480
       ],
       "credentials": {
         "wordpressApi": {
@@ -132,8 +143,8 @@
       "type": "n8n-nodes-base.wordpress",
       "typeVersion": 1,
       "position": [
-        980,
-        520
+        1180,
+        480
       ],
       "credentials": {
         "wordpressApi": {
@@ -150,8 +161,8 @@
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [
-        820,
-        520
+        1020,
+        480
       ],
       "id": "2eb4e36f-c448-4a6f-9032-ccc9c305e500"
     },
@@ -189,8 +200,8 @@
       "type": "n8n-nodes-base.googleDriveTrigger",
       "typeVersion": 1,
       "position": [
-        340,
-        540
+        360,
+        480
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -198,6 +209,20 @@
           "name": "Google Drive account"
         }
       }
+    },
+    {
+      "parameters": {
+        "unit": "minutes"
+      },
+      "id": "2e033979-44c0-42bd-b505-17722c6b4f91",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        580,
+        480
+      ],
+      "webhookId": "8ef201b7-c711-4d1c-99c0-8cf8d538a58b"
     }
   ],
   "pinData": {},
@@ -206,11 +231,11 @@
   },
   "staticData": {
     "node:Google Drive Trigger": {
-      "lastTimeChecked": "2024-08-13T16:38:11Z"
+      "lastTimeChecked": "2024-08-13T20:30:06Z"
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-13T16:38:11.000Z",
-  "versionId": "69ef1076-e566-43a7-893b-c2eddcf08616"
+  "updatedAt": "2024-08-13T20:30:06.000Z",
+  "versionId": "c649b74b-d484-4225-8cc4-d2a8dc517aea"
 }
