@@ -45,18 +45,7 @@
         ]
       ]
     },
-    "Google Drive Trigger": {
-      "main": [
-        [
-          {
-            "node": "Wait",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait": {
+    "Schedule Trigger": {
       "main": [
         [
           {
@@ -80,7 +69,7 @@
         "authentication": "oAuth2",
         "operation": "list",
         "useQueryString": true,
-        "queryString": "'1Y1yITOS2ZtdKKhyB5V7uBbzrJZFrcxpB' in parents and mimeType = 'video/mp4'",
+        "queryString": "'1Y1yITOS2ZtdKKhyB5V7uBbzrJZFrcxpB'  in parents and trashed = false and (mimeType = 'video/mp4' or mimeType = 'video/webm' or mimeType = 'video/quicktime')",
         "options": {
           "fields": [
             "id",
@@ -155,7 +144,7 @@
     },
     {
       "parameters": {
-        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px;\">';\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block;\" />\n      <p style=\"text-align: center; margin-top: 8px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\nhtml += '</div>';\nreturn [{ json: { html } }];"
+        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;\">';\n\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); max-width: calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block; border-radius: 8px;\" />\n      <p style=\"text-align: center; margin-top: 8px; font-size: 14px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\n\nhtml += '</div>';\n\nreturn [{ json: { html } }];\n"
       },
       "name": "Generate HTML2",
       "type": "n8n-nodes-base.function",
@@ -179,50 +168,23 @@
     },
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
-            {}
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 3,
+              "triggerAtMinute": 20
+            }
           ]
-        },
-        "triggerOn": "specificFolder",
-        "folderToWatch": {
-          "__rl": true,
-          "value": "1Y1yITOS2ZtdKKhyB5V7uBbzrJZFrcxpB",
-          "mode": "list",
-          "cachedResultName": "House Videos",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1Y1yITOS2ZtdKKhyB5V7uBbzrJZFrcxpB"
-        },
-        "event": "fileUpdated",
-        "options": {}
-      },
-      "id": "d299f53b-3ec2-4273-bc26-7ec30935c556",
-      "name": "Google Drive Trigger",
-      "type": "n8n-nodes-base.googleDriveTrigger",
-      "typeVersion": 1,
-      "position": [
-        360,
-        480
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
         }
-      }
-    },
-    {
-      "parameters": {
-        "unit": "minutes"
       },
-      "id": "2e033979-44c0-42bd-b505-17722c6b4f91",
-      "name": "Wait",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
+      "id": "f49dc521-4d07-456f-aabe-772c0e5023e0",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
       "position": [
-        580,
+        560,
         480
-      ],
-      "webhookId": "8ef201b7-c711-4d1c-99c0-8cf8d538a58b"
+      ]
     }
   ],
   "pinData": {},
@@ -231,11 +193,14 @@
   },
   "staticData": {
     "node:Google Drive Trigger": {
-      "lastTimeChecked": "2024-08-13T20:30:06Z"
+      "lastTimeChecked": "2024-08-14T12:03:27Z"
+    },
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-13T20:30:06.000Z",
-  "versionId": "c649b74b-d484-4225-8cc4-d2a8dc517aea"
+  "updatedAt": "2024-08-14T12:06:02.000Z",
+  "versionId": "b9dd2f6f-ead4-4dc6-9c73-e620d625b9ca"
 }
