@@ -163,8 +163,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "iQsUzgXmgXt4U8k2",
+          "name": "BlzRes_Back Connection"
         }
       }
     },
@@ -204,8 +204,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "iQsUzgXmgXt4U8k2",
+          "name": "BlzRes_Back Connection"
         }
       },
       "onError": "continueRegularOutput"
@@ -414,6 +414,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-05T14:48:47.000Z",
-  "versionId": "e9af3389-9c31-4daf-90af-194a940bbb57"
+  "updatedAt": "2024-08-17T11:14:56.000Z",
+  "versionId": "73e35a8b-3c45-4817-b746-d0efb9ad925f"
 }
