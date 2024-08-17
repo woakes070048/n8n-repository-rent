@@ -1009,8 +1009,15 @@
       "recurrenceRules": []
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:10:20.000Z",
-  "versionId": "aa02ecb9-00b1-4511-80b0-2c31ba5e6259"
+  "updatedAt": "2024-08-17T11:20:50.000Z",
+  "versionId": "f0ea1110-e089-4c83-91f4-5863bba597b4"
 }
