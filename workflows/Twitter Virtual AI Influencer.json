@@ -659,8 +659,15 @@
       ]
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2024-08-17T11:17:51.060Z",
+      "updatedAt": "2024-08-17T11:17:51.060Z",
+      "id": "fot1zjuV8JfY8OvN",
+      "name": "twitter"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-10T17:08:11.000Z",
-  "versionId": "5d56cba2-e504-48bb-9fb7-428bdf571903"
+  "updatedAt": "2024-08-17T11:22:36.000Z",
+  "versionId": "ba83fee0-d656-45a9-8e05-28e911615b5e"
 }
