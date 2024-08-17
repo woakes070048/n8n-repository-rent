@@ -389,7 +389,7 @@
     "node:Cron 8am": {
       "recurrencyRules": [],
       "recurrenceRules": [
-        6
+        12
       ]
     },
     "node:cron 10am": {
