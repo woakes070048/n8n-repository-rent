@@ -169,8 +169,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "iQsUzgXmgXt4U8k2",
+          "name": "BlzRes_Back Connection"
         }
       },
       "onError": "continueRegularOutput"
@@ -263,48 +263,6 @@
     },
     {
       "parameters": {
-        "operation": "upsert",
-        "table": {
-          "__rl": true,
-          "value": "fb_post_list",
-          "mode": "list",
-          "cachedResultName": "fb_post_list"
-        },
-        "dataMode": "defineBelow",
-        "columnToMatchOn": "rentable_uid",
-        "valueToMatchOn": "={{ $('MySQL Node').item.json.rentable_uid }}",
-        "valuesToSend": {
-          "values": [
-            {
-              "column": "fb_post_date",
-              "value": "={{ $today }}"
-            },
-            {
-              "column": "fb_post_id",
-              "value": "={{ $json.post_id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "32c9ec44-a2d5-49c2-b260-efb31e76dc7f",
-      "name": "MySQL1",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        1860,
-        520
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
-        }
-      },
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -363,8 +321,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "iQsUzgXmgXt4U8k2",
+          "name": "BlzRes_Back Connection"
         }
       }
     },
@@ -473,6 +431,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-05T14:47:39.000Z",
-  "versionId": "fcb242ec-aae4-483b-b4ee-1e970db84840"
+  "updatedAt": "2024-08-17T11:15:15.000Z",
+  "versionId": "ef8b7952-a597-4f54-8c72-85244fdc9bfa"
 }
