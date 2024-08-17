@@ -599,8 +599,15 @@
       "recurrenceRules": []
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2024-08-17T11:17:51.060Z",
+      "updatedAt": "2024-08-17T11:17:51.060Z",
+      "id": "fot1zjuV8JfY8OvN",
+      "name": "twitter"
+    }
+  ],
   "triggerCount": 5,
-  "updatedAt": "2024-08-17T11:12:15.000Z",
-  "versionId": "9844be3f-6470-461f-851b-49a3b3c5515f"
+  "updatedAt": "2024-08-17T11:21:26.000Z",
+  "versionId": "15f5d6f1-9237-4469-a366-5aa72bac7c32"
 }
