@@ -208,8 +208,15 @@
       "lastMessageUid": 192
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:07:59.000Z",
-  "versionId": "c944b0e7-7595-49d8-b674-3a58c6ee34f0"
+  "updatedAt": "2024-08-17T11:21:07.000Z",
+  "versionId": "f1082e57-3229-4990-aa24-086123e656b2"
 }
