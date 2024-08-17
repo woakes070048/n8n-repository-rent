@@ -199,8 +199,15 @@
       "recurrenceRules": []
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2024-08-17T11:18:13.801Z",
+      "updatedAt": "2024-08-17T11:18:13.801Z",
+      "id": "r68tdPXG0q2verIL",
+      "name": "Intranet"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:06:17.000Z",
-  "versionId": "bdf25fb3-ee4d-4729-8ab3-598a38921c1d"
+  "updatedAt": "2024-08-17T11:21:36.000Z",
+  "versionId": "137bdff6-2cbe-47a7-babd-8184faf6612f"
 }
