@@ -177,8 +177,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "iQsUzgXmgXt4U8k2",
+          "name": "BlzRes_Back Connection"
         }
       }
     }
@@ -195,6 +195,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-10T16:49:28.000Z",
-  "versionId": "cf438d31-6e85-45e9-ab43-7a6ee47aa13d"
+  "updatedAt": "2024-08-17T11:12:51.000Z",
+  "versionId": "3e4f6d7e-26dd-4c5b-aa01-2b5b4f62ebd5"
 }
