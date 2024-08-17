@@ -678,8 +678,8 @@
       "alwaysOutputData": true,
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "iQsUzgXmgXt4U8k2",
+          "name": "BlzRes_Back Connection"
         }
       }
     },
@@ -890,8 +890,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "iQsUzgXmgXt4U8k2",
+          "name": "BlzRes_Back Connection"
         }
       }
     },
@@ -1042,6 +1042,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-08-11T11:14:31.000Z",
-  "versionId": "70d50302-3d09-40c8-9d3c-d4c6c59edd6d"
+  "updatedAt": "2024-08-17T11:03:04.000Z",
+  "versionId": "d901c66e-8b0c-4d7a-8941-5de56f81206e"
 }
