@@ -1,0 +1,213 @@
+{
+  "active": true,
+  "connections": {
+    "List Google Drive MP4 Files": {
+      "main": [
+        [
+          {
+            "node": "Generate HTML2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress1": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate HTML2": {
+      "main": [
+        [
+          {
+            "node": "Wordpress1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "List Google Drive MP4 Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "List Google Drive MP4 Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-13T18:50:00.896Z",
+  "id": "oQXHNaSciMTDwAUW",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Apartment Video Page with New Videos in Google Drive",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "list",
+        "useQueryString": true,
+        "queryString": "'16VDu9xXkq7v6H25WVQU-c4fAVYuX5A7R' in parents and trashed = false and (mimeType = 'video/mp4' or mimeType = 'video/webm' or mimeType = 'video/quicktime')",
+        "options": {
+          "fields": [
+            "id",
+            "mimeType",
+            "webViewLink",
+            "thumbnailLink",
+            "name",
+            "exportLinks"
+          ]
+        }
+      },
+      "name": "List Google Drive MP4 Files",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [
+        660,
+        520
+      ],
+      "id": "6ccd73be-0609-4898-bc9d-3d587a35c4d3",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "update",
+        "pageId": "=3402",
+        "updateFields": {
+          "content": "={{ $('Generate HTML2').item.json.html }}"
+        }
+      },
+      "id": "e4f59626-f54f-4d78-92e3-69ebad5caef1",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        1140,
+        520
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "page",
+        "operation": "get",
+        "pageId": "3402",
+        "options": {}
+      },
+      "id": "adc17f90-9644-4d30-bde7-f3990b7949e6",
+      "name": "Wordpress1",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        980,
+        520
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const items = $input.all();\nlet html = '<div class=\"video-gallery\" style=\"display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between;\">';\n\nitems.forEach(item => {\n  const data = item.json;\n  html += `<div class=\"video-item\" style=\"flex: 1 1 calc(25% - 16px); max-width: calc(25% - 16px); box-sizing: border-box;\">\n    <a href=\"${data.webViewLink}\" target=\"_blank\" style=\"text-decoration: none; color: inherit;\">\n      <img src=\"${data.thumbnailLink}\" alt=\"${data.name}\" style=\"width: 100%; height: auto; display: block; border-radius: 8px;\" />\n      <p style=\"text-align: center; margin-top: 8px; font-size: 14px;\">${data.name}</p>\n    </a>\n  </div>`;\n});\n\nhtml += '</div>';\n\nreturn [{ json: { html } }];\n"
+      },
+      "name": "Generate HTML2",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        820,
+        520
+      ],
+      "id": "9f8ad04a-9e65-49ae-839c-4f75775f4446"
+    },
+    {
+      "parameters": {},
+      "id": "6a10958f-df5b-4b11-ad91-f184aed6f55d",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        440,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 3,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "id": "e2b8ca3b-122f-482b-a43e-7cb4854447e8",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        520
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Google Drive Trigger": {
+      "lastTimeChecked": "2024-08-14T12:02:39Z"
+    },
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [
+    {
+      "createdAt": "2024-08-17T11:18:13.801Z",
+      "updatedAt": "2024-08-17T11:18:13.801Z",
+      "id": "r68tdPXG0q2verIL",
+      "name": "Intranet"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-08-17T11:22:02.000Z",
+  "versionId": "a1b8d7dd-4431-43ac-addb-2cbe8000eb98"
+}
