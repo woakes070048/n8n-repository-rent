@@ -163,8 +163,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "iQsUzgXmgXt4U8k2",
+          "name": "BlzRes_Back Connection"
         }
       }
     },
@@ -204,8 +204,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "iQsUzgXmgXt4U8k2",
+          "name": "BlzRes_Back Connection"
         }
       },
       "onError": "continueRegularOutput"
@@ -389,7 +389,7 @@
     "node:Cron 8am": {
       "recurrencyRules": [],
       "recurrenceRules": [
-        0
+        6
       ]
     },
     "node:cron 10am": {
@@ -418,6 +418,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-09T20:38:40.000Z",
-  "versionId": "42620c8c-34af-4a75-a463-51ddc3b22316"
+  "updatedAt": "2024-08-17T11:13:41.000Z",
+  "versionId": "64d2ded4-1c17-4d80-a219-74f1e7478746"
 }
