@@ -1,44 +1,11 @@
 {
   "active": false,
   "connections": {
-    "Gmail": {
+    "When clicking ‘Test workflow’": {
       "main": [
         [
           {
-            "node": "SplitInBatches",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "SplitInBatches": {
-      "main": [
-        [
-          {
-            "node": "Delete Old Gmail",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Delete Old Gmail": {
-      "main": [
-        [
-          {
-            "node": "SplitInBatches",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "On clicking 'execute'": {
-      "main": [
-        [
-          {
-            "node": "Gmail",
+            "node": "Google Sheets",
             "type": "main",
             "index": 0
           }
@@ -46,8 +13,8 @@
       ]
     }
   },
-  "createdAt": "2024-07-26T10:15:22.383Z",
-  "id": "wJShJpXCmdjgHgOA",
+  "createdAt": "2024-08-18T14:52:28.408Z",
+  "id": "lCkswYHquDOZc8bw",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -55,73 +22,47 @@
   "nodes": [
     {
       "parameters": {},
-      "name": "On clicking 'execute'",
+      "id": "9c6ea578-dc8c-4ed9-b5c0-b95366e92139",
+      "name": "When clicking ‘Test workflow’",
       "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
       "position": [
-        1080,
+        160,
         300
-      ],
-      "typeVersion": 1,
-      "id": "0e4e6e77-bcc1-473b-a074-bd47e307e814"
+      ]
     },
     {
       "parameters": {
-        "resource": "message",
-        "operation": "getAll",
-        "additionalFields": {
-          "format": "ids",
-          "q": "-in:chats unsubscribe -license -key -password"
-        }
-      },
-      "name": "Gmail",
-      "type": "n8n-nodes-base.gmail",
-      "position": [
-        1270,
-        300
-      ],
-      "typeVersion": 1,
-      "id": "a76b7f11-2226-46b3-8770-206baa8e4c5d",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "message",
-        "operation": "delete",
-        "messageId": "={{$json[\"id\"]}}"
-      },
-      "name": "Delete Old Gmail",
-      "type": "n8n-nodes-base.gmail",
-      "position": [
-        1620,
-        470
-      ],
-      "typeVersion": 1,
-      "id": "c9a4d482-fe64-411c-b42f-5be620c98caf",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "batchSize": 100,
+        "documentId": {
+          "__rl": true,
+          "value": "1hWXq91dj6TUa2Gtpnk0XUeuaeMqd_gKcmwPFx7R0COg",
+          "mode": "list",
+          "cachedResultName": "Info Request Tenants",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hWXq91dj6TUa2Gtpnk0XUeuaeMqd_gKcmwPFx7R0COg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hWXq91dj6TUa2Gtpnk0XUeuaeMqd_gKcmwPFx7R0COg/edit#gid=0"
+        },
         "options": {}
       },
-      "name": "SplitInBatches",
-      "type": "n8n-nodes-base.splitInBatches",
+      "id": "b3f27456-2368-4d68-9b10-a11bf881260a",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
       "position": [
-        1430,
+        380,
         300
       ],
-      "typeVersion": 1,
-      "id": "af34398b-3d36-41ea-b96c-b3c7ac2dad28"
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -131,6 +72,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-07-26T10:15:22.383Z",
-  "versionId": "65a4b117-3b95-405d-913a-be2dd8b61c4a"
+  "updatedAt": "2024-08-18T14:52:28.408Z",
+  "versionId": "0e281273-7365-4134-9e99-6d7d6bf8055d"
 }
