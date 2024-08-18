@@ -1,33 +1,62 @@
 {
   "active": false,
   "connections": {
-    "Email Trigger (IMAP)": {
+    "IF Contact Exists": {
       "main": [
         [
           {
-            "node": "Switch",
+            "node": "Update Contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Contact",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Switch": {
+    "Set Contact Data": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "IF Contact Exists",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields": {
+    "SplitInBatches": {
       "main": [
         [
           {
-            "node": "FTP",
+            "node": "Set Contact Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Contacts": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get All Contacts",
             "type": "main",
             "index": 0
           }
@@ -35,8 +64,8 @@
       ]
     }
   },
-  "createdAt": "2024-08-12T13:09:04.093Z",
-  "id": "QkOaic4SNAPYvP31",
+  "createdAt": "2024-08-17T22:16:01.591Z",
+  "id": "jtgMZhjEG3v9h9pa",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -44,253 +73,168 @@
   "nodes": [
     {
       "parameters": {
-        "format": "resolved",
+        "operation": "getAll",
+        "returnAll": true,
         "options": {
-          "customEmailConfig": "[\"UNSEEN\"]"
+          "publishedOnly": true
         }
       },
-      "id": "f99d0d72-6bd4-42d3-8a27-dec1456e742e",
-      "name": "Email Trigger (IMAP)",
-      "type": "n8n-nodes-base.emailReadImap",
-      "typeVersion": 2,
+      "name": "Mautic",
+      "type": "n8n-nodes-base.mautic",
       "position": [
-        600,
-        360
+        20,
+        400
       ],
+      "typeVersion": 1,
+      "id": "b7ab88a6-8b6a-4ef2-a79a-c037bfa17fa9",
       "credentials": {
-        "imap": {
-          "id": "jiJskG7OLUbWOE4M",
-          "name": "Reports IMAP account"
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
         }
       }
     },
     {
       "parameters": {
-        "rules": {
-          "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.headers.subject }}",
-                    "rightValue": "Courtyard Pampa Daily Delinquency",
-                    "operator": {
-                      "type": "string",
-                      "operation": "contains"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "id": "97b45473-176e-4ebc-b2aa-f71ca18fd693",
-                    "leftValue": "={{ $json.headers.subject }}",
-                    "rightValue": "Cross Keys Daily Delinquency",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "id": "f06db94d-f9c0-4d4c-92f6-f8fea21a6948",
-                    "leftValue": "{{ $json.headers.subject }}",
-                    "rightValue": "RiverEdge Daily Delinquency",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "id": "c09ad83a-ee52-44fa-8707-3d7b6deb02a9",
-                    "leftValue": "{{ $json.headers.subject }}",
-                    "rightValue": "Adobe Trail Daily Delinquency",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "id": "1510e363-0f48-4f7d-8dc7-55d9cc95965d",
-                    "leftValue": "{{ $json.headers.subject }}",
-                    "rightValue": "Jefferson Square Daily Delinquency",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "id": "1f1615af-f677-4f9c-acdd-4ed9f9c71a2a",
-                    "leftValue": "{{ $json.headers.subject }}",
-                    "rightValue": "RiverEdge Daily Delinquency",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "id": "70198a54-3e37-4e9f-822c-0d5e6131dabd",
-                    "leftValue": "{{ $json.headers.subject }}",
-                    "rightValue": "NorthPark Daily Delinquency",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "id": "1c7af5f3-1b09-4f6d-9f0f-a18b153b97ab",
-                    "leftValue": "{{ $json.headers.subject }}",
-                    "rightValue": "Oak Terrace Daily Delinquency",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals",
-                      "name": "filter.operator.equals"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            }
-          ]
-        },
+        "authentication": "basicAuth",
+        "url": "https://marketing.blzres.com/api/contacts",
         "options": {}
       },
-      "id": "13a5b5e2-c0e2-4ea4-9bf3-1eccb1f9e725",
-      "name": "Switch",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3,
+      "name": "Get All Contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
       "position": [
-        820,
-        320
-      ]
+        -60,
+        620
+      ],
+      "id": "256f0e11-1687-4b28-bebb-4fbfdd0c676e",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "Dv1lLw9hsfmIn7I3",
+          "name": "Unnamed credential 2"
+        }
+      }
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "10369723-cc55-48db-92dc-cee042432a12",
-              "name": "property",
-              "value": "Courtyard",
-              "type": "string"
-            }
-          ]
-        },
+        "authentication": "predefinedCredentialType",
+        "url": "https://your-mautic-instance.com/api/contacts/new",
+        "jsonParameters": true,
         "options": {}
       },
-      "id": "5cf98a3f-f05b-42f1-b23b-15d53683c8da",
-      "name": "Edit Fields",
+      "name": "Create Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        840,
+        740
+      ],
+      "id": "eabae82a-d2c7-44c4-8294-098fb363837d"
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "url": "https://your-mautic-instance.com/api/contacts/{{$json[\"id\"]}}/edit",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "name": "Update Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        840,
+        540
+      ],
+      "id": "28536214-f43d-49af-9871-cbbcb422fcd1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [],
+          "string": [
+            {
+              "value1": "={{$json[\"email\"]}}",
+              "value2": "={{$json[\"fields\"][\"email\"]}}"
+            }
+          ]
+        }
+      },
+      "name": "IF Contact Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        640,
+        600
+      ],
+      "id": "60f67219-3511-425c-abd7-6fbc1f6b05c3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Set Contact Data",
       "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
+      "typeVersion": 1,
       "position": [
-        1100,
-        320
-      ]
+        440,
+        640
+      ],
+      "id": "1c5e4e05-c8f7-40e3-aae3-42a8db4c6254"
     },
     {
       "parameters": {
-        "operation": "upload",
-        "path": "=data.blzres.com/data/{{ $json.property }}-delinquency.csv",
-        "binaryPropertyName": "attachment_0"
+        "batchSize": 1,
+        "options": {}
       },
-      "id": "a8376721-8a38-4d53-a914-eb2224002377",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        240,
+        640
+      ],
+      "id": "b8172807-28fb-4ee0-af26-49f305d3d3d5"
+    },
+    {
+      "parameters": {
+        "url": "https://marketing.blzres.com/api/contacts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mauticApi",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "2c1fab4e-7170-4618-9a7a-091fe3f2c2b4",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        460
+      ],
+      "credentials": {
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "data.blzres.com/data/tenant_directory.csv"
+      },
+      "id": "ab0a3cee-eac7-4ecb-a2de-8cb8b641970e",
       "name": "FTP",
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        1320,
-        320
+        300,
+        280
       ],
       "credentials": {
         "ftp": {
@@ -298,6 +242,17 @@
           "name": "FTP account"
         }
       }
+    },
+    {
+      "parameters": {},
+      "id": "17a08cd7-b57f-4164-908d-641f65150aaa",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        620
+      ]
     }
   ],
   "pinData": {},
@@ -307,6 +262,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-12T13:16:06.000Z",
-  "versionId": "9ab61bff-a0f8-4cf2-94b6-1fc860ad12f2"
+  "updatedAt": "2024-08-17T23:00:04.000Z",
+  "versionId": "35dca3aa-65bc-4391-824e-f246ab744d3f"
 }
