@@ -104,7 +104,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        100,
+        60,
         180
       ]
     },
@@ -117,7 +117,7 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        260,
+        220,
         180
       ],
       "credentials": {
@@ -137,7 +137,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        420,
+        380,
         180
       ]
     },
@@ -170,14 +170,14 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2,
       "position": [
-        820,
+        760,
         180
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT id\nFROM leads\nWHERE email = '{{ $json[\"Emails\"] }}';\n",
+        "query": "SELECT id\nFROM mautic_data\nWHERE firstname = '{{ $json[\"First Name\"] }}' AND lastname = '{{ $json[\"Last Name\"] }}' AND email = '{{ $json[\"emails\"] }}'\n",
         "options": {}
       },
       "id": "cc9e298a-2868-4754-a4b8-2b2b715f1ceb",
@@ -185,13 +185,13 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1020,
+        980,
         180
       ],
       "credentials": {
         "mySql": {
-          "id": "il7omvUhA1CBuUv7",
-          "name": "MySQL account 3"
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "n8n database"
         }
       }
     },
@@ -224,7 +224,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1220,
+        1180,
         180
       ]
     },
@@ -268,8 +268,8 @@
       "type": "n8n-nodes-base.mautic",
       "typeVersion": 1,
       "position": [
-        1260,
-        380
+        1180,
+        400
       ],
       "credentials": {
         "mauticApi": {
@@ -287,7 +287,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        640,
+        580,
         180
       ]
     }
@@ -299,6 +299,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-18T00:08:07.000Z",
-  "versionId": "a52c00b1-3b0c-42be-880b-0e387453159a"
+  "updatedAt": "2024-08-19T10:33:04.000Z",
+  "versionId": "8e26c8fa-d658-42f9-9210-f85a024afff7"
 }
