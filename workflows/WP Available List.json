@@ -177,8 +177,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "iQsUzgXmgXt4U8k2",
-          "name": "BlzRes_Back Connection"
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "n8n database"
         }
       }
     }
@@ -202,6 +202,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:18:15.000Z",
-  "versionId": "0e6bba7b-3b3b-45ac-866d-414b71efcb44"
+  "updatedAt": "2024-08-19T10:45:48.000Z",
+  "versionId": "ab66028f-50da-4a62-9061-df227299af81"
 }
