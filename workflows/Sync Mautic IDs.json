@@ -1,0 +1,174 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-18T20:31:06.279Z",
+  "id": "7NrGx3TWIFEVLnNF",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Sync Mautic IDs",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "56e592ae-f613-4330-82ff-7d1b72b7689e",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        300,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, firstname, lastname, phone, email \nFROM leads \nWHERE id IS NOT NULL \n  AND firstname IS NOT NULL \n  AND lastname IS NOT NULL \n  AND phone IS NOT NULL \n  AND email IS NOT NULL;\n",
+        "options": {}
+      },
+      "id": "0ae1b541-de4b-4311-9110-4f002ac8f121",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        340,
+        400
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "mOWLZydjkaLNSRrQ",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "mautic_data",
+          "mode": "list",
+          "cachedResultName": "mautic_data"
+        },
+        "columnToMatchOn": "id",
+        "options": {}
+      },
+      "id": "da04a653-f53b-4c91-bdc8-8b4e1bece36a",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        820,
+        400
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "n8n database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "93ae6fa0-8340-4be2-830d-6ee7505e55be",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        560,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "triggerAtMinute": 2
+            }
+          ]
+        }
+      },
+      "id": "8280075d-dbd8-40e0-bd4e-99f55f609722",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        140,
+        400
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-08-18T21:15:31.000Z",
+  "versionId": "3801746f-d856-4f91-8704-e4276486ec89"
+}
