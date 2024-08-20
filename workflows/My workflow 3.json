@@ -5,7 +5,51 @@
       "main": [
         [
           {
-            "node": "Google Sheets",
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Filter",
             "type": "main",
             "index": 0
           }
@@ -13,56 +57,249 @@
       ]
     }
   },
-  "createdAt": "2024-08-18T14:52:28.408Z",
-  "id": "lCkswYHquDOZc8bw",
+  "createdAt": "2024-08-19T19:22:01.974Z",
+  "id": "8bHRr1VM1naDcnfF",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 3",
   "nodes": [
     {
+      "parameters": {
+        "url": "https://blzres.com/wp-json/frm/v2/forms/2/entries",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": false,
+              "responseFormat": "autodetect"
+            }
+          },
+          "pagination": {}
+        }
+      },
+      "id": "639aefa1-8c09-4702-bb5e-780615711c3c",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        360,
+        580
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
       "parameters": {},
-      "id": "9c6ea578-dc8c-4ed9-b5c0-b95366e92139",
+      "id": "4480c6ed-3dc2-4456-8809-2fd81f63fe10",
       "name": "When clicking ‘Test workflow’",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        160,
-        300
+        140,
+        580
       ]
     },
     {
       "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "1hWXq91dj6TUa2Gtpnk0XUeuaeMqd_gKcmwPFx7R0COg",
-          "mode": "list",
-          "cachedResultName": "Info Request Tenants",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hWXq91dj6TUa2Gtpnk0XUeuaeMqd_gKcmwPFx7R0COg/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hWXq91dj6TUa2Gtpnk0XUeuaeMqd_gKcmwPFx7R0COg/edit#gid=0"
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2f30de46-eef6-408a-82b9-0ef128b37f5b",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "a2248c6e-2f81-4f4b-86d9-38ecccb002f1",
+              "name": "item_key",
+              "value": "={{ $json.item_key }}",
+              "type": "string"
+            },
+            {
+              "id": "19194956-a2f2-4a38-ada4-630a25d040fc",
+              "name": "meta[\"name-value\"].first",
+              "value": "={{ $json.meta[\"name-value\"].first }}",
+              "type": "string"
+            },
+            {
+              "id": "adcea84d-7686-4e9e-b987-2ecbe8a0747c",
+              "name": "meta[\"name-value\"].last",
+              "value": "={{ $json.meta[\"name-value\"].last }}",
+              "type": "string"
+            },
+            {
+              "id": "bf7f41bf-11eb-4bde-8680-9a5508ada78c",
+              "name": "meta.location",
+              "value": "={{ $json.meta.location }}",
+              "type": "string"
+            },
+            {
+              "id": "58b755f0-8f28-47f2-b3b6-e988340ed660",
+              "name": "meta.occupancy",
+              "value": "={{ $json.meta.occupancy }}",
+              "type": "string"
+            },
+            {
+              "id": "ebb6bf57-898e-488e-abd3-18797530245a",
+              "name": "meta.vacant",
+              "value": "={{ $json.meta.vacant }}",
+              "type": "string"
+            },
+            {
+              "id": "7c2887bb-cdf4-47e2-968d-23907f84558c",
+              "name": "meta.guests",
+              "value": "={{ $json.meta.guests }}",
+              "type": "string"
+            },
+            {
+              "id": "3b66103c-2215-40ff-b7ec-26bf4cd67229",
+              "name": "meta.delinquency",
+              "value": "={{ $json.meta.delinquency }}",
+              "type": "string"
+            },
+            {
+              "id": "79ffd9d8-de66-4135-9485-92253ea66f57",
+              "name": "meta.delinquency30",
+              "value": "={{ $json.meta.delinquency30 }}",
+              "type": "string"
+            },
+            {
+              "id": "d9c97d0e-75ed-446b-a52f-aa70196e1e00",
+              "name": "meta.evictions",
+              "value": "={{ $json.meta.evictions }}",
+              "type": "string"
+            },
+            {
+              "id": "971abc10-c35e-4c3b-8070-fa13cbdbe374",
+              "name": "meta.applications",
+              "value": "={{ $json.meta.applications }}",
+              "type": "string"
+            },
+            {
+              "id": "491fc108-79c6-454f-8cf0-05363650df4f",
+              "name": "meta[\"move-ins\"]",
+              "value": "={{ $json.meta[\"move-ins\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "2643c14e-a85a-41e0-8729-ad58eba7e21b",
+              "name": "meta[\"ready-units\"]",
+              "value": "={{ $json.meta[\"ready-units\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "9fe95656-f1c1-4015-8794-a8d6360770fd",
+              "name": "meta.marketing",
+              "value": "={{ $json.meta.marketing }}",
+              "type": "string"
+            },
+            {
+              "id": "245e7be1-fada-454a-9ba8-cf2a47892f03",
+              "name": "meta.goodnews",
+              "value": "={{ $json.meta.goodnews }}",
+              "type": "string"
+            },
+            {
+              "id": "f6e5a3cc-2fbe-41a2-8521-2e788c01e2dc",
+              "name": "meta.headlines",
+              "value": "={{ $json.meta.headlines }}",
+              "type": "string"
+            },
+            {
+              "id": "0a78b5d1-7820-4bfa-a6d2-9fcdf03505c6",
+              "name": "meta.issues",
+              "value": "={{ $json.meta.issues }}",
+              "type": "string"
+            },
+            {
+              "id": "45a8962e-02fb-4cc1-a217-73c29cb92cd8",
+              "name": "meta.submit3",
+              "value": "={{ $json.meta.submit3 }}",
+              "type": "string"
+            },
+            {
+              "id": "7cbda852-aede-4960-a986-bd74f3c93cc6",
+              "name": "meta.convertedDate",
+              "value": "={{ $json.meta.convertedDate }}",
+              "type": "string"
+            }
+          ]
         },
         "options": {}
       },
-      "id": "b3f27456-2368-4d68-9b10-a11bf881260a",
-      "name": "Google Sheets",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.4,
+      "id": "f3e74ca7-bf71-4195-a694-026f24380362",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
       "position": [
-        380,
-        300
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "OPTs28HKagi0JBEs",
-          "name": "Google Sheets account"
-        }
-      }
+        800,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "e1d21d6d-6d6f-40ae-9e44-52e50f16011b",
+              "leftValue": "={{ $json.body.ip48a.meta.convertedDate }}",
+              "rightValue": "=-7",
+              "operator": {
+                "type": "dateTime",
+                "operation": "after"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "416e7e78-8d01-4178-a673-34e61b65de1d",
+      "name": "Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all items passed from the previous node\nconst items = $input.all();\n\n// Define an array to store the flattened results\nconst flattenedResults = [];\n\n// Loop through each item in the input\nitems.forEach(item => {\n  // Get all sub-items under the \"body\" key\n  const entries = item.json.body;\n\n  // Loop through each key in the entries object\n  for (const key in entries) {\n    if (entries.hasOwnProperty(key)) {\n      const entry = entries[key];\n\n      // Extract the datetime string, making sure it's not null\n      const dateTimeString = entry.meta.datetime;\n\n      // If datetime is not null, proceed\n      if (dateTimeString) {\n        // Extract the date part before the \" - \" separator\n        const datePart = dateTimeString.split(' - ')[0];\n\n        // Convert the datePart into a JavaScript Date object\n        const [month, day, year] = datePart.split('/');\n        const convertedDate = new Date(`${year}-${month}-${day}T00:00:00Z`);\n\n        // Add the converted date to the entry\n        entry.meta.convertedDate = convertedDate;\n\n        // Optional: If you want to format the date differently (e.g., ISO format)\n        entry.meta.formattedDate = convertedDate.toISOString();\n      }\n\n      // Add the entry to the flattened results\n      flattenedResults.push({ json: entry });\n    }\n  }\n});\n\n// Return the flattened and processed results\nreturn flattenedResults;\n"
+      },
+      "id": "87fc3b5c-b26a-4550-8081-dfe95b349e01",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        580,
+        580
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all items passed from the previous node\nconst items = $input.all();\n\n// Define an array to store the filtered results\nconst filteredResults = [];\n\n// Define the properties to filter\nconst targetProperties = [\n  \"Broadstone Apartments\",\n  \"Courtyard Apartments\",\n  \"Courtyard Apartments Pampa\",\n  \"Cross Keys\",\n  \"Jefferson Square Apartments\",\n  \"Northpark Town Homes\",\n  \"Nelson Street Apartments\",\n  \"Oak Terrace - Littlefield\",\n  \"RiverEdge\"\n];\n\n// Get the date 7 days ago\nconst sevenDaysAgo = new Date();\nsevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);\n\n// Loop through each item\nitems.forEach(item => {\n  // Get all sub-items under the \"body\" key\n  const entries = item.json.body;\n\n  // Loop through each key in the entries object\n  for (const key in entries) {\n    if (entries.hasOwnProperty(key)) {\n      const entry = entries[key];\n      const location = entry.meta.location;\n      const dateTimeString = entry.meta.datetime;\n\n      // Check if the property is in the target list and if datetime is valid\n      if (targetProperties.includes(location) && dateTimeString) {\n        // Extract the date part before the \" - \" separator\n        const datePart = dateTimeString.split(' - ')[0];\n        const [month, day, year] = datePart.split('/');\n        const entryDate = new Date(`${year}-${month}-${day}T00:00:00Z`);\n\n        // Check if the entry is within the past 7 days\n        if (entryDate >= sevenDaysAgo) {\n          filteredResults.push({\n            location: location || '',\n            occupancy: entry.meta.occupancy || '',\n            delinquency: entry.meta.delinquency || '',\n            moveIns: entry.meta[\"move-ins\"] || '',\n            readyUnits: entry.meta[\"ready-units\"] || '',\n            issues: entry.meta.issues || '',\n            headlines: entry.meta.headlines || '',\n            goodnews: entry.meta.goodnews || '',\n            datetime: dateTimeString || ''\n          });\n        }\n      }\n    }\n  }\n});\n\n// Return the filtered results as an array of JSON objects\nreturn filteredResults.map(result => ({ json: result }));\n"
+      },
+      "id": "a5810754-7096-4f2d-b7d8-11acc73e32fa",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        580
+      ]
     }
   ],
   "pinData": {},
@@ -72,6 +309,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-18T14:52:28.408Z",
-  "versionId": "0e281273-7365-4134-9e99-6d7d6bf8055d"
+  "updatedAt": "2024-08-19T21:59:15.000Z",
+  "versionId": "6a3c5042-ce94-42ee-977a-30b3cd1d4ec1"
 }
