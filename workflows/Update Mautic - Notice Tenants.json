@@ -1,0 +1,201 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Mautic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-21T13:04:12.967Z",
+  "id": "ZY7g1p8vDCUqFhzs",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Mautic - Notice Tenants",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "368b57fe-4c62-4ea7-b8f1-a5e93fb9808b",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "path": "data.blzres.com/data/future_tenants.csv"
+      },
+      "id": "cf42e8f6-76a8-404a-b51e-c5e1554c7c26",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        320,
+        380
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "id": "d20a011c-50ab-475a-a8b4-7cace51b0118",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        540,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const convertExcelDateToJSDate = (excelDate) => {\n  if (typeof excelDate !== 'number' || excelDate <= 0) {\n    // Return null if the date code is invalid\n    return null;\n  }\n\n  // Base date is January 1, 1900\n  const baseDate = new Date(1900, 0, 1);\n\n  // Excel incorrectly considers 1900 as a leap year, so adjust by subtracting 1 day for dates after February 28, 1900\n  const adjustedDate = excelDate > 59 ? excelDate - 1 : excelDate;\n\n  // Add the Excel date to the base date\n  baseDate.setDate(baseDate.getDate() + adjustedDate);\n\n  // Check if the resulting date is valid\n  if (isNaN(baseDate.getTime())) {\n    // Return null if the date is invalid\n    return null;\n  }\n\n  // Return the date in the desired format (YYYY-MM-DD)\n  return baseDate.toISOString().split('T')[0];\n};\n\n// Function to format phone numbers as (###) ###-####\nconst formatPhoneNumber = (phone) => {\n  const digits = phone ? phone.replace(/\\D/g, '') : ''; // Remove non-numeric characters\n  if (digits.length === 10) {\n    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;\n  }\n  return null; // Return null if the phone number is not in the correct format\n};\n\n// Function to extract the first phone number\nconst extractFirstPhoneNumber = (phoneNumbers) => {\n  if (typeof phoneNumbers !== 'string') {\n    return null; // Return null if the field is undefined or not a string\n  }\n  const phones = phoneNumbers.split(','); // Split multiple phone numbers by comma\n  if (phones.length > 0) {\n    return formatPhoneNumber(phones[0].trim());\n  }\n  return null;\n};\n\n// Function to extract the first email\nconst extractFirstEmail = (emails) => {\n  if (typeof emails !== 'string') {\n    return null; // Return null if the field is undefined or not a string\n  }\n  const emailList = emails.split(','); // Split multiple emails by comma\n  if (emailList.length > 0) {\n    return emailList[0].trim(); // Return the first email\n  }\n  return null;\n};\n\n// State mapping from abbreviation to full name\nconst stateMap = {\n  \"AL\": \"Alabama\",\n  \"AK\": \"Alaska\",\n  \"AZ\": \"Arizona\",\n  \"AR\": \"Arkansas\",\n  \"CA\": \"California\",\n  \"CO\": \"Colorado\",\n  \"CT\": \"Connecticut\",\n  \"DE\": \"Delaware\",\n  \"FL\": \"Florida\",\n  \"GA\": \"Georgia\",\n  \"HI\": \"Hawaii\",\n  \"ID\": \"Idaho\",\n  \"IL\": \"Illinois\",\n  \"IN\": \"Indiana\",\n  \"IA\": \"Iowa\",\n  \"KS\": \"Kansas\",\n  \"KY\": \"Kentucky\",\n  \"LA\": \"Louisiana\",\n  \"ME\": \"Maine\",\n  \"MD\": \"Maryland\",\n  \"MA\": \"Massachusetts\",\n  \"MI\": \"Michigan\",\n  \"MN\": \"Minnesota\",\n  \"MS\": \"Mississippi\",\n  \"MO\": \"Missouri\",\n  \"MT\": \"Montana\",\n  \"NE\": \"Nebraska\",\n  \"NV\": \"Nevada\",\n  \"NH\": \"New Hampshire\",\n  \"NJ\": \"New Jersey\",\n  \"NM\": \"New Mexico\",\n  \"NY\": \"New York\",\n  \"NC\": \"North Carolina\",\n  \"ND\": \"North Dakota\",\n  \"OH\": \"Ohio\",\n  \"OK\": \"Oklahoma\",\n  \"OR\": \"Oregon\",\n  \"PA\": \"Pennsylvania\",\n  \"RI\": \"Rhode Island\",\n  \"SC\": \"South Carolina\",\n  \"SD\": \"South Dakota\",\n  \"TN\": \"Tennessee\",\n  \"TX\": \"Texas\",\n  \"UT\": \"Utah\",\n  \"VT\": \"Vermont\",\n  \"VA\": \"Virginia\",\n  \"WA\": \"Washington\",\n  \"WV\": \"West Virginia\",\n  \"WI\": \"Wisconsin\",\n  \"WY\": \"Wyoming\"\n};\n\n// Function to convert state abbreviations to full names\nconst convertState = (stateAbbreviation) => {\n  if (typeof stateAbbreviation !== 'string') {\n    return stateAbbreviation; // Return the original value if it's not a string\n  }\n  return stateMap[stateAbbreviation.toUpperCase()] || stateAbbreviation; // Return the full name if available, otherwise return the original abbreviation\n};\n\n// Process the current item\nconst item = $input.item.json;\n\n// Convert the specific Excel date codes\nitem['Move-in'] = convertExcelDateToJSDate(item['Move-in']);\nitem['Lease To'] = convertExcelDateToJSDate(item['Lease To']);\nitem['Tenant Birthdate'] = convertExcelDateToJSDate(item['Tenant Birthdate']);\nitem['Lease From'] = convertExcelDateToJSDate(item['Lease From']);\nitem['Eligible for Rent Increase'] = convertExcelDateToJSDate(item['Eligible for Rent Increase']);\n\n// Extract and format the first phone number\nitem['Formatted Phone Number'] = extractFirstPhoneNumber(item['Phone Numbers']);\n\n// Extract the first email\nitem['First Email'] = extractFirstEmail(item['Emails']);\n\n// Convert state abbreviations to full names for relevant fields\nitem['Tenant State'] = convertState(item['Tenant State']);\nitem['Property State'] = convertState(item['Property State']);\n\n// Return the updated item\nreturn {\n  json: item\n};\n"
+      },
+      "id": "8c48336a-dd30-45bf-9fa1-cfca56831852",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://marketing.blzres.com/api/contacts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mauticApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "search",
+              "value": "=firstname:{{ $json['First Name'] }} AND lastname:{{ $json['Last Name'] }} AND unit:{{ $json['Unit'] }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "id": "da78cc4a-a817-43e4-905f-41cec3d6e728",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        380
+      ],
+      "credentials": {
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "contactId": "={{ $json.contacts[\"870\"].id }}",
+        "updateFields": {
+          "customFieldsUi": {
+            "customFieldValues": [
+              {
+                "fieldId": "moveout",
+                "fieldValue": "={{ $json.contacts[\"4256\"].fields.core.moveout.value }}"
+              }
+            ]
+          }
+        },
+        "options": {}
+      },
+      "id": "2957a7af-2550-45ae-ab8f-8e55cfab2b4f",
+      "name": "Mautic",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        1180,
+        380
+      ],
+      "credentials": {
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-21T15:26:14.000Z",
+  "versionId": "d5bac8b8-6388-4059-b946-7ef94ccab5c4"
+}
