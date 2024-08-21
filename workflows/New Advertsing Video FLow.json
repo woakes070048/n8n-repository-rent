@@ -5,18 +5,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request1",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -36,7 +25,7 @@
         "pollTimes": {
           "item": [
             {
-              "mode": "everyMinute"
+              "mode": "everyHour"
             }
           ]
         },
@@ -51,14 +40,13 @@
         "event": "fileUpdated",
         "options": {}
       },
-      "id": "9bc29ad5-4747-49a4-a481-f5f82db83201",
-      "name": "Google Drive Trigger",
+      "id": "6e98adea-a9c8-4d7c-8b1a-90ce2061de79",
       "type": "n8n-nodes-base.googleDriveTrigger",
-      "typeVersion": 1,
       "position": [
-        420,
-        340
+        260,
+        360
       ],
+      "name": "Google Drive Trigger",
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "cer2DAVMEta9v7Fb",
@@ -68,67 +56,89 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.lastModifyingUser.photoLink }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "googleDriveOAuth2Api",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "file"
-            }
-          }
-        }
-      },
-      "id": "93c80d83-0f35-4116-9a2e-aa0bc584f020",
-      "name": "HTTP Request",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        660,
-        340
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://blzres.com/wp-json/wp/v2/media",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "wordpressApi",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
             {
-              "name": "Content-Disposition",
-              "value": "=attachment; filename={{ $json.name }}.jpg"
-            },
-            {
-              "name": "Content-Type",
-              "value": "image/jpeg"
+              "id": "ad632606-d520-49e9-9695-a728e52fecc3",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
             }
-          ]
+          ],
+          "combinator": "and"
         },
         "options": {}
       },
-      "id": "440a80de-3f50-4855-b219-ec84d3e4f37c",
-      "name": "HTTP Request1",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "id": "8e18f09a-8a33-4818-9a2d-c753c6ac2fd6",
+      "type": "n8n-nodes-base.if",
       "position": [
-        880,
-        340
+        510,
+        360
       ],
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "id": "558f8c4f-1272-4717-95d5-063396770949",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        760,
+        360
+      ],
+      "name": "Google Drive",
       "credentials": {
-        "wordpressApi": {
-          "id": "VXzYYztQ5s3nKwus",
-          "name": "Wordpress account"
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
         }
       }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "a3622ca2-35a7-487b-aa0d-fd7b127b0037",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1010,
+        360
+      ],
+      "name": "Edit Fields (Set)"
+    },
+    {
+      "parameters": {
+        "operation": "createPost"
+      },
+      "id": "b0d7d908-9ce3-41ec-a960-e0e793a139c0",
+      "type": "n8n-nodes-base.wordpress",
+      "position": [
+        1260,
+        360
+      ],
+      "name": "Wordpress"
     }
   ],
   "pinData": {},
@@ -138,6 +148,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-20T17:01:29.000Z",
-  "versionId": "83694f55-6b1e-4ae9-b2b6-d43a4bc0a2b3"
+  "updatedAt": "2024-08-20T18:04:28.000Z",
+  "versionId": "99b4916e-5ea3-4e17-86d9-7cf85f0debe9"
 }
