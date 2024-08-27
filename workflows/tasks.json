@@ -1,0 +1,144 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Tasks": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Google Tasks1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-27T16:46:24.975Z",
+  "id": "01swcMYC9fVaJ08Q",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "tasks",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "3b58176b-6950-4a19-b485-05951366e2a8",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        140,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "task": "UEJqMjVuZ0Y1elc3QmVnLQ",
+        "returnAll": true,
+        "additionalFields": {}
+      },
+      "id": "50645d38-8e42-4c9b-b9cc-25e8a7cbab4b",
+      "name": "Google Tasks",
+      "type": "n8n-nodes-base.googleTasks",
+      "typeVersion": 1,
+      "position": [
+        340,
+        360
+      ],
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "HrZWWSJj3Jhveuos",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "75bd1c2d-50d9-433b-8548-6f545a845be1",
+              "leftValue": "={{ $json.due }}",
+              "rightValue": "={{ $now }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "beforeOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "af658722-5b44-41ec-a9e4-5f60789f5926",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        560,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "task": "={{ $json.id }}",
+        "taskId": "={{ $json.etag }}",
+        "updateFields": {
+          "status": ""
+        }
+      },
+      "id": "acc1d307-1b1f-4def-9983-c7491efbfc5f",
+      "name": "Google Tasks1",
+      "type": "n8n-nodes-base.googleTasks",
+      "typeVersion": 1,
+      "position": [
+        780,
+        360
+      ],
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "HrZWWSJj3Jhveuos",
+          "name": "Google Tasks account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-27T16:51:57.000Z",
+  "versionId": "1ac18663-5c1e-44a7-aaf3-508d81c59143"
+}
