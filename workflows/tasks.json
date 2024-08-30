@@ -1,33 +1,66 @@
 {
   "active": false,
   "connections": {
-    "When clicking ‘Test workflow’": {
+    "Retrieve Tasks": {
       "main": [
         [
           {
-            "node": "Google Tasks",
+            "node": "SplitInBatches",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Tasks": {
+    "SplitInBatches": {
       "main": [
         [
           {
-            "node": "If",
+            "node": "Create Task in New List",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If": {
+    "Create Task in New List": {
       "main": [
         [
           {
-            "node": "Google Tasks1",
+            "node": "Delete Original Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Original Task": {
+      "main": [
+        [
+          {
+            "node": "NoOp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NoOp": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Retrieve Tasks",
             "type": "main",
             "index": 0
           }
@@ -43,31 +76,20 @@
   "name": "tasks",
   "nodes": [
     {
-      "parameters": {},
-      "id": "3b58176b-6950-4a19-b485-05951366e2a8",
-      "name": "When clicking ‘Test workflow’",
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        140,
-        360
-      ]
-    },
-    {
       "parameters": {
         "operation": "getAll",
         "task": "UEJqMjVuZ0Y1elc3QmVnLQ",
         "returnAll": true,
         "additionalFields": {}
       },
-      "id": "50645d38-8e42-4c9b-b9cc-25e8a7cbab4b",
-      "name": "Google Tasks",
+      "name": "Retrieve Tasks",
       "type": "n8n-nodes-base.googleTasks",
       "typeVersion": 1,
       "position": [
-        340,
-        360
+        0,
+        420
       ],
+      "id": "cd58e0f0-dd68-43f1-8247-24d518878c57",
       "credentials": {
         "googleTasksOAuth2Api": {
           "id": "HrZWWSJj3Jhveuos",
@@ -77,59 +99,92 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict"
-          },
-          "conditions": [
-            {
-              "id": "75bd1c2d-50d9-433b-8548-6f545a845be1",
-              "leftValue": "={{ $json.due }}",
-              "rightValue": "={{ $now }}",
-              "operator": {
-                "type": "dateTime",
-                "operation": "beforeOrEquals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
+        "batchSize": 1,
         "options": {}
       },
-      "id": "af658722-5b44-41ec-a9e4-5f60789f5926",
-      "name": "If",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
       "position": [
-        560,
-        360
-      ]
+        200,
+        420
+      ],
+      "id": "8f916fc9-896e-4dfb-af5c-216ae03d674d"
     },
     {
       "parameters": {
-        "operation": "update",
-        "task": "={{ $json.id }}",
-        "taskId": "={{ $json.etag }}",
-        "updateFields": {
-          "status": ""
+        "task": "UEJqMjVuZ0Y1elc3QmVnLQ",
+        "title": "={{ $json[\"title\"] }}",
+        "additionalFields": {
+          "notes": ""
         }
       },
-      "id": "acc1d307-1b1f-4def-9983-c7491efbfc5f",
-      "name": "Google Tasks1",
+      "name": "Create Task in New List",
       "type": "n8n-nodes-base.googleTasks",
       "typeVersion": 1,
       "position": [
-        780,
-        360
+        400,
+        420
       ],
+      "id": "85556e4d-543d-4b0e-be0a-21495561e4c7",
       "credentials": {
         "googleTasksOAuth2Api": {
           "id": "HrZWWSJj3Jhveuos",
           "name": "Google Tasks account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "task": "UEJqMjVuZ0Y1elc3QmVnLQ",
+        "taskId": "={{ $('Retrieve Tasks').item.json.id }}"
+      },
+      "name": "Delete Original Task",
+      "type": "n8n-nodes-base.googleTasks",
+      "typeVersion": 1,
+      "position": [
+        600,
+        420
+      ],
+      "id": "ecb673a0-4357-4e07-a7a5-8ddbd02908fd",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "HrZWWSJj3Jhveuos",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "NoOp",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        800,
+        420
+      ],
+      "id": "5f8faa2e-b7a4-4f05-9a59-60732fa2430c"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 45
+            }
+          ]
+        }
+      },
+      "id": "a391e293-bbea-4d0e-b52f-d74eb040a3d1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -200,
+        420
+      ]
     }
   ],
   "pinData": {},
@@ -139,6 +194,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-27T16:51:57.000Z",
-  "versionId": "1ac18663-5c1e-44a7-aaf3-508d81c59143"
+  "updatedAt": "2024-08-30T16:26:27.000Z",
+  "versionId": "7956ac22-4358-409d-84fb-4a155d2c508c"
 }
