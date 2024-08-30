@@ -1,0 +1,205 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-27T20:56:19.053Z",
+  "id": "cYY7VMQwC9FqJVLy",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Check Listings against Managed Properties",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c7380aeb-a3fb-4c16-864e-c7a5cf1580f4",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        320,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "path": "data.blzres.com/data/customexport.csv"
+      },
+      "id": "dc7261e0-e64d-4d15-8def-1355707f59fa",
+      "name": "FTP1",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        480,
+        600
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "9cc8b4db-2d4a-49a7-abf6-bbe4eea63973",
+      "name": "Extract from File1",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        640,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT `property_name` FROM `all_rental_properties`;",
+        "options": {}
+      },
+      "id": "0d385600-193d-4c24-8933-fbba5ba52294",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        800,
+        600
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "n8n database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function to normalize a string by converting to lowercase, trimming, and removing punctuation\nfunction normalize(str) {\n    return str.toLowerCase().trim().replace(/[.,\\/#!$%\\^&\\*;:{}=\\-_`~()]/g,\"\").replace(/\\s{2,}/g,\" \");\n}\n\n// Normalize the 'Short Address' field in the CSV data\nfor (let item of items) {\n    if (item.json['Short Address']) {\n        item.json['Short Address'] = normalize(item.json['Short Address']);\n    }\n}\n\n// Get MySQL data (from the second input)\nlet mysqlData = $input.all();\n\n// Normalize the 'property_name' field in the MySQL data\nfor (let mysqlItem of mysqlData) {\n    if (mysqlItem.json['property_name']) {\n        mysqlItem.json['property_name'] = normalize(mysqlItem.json['property_name']);\n    }\n}\n\n// Return the combined items for further processing\nreturn items.map((item, index) => {\n    return {\n        json: {\n            csvAddress: item.json['Short Address'],\n            mysqlAddress: mysqlData[index] ? mysqlData[index].json['property_name'] : null,\n        }\n    };\n});\n"
+      },
+      "id": "2bdc9645-f077-4370-892f-2cd086699e0d",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function to perform a simple string similarity check (using Levenshtein Distance)\nfunction getSimilarity(a, b) {\n    if (!a || !b) return 0; // If either string is undefined or null, return 0 similarity\n    \n    let longer = a;\n    let shorter = b;\n    if (a.length < b.length) {\n        longer = b;\n        shorter = a;\n    }\n    const longerLength = longer.length;\n    if (longerLength === 0) {\n        return 1.0;\n    }\n    const editDistance = getEditDistance(longer, shorter);\n    return (longerLength - editDistance) / longerLength;\n}\n\n// Function to calculate Levenshtein Distance\nfunction getEditDistance(a, b) {\n    const matrix = [];\n\n    for (let i = 0; i <= b.length; i++) {\n        matrix[i] = [i];\n    }\n    for (let j = 0; j <= a.length; j++) {\n        matrix[0][j] = j;\n    }\n\n    for (let i = 1; i <= b.length; i++) {\n        for (let j = 1; j <= a.length; j++) {\n            if (b.charAt(i - 1) === a.charAt(j - 1)) {\n                matrix[i][j] = matrix[i - 1][j - 1];\n            } else {\n                matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)); // substitution\n            }\n        }\n    }\n\n    return matrix[b.length][a.length];\n}\n\n// Threshold for considering two strings as similar\nconst similarityThreshold = 0.7; // Adjust this value as needed\n\n// Initialize an array to hold the comparison results\nlet results = [];\n\n// Iterate over each CSV item and compare with all MySQL items\nfor (let item of items) {\n    let shortAddress = item.json['csvAddress']; // From normalized CSV\n    \n    for (let mysqlItem of $input.all()) {\n        let propertyName = mysqlItem.json['mysqlAddress']; // From normalized MySQL\n        \n        // Ensure both fields are defined before comparison\n        if (shortAddress && propertyName) {\n            const similarity = getSimilarity(shortAddress, propertyName);\n            \n            // Perform the fuzzy comparison\n            if (similarity >= similarityThreshold) {\n                results.push({\n                    shortAddress: shortAddress,\n                    propertyName: propertyName,\n                    similarity: similarity,\n                    match: true\n                });\n            }\n        }\n    }\n}\n\n// Return only the matched results\nreturn results.map(result => ({ json: result }));\n"
+      },
+      "id": "70550ed0-99f9-4d96-8588-3945f24ba4b3",
+      "name": "Code3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        600
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Possible Listings of Managed Properties",
+        "emailFormat": "text",
+        "text": "Review the following properties that may be currently up for sale on the MLS\n",
+        "options": {
+          "attachments": ""
+        }
+      },
+      "id": "3b41e0ba-ea9c-416a-9080-50ea485e5818",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1320,
+        600
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-29T17:50:08.000Z",
+  "versionId": "945ab81d-a3b2-4326-a495-c2cef39a1b9a"
+}
