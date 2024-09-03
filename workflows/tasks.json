@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Retrieve Tasks": {
       "main": [
@@ -171,7 +171,7 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 8,
+              "triggerAtHour": 7,
               "triggerAtMinute": 45
             }
           ]
@@ -191,9 +191,13 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2024-08-30T16:26:27.000Z",
-  "versionId": "7956ac22-4358-409d-84fb-4a155d2c508c"
+  "triggerCount": 1,
+  "updatedAt": "2024-09-02T17:42:51.000Z",
+  "versionId": "2084d950-776c-46d4-815c-700db47590a7"
 }
