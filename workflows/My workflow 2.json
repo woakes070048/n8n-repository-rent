@@ -64,6 +64,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Mautic1",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -120,12 +127,14 @@
         220,
         180
       ],
+      "notesInFlow": true,
       "credentials": {
         "ftp": {
           "id": "87ZwJT7N7b5rycj4",
           "name": "FTP account"
         }
-      }
+      },
+      "notes": "Download data.blzres.com/data/tenant_directory.csv"
     },
     {
       "parameters": {
@@ -177,7 +186,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT id\nFROM mautic_data\nWHERE firstname = '{{ $json[\"First Name\"] }}' AND lastname = '{{ $json[\"Last Name\"] }}' AND email = '{{ $json[\"emails\"] }}'\n",
+        "query": "SELECT id\nFROM mautic_data\nWHERE firstname = '{{ $json[\"First Name\"] }}' AND lastname = '{{ $json[\"Last Name\"] }}' AND email = '{{ $json[\"Emails\"] }}'\n",
         "options": {}
       },
       "id": "cc9e298a-2868-4754-a4b8-2b2b715f1ceb",
@@ -225,7 +234,7 @@
       "typeVersion": 2,
       "position": [
         1180,
-        180
+        40
       ]
     },
     {
@@ -268,8 +277,8 @@
       "type": "n8n-nodes-base.mautic",
       "typeVersion": 1,
       "position": [
-        1180,
-        400
+        1320,
+        440
       ],
       "credentials": {
         "mauticApi": {
@@ -290,6 +299,87 @@
         580,
         180
       ]
+    },
+    {
+      "parameters": {
+        "content": "## Download File\ndownload and load data.blzres.com/data/tenant_directory.csv for processing\n",
+        "height": 386,
+        "width": 354
+      },
+      "id": "4233d87d-02e6-4499-9281-ac7c4726bb04",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Convert fields\nProcess to convert state field, date from excel to standard, \nFilter for valid email addresses only\n",
+        "height": 383,
+        "width": 368,
+        "color": 3
+      },
+      "id": "b3959368-cc95-400b-9f8e-d7f14e036034",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        540,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## SQL match\n\nCheck against ancilllary table mautic_data to get ID\n",
+        "height": 376,
+        "width": 194
+      },
+      "id": "31f96aab-81e1-4505-a702-ef4cd6228430",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        920,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Update Mautic Contact\n\nIf the contact has an ID- \nupdate the contact. ",
+        "height": 300,
+        "width": 255
+      },
+      "id": "c8e0fc94-2783-45f7-99d8-7b6d782d1517",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "additionalFields": {},
+        "options": {}
+      },
+      "id": "3a115ba6-ef91-471b-818e-9703b19e4fd1",
+      "name": "Mautic1",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        40
+      ],
+      "credentials": {
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -299,6 +389,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-19T10:33:04.000Z",
-  "versionId": "8e26c8fa-d658-42f9-9210-f85a024afff7"
+  "updatedAt": "2024-09-02T18:08:58.000Z",
+  "versionId": "12da900f-2187-4189-8a71-5a399f737e2b"
 }
