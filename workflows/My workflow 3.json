@@ -1,22 +1,33 @@
 {
   "active": false,
   "connections": {
-    "Code": {
+    "Convert to CSV": {
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "Google Drive",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Webhook": {
+    "n8n | Get all executions": {
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Convert to CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "n8n | Get all executions",
             "type": "main",
             "index": 0
           }
@@ -24,123 +35,148 @@
       ]
     }
   },
-  "createdAt": "2024-08-27T20:56:19.053Z",
-  "id": "cYY7VMQwC9FqJVLy",
+  "createdAt": "2024-09-02T18:10:03.018Z",
+  "id": "sI4pNW2yadkW2UOp",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 3",
   "nodes": [
     {
-      "parameters": {
-        "table": {
-          "__rl": true,
-          "value": "weekly_data",
-          "mode": "list",
-          "cachedResultName": "weekly_data"
-        },
-        "dataMode": "defineBelow",
-        "valuesToSend": {
-          "values": [
-            {
-              "column": "name",
-              "value": "={{ $json.name }}"
-            },
-            {
-              "column": "email",
-              "value": "={{ $json.email }}"
-            },
-            {
-              "column": "location",
-              "value": "={{ $json.location }}"
-            },
-            {
-              "column": "occupancy",
-              "value": "={{ $json.occupancy }}"
-            },
-            {
-              "column": "delinquency",
-              "value": "={{ $json.delinquency }}"
-            },
-            {
-              "column": "guests",
-              "value": "={{ $json.guests }}"
-            },
-            {
-              "column": "applications",
-              "value": "={{ $json.applications }}"
-            },
-            {
-              "column": "move_ins",
-              "value": "={{ $json.move_ins }}"
-            },
-            {
-              "column": "ready_units",
-              "value": "={{ $json.ready_units }}"
-            },
-            {
-              "column": "goodnews",
-              "value": "={{ $json.goodnews }}"
-            },
-            {
-              "column": "headlines",
-              "value": "={{ $json.headlines }}"
-            },
-            {
-              "column": "issues",
-              "value": "={{ $json.issues }}"
-            },
-            {
-              "column": "datetime",
-              "value": "={{ $json.datetime }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "e15b2101-9d34-47ab-b80c-75feb68d5509",
-      "name": "MySQL",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
+      "parameters": {},
+      "id": "14100e35-5b35-4dcf-b465-5299c2a04e6a",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        1260,
-        360
+        440,
+        560
       ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "execution",
+        "returnAll": true,
+        "filters": {},
+        "options": {},
+        "requestOptions": {}
+      },
+      "id": "5243916e-c282-440a-880d-3371d4f79afd",
+      "name": "n8n | Get all executions",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        680,
+        560
+      ],
+      "typeVersion": 1,
       "credentials": {
-        "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "n8n database"
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "return items.map(item => {\n    if (item.json.body['[datetime]'] && typeof item.json.body['[datetime]'] === 'string') {\n        const dateString = item.json.body['[datetime]'];\n        // Convert the date format from MM/DD/YYYY - HH:MM:SS to YYYY-MM-DD HH:MM:SS\n        const formattedDate = dateString.replace(\n            /(\\d{2})\\/(\\d{2})\\/(\\d{4}) - (\\d{2}):(\\d{2}):(\\d{2})/,\n            '$3-$1-$2 $4:$5:$6'\n        );\n        item.json.body['[datetime]'] = formattedDate;\n    }\n    return {\n        json: {\n            name: item.json.body['[name]'],\n            email: item.json.body['[email]'],\n            location: item.json.body['[location]'],\n            occupancy: parseInt(item.json.body['[occupancy]']),\n            delinquency: parseInt(item.json.body['[delinquency]']),\n            guests: parseInt(item.json.body['[guests]']),\n            applications: parseInt(item.json.body['[applications]']),\n            move_ins: parseInt(item.json.body['[move-ins]']),\n            ready_units: parseInt(item.json.body['[ready-units]']),\n            goodnews: item.json.body['[goodnews]'],\n            headlines: item.json.body['[headlines]'],\n            issues: item.json.body['[issues]'],\n            datetime: item.json.body['[datetime]'],\n            ip: item.json.body['[ip]']\n        }\n    };\n});\n"
+        "options": {}
       },
-      "id": "f5f5a984-3557-4f46-8ed7-5b3aec5eb1e2",
-      "name": "Code",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "id": "42718f23-cc84-40c6-a323-1f405f84cf35",
+      "name": "Convert to CSV",
+      "type": "n8n-nodes-base.convertToFile",
       "position": [
-        1040,
-        360
-      ]
+        940,
+        560
+      ],
+      "typeVersion": 1.1
     },
     {
       "parameters": {
-        "httpMethod": "POST",
-        "path": "e6b86af3-8083-4961-a17d-a83fdebf8b2f",
+        "content": "## Get all executions\n**Workflow and Status Filters can be applied here**",
+        "height": 355,
+        "width": 254,
+        "color": 5
+      },
+      "id": "4f4f9e78-83cd-4398-a152-17815004bd21",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        600,
+        420
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Convert to CSV\n**CSV for easy parsing**",
+        "height": 355,
+        "width": 214.03132502922975,
+        "color": 4
+      },
+      "id": "46689328-4f32-4727-a823-6c48c385bf3d",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        420
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "80548aaa-ad48-4a3b-a01c-9947aa287f07",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        1180,
+        560
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Replace this node\n**Replace this node with any cloud storage destination**",
+        "height": 356,
+        "width": 214.07781344172514
+      },
+      "id": "ed03f4d7-fe54-4ccc-a1ee-9bd086d02a8a",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        420
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "name": "executions",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
         "options": {}
       },
-      "id": "d79448c7-9a21-41bd-9437-59b4ac091a87",
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
+      "id": "b44d3526-c8f7-48d8-948a-336f4710a9e4",
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
       "position": [
-        820,
-        360
+        1600,
+        440
       ],
-      "webhookId": "e6b86af3-8083-4961-a17d-a83fdebf8b2f"
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -150,6 +186,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-27T21:16:04.000Z",
-  "versionId": "714f702e-db34-4e48-b1fc-48282e2e5384"
+  "updatedAt": "2024-09-02T18:10:03.018Z",
+  "versionId": "d3fefabd-7c13-44fe-8bbd-7f800801ccfe"
 }
