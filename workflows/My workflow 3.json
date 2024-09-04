@@ -55,10 +55,7 @@
     },
     {
       "parameters": {
-        "resource": "execution",
-        "limit": 200,
-        "filters": {},
-        "options": {
+        "filters": {
           "activeWorkflows": true
         },
         "requestOptions": {}
@@ -188,6 +185,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-09-03T12:43:11.000Z",
-  "versionId": "b11d0b27-26ca-4f40-bc0a-ade321a13736"
+  "updatedAt": "2024-09-04T12:47:17.000Z",
+  "versionId": "1b85d01f-c93c-4ff6-8a66-7544f1d78d56"
 }
