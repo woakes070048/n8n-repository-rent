@@ -1,33 +1,77 @@
 {
   "active": false,
   "connections": {
-    "Convert to CSV": {
-      "main": [
-        [
-          {
-            "node": "Google Drive",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "n8n | Get all executions": {
-      "main": [
-        [
-          {
-            "node": "Convert to CSV",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When clicking ‘Test workflow’": {
       "main": [
         [
           {
-            "node": "n8n | Get all executions",
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Mautic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code",
             "type": "main",
             "index": 0
           }
@@ -35,8 +79,8 @@
       ]
     }
   },
-  "createdAt": "2024-09-02T18:10:03.018Z",
-  "id": "sI4pNW2yadkW2UOp",
+  "createdAt": "2024-09-06T13:48:43.724Z",
+  "id": "01vtv0XzlUBcK3sf",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -44,147 +88,274 @@
   "nodes": [
     {
       "parameters": {},
-      "id": "14100e35-5b35-4dcf-b465-5299c2a04e6a",
+      "id": "d59b2cd6-ac8f-4f9f-92c6-d3ef8c2ed3cb",
       "name": "When clicking ‘Test workflow’",
       "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
       "position": [
-        440,
-        560
-      ],
-      "typeVersion": 1
+        460,
+        460
+      ]
     },
     {
       "parameters": {
-        "filters": {
-          "activeWorkflows": true
-        },
-        "requestOptions": {}
+        "path": "/data.blzres.com/data/tenant_directory.csv"
       },
-      "id": "5243916e-c282-440a-880d-3371d4f79afd",
-      "name": "n8n | Get all executions",
-      "type": "n8n-nodes-base.n8n",
-      "position": [
-        680,
-        560
-      ],
+      "id": "c9ad583f-ba99-44c4-bfdd-d490af1f03c9",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
+      "position": [
+        620,
+        460
+      ],
       "credentials": {
-        "n8nApi": {
-          "id": "UjH1vFHaVrXZkoWc",
-          "name": "n8n account"
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ",",
+          "headerRow": true,
+          "includeEmptyCells": true,
+          "fromLine": 1
+        }
+      },
+      "id": "27fc42c7-6a99-478a-811f-8b981e5b6ca4",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        840,
+        460
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "email": "={{ $json.firstEmail }}",
+        "firstName": "={{ $json['First Name'] }}",
+        "lastName": "={{ $json['Last Name'] }}",
+        "company": "Blaze Real Estate PM",
+        "additionalFields": {
+          "customFieldsUi": {
+            "customFieldValues": [
+              {
+                "fieldId": "movein",
+                "fieldValue": "={{ $json[\"Move-in\"] }}"
+              },
+              {
+                "fieldId": "moveout",
+                "fieldValue": "={{ $json[\"Move-out\"] }}"
+              },
+              {
+                "fieldId": "portal_activated",
+                "fieldValue": "={{ $json[\"Online Portal Activated\"] }}"
+              },
+              {
+                "fieldId": "birthdate",
+                "fieldValue": "={{ $json[\"Tenant Birthdate\"] }}"
+              },
+              {
+                "fieldId": "lease_start",
+                "fieldValue": "={{ $json[\"Lease From\"] }}"
+              },
+              {
+                "fieldId": "lease_end",
+                "fieldValue": "={{ $json[\"Lease To\"] }}"
+              },
+              {
+                "fieldId": "status",
+                "fieldValue": "={{ $json.Status }}"
+              },
+              {
+                "fieldId": "unit",
+                "fieldValue": "={{ $json.Unit }}"
+              },
+              {
+                "fieldId": "property_name",
+                "fieldValue": "={{ $json[\"Property Name\"] }}"
+              },
+              {
+                "fieldId": "primary_tenant",
+                "fieldValue": "={{ $json[\"Primary Tenant\"] }}"
+              },
+              {
+                "fieldId": "tenant_tags",
+                "fieldValue": "={{ $json[\"Tenant Tags\"] }}"
+              },
+              {
+                "fieldId": "rent",
+                "fieldValue": "={{ $json.Rent }}"
+              },
+              {
+                "fieldId": "deposit",
+                "fieldValue": "={{ $json.Deposit }}"
+              }
+            ]
+          },
+          "mobile": "={{ $json.extractedPhoneNumber }}"
+        },
+        "options": {}
+      },
+      "id": "4c20b523-1994-461e-98e2-9d36dd41a877",
+      "name": "Mautic",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        460
+      ],
+      "credentials": {
+        "mauticApi": {
+          "id": "QYIHSttrdWeJLrEX",
+          "name": "Mautic account 2"
         }
       }
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "id": "42718f23-cc84-40c6-a323-1f405f84cf35",
-      "name": "Convert to CSV",
-      "type": "n8n-nodes-base.convertToFile",
-      "position": [
-        940,
-        560
-      ],
-      "typeVersion": 1.1
-    },
-    {
-      "parameters": {
-        "content": "## Get all executions\n**Workflow and Status Filters can be applied here**",
-        "height": 355,
-        "width": 254,
-        "color": 5
-      },
-      "id": "4f4f9e78-83cd-4398-a152-17815004bd21",
-      "name": "Sticky Note",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        600,
-        420
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "## Convert to CSV\n**CSV for easy parsing**",
-        "height": 355,
-        "width": 214.03132502922975,
-        "color": 4
-      },
-      "id": "46689328-4f32-4727-a823-6c48c385bf3d",
-      "name": "Sticky Note1",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        880,
-        420
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {},
-      "id": "80548aaa-ad48-4a3b-a01c-9947aa287f07",
-      "name": "No Operation, do nothing",
-      "type": "n8n-nodes-base.noOp",
-      "position": [
-        1180,
-        560
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "content": "## Replace this node\n**Replace this node with any cloud storage destination**",
-        "height": 356,
-        "width": 214.07781344172514
-      },
-      "id": "ed03f4d7-fe54-4ccc-a1ee-9bd086d02a8a",
-      "name": "Sticky Note2",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        1120,
-        420
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "name": "executions",
-        "driveId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "My Drive"
-        },
-        "folderId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "root",
-          "cachedResultName": "/ (Root folder)"
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "41c309e2-ed6c-48c3-8006-c32226a1f2e4",
+              "leftValue": "={{ $json.Emails }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
         },
         "options": {}
       },
-      "id": "b44d3526-c8f7-48d8-948a-336f4710a9e4",
-      "name": "Google Drive",
-      "type": "n8n-nodes-base.googleDrive",
+      "id": "5f79904b-6a06-4aaf-8936-91934fef097a",
+      "name": "Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const stateAbbreviations = {\n  \"AL\": \"Alabama\", \"AK\": \"Alaska\", \"AZ\": \"Arizona\", \"AR\": \"Arkansas\", \"CA\": \"California\", \n  \"CO\": \"Colorado\", \"CT\": \"Connecticut\", \"DE\": \"Delaware\", \"FL\": \"Florida\", \"GA\": \"Georgia\", \n  \"HI\": \"Hawaii\", \"ID\": \"Idaho\", \"IL\": \"Illinois\", \"IN\": \"Indiana\", \"IA\": \"Iowa\", \n  \"KS\": \"Kansas\", \"KY\": \"Kentucky\", \"LA\": \"Louisiana\", \"ME\": \"Maine\", \"MD\": \"Maryland\", \n  \"MA\": \"Massachusetts\", \"MI\": \"Michigan\", \"MN\": \"Minnesota\", \"MS\": \"Mississippi\", \"MO\": \"Missouri\", \n  \"MT\": \"Montana\", \"NE\": \"Nebraska\", \"NV\": \"Nevada\", \"NH\": \"New Hampshire\", \"NJ\": \"New Jersey\", \n  \"NM\": \"New Mexico\", \"NY\": \"New York\", \"NC\": \"North Carolina\", \"ND\": \"North Dakota\", \"OH\": \"Ohio\", \n  \"OK\": \"Oklahoma\", \"OR\": \"Oregon\", \"PA\": \"Pennsylvania\", \"RI\": \"Rhode Island\", \"SC\": \"South Carolina\", \n  \"SD\": \"South Dakota\", \"TN\": \"Tennessee\", \"TX\": \"Texas\", \"UT\": \"Utah\", \"VT\": \"Vermont\", \n  \"VA\": \"Virginia\", \"WA\": \"Washington\", \"WV\": \"West Virginia\", \"WI\": \"Wisconsin\", \"WY\": \"Wyoming\"\n};\n\n// Function to clean and convert to a float value\nfunction cleanNumericValue(value) {\n  if (typeof value === 'string') {\n    // Remove any commas, currency symbols, and whitespace, then convert to float\n    return parseFloat(value.replace(/[^0-9.-]+/g, ''));\n  }\n  return parseFloat(value);\n}\n\n// Get the input data from the previous node\nconst input = $json[\"Phone Numbers\"];\nconst emailsInput = $json[\"Emails\"];\n\n// Map the state abbreviation to the full name\nconst stateAbbr = $json[\"Tenant State\"];\nconst fullStateName = stateAbbreviations[stateAbbr] || stateAbbr;\n\n// Regex to extract the first email\nconst emailRegex = /[\\w\\.-]+@[\\w\\.-]+\\.\\w+/;\nconst firstEmail = emailsInput ? emailsInput.match(emailRegex)[0] : null;\n\n// Regular expression to extract the phone number\nconst phoneNumberRegex = /(\\+?\\d{1,2})?\\s?\\(?\\d{3}\\)?[\\s\\-]?\\d{3}[\\s\\-]?\\d{4}/;\nconst phoneNumberMatch = input.match(phoneNumberRegex);\n\n// Return the extracted data or null if not found\nreturn [\n  {\n    json: {\n      \"Property\": $json[\"Property\"],\n      \"Unit\": $json[\"Unit\"],\n      \"Tenant\": $json[\"Tenant\"],\n      \"Status\": $json[\"Status\"],\n      \"Tenant Type\": $json[\"Tenant Type\"],\n      \"Phone Numbers\": $json[\"Phone Numbers\"],\n      \"Emails\": $json[\"Emails\"],\n      \"Move-in\": $json[\"Move-in\"],\n      \"Lease To\": $json[\"Lease To\"],\n      \"Rent\": cleanNumericValue($json[\"Rent\"]),  // Ensure numeric value\n      \"Deposit\": cleanNumericValue($json[\"Deposit\"]),  // Ensure numeric value\n      \"Tenant Tags\": $json[\"Tenant Tags\"],\n      \"Tenant Address\": $json[\"Tenant Address\"],\n      \"Tenant Street Address 1\": $json[\"Tenant Street Address 1\"],\n      \"Tenant Street Address 2\": $json[\"Tenant Street Address 2\"],\n      \"Tenant City\": $json[\"Tenant City\"],\n      \"Tenant State\": fullStateName,\n      \"Tenant Zip\": $json[\"Tenant Zip\"],\n      \"Tenant Birthdate\": $json[\"Tenant Birthdate\"],\n      \"Property Name\": $json[\"Property Name\"],\n      \"Property Address\": $json[\"Property Address\"],\n      \"Property Street Address 1\": $json[\"Property Street Address 1\"],\n      \"Property Street Address 2\": $json[\"Property Street Address 2\"],\n      \"Property City\": $json[\"Property City\"],\n      \"Property State\": stateAbbr,  // Include original state abbreviation\n      \"Property Zip\": $json[\"Property Zip\"],\n      \"Certified Funds Only\": $json[\"Certified Funds Only\"],\n      \"Lease From\": $json[\"Lease From\"],\n      \"Last Lease Renewal\": $json[\"Last Lease Renewal\"],\n      \"Move-out\": $json[\"Move-out\"],\n      \"Eligible for Rent Increase\": $json[\"Eligible for Rent Increase\"],\n      \"Last Rent Increase\": $json[\"Last Rent Increase\"],\n      \"Next Rent Increase Date\": $json[\"Next Rent Increase Date\"],\n      \"Eligible for eCheck Security Deposit Return\": $json[\"Eligible for eCheck Security Deposit Return\"],\n      \"Online Portal Activated\": $json[\"Online Portal Activated\"],\n      \"Online Payments Recurring Total\": cleanNumericValue($json[\"Online Payments Recurring Total\"]),  // Ensure numeric value\n      \"Online Payments Recurring Count\": cleanNumericValue($json[\"Online Payments Recurring Count\"]),  // Ensure numeric value\n      \"Online Portal Login\": firstEmail,\n      \"Send Rent Reminders\": $json[\"Send Rent Reminders\"],\n      \"Unit Tags\": $json[\"Unit Tags\"],\n      \"Unit Type\": $json[\"Unit Type\"],\n      \"Late Fee Type\": $json[\"Late Fee Type\"],\n      \"Late Fee Base Amount\": cleanNumericValue($json[\"Late Fee Base Amount\"]),  // Ensure numeric value\n      \"Late Fee Daily Amount\": cleanNumericValue($json[\"Late Fee Daily Amount\"]),  // Ensure numeric value\n      \"Grace Period\": cleanNumericValue($json[\"Grace Period\"]),  // Ensure numeric value\n      \"Grace Period Fixed Day\": $json[\"Grace Period Fixed Day\"],\n      \"Grace Balance\": cleanNumericValue($json[\"Grace Balance\"]),  // Ensure numeric value\n      \"Max Daily Late Fees Amount\": cleanNumericValue($json[\"Max Daily Late Fees Amount\"]),  // Ensure numeric value\n      \"Ignore Partial Payments\": $json[\"Ignore Partial Payments\"],\n      \"Liability to Landlord Insurance Coverage\": $json[\"Liability to Landlord Insurance Coverage\"],\n      \"Insurance Company Name\": $json[\"Insurance Company Name\"],\n      \"Insurance Expiration\": $json[\"Insurance Expiration\"],\n      \"Insurance Policy Number\": $json[\"Insurance Policy Number\"],\n      \"Transaction Fee\": $json[\"Transaction Fee\"],\n      \"Primary Tenant\": $json[\"Primary Tenant\"],\n      \"First Name\": $json[\"First Name\"],\n      \"Last Name\": $json[\"Last Name\"],\n      \"License Plates\": $json[\"License Plates\"],\n      \"Pets\": $json[\"Pets\"],\n      \"NSF Fee Amount\": cleanNumericValue($json[\"NSF Fee Amount\"]),  // Ensure numeric value\n      \"Require Online Payments In Full\": $json[\"Require Online Payments In Full\"],\n      \"Security Deposit Return Payment\": $json[\"Security Deposit Return Payment\"],\n      \"extractedPhoneNumber\": phoneNumberMatch ? phoneNumberMatch[0].trim() : null,\n      \"firstEmail\": firstEmail\n    }\n  }\n];\n"
+      },
+      "id": "f37d09ff-2866-4258-9c60-ab806a734e88",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        460
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "acc63ca1-49ac-488d-9ee0-c0c4247e0b34",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1600,
-        440
+        1260,
+        300
       ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
+      "disabled": true
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "When clicking ‘Test workflow’": [
+      {
+        "json": {
+          "Property": "6025 Lair Rd - 6025 Lair Rd Amarillo, TX 79118",
+          "Unit": "6025 Lair Rd",
+          "Tenant": "Aaron, Kimberley D.",
+          "Status": "Current",
+          "Tenant Type": "Financially Responsible",
+          "Phone Numbers": "Mobile: (806) 584-9996",
+          "Emails": "kimberley_hawk@yahoo.com",
+          "Move-in": "7/18/2023",
+          "Lease To": "6/30/2024",
+          "Rent": "1,050.00",
+          "Deposit": "1,050.00",
+          "Tenant Tags": "",
+          "Tenant Address": "6025 Lair Rd Amarillo, TX 79118",
+          "Tenant Street Address 1": "6025 Lair Rd",
+          "Tenant Street Address 2": "",
+          "Tenant City": "Amarillo",
+          "Tenant State": "TX",
+          "Tenant Zip": "79118",
+          "Tenant Birthdate": "7/20/1973",
+          "Property Name": "6025 Lair Rd",
+          "Property Address": "6025 Lair Rd Amarillo, TX 79118",
+          "Property Street Address 1": "6025 Lair Rd",
+          "Property Street Address 2": "",
+          "Property City": "Amarillo",
+          "Property State": "TX",
+          "Property Zip": "79118",
+          "Certified Funds Only": "No",
+          "Lease From": "7/18/2023",
+          "Last Lease Renewal": "",
+          "Move-out": "",
+          "Eligible for Rent Increase": "7/18/2024",
+          "Last Rent Increase": "",
+          "Next Rent Increase Date": "",
+          "Eligible for eCheck Security Deposit Return": "No",
+          "Online Portal Activated": "Yes",
+          "Online Payments Recurring Total": "0",
+          "Online Payments Recurring Count": "0",
+          "Online Portal Login": "kimberley_hawk@yahoo.com",
+          "Send Rent Reminders": "No",
+          "Unit Tags": "",
+          "Unit Type": "",
+          "Late Fee Type": "Percent of Recurring Rent Only",
+          "Late Fee Base Amount": "7",
+          "Late Fee Daily Amount": "0",
+          "Grace Period": "4",
+          "Grace Period Fixed Day": "",
+          "Grace Balance": "0",
+          "Max Daily Late Fees Amount": "",
+          "Ignore Partial Payments": "No",
+          "Liability to Landlord Insurance Coverage": "Yes",
+          "Insurance Company Name": "",
+          "Insurance Expiration": "",
+          "Insurance Policy Number": "",
+          "Transaction Fee": "Credit: 2.99%, Debit: $9.99, eCheck: $2.49",
+          "Primary Tenant": "Yes",
+          "First Name": "Kimberley",
+          "Last Name": "Aaron",
+          "License Plates": "Ryz1554",
+          "Pets": "German Shepard/Husky (Zues), German shepherd/husky mix (Zeus)",
+          "NSF Fee Amount": "35",
+          "Require Online Payments In Full": "No",
+          "Security Deposit Return Payment": "No Refund"
+        }
+      }
+    ]
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-09-04T12:47:17.000Z",
-  "versionId": "1b85d01f-c93c-4ff6-8a66-7544f1d78d56"
+  "updatedAt": "2024-09-06T14:36:19.000Z",
+  "versionId": "6dd9123b-8dd5-4114-9ef1-a1e02bf2a205"
 }
