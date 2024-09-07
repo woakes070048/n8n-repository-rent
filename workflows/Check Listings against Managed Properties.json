@@ -134,8 +134,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "n8n database"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       }
     },
@@ -191,6 +191,19 @@
           "name": "SMTP account"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "## conversion\n\nCOnverted to a2 hosting database blazeapa_blazedata"
+      },
+      "id": "0802c075-7e36-4e6d-a628-8a43ff5ba77e",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        940,
+        480
+      ]
     }
   ],
   "pinData": {},
@@ -198,8 +211,21 @@
     "executionOrder": "v1"
   },
   "staticData": null,
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    },
+    {
+      "createdAt": "2024-09-07T13:56:55.812Z",
+      "updatedAt": "2024-09-07T13:56:55.812Z",
+      "id": "jX5iavNFG4Ls67W3",
+      "name": "a2"
+    }
+  ],
   "triggerCount": 0,
-  "updatedAt": "2024-08-29T17:50:08.000Z",
-  "versionId": "945ab81d-a3b2-4326-a495-c2cef39a1b9a"
+  "updatedAt": "2024-09-07T14:04:09.000Z",
+  "versionId": "dea4e597-c969-4c53-9e96-8dd48c76d2fd"
 }
