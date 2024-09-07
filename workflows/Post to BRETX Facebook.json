@@ -163,8 +163,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "iQsUzgXmgXt4U8k2",
-          "name": "BlzRes_Back Connection"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       }
     },
@@ -204,8 +204,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "iQsUzgXmgXt4U8k2",
-          "name": "BlzRes_Back Connection"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       },
       "onError": "continueRegularOutput"
@@ -389,7 +389,7 @@
     "node:Cron 8am": {
       "recurrencyRules": [],
       "recurrenceRules": [
-        0
+        12
       ]
     },
     "node:cron 10am": {
@@ -415,9 +415,15 @@
       "updatedAt": "2024-07-27T22:16:08.252Z",
       "id": "Uk7axlMxGS79ju2M",
       "name": "Facebook"
+    },
+    {
+      "createdAt": "2024-09-07T13:56:55.812Z",
+      "updatedAt": "2024-09-07T13:56:55.812Z",
+      "id": "jX5iavNFG4Ls67W3",
+      "name": "a2"
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:13:41.000Z",
-  "versionId": "64d2ded4-1c17-4d80-a219-74f1e7478746"
+  "updatedAt": "2024-09-07T13:56:57.000Z",
+  "versionId": "df74fe15-b93b-4d28-b4c4-68be23fe8eef"
 }
