@@ -134,7 +134,7 @@
     },
     {
       "parameters": {
-        "content": "## Generate Wordpress post\nCreates a daily wordpress post that contains all of the \ninformation regarding available listings for that day. \n",
+        "content": "## Generate Wordpress post\nCreates a daily wordpress post that contains all of the \ninformation regarding available listings for that day. \n\n\nUpdated to blazeapa_blazedata",
         "height": 439,
         "width": 773,
         "color": 3
@@ -177,8 +177,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "n8n database"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       }
     }
@@ -195,6 +195,18 @@
   },
   "tags": [
     {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    },
+    {
+      "createdAt": "2024-09-07T13:56:55.812Z",
+      "updatedAt": "2024-09-07T13:56:55.812Z",
+      "id": "jX5iavNFG4Ls67W3",
+      "name": "a2"
+    },
+    {
       "createdAt": "2024-08-17T11:18:13.801Z",
       "updatedAt": "2024-08-17T11:18:13.801Z",
       "id": "r68tdPXG0q2verIL",
@@ -202,6 +214,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-19T10:45:48.000Z",
-  "versionId": "ab66028f-50da-4a62-9061-df227299af81"
+  "updatedAt": "2024-09-07T14:03:56.000Z",
+  "versionId": "19c47501-7816-4c06-b40a-6180f28af120"
 }
