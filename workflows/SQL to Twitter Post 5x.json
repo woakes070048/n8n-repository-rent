@@ -233,8 +233,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "iQsUzgXmgXt4U8k2",
-          "name": "BlzRes_Back Connection"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       }
     },
@@ -313,8 +313,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "iQsUzgXmgXt4U8k2",
-          "name": "BlzRes_Back Connection"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       },
       "onError": "continueRegularOutput"
@@ -554,6 +554,19 @@
         460,
         860
       ]
+    },
+    {
+      "parameters": {
+        "content": "## Conversion\n\nConverted to a2 blazeapa_blazedata\n"
+      },
+      "id": "0548deaf-b101-4656-8fc2-d9b9844d9888",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        100
+      ]
     }
   ],
   "pinData": {},
@@ -591,6 +604,6 @@
     }
   ],
   "triggerCount": 5,
-  "updatedAt": "2024-08-17T11:18:40.000Z",
-  "versionId": "04bd9215-8eef-4101-970e-54e24f74210e"
+  "updatedAt": "2024-09-07T13:14:38.000Z",
+  "versionId": "9b98f805-a4be-4295-b13a-70c92b4c3406"
 }
