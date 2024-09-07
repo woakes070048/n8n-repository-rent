@@ -79,7 +79,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT id, firstname, lastname, phone, email \nFROM leads \nWHERE id IS NOT NULL \n  AND firstname IS NOT NULL \n  AND lastname IS NOT NULL \n  AND phone IS NOT NULL \n  AND email IS NOT NULL;\n",
+        "query": "SELECT id, firstname, lastname, phone, email \nFROM mauei_leads \nWHERE id IS NOT NULL \n  AND firstname IS NOT NULL \n  AND lastname IS NOT NULL \n  AND phone IS NOT NULL \n  AND email IS NOT NULL;\n",
         "options": {}
       },
       "id": "0ae1b541-de4b-4311-9110-4f002ac8f121",
@@ -92,8 +92,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "mOWLZydjkaLNSRrQ",
-          "name": "MySQL account"
+          "id": "HfFx3FKAZRAhLnZD",
+          "name": "a2 Mautic Database"
         }
       }
     },
@@ -156,6 +156,19 @@
         140,
         400
       ]
+    },
+    {
+      "parameters": {
+        "content": "## Conversion\nconverted to a2 database \nDatabase: blazeapa_maut871\n\nPhone not being insrted in other process. Check and verify\n"
+      },
+      "id": "8d47f01d-94bd-47b2-ae2c-b2d100f31b36",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        540,
+        80
+      ]
     }
   ],
   "pinData": {},
@@ -167,8 +180,21 @@
       "recurrenceRules": []
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    },
+    {
+      "createdAt": "2024-09-07T13:56:55.812Z",
+      "updatedAt": "2024-09-07T13:56:55.812Z",
+      "id": "jX5iavNFG4Ls67W3",
+      "name": "a2"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-18T21:15:31.000Z",
-  "versionId": "3801746f-d856-4f91-8704-e4276486ec89"
+  "updatedAt": "2024-09-07T14:03:43.000Z",
+  "versionId": "ddc36a5f-7aaa-4e46-8ad2-7f6892e50223"
 }
