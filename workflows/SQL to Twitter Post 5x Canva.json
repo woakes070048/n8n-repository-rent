@@ -244,8 +244,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       }
     },
@@ -324,8 +324,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       },
       "onError": "continueRegularOutput"
@@ -571,6 +571,19 @@
         460,
         860
       ]
+    },
+    {
+      "parameters": {
+        "content": "## Conversion \nConverted to a2 database \nblazeapa_blazedata"
+      },
+      "id": "45d76411-3134-4a28-9ede-ddd67533070e",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1580,
+        180
+      ]
     }
   ],
   "pinData": {},
@@ -605,9 +618,15 @@
       "updatedAt": "2024-08-17T11:17:51.060Z",
       "id": "fot1zjuV8JfY8OvN",
       "name": "twitter"
+    },
+    {
+      "createdAt": "2024-09-07T13:56:55.812Z",
+      "updatedAt": "2024-09-07T13:56:55.812Z",
+      "id": "jX5iavNFG4Ls67W3",
+      "name": "a2"
     }
   ],
   "triggerCount": 5,
-  "updatedAt": "2024-08-18T20:23:36.000Z",
-  "versionId": "f69a85a9-97c2-44c9-b51f-cb524e1fd530"
+  "updatedAt": "2024-09-07T13:57:23.000Z",
+  "versionId": "70719607-0547-412b-89ef-a52341c67674"
 }
