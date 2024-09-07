@@ -222,7 +222,7 @@
     },
     {
       "parameters": {
-        "content": "## Update to get images\nGet full-list.csv from https://data.blzres.com/data and parse\nbinary to xslx \nBuild webpage url from rentable_uid and fetch\nCheck if redirected due to unavailable unit\nAvaialble unit get first image\nupload first image to https://data.blzres.com/images and name rentable_uid.jpg\n\n\n\nSeries 2 workflow\n",
+        "content": "## Update to get images\nGet full-list.csv from https://data.blzres.com/data and parse\nbinary to xslx \nBuild webpage url from rentable_uid and fetch\nCheck if redirected due to unavailable unit\nAvaialble unit get first image\nupload first image to https://data.blzres.com/images and name rentable_uid.jpg\n\n\n\nSeries 2 workflow\nUpdated to a2 database blazeapa_blazedata",
         "height": 251.39252805115,
         "width": 941.3692722371975,
         "color": 3
@@ -666,8 +666,8 @@
       "alwaysOutputData": true,
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       }
     },
@@ -820,8 +820,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "Cxxv6w2tRXt2wyu4",
-          "name": "MySQL account"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       }
     },
@@ -1015,9 +1015,15 @@
       "updatedAt": "2024-07-29T13:51:51.785Z",
       "id": "JYvoNb6Xp7LdO4GE",
       "name": "MySQL"
+    },
+    {
+      "createdAt": "2024-09-07T13:56:55.812Z",
+      "updatedAt": "2024-09-07T13:56:55.812Z",
+      "id": "jX5iavNFG4Ls67W3",
+      "name": "a2"
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:20:50.000Z",
-  "versionId": "f0ea1110-e089-4c83-91f4-5863bba597b4"
+  "updatedAt": "2024-09-07T13:57:12.000Z",
+  "versionId": "15aa7dfb-ea79-4a2f-94a7-fc1ac8073642"
 }
