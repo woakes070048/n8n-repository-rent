@@ -47,13 +47,7 @@
     },
     "Mautic": {
       "main": [
-        [
-          {
-            "node": "Mautic1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -201,29 +195,8 @@
       ],
       "credentials": {
         "mauticApi": {
-          "id": "5tdqtoSOtaUwNpSz",
-          "name": "Mautic account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "contactSegment",
-        "contactId": "={{ $json.id }}",
-        "segmentId": 1
-      },
-      "id": "d1d9bb05-6ec2-4e92-9a5b-602136e7cd64",
-      "name": "Mautic1",
-      "type": "n8n-nodes-base.mautic",
-      "typeVersion": 1,
-      "position": [
-        1200,
-        380
-      ],
-      "credentials": {
-        "mauticApi": {
-          "id": "5tdqtoSOtaUwNpSz",
-          "name": "Mautic account"
+          "id": "QYIHSttrdWeJLrEX",
+          "name": "BlzRes Mautic Connection"
         }
       }
     }
@@ -235,6 +208,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-08-21T12:25:05.000Z",
-  "versionId": "0b209dfa-f666-4bb2-a17a-ccfc1e12833f"
+  "updatedAt": "2024-09-07T18:25:35.000Z",
+  "versionId": "ae27bd61-e91d-4880-b1b0-4e03400b2b3c"
 }
