@@ -1,0 +1,164 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Odoo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-09-07T18:29:43.436Z",
+  "id": "dWnCMbFj3IHuTPEK",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Appfolio csv to Odoo Contacts",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "41a25da4-82ec-41fd-9f38-e988937308d1",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        220,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "path": "data.blzres.com/data/tenant_directory.csv"
+      },
+      "id": "d824b6e6-854e-41f5-ae13-bea95f9a7b15",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        440,
+        400
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "id": "db3a9038-a971-499f-9c17-259bdc03d603",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        660,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "contactName": "={{ $json.Tenant }}",
+        "additionalFields": {}
+      },
+      "id": "c8c305e8-70be-4458-8f65-58cad4e7ba0f",
+      "name": "Odoo",
+      "type": "n8n-nodes-base.odoo",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        400
+      ],
+      "credentials": {
+        "odooApi": {
+          "id": "deebg9XQXwhq0Aoo",
+          "name": "Odoo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://blaze-real-estate1.odoo.com/api/v1/res.partner",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Bearer",
+              "value": "889e6e51ed97f7d7c92a16ea6326f8c01e23232e"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "x_studio_contact_type",
+              "value": "Tenant"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "3b245fcb-6335-4349-bcb6-ce82483e02ca",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        400
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-09-13T16:58:28.000Z",
+  "versionId": "155b5792-3e3d-4e6f-ac11-fecf7e8c6bac"
+}
