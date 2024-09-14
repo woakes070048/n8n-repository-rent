@@ -1,61 +1,144 @@
 {
   "active": false,
   "connections": {
-    "Schedule Trigger": {
+    "When clicking ‘Test workflow’": {
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "FTP",
             "type": "main",
             "index": 0
           }
         ]
       ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Odoo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Odoo1": {
+      "main": [
+        []
+      ]
     }
   },
-  "createdAt": "2024-09-07T18:29:43.436Z",
-  "id": "dWnCMbFj3IHuTPEK",
+  "createdAt": "2024-09-14T13:53:23.378Z",
+  "id": "voOrjc9zvT7HXEHM",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 4",
   "nodes": [
     {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {}
-          ]
-        }
-      },
-      "id": "2e9b910e-8b78-4e57-817a-d9382cf96fbb",
-      "name": "Schedule Trigger",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
+      "parameters": {},
+      "id": "37d4587f-ae9a-4dfc-82bd-769a243eefb6",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
       "position": [
-        820,
-        360
+        460,
+        460
       ]
     },
     {
       "parameters": {
-        "url": "https://download.maxmind.com/geoip/databases/GeoLite2-City/download?suffix=tar.gz",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBasicAuth",
-        "options": {}
+        "path": "data.blzres.com/data/tenant_directory.csv"
       },
-      "id": "8869c94e-d394-4c07-b844-50048bf4f41c",
-      "name": "HTTP Request",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "id": "ebb28cbd-8cac-4659-a056-7db4a8fb2136",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
       "position": [
-        1040,
-        360
+        680,
+        460
       ],
       "credentials": {
-        "httpBasicAuth": {
-          "id": "zSSCbw41c8lxqwpM",
-          "name": "MaxMind GeoIP City"
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "id": "7cf2ef3d-579f-4a91-b468-f061fb4e7db6",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        900,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const parseExcelDate = (excelDate) => {\n    const startDate = new Date(1899, 11, 30);\n    const daysOffset = parseInt(excelDate, 10);\n    return new Date(startDate.getTime() + daysOffset * 24 * 60 * 60 * 1000);\n};\n\nconst formatDate = (date) => {\n    const day = date.getDate().toString().padStart(2, '0');\n    const month = (date.getMonth() + 1).toString().padStart(2, '0');\n    const year = date.getFullYear();\n    return `${year}-${month}-${day}`; // Odoo format '%Y-%m-%d'\n};\n\nconst extractEmail = (emails) => {\n    if (!emails) return '';\n    const emailList = emails.split(',').map(email => email.trim());\n    return emailList[0] || '';\n};\n\nconst extractPhoneNumber = (phoneNumbers) => {\n    const regex = /\\(\\d{3}\\) \\d{3}-\\d{4}/;\n    const match = phoneNumbers ? phoneNumbers.match(regex) : null;\n    return match ? match[0] : '';\n};\n\nconst transformedItems = items.map(item => {\n    const moveInDate = item.json['Move-in'] ? formatDate(parseExcelDate(item.json['Move-in'])) : null;\n    const leaseToDate = item.json['Lease To'] ? formatDate(parseExcelDate(item.json['Lease To'])) : null;\n    const leaseFromDate = item.json['Lease From'] ? formatDate(parseExcelDate(item.json['Lease From'])) : null;\n    const moveOutDate = item.json['Move-out'] ? formatDate(parseExcelDate(item.json['Move-out'])) : null;\n    const email = extractEmail(item.json['Emails']);\n    const phoneNumber = extractPhoneNumber(item.json['Phone Numbers']);\n\n    return {\n        json: {\n            ...item.json,\n            'Original Move-in': item.json['Move-in'],\n            'Original Lease To': item.json['Lease To'],\n            'Original Lease From': item.json['Lease From'],\n            'Original Move-out': item.json['Move-out'],\n            'Original Emails': item.json['Emails'],\n            'Original Phone Numbers': item.json['Phone Numbers'],\n            'Formatted Move-in': moveInDate,\n            'Formatted Lease To': leaseToDate,\n            'Formatted Lease From': leaseFromDate,\n            'Formatted Move-out': moveOutDate,\n            'First Email': email,\n            'Extracted Phone Number': phoneNumber,\n        }\n    };\n});\n\nreturn transformedItems;\n"
+      },
+      "id": "a3e30a33-ddb3-42dc-8841-645f4187d4e8",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "options": {
+          "fieldsList": [
+            "name",
+            "id",
+            "email",
+            "state_id"
+          ]
+        }
+      },
+      "id": "f4fb589b-6697-4dcc-8a30-23b05201c2c3",
+      "name": "Odoo1",
+      "type": "n8n-nodes-base.odoo",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        460
+      ],
+      "credentials": {
+        "odooApi": {
+          "id": "deebg9XQXwhq0Aoo",
+          "name": "Odoo account"
         }
       }
     }
@@ -67,6 +150,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-09-07T18:29:43.436Z",
-  "versionId": "939cb53a-7ec3-47cd-9c47-728bac4faa6e"
+  "updatedAt": "2024-09-14T14:58:55.000Z",
+  "versionId": "96c3f657-d61c-46af-8649-1e0df5cb494b"
 }
