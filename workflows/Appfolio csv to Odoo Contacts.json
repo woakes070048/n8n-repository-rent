@@ -27,14 +27,36 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Code",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "HTTP Request": {
+    "Odoo": {
+      "main": [
+        [
+          {
+            "node": "Odoo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
       "main": [
         [
           {
@@ -99,15 +121,92 @@
     },
     {
       "parameters": {
-        "contactName": "={{ $json.Tenant }}",
-        "additionalFields": {}
+        "resource": "custom",
+        "customResource": "res.partner",
+        "fieldsToCreateOrUpdate": {
+          "fields": [
+            {
+              "fieldName": "x_studio_unit",
+              "fieldValue": "={{ $json.Unit }}"
+            },
+            {
+              "fieldName": "x_studio_status",
+              "fieldValue": "={{ $json.Status }}"
+            },
+            {
+              "fieldName": "complete_name",
+              "fieldValue": "={{ $json[\"First Name\"] }} {{ $json[\"Last Name\"] }}"
+            },
+            {
+              "fieldName": "x_studio_property",
+              "fieldValue": "={{ $json[\"Property Name\"] }}"
+            },
+            {
+              "fieldName": "x_studio_lease_start",
+              "fieldValue": "={{ $json[\"Formatted Lease From\"] }}"
+            },
+            {
+              "fieldName": "x_studio_lease_end",
+              "fieldValue": "={{ $json[\"Formatted Lease To\"] }}"
+            },
+            {
+              "fieldName": "x_studio_move_in",
+              "fieldValue": "={{ $json[\"Formatted Move-in\"] }}"
+            },
+            {
+              "fieldName": "x_studio_move_out",
+              "fieldValue": "={{ $json[\"Formatted Move-out\"] }}"
+            },
+            {
+              "fieldName": "email",
+              "fieldValue": "={{ $json[\"First Email\"] }}"
+            },
+            {
+              "fieldName": "name",
+              "fieldValue": "={{ $json[\"First Name\"] }} {{ $json[\"Last Name\"] }}"
+            },
+            {
+              "fieldName": "contact_address",
+              "fieldValue": "={{ $json[\"Tenant Address\"] }}"
+            },
+            {
+              "fieldName": "x_studio_contact_type",
+              "fieldValue": "Tenant"
+            },
+            {
+              "fieldName": "x_studio_is_primary",
+              "fieldValue": "={{ $json[\"Primary Tenant\"] }}"
+            },
+            {
+              "fieldName": "x_studio_birth_date",
+              "fieldValue": "={{ $json[\"Formatted Tenant Birthdate\"] }}"
+            },
+            {
+              "fieldName": "street"
+            },
+            {
+              "fieldName": "street2"
+            },
+            {
+              "fieldName": "city"
+            },
+            {
+              "fieldName": "country_id",
+              "fieldValue": "233"
+            },
+            {
+              "fieldName": "state_id",
+              "fieldValue": "=43"
+            }
+          ]
+        }
       },
       "id": "c8c305e8-70be-4458-8f65-58cad4e7ba0f",
       "name": "Odoo",
       "type": "n8n-nodes-base.odoo",
       "typeVersion": 1,
       "position": [
-        1100,
+        1360,
         400
       ],
       "credentials": {
@@ -119,35 +218,67 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://blaze-real-estate1.odoo.com/api/v1/res.partner",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
+        "resource": "custom",
+        "operation": "update"
+      },
+      "id": "50bbfe72-c2da-4975-8be3-e0a2636ade90",
+      "name": "Odoo1",
+      "type": "n8n-nodes-base.odoo",
+      "typeVersion": 1,
+      "position": [
+        1760,
+        400
+      ],
+      "credentials": {
+        "odooApi": {
+          "id": "deebg9XQXwhq0Aoo",
+          "name": "Odoo account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const parseExcelDate = (excelDate) => {\n    const startDate = new Date(1899, 11, 30);\n    const daysOffset = parseInt(excelDate, 10);\n    return new Date(startDate.getTime() + daysOffset * 24 * 60 * 60 * 1000);\n};\n\nconst formatDate = (date) => {\n    const day = date.getDate().toString().padStart(2, '0');\n    const month = (date.getMonth() + 1).toString().padStart(2, '0');\n    const year = date.getFullYear();\n    return `${year}-${month}-${day}`; // Odoo format '%Y-%m-%d'\n};\n\nconst extractEmail = (emails) => {\n    if (!emails) return '';\n    const emailList = emails.split(',').map(email => email.trim());\n    return emailList[0] || '';\n};\n\nconst extractPhoneNumber = (phoneNumbers) => {\n    const regex = /\\(\\d{3}\\) \\d{3}-\\d{4}/;\n    const match = phoneNumbers ? phoneNumbers.match(regex) : null;\n    return match ? match[0] : '';\n};\n\nconst transformedItems = items.map(item => {\n    const moveInDate = item.json['Move-in'] ? formatDate(parseExcelDate(item.json['Move-in'])) : null;\n    const leaseToDate = item.json['Lease To'] ? formatDate(parseExcelDate(item.json['Lease To'])) : null;\n    const leaseFromDate = item.json['Lease From'] ? formatDate(parseExcelDate(item.json['Lease From'])) : null;\n    const moveOutDate = item.json['Move-out'] ? formatDate(parseExcelDate(item.json['Move-out'])) : null;\n    const tenantBirthdate = item.json['Tenant Birthdate'] ? formatDate(parseExcelDate(item.json['Tenant Birthdate'])) : null;\n    const email = extractEmail(item.json['Emails']);\n    const phoneNumber = extractPhoneNumber(item.json['Phone Numbers']);\n    const name = `${item.json['First Name']} ${item.json['Last Name']}`;\n\n    return {\n        json: {\n            ...item.json, // Include all original fields\n            'Name': name, // Add the Name field\n            'Formatted Move-in': moveInDate,\n            'Formatted Lease To': leaseToDate,\n            'Formatted Lease From': leaseFromDate,\n            'Formatted Move-out': moveOutDate,\n            'Formatted Tenant Birthdate': tenantBirthdate === '' ? null : tenantBirthdate,\n            'First Email': email,\n            'Extracted Phone Number': phoneNumber,\n        }\n    };\n});\n\nreturn transformedItems;\n"
+      },
+      "id": "afab09bc-f93e-493b-b402-0e58b83d950a",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
             {
-              "name": "Bearer",
-              "value": "889e6e51ed97f7d7c92a16ea6326f8c01e23232e"
+              "id": "7b16726f-c89d-4274-98df-7f5c4baf1a01",
+              "leftValue": "={{ $json[\"First Email\"] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
             }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "x_studio_contact_type",
-              "value": "Tenant"
-            },
-            {}
-          ]
+          ],
+          "combinator": "and"
         },
         "options": {}
       },
-      "id": "3b245fcb-6335-4349-bcb6-ce82483e02ca",
-      "name": "HTTP Request",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "id": "8e1bd256-44ec-462b-b82f-eeaa3a9b4928",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
       "position": [
-        880,
+        1100,
         400
       ]
     }
@@ -159,6 +290,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-09-13T16:58:28.000Z",
-  "versionId": "155b5792-3e3d-4e6f-ac11-fecf7e8c6bac"
+  "updatedAt": "2024-09-14T14:54:11.000Z",
+  "versionId": "8ed9fd02-2552-4457-bec9-48ed7f0f7efb"
 }
