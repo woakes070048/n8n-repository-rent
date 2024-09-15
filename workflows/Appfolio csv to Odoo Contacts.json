@@ -34,17 +34,6 @@
         ]
       ]
     },
-    "Odoo": {
-      "main": [
-        [
-          {
-            "node": "Odoo1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Code": {
       "main": [
         [
@@ -60,7 +49,25 @@
       "main": [
         [
           {
-            "node": "Odoo",
+            "node": "ERPNext1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ERPNext1": {
+      "main": [
+        [
+          {
+            "node": "ERPNext2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ERPNext",
             "type": "main",
             "index": 0
           }
@@ -182,13 +189,16 @@
               "fieldValue": "={{ $json[\"Formatted Tenant Birthdate\"] }}"
             },
             {
-              "fieldName": "street"
+              "fieldName": "street",
+              "fieldValue": "={{ $json[\"Tenant Street Address 1\"] }}"
             },
             {
-              "fieldName": "street2"
+              "fieldName": "street2",
+              "fieldValue": "={{ $json[\"Tenant Street Address 2\"] }}"
             },
             {
-              "fieldName": "city"
+              "fieldName": "city",
+              "fieldValue": "={{ $json[\"Tenant City\"] }}"
             },
             {
               "fieldName": "country_id",
@@ -196,7 +206,11 @@
             },
             {
               "fieldName": "state_id",
-              "fieldValue": "=43"
+              "fieldValue": "=52"
+            },
+            {
+              "fieldName": "zip",
+              "fieldValue": "={{ $json[\"Tenant Zip\"] }}"
             }
           ]
         }
@@ -206,8 +220,8 @@
       "type": "n8n-nodes-base.odoo",
       "typeVersion": 1,
       "position": [
-        1360,
-        400
+        1620,
+        360
       ],
       "credentials": {
         "odooApi": {
@@ -218,27 +232,7 @@
     },
     {
       "parameters": {
-        "resource": "custom",
-        "operation": "update"
-      },
-      "id": "50bbfe72-c2da-4975-8be3-e0a2636ade90",
-      "name": "Odoo1",
-      "type": "n8n-nodes-base.odoo",
-      "typeVersion": 1,
-      "position": [
-        1760,
-        400
-      ],
-      "credentials": {
-        "odooApi": {
-          "id": "deebg9XQXwhq0Aoo",
-          "name": "Odoo account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const parseExcelDate = (excelDate) => {\n    const startDate = new Date(1899, 11, 30);\n    const daysOffset = parseInt(excelDate, 10);\n    return new Date(startDate.getTime() + daysOffset * 24 * 60 * 60 * 1000);\n};\n\nconst formatDate = (date) => {\n    const day = date.getDate().toString().padStart(2, '0');\n    const month = (date.getMonth() + 1).toString().padStart(2, '0');\n    const year = date.getFullYear();\n    return `${year}-${month}-${day}`; // Odoo format '%Y-%m-%d'\n};\n\nconst extractEmail = (emails) => {\n    if (!emails) return '';\n    const emailList = emails.split(',').map(email => email.trim());\n    return emailList[0] || '';\n};\n\nconst extractPhoneNumber = (phoneNumbers) => {\n    const regex = /\\(\\d{3}\\) \\d{3}-\\d{4}/;\n    const match = phoneNumbers ? phoneNumbers.match(regex) : null;\n    return match ? match[0] : '';\n};\n\nconst transformedItems = items.map(item => {\n    const moveInDate = item.json['Move-in'] ? formatDate(parseExcelDate(item.json['Move-in'])) : null;\n    const leaseToDate = item.json['Lease To'] ? formatDate(parseExcelDate(item.json['Lease To'])) : null;\n    const leaseFromDate = item.json['Lease From'] ? formatDate(parseExcelDate(item.json['Lease From'])) : null;\n    const moveOutDate = item.json['Move-out'] ? formatDate(parseExcelDate(item.json['Move-out'])) : null;\n    const tenantBirthdate = item.json['Tenant Birthdate'] ? formatDate(parseExcelDate(item.json['Tenant Birthdate'])) : null;\n    const email = extractEmail(item.json['Emails']);\n    const phoneNumber = extractPhoneNumber(item.json['Phone Numbers']);\n    const name = `${item.json['First Name']} ${item.json['Last Name']}`;\n\n    return {\n        json: {\n            ...item.json, // Include all original fields\n            'Name': name, // Add the Name field\n            'Formatted Move-in': moveInDate,\n            'Formatted Lease To': leaseToDate,\n            'Formatted Lease From': leaseFromDate,\n            'Formatted Move-out': moveOutDate,\n            'Formatted Tenant Birthdate': tenantBirthdate === '' ? null : tenantBirthdate,\n            'First Email': email,\n            'Extracted Phone Number': phoneNumber,\n        }\n    };\n});\n\nreturn transformedItems;\n"
+        "jsCode": "const parseExcelDate = (excelDate) => {\n    const startDate = new Date(1899, 11, 30);\n    const daysOffset = parseInt(excelDate, 10);\n    return new Date(startDate.getTime() + daysOffset * 24 * 60 * 60 * 1000);\n};\n\nconst formatDate = (date) => {\n    const day = date.getDate().toString().padStart(2, '0');\n    const month = (date.getMonth() + 1).toString().padStart(2, '0');\n    const year = date.getFullYear();\n    return `${year}-${month}-${day}`; // Odoo format '%Y-%m-%d'\n};\n\nconst extractEmail = (emails) => {\n    if (!emails) return '';\n    const emailList = emails.split(',').map(email => email.trim());\n    return emailList[0] || '';\n};\n\nconst extractPhoneNumber = (phoneNumbers) => {\n    const regex = /\\(\\d{3}\\) \\d{3}-\\d{4}/;\n    const match = phoneNumbers ? phoneNumbers.match(regex) : null;\n    return match ? match[0] : '';\n};\n\nconst transformedItems = items.map(item => {\n    const moveInDate = item.json['Move-in'] ? formatDate(parseExcelDate(item.json['Move-in'])) : null;\n    const leaseToDate = item.json['Lease To'] ? formatDate(parseExcelDate(item.json['Lease To'])) : null;\n    const leaseFromDate = item.json['Lease From'] ? formatDate(parseExcelDate(item.json['Lease From'])) : null;\n    const moveOutDate = item.json['Move-out'] ? formatDate(parseExcelDate(item.json['Move-out'])) : null;\n    const tenantBirthdate = item.json['Tenant Birthdate'] ? formatDate(parseExcelDate(item.json['Tenant Birthdate'])) : null;\n    const email = extractEmail(item.json['Emails']);\n    const phoneNumber = extractPhoneNumber(item.json['Phone Numbers']);\n    const name = `${item.json['First Name']} ${item.json['Last Name']}`;\n    const tenantStreetAddress2 = item.json['Tenant Street Address 2'] ? item.json['Tenant Street Address 2'] : null;\n\n    return {\n        json: {\n            ...item.json, // Include all original fields\n            'Name': name, // Add the Name field\n            'Formatted Move-in': moveInDate,\n            'Formatted Lease To': leaseToDate,\n            'Formatted Lease From': leaseFromDate,\n            'Formatted Move-out': moveOutDate,\n            'Formatted Tenant Birthdate': tenantBirthdate,\n            'First Email': email,\n            'Extracted Phone Number': phoneNumber,\n            'Tenant Street Address 2': tenantStreetAddress2 === '' ? null : tenantStreetAddress2, // Set to null if empty\n        }\n    };\n});\n\nreturn transformedItems;\n"
       },
       "id": "afab09bc-f93e-493b-b402-0e58b83d950a",
       "name": "Code",
@@ -278,9 +272,97 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.1,
       "position": [
-        1100,
+        1060,
         400
       ]
+    },
+    {
+      "parameters": {
+        "docType": "Contact",
+        "properties": {
+          "customProperty": [
+            {
+              "field": "=address",
+              "value": "={{ $json[\"Tenant Address\"] }}"
+            },
+            {
+              "field": "first_name",
+              "value": "={{ $json[\"First Name\"] }}"
+            },
+            {
+              "field": "last_name",
+              "value": "={{ $json[\"Last Name\"] }}"
+            },
+            {
+              "field": "email_id",
+              "value": "={{ $json[\"First Email\"] }}"
+            },
+            {
+              "field": "=custom_lease_start",
+              "value": "={{ $json[\"Formatted Lease From\"] }}"
+            },
+            {
+              "field": "=custom_lease_end",
+              "value": "={{ $json[\"Formatted Lease To\"] }}"
+            }
+          ]
+        }
+      },
+      "id": "0d4c1759-6977-42d8-bb12-e33ed97f51a3",
+      "name": "ERPNext",
+      "type": "n8n-nodes-base.erpNext",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        600
+      ],
+      "credentials": {
+        "erpNextApi": {
+          "id": "csPPnbJHm3IfFENq",
+          "name": "ERPNext account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "docType": "Address",
+        "documentName": "={{ $json[\"Tenant Address\"] }}"
+      },
+      "id": "2fa5f1d7-e01c-472e-9bc9-9e93f70ff962",
+      "name": "ERPNext1",
+      "type": "n8n-nodes-base.erpNext",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        220
+      ],
+      "credentials": {
+        "erpNextApi": {
+          "id": "csPPnbJHm3IfFENq",
+          "name": "ERPNext account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "docType": "Address"
+      },
+      "id": "243efca7-4681-4ce0-88c6-3e2b76d8478f",
+      "name": "ERPNext2",
+      "type": "n8n-nodes-base.erpNext",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        100
+      ],
+      "credentials": {
+        "erpNextApi": {
+          "id": "csPPnbJHm3IfFENq",
+          "name": "ERPNext account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -290,6 +372,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-09-14T14:54:11.000Z",
-  "versionId": "8ed9fd02-2552-4457-bec9-48ed7f0f7efb"
+  "updatedAt": "2024-09-14T18:36:39.000Z",
+  "versionId": "4f59097f-c1b8-46ae-bad9-197d5449f8e7"
 }
