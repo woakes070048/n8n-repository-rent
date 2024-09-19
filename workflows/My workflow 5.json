@@ -1,11 +1,11 @@
 {
   "active": false,
   "connections": {
-    "When clicking ‘Test workflow’": {
+    "n8n Form Trigger": {
       "main": [
         [
           {
-            "node": "Facebook Graph API",
+            "node": "Yourls",
             "type": "main",
             "index": 0
           }
@@ -13,52 +13,52 @@
       ]
     }
   },
-  "createdAt": "2024-07-27T16:54:54.823Z",
-  "id": "uwvP3o8k4sYJsegg",
+  "createdAt": "2024-09-18T21:40:16.832Z",
+  "id": "4RhI9UIPjtrAIPH2",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 5",
   "nodes": [
     {
-      "parameters": {},
-      "id": "00229c40-82a2-4292-bd11-dfa540a63797",
-      "name": "When clicking ‘Test workflow’",
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
+      "parameters": {
+        "path": "6891fbb4-0e67-4538-9080-fa7a53324f83",
+        "formTitle": "URl Shortener and QR",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Address"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "50d6d5e1-c664-41b5-be8a-3f5a5c0a4eed",
+      "name": "n8n Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.1,
       "position": [
         820,
         360
-      ]
+      ],
+      "webhookId": "6891fbb4-0e67-4538-9080-fa7a53324f83"
     },
     {
       "parameters": {
-        "httpRequestMethod": "POST",
-        "graphApiVersion": "v17.0",
-        "node": "329129493627618",
-        "edge": "photos",
-        "options": {
-          "queryParameters": {
-            "parameter": [
-              {
-                "name": "message"
-              }
-            ]
-          }
-        }
+        "additionalFields": {}
       },
-      "id": "ae133809-bf5a-4b6b-a322-756f2cd2d9ce",
-      "name": "Facebook Graph API",
-      "type": "n8n-nodes-base.facebookGraphApi",
+      "id": "558ffcd8-0515-4ab0-8eb4-172a853f5b09",
+      "name": "Yourls",
+      "type": "n8n-nodes-base.yourls",
       "typeVersion": 1,
       "position": [
         1040,
         360
       ],
       "credentials": {
-        "facebookGraphApi": {
-          "id": "a3LtRYzbJapkaeaV",
-          "name": "Facebook Blaze Real Estate"
+        "yourlsApi": {
+          "id": "TKN8hKISe25ZCk4B",
+          "name": "Yourls account"
         }
       }
     }
@@ -70,6 +70,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-07-27T20:12:12.000Z",
-  "versionId": "6e8f6eb9-5583-47f5-b0b7-d6141b7753a7"
+  "updatedAt": "2024-09-18T21:40:16.832Z",
+  "versionId": "0c8c9810-fbb5-4f82-a704-f305fb60cd7b"
 }
