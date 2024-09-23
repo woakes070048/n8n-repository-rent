@@ -485,11 +485,12 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-06-23T11:48:15.000Z",
-  "versionId": "a146e844-6d89-4d62-b38b-7b229f1baab2"
+  "updatedAt": "2024-09-23T15:44:37.478Z",
+  "versionId": "9d7e3c9a-239f-4f4e-b725-3d9cc9357c40"
 }
