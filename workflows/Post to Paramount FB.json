@@ -169,8 +169,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "iQsUzgXmgXt4U8k2",
-          "name": "BlzRes_Back Connection"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       },
       "onError": "continueRegularOutput"
@@ -321,8 +321,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "iQsUzgXmgXt4U8k2",
-          "name": "BlzRes_Back Connection"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
       }
     },
@@ -399,7 +399,8 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Cron 8am": {
@@ -431,6 +432,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:15:15.000Z",
-  "versionId": "ef8b7952-a597-4f54-8c72-85244fdc9bfa"
+  "updatedAt": "2024-09-23T15:44:37.658Z",
+  "versionId": "3692b9a3-646a-4389-afe4-f5f1393f94d0"
 }
