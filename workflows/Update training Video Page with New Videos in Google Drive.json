@@ -189,7 +189,8 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Google Drive Trigger": {
@@ -208,6 +209,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:22:17.000Z",
-  "versionId": "392181c0-c8eb-4a34-8c41-d16ce3306e0e"
+  "updatedAt": "2024-09-23T15:44:37.818Z",
+  "versionId": "f9dd619c-da6a-4b70-a62b-99f4f3b1c7af"
 }
