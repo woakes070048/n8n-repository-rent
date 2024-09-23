@@ -370,8 +370,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.3,
       "position": [
-        880,
-        820
+        900,
+        800
       ],
       "credentials": {
         "openAiApi": {
@@ -383,13 +383,14 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Cron 8am": {
       "recurrencyRules": [],
       "recurrenceRules": [
-        0
+        12
       ]
     },
     "node:cron 10am": {
@@ -424,6 +425,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-09-07T13:56:57.000Z",
-  "versionId": "df74fe15-b93b-4d28-b4c4-68be23fe8eef"
+  "updatedAt": "2024-09-23T15:44:37.090Z",
+  "versionId": "11faf400-4f84-4477-bda6-5be1356b5459"
 }
