@@ -651,11 +651,13 @@
     }
   ],
   "pinData": {},
-  "settings": {},
+  "settings": {
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
   "staticData": {
     "node:Schedule posting every 6 hours": {
       "recurrenceRules": [
-        0
+        12
       ]
     }
   },
@@ -668,6 +670,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:22:36.000Z",
-  "versionId": "ba83fee0-d656-45a9-8e05-28e911615b5e"
+  "updatedAt": "2024-09-23T15:44:37.756Z",
+  "versionId": "595df492-e320-4b88-b810-52ad64bffdae"
 }
