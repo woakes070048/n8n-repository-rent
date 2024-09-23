@@ -201,11 +201,12 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
-      "lastMessageUid": 597
+      "lastMessageUid": 608
     }
   },
   "tags": [
@@ -217,6 +218,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-08-17T11:21:07.000Z",
-  "versionId": "f1082e57-3229-4990-aa24-086123e656b2"
+  "updatedAt": "2024-09-23T15:44:38.010Z",
+  "versionId": "492c5331-f008-4486-a9a5-5cd248b36cba"
 }
