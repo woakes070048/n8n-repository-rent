@@ -126,11 +126,12 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-18T21:05:11.000Z",
-  "versionId": "322602bb-5c60-4ab4-868f-33578c1aa034"
+  "updatedAt": "2024-09-23T15:44:37.466Z",
+  "versionId": "d8eba0ae-da94-4b1a-be6d-85653197bff0"
 }
