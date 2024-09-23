@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -588,7 +588,8 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Cron 8am": {
@@ -627,6 +628,6 @@
     }
   ],
   "triggerCount": 5,
-  "updatedAt": "2024-09-07T13:57:23.000Z",
-  "versionId": "70719607-0547-412b-89ef-a52341c67674"
+  "updatedAt": "2024-09-23T17:03:52.000Z",
+  "versionId": "0b16d2dc-8d51-4ed3-94de-7e3f10888cc3"
 }
