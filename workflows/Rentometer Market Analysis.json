@@ -442,7 +442,8 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Gmail Trigger1": {
@@ -456,6 +457,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-31T12:20:39.000Z",
-  "versionId": "a53d8ae0-b15b-42c9-b122-4627fdcd46b4"
+  "updatedAt": "2024-09-23T15:44:37.025Z",
+  "versionId": "84bb8414-e563-4829-b8fd-d1073d8d992c"
 }
