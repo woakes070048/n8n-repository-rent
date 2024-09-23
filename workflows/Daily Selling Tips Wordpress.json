@@ -316,14 +316,15 @@
       "credentials": {
         "facebookGraphApi": {
           "id": "a3LtRYzbJapkaeaV",
-          "name": "Facebook Graph account"
+          "name": "Facebook Blaze Real Estate"
         }
       }
     }
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Schedule Trigger": {
@@ -336,6 +337,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-07-19T10:44:15.000Z",
-  "versionId": "9fb72f98-cdb6-40d4-98d0-436f69575bb0"
+  "updatedAt": "2024-09-23T15:44:36.859Z",
+  "versionId": "01c59233-d2f0-4f74-b1d7-5d6b2de953c5"
 }
