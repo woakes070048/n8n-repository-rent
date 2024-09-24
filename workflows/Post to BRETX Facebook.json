@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -390,7 +390,7 @@
     "node:Cron 8am": {
       "recurrencyRules": [],
       "recurrenceRules": [
-        0
+        6
       ]
     },
     "node:cron 10am": {
@@ -425,6 +425,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-09-23T15:44:37.090Z",
+  "updatedAt": "2024-09-24T11:06:04.000Z",
   "versionId": "11faf400-4f84-4477-bda6-5be1356b5459"
 }
