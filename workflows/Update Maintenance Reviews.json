@@ -1,0 +1,42 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2024-09-28T23:31:53.865Z",
+  "id": "ysZGnK3w1qAicL85",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Maintenance Reviews",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\"]"
+        }
+      },
+      "id": "671bedaf-e61a-4c51-a3dc-bd96dad635bb",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        820,
+        360
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-09-28T23:32:25.000Z",
+  "versionId": "0f111d4a-5cb7-4a11-85d0-efdc3e772797"
+}
