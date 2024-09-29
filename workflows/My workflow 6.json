@@ -1,173 +1,35 @@
 {
   "active": false,
-  "connections": {
-    "Start": {
-      "main": [
-        [
-          {
-            "node": "Set Domain",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Domain": {
-      "main": [
-        [
-          {
-            "node": "Fetch HTML",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Fetch HTML": {
-      "main": [
-        [
-          {
-            "node": "Extract RSS Feed Links",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract RSS Feed Links": {
-      "main": [
-        [
-          {
-            "node": "Check for RSS Links",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Check for RSS Links": {
-      "main": [
-        [
-          {
-            "node": "RSS Links Found",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  },
-  "createdAt": "2024-07-28T11:40:12.530Z",
-  "id": "FFgsuurktmfuDPk7",
+  "connections": {},
+  "createdAt": "2024-09-29T15:35:00.960Z",
+  "id": "jjMGrp2wG1APWO7p",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 6",
   "nodes": [
     {
-      "parameters": {},
-      "name": "Start",
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        400,
-        760
-      ],
-      "id": "08e6bf77-0f5c-446b-875a-5c3546513902"
-    },
-    {
       "parameters": {
-        "options": {}
-      },
-      "name": "Set Domain",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        600,
-        760
-      ],
-      "id": "25c323f9-1f32-480d-8809-49c4cb3def64"
-    },
-    {
-      "parameters": {
-        "url": "={{$node[\"Set Domain\"].json[\"value\"]}}",
-        "responseFormat": "string",
-        "options": {}
-      },
-      "name": "Fetch HTML",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 1,
-      "position": [
-        800,
-        760
-      ],
-      "id": "f596b9ea-d802-4dff-9b41-b204e2db24b6"
-    },
-    {
-      "parameters": {
-        "dataPropertyName": "html",
-        "options": {}
-      },
-      "name": "Extract RSS Feed Links",
-      "type": "n8n-nodes-base.htmlExtract",
-      "typeVersion": 1,
-      "position": [
-        1000,
-        760
-      ],
-      "id": "bdb50e78-df75-4d6e-b2b3-93fc6250ed66"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "number": [
-            {
-              "value1": "={{$json.length}}",
-              "operation": "greaterThan"
-            }
-          ]
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Maintenance Reviews\"]]"
         }
       },
-      "name": "Check for RSS Links",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
+      "id": "908565f3-5b10-4e08-aa88-128449b937cb",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
       "position": [
-        1200,
-        760
+        460,
+        460
       ],
-      "id": "f5697c32-bc8d-45e6-9493-e023a138bfde"
-    },
-    {
-      "parameters": {
-        "mode": "json",
-        "json": {
-          "links": "={{$json}}"
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
         }
-      },
-      "name": "RSS Links Found",
-      "type": "n8n-nodes-base.output",
-      "typeVersion": 1,
-      "position": [
-        1400,
-        660
-      ],
-      "id": "88fea155-c93d-4467-81e6-8ad6c6d53e73"
-    },
-    {
-      "parameters": {
-        "mode": "json",
-        "json": {
-          "message": "No RSS Feed Links Found"
-        }
-      },
-      "name": "No RSS Links",
-      "type": "n8n-nodes-base.output",
-      "typeVersion": 1,
-      "position": [
-        1400,
-        860
-      ],
-      "id": "42d89e4d-0083-4552-ba3f-4c97061edde1"
+      }
     }
   ],
   "pinData": {},
@@ -177,6 +39,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-07-28T11:40:12.530Z",
-  "versionId": "89560e9d-317b-4dc4-89e3-8da2580470b6"
+  "updatedAt": "2024-09-29T15:35:00.960Z",
+  "versionId": "857db9e9-87a7-4d80-afcd-987ea63440df"
 }
