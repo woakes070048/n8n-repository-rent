@@ -1,6 +1,89 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "FTP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2024-09-28T23:31:53.865Z",
   "id": "ysZGnK3w1qAicL85",
   "meta": {
@@ -10,17 +93,19 @@
   "nodes": [
     {
       "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
         "options": {
-          "customEmailConfig": "[\"UNSEEN\"]"
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Maintenance Reviews\"]]"
         }
       },
-      "id": "671bedaf-e61a-4c51-a3dc-bd96dad635bb",
+      "id": "c5eb2b57-ce73-46ad-84e7-5072bbcb49d1",
       "name": "Email Trigger (IMAP)",
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        820,
-        360
+        240,
+        420
       ],
       "credentials": {
         "imap": {
@@ -28,6 +113,113 @@
           "name": "Reports IMAP account"
         }
       }
+    },
+    {
+      "parameters": {
+        "path": "/public_html/blazeproperty.com/data/maintenance-survey1.csv"
+      },
+      "id": "5dfe9b60-b666-412e-add9-e9a7312c5ad7",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        420,
+        320
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "FsHshhcCjs0YS2i9",
+          "name": "FTP account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "id": "110e5959-4e31-4ed3-8b54-0804d51c7e56",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        600,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "e4ed7c83-30c5-409d-9548-4e3de0b95b88",
+      "name": "Extract from File1",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        600,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "maintenance-survey.csv",
+        "options": {}
+      },
+      "id": "ce74726b-689f-431a-9bd9-34a7e96c79fd",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1240,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/blazeproperty.com/data/maintenance-survey.csv",
+        "binaryPropertyName": "maintenance-survey.csv"
+      },
+      "id": "8c90ba87-a7e3-4578-b57f-793100098421",
+      "name": "FTP1",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        420
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "FsHshhcCjs0YS2i9",
+          "name": "FTP account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Helper function to convert Excel serial date to a US format date (MM/DD/YYYY)\nfunction excelDateToUSDate(excelDate) {\n    const date = new Date((excelDate - 25569) * 86400 * 1000); // Convert Excel date to JavaScript date\n    const month = date.getUTCMonth() + 1; // Months are zero-based\n    const day = date.getUTCDate();\n    const year = date.getUTCFullYear();\n    return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;\n}\n\n// Ensure that inputData is an array\nconst inputData = Array.isArray(items) ? items : [items];\n\n// Process each row of data, assuming the dates are in specific fields (adjust field names as necessary)\nconst transformedData = inputData.map(item => {\n    let row = item.json;\n\n    // Convert Date Sent if it is in Excel serial format\n    if (row['Date Sent'] && !isNaN(row['Date Sent'])) {\n        row['Date Sent'] = excelDateToUSDate(row['Date Sent']);\n    }\n\n    // Convert Date Received if it is in Excel serial format\n    if (row['Date Received'] && !isNaN(row['Date Received'])) {\n        row['Date Received'] = excelDateToUSDate(row['Date Received']);\n    }\n\n    // Return the transformed row with proper json structure\n    return { json: row };\n});\n\n// Return all the transformed data for further processing\nreturn transformedData;\n"
+      },
+      "id": "5ff56d93-10ef-40c9-8c97-298a4e0ec3f9",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        420
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "4631a71a-265c-433a-b2dd-1a8a1b33aaf1",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        840,
+        420
+      ]
     }
   ],
   "pinData": {},
@@ -37,6 +229,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-09-28T23:32:25.000Z",
-  "versionId": "0f111d4a-5cb7-4a11-85d0-efdc3e772797"
+  "updatedAt": "2024-09-29T15:34:49.000Z",
+  "versionId": "dee47863-14a8-4c9f-b887-5b56428cd6e0"
 }
