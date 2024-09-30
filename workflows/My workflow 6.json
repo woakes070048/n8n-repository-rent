@@ -1,6 +1,29 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2024-09-29T15:35:00.960Z",
   "id": "jjMGrp2wG1APWO7p",
   "meta": {
@@ -30,6 +53,44 @@
           "name": "Reports IMAP account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "0cdce9c7-20a9-45ce-88b0-6ae0c2546a61",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        680,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "9fe8bfb5-5869-4e64-bc0e-a0a849052761",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        900,
+        460
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "N9fn0qjTGz1ujomL",
+          "name": "MySQL account 3"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -39,6 +100,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-09-29T15:35:00.960Z",
-  "versionId": "857db9e9-87a7-4d80-afcd-987ea63440df"
+  "updatedAt": "2024-09-30T12:50:25.000Z",
+  "versionId": "89d76cee-4f45-4d44-bdd8-f715c7f5cc5d"
 }
