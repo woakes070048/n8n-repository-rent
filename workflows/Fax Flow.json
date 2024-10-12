@@ -1,0 +1,101 @@
+{
+  "active": true,
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-11T20:52:54.991Z",
+  "id": "YDh2xSc1F6GsYxFS",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Fax Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ $json.body.file }}",
+        "options": {}
+      },
+      "id": "4381efef-397c-48b0-9148-b308bb41afd8",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1040,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "admin@blzres.com",
+        "toEmail": "=1{{ $json.body.fax_number }}@blazepropertymanagementllc.fax.onjive.com",
+        "subject": "=849596039 - {{ $json.body.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.body.message }}",
+        "options": {
+          "attachments": "data"
+        }
+      },
+      "id": "1f651bfe-64b8-42f9-9559-6294dd303fb0",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1280,
+        360
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "1f316694-8662-468c-bb15-2b62d62795d5",
+        "options": {}
+      },
+      "id": "ebe10677-221f-439c-960c-d1e23906d3fe",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        820,
+        360
+      ],
+      "webhookId": "1f316694-8662-468c-bb15-2b62d62795d5"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-10-12T05:00:21.944Z",
+  "versionId": "8673311f-6711-42eb-9885-918bf1287e8b"
+}
