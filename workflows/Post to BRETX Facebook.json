@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -151,7 +151,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT property_name, unit_name, bedrooms, bathrooms, advertised_rent, marketing_title, marketing_description, sqft, application_fee, rentable_uid, unit_address, posted_to_website, appliances, utilities, property_link, image_link, fb_post_date FROM fb_post_list"
+        "query": "SELECT property_name, unit_name, bedrooms, bathrooms, advertised_rent, marketing_title, marketing_description, sqft, application_fee, rentable_uid, unit_address, posted_to_website, appliances, utilities, property_link, image_link, fb_post_date FROM advertising_list"
       },
       "id": "bca18b4f-44c1-4f51-8071-edf67b5fbc21",
       "type": "n8n-nodes-base.mySql",
@@ -212,7 +212,7 @@
     },
     {
       "parameters": {
-        "batchSize": 1,
+        "batchSize": 5,
         "options": {}
       },
       "id": "b66a4a4d-949a-4042-8dd0-d617952a1ce7",
@@ -293,8 +293,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -160,
-        800
+        -20,
+        760
       ]
     },
     {
@@ -425,6 +425,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-09-24T11:06:04.000Z",
-  "versionId": "11faf400-4f84-4477-bda6-5be1356b5459"
+  "updatedAt": "2024-10-21T14:37:54.000Z",
+  "versionId": "40f2013e-0393-4f9a-8c73-b8adbce492f4"
 }
