@@ -1,22 +1,22 @@
 {
   "active": false,
   "connections": {
-    "Email Trigger (IMAP)": {
+    "Form": {
       "main": [
         [
           {
-            "node": "Extract from File",
+            "node": "Generate Script",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Extract from File": {
+    "Generate Script": {
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "Output Script",
             "type": "main",
             "index": 0
           }
@@ -24,8 +24,8 @@
       ]
     }
   },
-  "createdAt": "2024-09-29T15:35:00.960Z",
-  "id": "jjMGrp2wG1APWO7p",
+  "createdAt": "2024-10-23T15:56:57.273Z",
+  "id": "nkQgWLLDl4EdwPVR",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -33,64 +33,47 @@
   "nodes": [
     {
       "parameters": {
-        "postProcessAction": "nothing",
-        "downloadAttachments": true,
-        "options": {
-          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Maintenance Reviews\"]]"
-        }
-      },
-      "id": "908565f3-5b10-4e08-aa88-128449b937cb",
-      "name": "Email Trigger (IMAP)",
-      "type": "n8n-nodes-base.emailReadImap",
-      "typeVersion": 2,
-      "position": [
-        460,
-        460
-      ],
-      "credentials": {
-        "imap": {
-          "id": "jiJskG7OLUbWOE4M",
-          "name": "Reports IMAP account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "xlsx",
-        "binaryPropertyName": "attachment_0",
+        "formFields": {
+          "values": [
+            {}
+          ]
+        },
         "options": {}
       },
-      "id": "0cdce9c7-20a9-45ce-88b0-6ae0c2546a61",
-      "name": "Extract from File",
-      "type": "n8n-nodes-base.extractFromFile",
+      "name": "Form",
+      "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 1,
       "position": [
-        680,
-        460
-      ]
+        560,
+        300
+      ],
+      "id": "4a061b77-7cd9-430d-9282-ea8c88d236da"
     },
     {
       "parameters": {
-        "table": {
-          "__rl": true,
-          "mode": "list",
-          "value": ""
-        }
+        "functionCode": "const { \n  'Property Manager Name': managerName, \n  'Property Address': propertyAddress, \n  'Precinct Number': precinctNumber, \n  'County Name': countyName, \n  'Lease Start Date': leaseStartDate, \n  'Tenant Names': tenantNames, \n  'Lease Duration (months)': leaseDuration, \n  'Apartment Number': apartmentNumber, \n  'Reason for Eviction': evictionReason, \n  'Total Unpaid Rent': unpaidRent, \n  'Due Dates of Unpaid Rent': dueDates, \n  'Notice to Vacate Date': vacateDate, \n  'Notice Delivery Method': deliveryMethod, \n  'Interest Rate': interestRate\n} = $json;\n\nlet script = `Checklist and Script for Eviction Case Testimony:\n\n1. When you take the witness stand, state your name: \n   - \"My name is ${managerName}.\"\n\n2. Describe your position and employment:\n   - \"I am the property manager of ${propertyAddress} located in Precinct ${precinctNumber} of ${countyName}, Texas, and I am authorized to testify on behalf of the owner.\"\n\n3. Provide lease details:\n   - \"On ${leaseStartDate}, ${tenantNames} entered into a ${leaseDuration}-month lease with ${propertyAddress}, apartment ${apartmentNumber}.\"\n\n4. State the reason for eviction:\n   - \"We want to evict them because ${evictionReason}.\"\n\n5. Introduce the lease document:\n   - \"Judge, here is a true and correct copy of the original lease, which I would like to introduce as the owner’s Exhibit 1. There is no difference between the original and this copy.\"\n\n6. State the rent payment information:\n   - \"The rent payments of ${unpaidRent} were due on ${dueDates} and have not been paid.\"\n\n7. Discuss the notice to vacate:\n   - \"On ${vacateDate}, I (or my assistant manager) delivered a written notice to vacate to ${tenantNames} by ${deliveryMethod}. Here is a copy of that notice, which I would like to introduce as Exhibit 2.\"\n\n8. Confirm tenant non-compliance:\n   - \"The residents did not move out as required by the notice to vacate.\"\n\n9. Request a judgment:\n   - \"We would like to obtain a judgment against the residents for possession (and for the ${unpaidRent} with yearly interest at ${interestRate}% from the date of this judgment, as described in the lease) and court costs.\"\n\n10. Answer questions from the resident and judge as needed.`;\n\nreturn [{ json: { script } }];"
       },
-      "id": "9fe8bfb5-5869-4e64-bc0e-a0a849052761",
-      "name": "MySQL",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
+      "name": "Generate Script",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
       "position": [
-        900,
-        460
+        760,
+        300
       ],
-      "credentials": {
-        "mySql": {
-          "id": "N9fn0qjTGz1ujomL",
-          "name": "MySQL account 3"
-        }
-      }
+      "id": "c7fd764a-6bc6-4292-8505-5c2cf9c50dc8"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Output Script",
+      "type": "n8n-nodes-base.text",
+      "typeVersion": 1,
+      "position": [
+        960,
+        300
+      ],
+      "id": "c9e919d3-e821-4bad-be97-8d7ca99f2756"
     }
   ],
   "pinData": {},
@@ -100,6 +83,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-09-30T12:50:25.000Z",
-  "versionId": "89d76cee-4f45-4d44-bdd8-f715c7f5cc5d"
+  "updatedAt": "2024-10-23T15:56:57.273Z",
+  "versionId": "64d96ad3-7b49-4cad-93ae-356d094520ec"
 }
