@@ -1,0 +1,162 @@
+{
+  "active": false,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Zoho CRM1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-23T12:17:44.627Z",
+  "id": "WhXclhrow0gjoBmm",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Contact us form",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "434c61ae-0a41-4761-b434-6ecdc57f6280",
+        "options": {}
+      },
+      "id": "12fce923-945f-403a-bff9-f943a2eb8eec",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        100,
+        340
+      ],
+      "webhookId": "434c61ae-0a41-4761-b434-6ecdc57f6280"
+    },
+    {
+      "parameters": {
+        "resource": "lead",
+        "Company": "647569156",
+        "lastName": "={{ $json.body.lastName }}",
+        "additionalFields": {
+          "customFields": {
+            "customFields": [
+              {
+                "fieldId": "Lead_Type",
+                "value": "Renter"
+              }
+            ]
+          },
+          "Email": "={{ $json.body.email }}",
+          "First_Name": "={{ $json.body.firstName }}",
+          "Lead_Source": "={{ $json.body.property }}",
+          "Phone": "={{ $json.body.phone }}"
+        }
+      },
+      "id": "665acc49-d5ce-43d9-bc75-f246dffe56f7",
+      "name": "Zoho CRM",
+      "type": "n8n-nodes-base.zohoCrm",
+      "typeVersion": 1,
+      "position": [
+        560,
+        460
+      ],
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "oFsMev3Fm7IhzJD9",
+          "name": "Zoho account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "lead",
+        "operation": "upsert",
+        "Company": "={{ $json.body.data[0].Company }}",
+        "lastName": "={{ $('Webhook').item.json.body.lastName }}",
+        "additionalFields": {
+          "Email": "={{ $('Webhook').item.json.body.email }}",
+          "First_Name": "={{ $('Webhook').item.json.body.firstName }}",
+          "Lead_Source": "={{ $('Webhook').item.json.body.property }}",
+          "Phone": "={{ $('Webhook').item.json.body.phone }}"
+        }
+      },
+      "id": "1df0a7d6-3391-4394-9797-1a29dc59a5b8",
+      "name": "Zoho CRM1",
+      "type": "n8n-nodes-base.zohoCrm",
+      "typeVersion": 1,
+      "position": [
+        580,
+        260
+      ],
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "oFsMev3Fm7IhzJD9",
+          "name": "Zoho account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.zohoapis.com/crm/v2/Leads/search",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "zohoOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.body.email }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "bc1ac208-5ec5-48b8-b265-04e063a440db",
+      "name": "HTTP Request1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        340
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "oFsMev3Fm7IhzJD9",
+          "name": "Zoho account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-10-23T15:00:20.000Z",
+  "versionId": "b5fcd872-a993-4b52-bb1a-f4afa00f9f8b"
+}
