@@ -1,0 +1,135 @@
+{
+  "active": false,
+  "connections": {
+    "Execute workflow": {
+      "main": [
+        [
+          {
+            "node": "Set query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set query": {
+      "main": [
+        [
+          {
+            "node": "Get website content (PUPPETEER)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get website content (PUPPETEER)": {
+      "main": [
+        [
+          {
+            "node": "Set response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-25T14:35:46.473Z",
+  "id": "HigEZdt4KXkxy5sO",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "EmailSpy Text Tool",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "975e1c71-0a07-4600-a572-1d9642d0ec25",
+      "name": "Execute workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "49771f50-5838-4910-8444-030b8117aef1",
+              "name": "query",
+              "value": "={{ $json.query }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9336e5fa-5bd9-46c1-a39d-f262c5fb6629",
+      "name": "Set query",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        680,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://us-central1-oskar-357812.cloudfunctions.net/scrape-page",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.query }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "05cc105d-1f52-40a3-b966-23e0763d7c56",
+      "name": "Get website content (PUPPETEER)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f1ce079d-dcb9-435c-a015-5ccd662fa255",
+              "name": "response",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d84d85c0-cdc6-47a0-b22f-c2ad6ff2aa2f",
+      "name": "Set response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        1120,
+        460
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-10-25T14:35:46.473Z",
+  "versionId": "8bcc0285-de54-4458-93d5-3dec63276763"
+}
