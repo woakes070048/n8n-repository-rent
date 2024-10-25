@@ -1,0 +1,153 @@
+{
+  "active": false,
+  "connections": {
+    "Error trigger": {
+      "main": [
+        [
+          {
+            "node": "Get execution data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get execution data": {
+      "main": [
+        [
+          {
+            "node": "Set domain and callback URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set domain and callback URL": {
+      "main": [
+        [
+          {
+            "node": "Send response (error)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-25T14:34:57.936Z",
+  "id": "FxVBnIVgGu6rQgkj",
+  "meta": null,
+  "name": "EmailSpy Error",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "8b54334d-633d-49ac-b134-a2f8696c40f8",
+      "name": "Error trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        460,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "execution",
+        "operation": "get",
+        "executionId": "={{ $json.execution.id }}",
+        "options": {
+          "activeWorkflows": true
+        },
+        "requestOptions": {}
+      },
+      "id": "c517a505-a236-4153-97f6-39303b5c0ba9",
+      "name": "Get execution data",
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        680,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a94873b6-b334-4b59-990d-ab91fb932d60",
+              "name": "callbackUrl",
+              "value": "={{ $json.data.resultData.runData.Webhook[0].data.main[0][0].json.body.callbackUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "0f78a1c0-60b1-4b28-a546-977115c04c48",
+              "name": "domain",
+              "value": "={{ $json.data.resultData.runData.Webhook[0].data.main[0][0].json.body.domain }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b36db63d-2893-452e-8355-7969522961fd",
+      "name": "Set domain and callback URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $json.callbackUrl }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"status\": \"error\",\n  \"domain\": {{ JSON.stringify($json.domain) }},\n  \"timestamp\": {{ JSON.stringify($now.toString()) }}\n}",
+        "options": {}
+      },
+      "id": "c6eba87b-e2c6-4855-8feb-b0b67a3e4c13",
+      "name": "Send response (error)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1120,
+        460
+      ]
+    }
+  ],
+  "pinData": {
+    "Error trigger": [
+      {
+        "json": {
+          "execution": {
+            "id": "14623",
+            "url": "https://devrel.app.n8n.cloud/workflow/iKWWu0poAtq1HXre/executions/14623",
+            "error": {
+              "llmOutput": "{\"output\":\"\\n  {\\n    \\\"output\\\": []\\n  }\"}",
+              "sendToLLM": false,
+              "message": "Failed to parse. Text: \"{\"output\":\"\\n  {\\n    \\\"output\\\": []\\n  }\"}\". Error: Error: Failed to parse. Text: \"{\"output\":\"\\n  {\\n    \\\"output\\\": []\\n  }\"}\". Error: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"array\",\n    \"received\": \"string\",\n    \"path\": [\n      \"output\"\n    ],\n    \"message\": \"Expected array, received string\"\n  }\n]",
+              "stack": "Error: Failed to parse. Text: \"{\"output\":\"\\n  {\\n    \\\"output\\\": []\\n  }\"}\". Error: Error: Failed to parse. Text: \"{\"output\":\"\\n  {\\n    \\\"output\\\": []\\n  }\"}\". Error: [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"array\",\n    \"received\": \"string\",\n    \"path\": [\n      \"output\"\n    ],\n    \"message\": \"Expected array, received string\"\n  }\n]\n    at N8nStructuredOutputParser.parse (/usr/local/lib/node_modules/n8n/node_modules/@n8n/n8n-nodes-langchain/dist/nodes/output_parser/OutputParserStructured/OutputParserStructured.node.js:29:19)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at N8nStructuredOutputParser.callMethodAsync (/usr/local/lib/node_modules/n8n/node_modules/@n8n/n8n-nodes-langchain/dist/utils/logWrapper.js:24:16)\n    at Proxy.connectionType (/usr/local/lib/node_modules/n8n/node_modules/@n8n/n8n-nodes-langchain/dist/utils/logWrapper.js:152:47)\n    at RunnableLambda.agentStepsParser [as func] (/usr/local/lib/node_modules/n8n/node_modules/@n8n/n8n-nodes-langchain/dist/nodes/agents/Agent/agents/ToolsAgent/execute.js:97:35)\n    at /usr/local/lib/node_modules/n8n/node_modules/@langchain/core/dist/runnables/base.cjs:1619:33"
+            },
+            "lastNodeExecuted": "Retrieve email addresses (AI)",
+            "mode": "webhook"
+          },
+          "workflow": {
+            "id": "iKWWu0poAtq1HXre",
+            "name": "EmailSpy"
+          }
+        }
+      }
+    ]
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-10-25T14:34:57.936Z",
+  "versionId": "a5ab2d7b-b187-4822-a0bd-63ffaa310cc3"
+}
