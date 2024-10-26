@@ -416,22 +416,22 @@
         ]
       ]
     },
-    "Retrieve email addresses (AI)": {
+    "Tweak output": {
       "main": [
         [
           {
-            "node": "Split out output",
+            "node": "Send response",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Tweak output": {
+    "Retrieve email addresses (AI)": {
       "main": [
         [
           {
-            "node": "Send response",
+            "node": "Split out output",
             "type": "main",
             "index": 0
           }
@@ -452,7 +452,9 @@
   },
   "createdAt": "2024-10-25T14:33:44.231Z",
   "id": "gYUISwO9Y5ckTuCj",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "Email Spy Endpoint",
   "nodes": [
     {
@@ -526,6 +528,12 @@
         2660,
         1840
       ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "QJO8plfI4FpNeUwK",
+          "name": "Header Auth account 4"
+        }
+      },
       "onError": "continueRegularOutput"
     },
     {
@@ -649,7 +657,13 @@
       "position": [
         2040,
         1560
-      ]
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "8vwptNlh8nrL6Z5a",
+          "name": "brave api"
+        }
+      }
     },
     {
       "parameters": {
@@ -820,7 +834,13 @@
       "position": [
         4320,
         1740
-      ]
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1113,7 +1133,13 @@
       "position": [
         4040,
         920
-      ]
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1304,7 +1330,13 @@
         1100
       ],
       "alwaysOutputData": true,
-      "executeOnce": true
+      "executeOnce": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "HuWIx2Qz8WpPCoeJ",
+          "name": "Supabase account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1358,7 +1390,13 @@
       "position": [
         7240,
         1140
-      ]
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "HuWIx2Qz8WpPCoeJ",
+          "name": "Supabase account"
+        }
+      }
     },
     {
       "parameters": {},
@@ -1370,26 +1408,6 @@
         1140,
         1100
       ]
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Retrieve email addresses from this website: {{ $json.domain }}",
-        "hasOutputParser": true,
-        "options": {
-          "systemMessage": "=You are an automated web crawler tasked with extracting email addresses from a webpage provided by the user. You have access to a text retrieval tool to gather all text content from the page and a URL retrieval tool to identify and navigate through links on the page. You can use those tools ONLY for websites on domain {{ $json.domain }}. Utilize the URLs retrieved to crawl additional pages. Your objective is to provide a unified JSON output containing the extracted data (all possible email addresses from the website) and website URL where specific email address was found. Always search for sites with possible contact details (\"Contact\", \"About us\", \"Team\" etc.). If you cannot find such sub-page, do not scrape more websites. Make sure email addresses and URLs in output are valid.",
-          "maxIterations": 5
-        }
-      },
-      "id": "eb0e5351-d7dc-4043-b1b0-faa99389185a",
-      "name": "Retrieve email addresses (AI)",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 1.6,
-      "position": [
-        4140,
-        660
-      ],
-      "retryOnFail": true
     },
     {
       "parameters": {
@@ -1454,22 +1472,6 @@
     },
     {
       "parameters": {
-        "httpMethod": "POST",
-        "path": "/find-emails",
-        "options": {}
-      },
-      "id": "a50ef470-73bc-4acf-9dd8-08c519b9c97c",
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [
-        520,
-        1100
-      ],
-      "webhookId": "6e864651-54a7-41c2-adc0-66d28e393802"
-    },
-    {
-      "parameters": {
         "content": "## Workflow set up\n\n1. Open each node with an error and add a credential.\n\n### Work in progress\n",
         "height": 373.5035004878047,
         "width": 257.31109463414515,
@@ -1483,6 +1485,42 @@
         460,
         640
       ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Retrieve email addresses from this website: {{ $json.domain }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an automated web crawler tasked with extracting email addresses from a webpage provided by the user. You have access to a text retrieval tool to gather all text content from the page and a URL retrieval tool to identify and navigate through links on the page. You can use those tools ONLY for websites on domain {{ $json.domain }}. Utilize the URLs retrieved to crawl additional pages. Your objective is to provide a unified JSON output containing the extracted data (all possible email addresses from the website) and website URL where specific email address was found. Always search for sites with possible contact details (\"Contact\", \"About us\", \"Team\" etc.). If you cannot find such sub-page, do not scrape more websites. Make sure email addresses and URLs in output are valid.",
+          "maxIterations": 5
+        }
+      },
+      "id": "eb0e5351-d7dc-4043-b1b0-faa99389185a",
+      "name": "Retrieve email addresses (AI)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        4140,
+        660
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/find-emails",
+        "options": {}
+      },
+      "id": "a50ef470-73bc-4acf-9dd8-08c519b9c97c",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        520,
+        1100
+      ],
+      "webhookId": "6e864651-54a7-41c2-adc0-66d28e393802"
     }
   ],
   "pinData": {
@@ -1533,6 +1571,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-10-25T14:34:36.000Z",
-  "versionId": "3f3b3d77-e6a6-490b-adef-2b580919c204"
+  "updatedAt": "2024-10-26T12:45:21.000Z",
+  "versionId": "853c49b9-b0b6-4cd2-91a8-27cf75f01619"
 }
