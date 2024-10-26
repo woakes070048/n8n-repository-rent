@@ -1,0 +1,135 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Gmail": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-26T16:58:41.896Z",
+  "id": "Gd2RE1jmeJ3DWTf2",
+  "meta": {
+    "templateId": "1153"
+  },
+  "name": "Clean out unwanted emails from Gmail",
+  "nodes": [
+    {
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        380,
+        240
+      ],
+      "parameters": {},
+      "typeVersion": 1,
+      "id": "5caf575d-636b-41c4-9f9e-abb0359de40b"
+    },
+    {
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        570,
+        240
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "returnAll": true,
+        "additionalFields": {
+          "q": "-in:chats unsubscribe -license -key -password",
+          "format": "ids"
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      },
+      "typeVersion": 1,
+      "id": "3f5000cc-0daa-4a9b-a447-9bd98bdf330e"
+    },
+    {
+      "name": "Delete Old Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        920,
+        410
+      ],
+      "parameters": {
+        "resource": "message",
+        "messageId": "={{$json[\"id\"]}}",
+        "operation": "delete"
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      },
+      "typeVersion": 1,
+      "id": "388d21d5-5a0d-4df5-ba39-c4b44065c0be"
+    },
+    {
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        730,
+        240
+      ],
+      "parameters": {
+        "options": {},
+        "batchSize": 100
+      },
+      "typeVersion": 1,
+      "id": "3d7499bf-d4df-4b5c-b405-ae093e390371"
+    }
+  ],
+  "pinData": null,
+  "settings": null,
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-10-26T16:58:41.896Z",
+  "versionId": "4fcea1e5-3744-4e7a-8295-8a2d0ece6a4b"
+}
