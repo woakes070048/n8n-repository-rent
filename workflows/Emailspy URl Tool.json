@@ -82,7 +82,7 @@
             {
               "id": "49771f50-5838-4910-8444-030b8117aef1",
               "name": "query",
-              "value": "={{ $json.query }}",
+              "value": "=blazeproperty.com",
               "type": "string"
             }
           ]
@@ -181,6 +181,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-10-25T14:35:24.655Z",
-  "versionId": "15306c16-1c48-40ed-b5cd-a6cbe5d4e45c"
+  "updatedAt": "2024-10-26T16:37:39.000Z",
+  "versionId": "d0433b9c-e27a-486f-9aa1-d56b87d48778"
 }
