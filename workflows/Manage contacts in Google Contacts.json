@@ -1,0 +1,141 @@
+{
+  "active": false,
+  "connections": {
+    "Google Contacts": {
+      "main": [
+        [
+          {
+            "node": "Google Contacts1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Contacts1": {
+      "main": [
+        [
+          {
+            "node": "Google Contacts2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Google Contacts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-26T17:03:19.523Z",
+  "id": "ft3UQ9R3hzrvYzWl",
+  "meta": {
+    "templateId": "637"
+  },
+  "name": "Manage contacts in Google Contacts",
+  "nodes": [
+    {
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        380,
+        240
+      ],
+      "parameters": {},
+      "typeVersion": 1,
+      "id": "d1e56a86-1928-4e13-9d73-72c8607c6132"
+    },
+    {
+      "name": "Google Contacts",
+      "type": "n8n-nodes-base.googleContacts",
+      "position": [
+        580,
+        240
+      ],
+      "parameters": {
+        "givenName": "n8n",
+        "familyName": "n8n",
+        "additionalFields": {}
+      },
+      "credentials": {
+        "googleContactsOAuth2Api": {
+          "id": "0KSjJKQ4ZQDhisZU",
+          "name": "Google Contacts account"
+        }
+      },
+      "typeVersion": 1,
+      "id": "fbb5bc5d-953b-425a-bc4a-dcddfd8e71f5"
+    },
+    {
+      "name": "Google Contacts1",
+      "type": "n8n-nodes-base.googleContacts",
+      "position": [
+        780,
+        240
+      ],
+      "parameters": {
+        "fields": [],
+        "contactId": "={{$node[\"Google Contacts\"].json[\"contactId\"]}}",
+        "operation": "update",
+        "updateFields": {
+          "companyUi": {
+            "companyValues": [
+              {
+                "name": "n8n",
+                "title": "n8n",
+                "domain": "n8n.io",
+                "current": true
+              }
+            ]
+          }
+        }
+      },
+      "credentials": {
+        "googleContactsOAuth2Api": {
+          "id": "0KSjJKQ4ZQDhisZU",
+          "name": "Google Contacts account"
+        }
+      },
+      "typeVersion": 1,
+      "id": "d239c94a-fb04-4f22-b8b9-72aa3ea5750b"
+    },
+    {
+      "name": "Google Contacts2",
+      "type": "n8n-nodes-base.googleContacts",
+      "position": [
+        980,
+        240
+      ],
+      "parameters": {
+        "fields": [
+          "organizations"
+        ],
+        "contactId": "={{$node[\"Google Contacts\"].json[\"contactId\"]}}",
+        "operation": "get"
+      },
+      "credentials": {
+        "googleContactsOAuth2Api": {
+          "id": "0KSjJKQ4ZQDhisZU",
+          "name": "Google Contacts account"
+        }
+      },
+      "typeVersion": 1,
+      "id": "22caae58-b60a-4e7b-9877-4e59a5d7c556"
+    }
+  ],
+  "pinData": null,
+  "settings": null,
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-10-26T17:03:19.523Z",
+  "versionId": "79723b9d-ffdd-4b39-b5c6-b6c7347d2a28"
+}
