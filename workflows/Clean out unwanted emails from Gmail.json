@@ -1,44 +1,40 @@
 {
   "active": false,
   "connections": {
-    "Gmail": {
+    "MySQL": {
       "main": [
         [
           {
-            "node": "SplitInBatches",
+            "node": "Gmail1",
             "type": "main",
             "index": 0
           }
-        ]
-      ]
-    },
-    "SplitInBatches": {
-      "main": [
-        [
-          {
-            "node": "Delete Old Gmail",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Delete Old Gmail": {
-      "main": [
-        [
-          {
-            "node": "SplitInBatches",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "On clicking 'execute'": {
-      "main": [
+        ],
         [
           {
             "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
             "type": "main",
             "index": 0
           }
@@ -49,87 +45,136 @@
   "createdAt": "2024-10-26T16:58:41.896Z",
   "id": "Gd2RE1jmeJ3DWTf2",
   "meta": {
-    "templateId": "1153"
+    "templateId": "1153",
+    "templateCredsSetupCompleted": true
   },
   "name": "Clean out unwanted emails from Gmail",
   "nodes": [
     {
-      "name": "On clicking 'execute'",
-      "type": "n8n-nodes-base.manualTrigger",
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT email FROM brandon_contacts WHERE email = '{{ $node[\"Edit Fields\"].json[\"sender\"] }}';\n",
+        "options": {}
+      },
+      "id": "4b1e62c1-d3a3-466e-8b6f-dcb40b21123e",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
       "position": [
-        380,
-        240
+        520,
+        440
       ],
-      "parameters": {},
-      "typeVersion": 1,
-      "id": "5caf575d-636b-41c4-9f9e-abb0359de40b"
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
+        }
+      },
+      "onError": "continueErrorOutput"
     },
     {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "id": "319d985d-90b2-4bcd-bd09-765d7207b290",
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        80,
+        440
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "id": "6982d5d6-b1f0-4dcb-af56-f08783e7162a",
       "name": "Gmail",
       "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
       "position": [
-        570,
-        240
+        740,
+        500
       ],
-      "parameters": {
-        "resource": "message",
-        "operation": "getAll",
-        "returnAll": true,
-        "additionalFields": {
-          "q": "-in:chats unsubscribe -license -key -password",
-          "format": "ids"
-        }
-      },
       "credentials": {
         "gmailOAuth2": {
           "id": "LD5x69eYRRI6cdrn",
           "name": "Gmail account"
         }
-      },
-      "typeVersion": 1,
-      "id": "3f5000cc-0daa-4a9b-a447-9bd98bdf330e"
+      }
     },
     {
-      "name": "Delete Old Gmail",
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "{{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "STARRED"
+        ]
+      },
+      "id": "f298cb04-b17e-44ad-94f7-fa695772da63",
+      "name": "Gmail1",
       "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
       "position": [
-        920,
-        410
+        960,
+        540
       ],
-      "parameters": {
-        "resource": "message",
-        "messageId": "={{$json[\"id\"]}}",
-        "operation": "delete"
-      },
       "credentials": {
         "gmailOAuth2": {
           "id": "LD5x69eYRRI6cdrn",
           "name": "Gmail account"
         }
-      },
-      "typeVersion": 1,
-      "id": "388d21d5-5a0d-4df5-ba39-c4b44065c0be"
+      }
     },
     {
-      "name": "SplitInBatches",
-      "type": "n8n-nodes-base.splitInBatches",
-      "position": [
-        730,
-        240
-      ],
       "parameters": {
-        "options": {},
-        "batchSize": 100
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d16ca08-7b6b-4c55-8937-e45ed546f184",
+              "name": "sender",
+              "value": "={{$json[\"from\"][\"value\"][0][\"address\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
       },
-      "typeVersion": 1,
-      "id": "3d7499bf-d4df-4b5c-b405-ae093e390371"
+      "id": "e52df1d5-19b5-457e-ac16-30957f211977",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        300,
+        440
+      ]
     }
   ],
-  "pinData": null,
-  "settings": null,
+  "pinData": {},
+  "settings": {},
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-10-26T16:58:41.896Z",
-  "versionId": "4fcea1e5-3744-4e7a-8295-8a2d0ece6a4b"
+  "updatedAt": "2024-10-26T18:00:18.000Z",
+  "versionId": "395e982b-8cec-45b6-adbe-5f19703cf50c"
 }
