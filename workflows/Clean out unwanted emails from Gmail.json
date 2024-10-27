@@ -61,8 +61,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        520,
-        440
+        440,
+        420
       ],
       "credentials": {
         "mySql": {
@@ -90,8 +90,8 @@
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1.1,
       "position": [
-        80,
-        440
+        20,
+        420
       ],
       "credentials": {
         "gmailOAuth2": {
@@ -113,8 +113,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        740,
-        500
+        700,
+        580
       ],
       "credentials": {
         "gmailOAuth2": {
@@ -165,8 +165,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        300,
-        440
+        260,
+        420
       ]
     }
   ],
@@ -175,6 +175,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-10-26T18:00:18.000Z",
-  "versionId": "395e982b-8cec-45b6-adbe-5f19703cf50c"
+  "updatedAt": "2024-10-27T12:41:27.000Z",
+  "versionId": "61e6e2a6-4c96-4614-9685-591a69fa9281"
 }
