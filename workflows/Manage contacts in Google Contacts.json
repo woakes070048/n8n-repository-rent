@@ -1,33 +1,33 @@
 {
   "active": false,
   "connections": {
-    "Google Contacts": {
-      "main": [
-        [
-          {
-            "node": "Google Contacts1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Contacts1": {
-      "main": [
-        [
-          {
-            "node": "Google Contacts2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "On clicking 'execute'": {
       "main": [
         [
           {
-            "node": "Google Contacts",
+            "node": "Google Contacts3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Contacts3": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
             "type": "main",
             "index": 0
           }
@@ -38,104 +38,117 @@
   "createdAt": "2024-10-26T17:03:19.523Z",
   "id": "ft3UQ9R3hzrvYzWl",
   "meta": {
-    "templateId": "637"
+    "templateId": "637",
+    "templateCredsSetupCompleted": true
   },
   "name": "Manage contacts in Google Contacts",
   "nodes": [
     {
+      "parameters": {},
       "name": "On clicking 'execute'",
       "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        380,
+        180,
         240
       ],
-      "parameters": {},
       "typeVersion": 1,
       "id": "d1e56a86-1928-4e13-9d73-72c8607c6132"
     },
     {
-      "name": "Google Contacts",
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "fields": [
+          "names",
+          "emailAddresses",
+          "phoneNumbers",
+          "addresses",
+          "metadata"
+        ],
+        "options": {}
+      },
+      "id": "fd36cc98-d6de-45a6-bc44-8ac3da176de2",
+      "name": "Google Contacts3",
       "type": "n8n-nodes-base.googleContacts",
+      "typeVersion": 1,
       "position": [
-        580,
+        360,
         240
       ],
-      "parameters": {
-        "givenName": "n8n",
-        "familyName": "n8n",
-        "additionalFields": {}
-      },
       "credentials": {
         "googleContactsOAuth2Api": {
           "id": "0KSjJKQ4ZQDhisZU",
           "name": "Google Contacts account"
         }
-      },
-      "typeVersion": 1,
-      "id": "fbb5bc5d-953b-425a-bc4a-dcddfd8e71f5"
+      }
     },
     {
-      "name": "Google Contacts1",
-      "type": "n8n-nodes-base.googleContacts",
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Get the current contact from the input\nconst contact = $json;\n\n// Array to store found email addresses\nlet emailList = [];\n\n// List of valid Google Contacts email tags\nconst validTags = [\"work\", \"home\", \"other\", \"school\", \"custom\", \"undefined\"];\n\n// Get the emailAddresses object if it exists\nconst emailAddresses = contact.emailAddresses;\n\nif (emailAddresses) {\n  // Iterate through the valid tags\n  validTags.forEach(tag => {\n    // Check if the tag exists in the emailAddresses object\n    if (emailAddresses[tag]) {\n      // Add the emails under this tag to the emailList\n      emailList = emailList.concat(emailAddresses[tag]);\n    }\n  });\n}\n\n// If there are valid emails, return the contact with the emails\nif (emailList.length > 0) {\n  return {\n    json: {\n      contact,\n      emails: emailList\n    }\n  };\n} else {\n  // Skip the contact if no valid emails are found\n  return null;\n}\n"
+      },
+      "id": "5b853217-6efb-4bb8-b651-6d8b29f40e04",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "brandon_contacts",
+          "mode": "list",
+          "cachedResultName": "brandon_contacts"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "emails",
+        "valueToMatchOn": "={{ $json.emails[0] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "familyName",
+              "value": "={{ $json.contact.names.familyName }}"
+            },
+            {
+              "column": "givenName",
+              "value": "={{ $json.contact.names.givenName }}"
+            },
+            {
+              "column": "contactId",
+              "value": "={{ $json.contact.contactId }}"
+            }
+          ]
+        },
+        "options": {
+          "replaceEmptyStrings": true
+        }
+      },
+      "id": "39339c3d-5a4e-4513-8db7-2e8807ff3312",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
       "position": [
         780,
         240
       ],
-      "parameters": {
-        "fields": [],
-        "contactId": "={{$node[\"Google Contacts\"].json[\"contactId\"]}}",
-        "operation": "update",
-        "updateFields": {
-          "companyUi": {
-            "companyValues": [
-              {
-                "name": "n8n",
-                "title": "n8n",
-                "domain": "n8n.io",
-                "current": true
-              }
-            ]
-          }
-        }
-      },
       "credentials": {
-        "googleContactsOAuth2Api": {
-          "id": "0KSjJKQ4ZQDhisZU",
-          "name": "Google Contacts account"
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
         }
-      },
-      "typeVersion": 1,
-      "id": "d239c94a-fb04-4f22-b8b9-72aa3ea5750b"
-    },
-    {
-      "name": "Google Contacts2",
-      "type": "n8n-nodes-base.googleContacts",
-      "position": [
-        980,
-        240
-      ],
-      "parameters": {
-        "fields": [
-          "organizations"
-        ],
-        "contactId": "={{$node[\"Google Contacts\"].json[\"contactId\"]}}",
-        "operation": "get"
-      },
-      "credentials": {
-        "googleContactsOAuth2Api": {
-          "id": "0KSjJKQ4ZQDhisZU",
-          "name": "Google Contacts account"
-        }
-      },
-      "typeVersion": 1,
-      "id": "22caae58-b60a-4e7b-9877-4e59a5d7c556"
+      }
     }
   ],
-  "pinData": null,
-  "settings": null,
+  "pinData": {},
+  "settings": {},
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-10-26T17:03:19.523Z",
-  "versionId": "79723b9d-ffdd-4b39-b5c6-b6c7347d2a28"
+  "updatedAt": "2024-10-26T17:37:11.000Z",
+  "versionId": "8efa32b5-b45b-4fda-9351-e3e6295a0dec"
 }
