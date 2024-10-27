@@ -196,11 +196,12 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-10-26T12:21:16.000Z",
-  "versionId": "e41dfdfb-604c-440b-91e5-26b98fea6fc8"
+  "updatedAt": "2024-10-27T05:00:21.550Z",
+  "versionId": "150cb429-ad9f-42b9-b8cc-7be1d55ec96a"
 }
