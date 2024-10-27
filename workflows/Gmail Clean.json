@@ -1,0 +1,292 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Gmail4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Gmail3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-26T18:00:32.908Z",
+  "id": "Sq33rYXcBdZSgJJg",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Gmail Clean",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $('Gmail4').item.json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "id": "b2c0cc28-2b50-445d-a60f-7784fddee27f",
+      "name": "Gmail2",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        580,
+        560
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail4').item.json.id }}",
+        "labelIds": [
+          "STARRED"
+        ]
+      },
+      "id": "d8b9bfa6-1dd8-49c7-a4fb-30f9dde12cd8",
+      "name": "Gmail3",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        600,
+        380
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "0f93921a-5836-4ffb-9db6-c161d2b4b4a6",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 100,
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ]
+        },
+        "options": {}
+      },
+      "id": "8fe4b68e-6d8e-43db-9871-39453aa617d4",
+      "name": "Gmail4",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d16ca08-7b6b-4c55-8937-e45ed546f184",
+              "name": "sender",
+              "value": "={{$json[\"from\"][\"value\"][0][\"address\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4dadc1ba-bd6b-43ae-a902-2c8fc74e6b72",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT EXISTS (SELECT 1 FROM brandon_contacts WHERE emails = '{{ $node[\"Edit Fields1\"].json[\"sender\"] }}') AS email_exists;\n",
+        "options": {}
+      },
+      "id": "938d279c-b885-4a44-9ecf-aa056651be23",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        700,
+        200
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "50083c79-9d30-43c7-b5f0-65b34e612dfd",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        460,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "552dec53-466a-43fa-a714-6d0a7d634106",
+              "leftValue": "={{ $json.email_exists }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ad6205a1-3efa-43aa-b24d-fcbc2d98ad0a",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        980,
+        180
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-10-27T12:24:34.000Z",
+  "versionId": "8d9b8d30-37a6-4280-b5f8-24f8513b2d9c"
+}
