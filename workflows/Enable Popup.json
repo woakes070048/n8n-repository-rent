@@ -1,0 +1,97 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Popup Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Popup Status": {
+      "main": [
+        [
+          {
+            "node": "Toggle Hustle Popup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-02T19:31:04.982Z",
+  "id": "Xo02Na6Ha4swcNrc",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Enable Popup",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        320,
+        300
+      ],
+      "id": "b1eb794e-f040-4214-a26c-b3e953f37a4d"
+    },
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "url": "https://axialiving.com/adobetrail/wp-json/wp/v2/hustle_module/POPUP_ID",
+        "options": {}
+      },
+      "name": "Toggle Hustle Popup",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        320
+      ],
+      "id": "3c1d5934-c006-4283-9c28-89020d976c17",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "0Ei81Ah1V6kyXlO0",
+          "name": "axialiving Wp access"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "popupStatus",
+              "value": "draft"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Popup Status",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ],
+      "id": "3d309c7d-191c-4b79-9f73-0b2f0318da88"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-11-02T20:01:19.000Z",
+  "versionId": "afb2df38-3f27-48f4-a587-8c01e80b8d63"
+}
