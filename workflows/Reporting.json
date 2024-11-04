@@ -1,6 +1,40 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2024-11-04T02:34:31.076Z",
   "id": "8WaRh0nSLBh1bUze",
   "meta": {
@@ -13,7 +47,7 @@
         "postProcessAction": "nothing",
         "downloadAttachments": true,
         "options": {
-          "customEmailConfig": "[\"UNSEEN\"]"
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Rent Roll\"]]"
         }
       },
       "id": "8fb56776-5356-4c9d-a406-3258473129e0",
@@ -21,7 +55,7 @@
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        820,
+        260,
         360
       ],
       "credentials": {
@@ -30,6 +64,54 @@
           "name": "Reports IMAP account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {
+          "includeEmptyCells": true
+        }
+      },
+      "id": "df6d7958-5e21-425d-acd7-8e84eebe7667",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        540,
+        360
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// First, extract the rows of data for processing, skipping the header row and the last row (summary)\nconst inputData = $input.all();\nconst rows = inputData.slice(0, -1);  // Skip header and last row (summary)\n\n// Initialize variables for calculations\nlet totalUnits = 0;\nlet vacantUnits = 0;\nlet unitsOnNotice = 0;\nlet occupiedUnits = 0;\nlet totalMarketRent = 0;\nlet actualRentCollected = 0;\nlet vacantMarketRent = 0; // Total Market Rent for vacant units\nlet totalDelinquency = 0; // Sum of delinquency for each unit\n\n// Loop through each row to perform the calculations\nrows.forEach(row => {\n    const status = row.json[\"Status\"];\n    const marketRent = parseFloat(row.json[\"Market Rent\"]) || 0;\n    const rentCollected = parseFloat(row.json[\"Rent\"]) || 0;\n    const delinquency = parseFloat(row.json[\"Past Due\"]) || 0;\n\n    totalUnits += 1;                 // Count each unit\n    totalMarketRent += marketRent;    // Sum up total market rent\n    actualRentCollected += rentCollected;  // Sum up rent collected from occupied units\n    totalDelinquency += delinquency;  // Sum up all delinquency\n\n    if (status === \"Current\") {\n        occupiedUnits += 1;          // Count occupied units\n    } else if (status.includes(\"Vacant\")) {\n        vacantUnits += 1;            // Count vacant units\n        vacantMarketRent += marketRent;  // Sum up market rent for vacant units\n    } else if (status.includes(\"Notice\")) {\n        unitsOnNotice += 1;          // Count units on notice\n    }\n});\n\n// Calculations\nconst occupancyRate = (occupiedUnits / totalUnits) * 100;\nconst vacancyLoss = totalMarketRent - actualRentCollected;\nconst economicOccupancy = ((actualRentCollected - totalDelinquency) / totalMarketRent) * 100;\n\n// Prepare output data\nreturn [\n    {\n        json: {\n            \"Total Units\": totalUnits,\n            \"Vacant Units\": vacantUnits,\n            \"Units on Notice\": unitsOnNotice,\n            \"Occupied Units\": occupiedUnits,\n            \"Occupancy Rate (%)\": occupancyRate.toFixed(2),\n            \"Total Market Rent\": totalMarketRent.toFixed(2),\n            \"Actual Rent Collected\": actualRentCollected.toFixed(2),\n            \"Vacancy Loss\": vacancyLoss.toFixed(2),\n            \"Vacant Market Rent\": vacantMarketRent.toFixed(2),  // Market rent for vacant units\n            \"Total Delinquency\": totalDelinquency.toFixed(2),\n            \"Economic Occupancy (%)\": economicOccupancy.toFixed(2)\n        }\n    }\n];\n"
+      },
+      "id": "7e8ef2f8-9b73-46b6-aec0-fda4f6feaf16",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        740,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "c227e261-1bc3-43db-ae53-c1d40f1ce989",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1160,
+        380
+      ]
     }
   ],
   "pinData": {},
@@ -39,6 +121,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-11-04T02:35:10.000Z",
-  "versionId": "4d3c6e87-cdb7-4903-a47f-7a9939254c41"
+  "updatedAt": "2024-11-04T11:58:26.000Z",
+  "versionId": "0e968266-25c9-4272-9894-9963141b9461"
 }
