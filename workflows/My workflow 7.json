@@ -1,56 +1,8 @@
 {
-  "active": true,
-  "connections": {
-    "Respond to Webhook": {
-      "main": [
-        [
-          {
-            "node": "Switch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Switch": {
-      "main": [
-        [
-          {
-            "node": "Send Email",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Send Email",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Send Email",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  },
-  "createdAt": "2024-10-26T12:20:22.623Z",
-  "id": "XtLyblEZ7qZEl2c0",
+  "active": false,
+  "connections": {},
+  "createdAt": "2024-11-04T13:35:22.676Z",
+  "id": "nn6SMwAtM7vB0tD9",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -58,150 +10,32 @@
   "nodes": [
     {
       "parameters": {
-        "respondWith": "text",
-        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Workflow was started\"\n}\n",
-        "options": {
-          "responseCode": 200
-        }
-      },
-      "id": "42c4ee36-d9b3-4cce-bd49-2ae46118f6f9",
-      "name": "Respond to Webhook",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1.1,
-      "position": [
-        780,
-        320
-      ]
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
+        "rule": {
+          "interval": [
             {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.body.property }}",
-                    "rightValue": "paramount",
-                    "operator": {
-                      "type": "string",
-                      "operation": "contains"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "id": "cd8584f2-be71-4c7e-ad21-23d5c99d0b29",
-                    "leftValue": "={{ $json.body.property }}",
-                    "rightValue": "centro",
-                    "operator": {
-                      "type": "string",
-                      "operation": "contains"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict"
-                },
-                "conditions": [
-                  {
-                    "id": "c2a57cfc-96f5-45ec-b126-9d8078f83bc8",
-                    "leftValue": "={{ $json.body.property }}",
-                    "rightValue": "cotton",
-                    "operator": {
-                      "type": "string",
-                      "operation": "contains"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
+              "field": "cronExpression",
+              "expression": "0 0 1 * *"
             }
           ]
-        },
-        "options": {}
-      },
-      "id": "e6db088c-3f0d-43cc-85a5-46843fe4d330",
-      "name": "Switch",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.1,
-      "position": [
-        1000,
-        320
-      ]
-    },
-    {
-      "parameters": {
-        "fromEmail": "info@blzres.com",
-        "toEmail": "paramountsquare@blazeproperty.com; brandon@blazeproperty.com",
-        "subject": "=New {{ $json.body.property }} Web Form Entry: {{ $json.body.firstName }} {{ $json.body.lastName }}",
-        "emailFormat": "text",
-        "text": "={{ $json.body.firstName }}\n{{ $json.body.lastName }}\n{{ $json.body.email }}\n{{ $json.body.phone }}\n{{ $json.body.message }}\n",
-        "options": {}
-      },
-      "id": "20823cfa-fc30-4ed8-a408-7411789f1803",
-      "name": "Send Email",
-      "type": "n8n-nodes-base.emailSend",
-      "typeVersion": 2.1,
-      "position": [
-        1240,
-        300
-      ],
-      "credentials": {
-        "smtp": {
-          "id": "CT7TQcD1DuyTHPFu",
-          "name": "SMTP account"
         }
-      }
-    },
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "434c61ae-0a41-4761-b434-6ecdc57f6280",
-        "responseMode": "responseNode",
-        "options": {}
       },
-      "id": "911f801b-1f69-4bdc-bf0e-cc8ed33b98aa",
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
+      "id": "1418c846-7d27-4756-8612-37f207d83c7a",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
       "position": [
-        560,
-        320
-      ],
-      "webhookId": "434c61ae-0a41-4761-b434-6ecdc57f6280"
+        820,
+        360
+      ]
     }
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1",
-    "errorWorkflow": "Etm1h3dHXQYzby5C"
+    "executionOrder": "v1"
   },
   "staticData": null,
   "tags": [],
-  "triggerCount": 1,
-  "updatedAt": "2024-10-27T05:00:21.550Z",
-  "versionId": "150cb429-ad9f-42b9-b8cc-7be1d55ec96a"
+  "triggerCount": 0,
+  "updatedAt": "2024-11-04T13:35:22.676Z",
+  "versionId": "e6e17da5-2252-4c5a-9fd5-3eac24a7c8a1"
 }
