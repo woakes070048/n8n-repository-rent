@@ -1,0 +1,44 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2024-11-04T02:34:31.076Z",
+  "id": "8WaRh0nSLBh1bUze",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Reporting",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\"]"
+        }
+      },
+      "id": "8fb56776-5356-4c9d-a406-3258473129e0",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        820,
+        360
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-11-04T02:35:10.000Z",
+  "versionId": "4d3c6e87-cdb7-4903-a47f-7a9939254c41"
+}
