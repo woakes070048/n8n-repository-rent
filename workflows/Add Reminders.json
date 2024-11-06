@@ -1,0 +1,331 @@
+{
+  "active": false,
+  "connections": {
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Static Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Variable Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-05T20:09:15.208Z",
+  "id": "ydIzHpvCo2e4SHb0",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Add Reminders",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "139jn_UutdhiJwOffU1oOP09LJmgXgwzikOYzqB4Lt38",
+          "mode": "list",
+          "cachedResultName": "Static Reminders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/139jn_UutdhiJwOffU1oOP09LJmgXgwzikOYzqB4Lt38/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/139jn_UutdhiJwOffU1oOP09LJmgXgwzikOYzqB4Lt38/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "week_day": "={{ $json.week_day }}",
+            "reminder_title": "={{ $json.reminder_title }}",
+            "reminder_description": "={{ $json.reminder_description }}",
+            "reminder_cat": "={{ $json.reminder_category }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "reminder_id",
+              "displayName": "reminder_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "day",
+              "displayName": "day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "week_day",
+              "displayName": "week_day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reminder_title",
+              "displayName": "reminder_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reminder_description",
+              "displayName": "reminder_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reminder_cat",
+              "displayName": "reminder_cat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e3f177d6-0790-4a84-9702-ef82f178bb2d",
+      "name": "Static Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        600,
+        280
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "12flB9sEBbo49cY41GTEU8Xi-nQ67UMsfbg85_o138EM",
+          "mode": "list",
+          "cachedResultName": "Variable Reminders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12flB9sEBbo49cY41GTEU8Xi-nQ67UMsfbg85_o138EM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 919910825,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12flB9sEBbo49cY41GTEU8Xi-nQ67UMsfbg85_o138EM/edit#gid=919910825"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "reminder_id",
+              "displayName": "reminder_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reminder_date",
+              "displayName": "reminder_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reminder_description",
+              "displayName": "reminder_description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reminder_title",
+              "displayName": "reminder_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reminder_category",
+              "displayName": "reminder_category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "additional_information",
+              "displayName": "additional_information",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "due_date",
+              "displayName": "due_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a36d33bf-4da5-4683-9902-f6dbe675234f",
+      "name": "Variable Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        600,
+        480
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "4881ea45-03a1-4633-9c39-fea7f1b0d3a9",
+                    "leftValue": "={{ $json.Type }}",
+                    "rightValue": "Static",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "77b64106-8763-480f-b05d-a64add5aadae",
+                    "leftValue": "={{ $json.Type }}",
+                    "rightValue": "Variable",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Switch1",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.1,
+      "position": [
+        340,
+        380
+      ],
+      "id": "f9ce130f-4c1f-4fe6-a69e-1d746aa1004f"
+    },
+    {
+      "parameters": {
+        "path": "f8c5ca4b-2191-4581-984e-d882da08d561",
+        "options": {}
+      },
+      "id": "1eaeee94-57e1-449e-ba9b-1ecd466864de",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        60,
+        380
+      ],
+      "webhookId": "f8c5ca4b-2191-4581-984e-d882da08d561"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-11-05T22:41:09.000Z",
+  "versionId": "85b5dabb-884b-43d6-a6c4-3990dfc589fa"
+}
