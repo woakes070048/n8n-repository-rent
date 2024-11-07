@@ -356,7 +356,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Use the following text about a unit for lease at Cottonwood Townhomes to make a humorous post. Humor level medium. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-414-6021. : {{ $json.marketing_description }}\n"
+              "content": "=Use the following text about a unit for lease at Cottonwood Townhomes to make a humorous but professional post.  Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-414-6021. : {{ $json.marketing_description }}\n"
             }
           ]
         },
@@ -415,6 +415,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-09-23T15:44:37.469Z",
-  "versionId": "8645868e-bf50-4c5d-92f3-9262ed59ebb4"
+  "updatedAt": "2024-11-06T21:37:45.000Z",
+  "versionId": "90aba93e-5943-40a1-8750-c5f00bcddee1"
 }
