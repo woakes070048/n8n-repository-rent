@@ -1,0 +1,185 @@
+{
+  "active": false,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-06T22:51:12.375Z",
+  "id": "7xli8r8xdcNtYroH",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Generate Post",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ad24eaa4-f44a-4855-b297-8737524bc423",
+        "options": {}
+      },
+      "id": "986fe639-9721-46b3-88a5-3610e91ebf33",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        100,
+        360
+      ],
+      "webhookId": "ad24eaa4-f44a-4855-b297-8737524bc423"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * \nFROM all_rental_properties \nWHERE unit_name = '9207 Rockwood';",
+        "options": {}
+      },
+      "id": "edcc6cd7-4068-422a-b64c-231abb287442",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        320,
+        360
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "85d5ef94-be50-4245-9645-964f50d30225",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        540,
+        460
+      ],
+      "webhookId": "1e1eedac-3e23-464c-b911-9a5b92426e4b"
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistannt"
+        },
+        "prompt": "define",
+        "text": "=Using the marketing description {{ $json.marketing_description }}\nUpdate the ad copy by Add a Touch of Warmth and Style\nHighlight Key Features\nDescribe the Primary Bedroom with Flair\nPlay Up Practicality with Wit\nClose with a Strong Call-to-Action",
+        "options": {}
+      },
+      "id": "09afa6cc-e74f-4d53-9b0c-271f1c68d37a",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        760,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "=json",
+        "responseBody": "={\n  \"myField\": {{$json[\"output\"]}}\n} ",
+        "options": {}
+      },
+      "id": "b01b142f-f439-4653-8c33-d15eb9335dba",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1140,
+        360
+      ]
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.blzres.com",
+            "user-agent": "WordPress/6.6.2; https://blzres.com",
+            "content-length": "25",
+            "accept": "*/*",
+            "accept-encoding": "deflate, gzip",
+            "content-type": "application/json; charset=UTF-8",
+            "x-forwarded-for": "68.66.224.54",
+            "x-forwarded-host": "n8n.blzres.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "[203]": "9207 Rockwood"
+          },
+          "webhookUrl": "https://n8n.blzres.com/webhook-test/ad24eaa4-f44a-4855-b297-8737524bc423",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-11-06T23:32:52.000Z",
+  "versionId": "14fa6d94-2cda-4522-9592-ac2dd73f09de"
+}
