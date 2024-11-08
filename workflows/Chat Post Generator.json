@@ -1,18 +1,248 @@
 {
-  "active": false,
-  "connections": {},
+  "active": true,
+  "connections": {
+    "SQL Query": {
+      "main": [
+        [
+          {
+            "node": "Store Query Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Query Results": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Format JSON Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format JSON Response": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "SQL Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2024-11-07T17:52:29.069Z",
   "id": "v5v9vCvAfmZhplGx",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "Chat Post Generator",
-  "nodes": [],
-  "pinData": {},
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT marketing_description, bedrooms, bathrooms, advertised_rent, application_fee, sqft, unit_address, default_deposit, appliances, property_link FROM all_rental_properties WHERE unit_name = '{{ $json[\"body\"][\"unit_name\"] }}';"
+      },
+      "name": "SQL Query",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        220,
+        240
+      ],
+      "id": "fff22388-7a34-4f4d-bccc-024ba1ddcc88",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "return {\n    json: {\n        propertyData: $node[\"SQL Query\"].json\n    }\n};"
+      },
+      "name": "Store Query Results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        420,
+        140
+      ],
+      "id": "3debf5fa-80a7-45a6-8676-ce372ce15c30"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "350ea27e-9acb-43a7-9749-bafa2d7408fe",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        740,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const sqlData = $node[\"SQL Query\"].json || {};\nconst aiData = $node[\"OpenAI\"].json.output || \"Contact us for more details!\";\n\n// Add line breaks for readability\nconst formattedDescription = aiData\n    .replace(/\\n\\n/g, '<br><br>')  // Converts double line breaks to HTML paragraph breaks\n    .replace(/\\n/g, ' ');           // Converts single line breaks to spaces\n\n// Construct the structured JSON response\nreturn {\n    json: {\n        marketing_description: sqlData.marketing_description || \"Property Coming Soon!\",\n        advertised_rent: sqlData.advertised_rent || \"N/A\",\n        bedrooms: sqlData.bedrooms || \"N/A\",\n        bathrooms: sqlData.bathrooms || \"N/A\",\n        sqft: sqlData.sqft || \"Not specified\",\n        unit_address: sqlData.unit_address || \"Address not available\",\n        aiEnhancedDescription: formattedDescription,\n        appliances: sqlData.appliances || \"Not specified\",\n        application_fee: sqlData.application_fee || \"N/A\",\n        default_deposit: sqlData.default_deposit || \"N/A\",\n        property_link: sqlData.property_link || \"#\"\n    }\n};\n"
+      },
+      "name": "Format JSON Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        940,
+        380
+      ],
+      "id": "e3b4a7bc-48b3-4f9b-a65c-ef4ddef2c54d"
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Your Facebook Post Text",
+        "html": "=Property Information for Copy-Paste<br><br>\n<strong>🔑 Property Highlight</strong><br>\n{{ $json.marketing_description }}<br><br>\n<strong>💰 Rent:</strong> ${{ $json.advertised_rent }} per month<br>\n<strong>🛏 Bedrooms:</strong> {{ $json.bedrooms }}<br>\n<strong>🛁 Bathrooms:</strong> {{ $json.bathrooms }}<br>\n<strong>📏 Square Footage:</strong> {{ $json.sqft }}<br><br>\n<strong>📍 Location:</strong> {{ $json.unit_address }}<br><br>\n<strong>📲 Application Fee:</strong> ${{ $json.application_fee }}<br>\n<strong>🔒 Default Deposit:</strong> ${{ $json.default_deposit }}<br><br>\n<strong>🍽 Appliances Included: </strong>{{ $json.appliances }}<br><br>\n\n--- <br><br>\n<strong>Description</strong><br>\n{{ $json.aiEnhancedDescription }}<br><br>\n---<br><br>\n<strong>🌐 Property Link:</strong> <a href=\"{{ $json.property_link }}\" target=\"_blank\">{{ $json.property_link }}</a><br>\n",
+        "options": {}
+      },
+      "id": "d10e80a0-0464-4c89-b59d-234b7a88b8fd",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        380
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistant"
+        },
+        "prompt": "define",
+        "text": "=Create a property description from the following information.  {{ $json.propertyData.property_name }}, {{ $json.propertyData.advertised_rent }}, {{ $json.propertyData.bedrooms }}, {{ $json.propertyData.bathrooms }}, {{ $json.propertyData.marketing_description }}, {{ $json.propertyData.appliances }}. Add a touch of warmth and style, highlight key features, describe primary bedroom with flair, play up practicality with wit, Close with a strong call to action. Respond with properly formatted html code for email creation. \n\n",
+        "options": {}
+      },
+      "id": "23053978-7bfd-4ead-aae8-ab8a895f3570",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        660,
+        120
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "44a8e64e-20d4-4d18-a37e-b99634fa9fb7",
+        "options": {
+          "rawBody": false
+        }
+      },
+      "id": "865176ed-0885-4061-ada2-a78ab4b73111",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        40,
+        240
+      ]
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.blzres.com",
+            "user-agent": "WordPress/6.6.2; https://blzres.com",
+            "content-length": "29",
+            "accept": "*/*",
+            "accept-encoding": "deflate, gzip",
+            "content-type": "application/json; charset=UTF-8",
+            "x-forwarded-for": "68.66.224.54",
+            "x-forwarded-host": "n8n.blzres.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "unit_name": "9207 Rockwood"
+          },
+          "webhookUrl": "https://n8n.blzres.com/webhook-test/v5v9vCvAfmZhplGx/webhook/44a8e64e-20d4-4d18-a37e-b99634fa9fb7",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": null,
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2024-11-07T17:52:29.069Z",
-  "versionId": "a11dc669-2185-491f-984e-0ffe3632b177"
+  "triggerCount": 1,
+  "updatedAt": "2024-11-08T06:00:21.735Z",
+  "versionId": "0913b048-a419-4ad3-a75e-f23100365619"
 }
