@@ -1,8 +1,20 @@
 {
-  "active": false,
-  "connections": {},
-  "createdAt": "2024-11-04T13:35:22.676Z",
-  "id": "nn6SMwAtM7vB0tD9",
+  "active": true,
+  "connections": {
+    "n8n Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-10T13:51:23.132Z",
+  "id": "RSZQjWvA7JLI37Uc",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -10,32 +22,88 @@
   "nodes": [
     {
       "parameters": {
-        "rule": {
-          "interval": [
+        "path": "fcdf43e8-919a-4ead-9986-944769b10cd8",
+        "formTitle": "Contact Us",
+        "formFields": {
+          "values": [
             {
-              "field": "cronExpression",
-              "expression": "0 0 1 * *"
+              "fieldLabel": "Your Full Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Your Email Address",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "Your Phone NUmber"
+            },
+            {
+              "fieldLabel": "Your Message",
+              "fieldType": "textarea"
             }
           ]
+        },
+        "options": {
+          "ignoreBots": true
         }
       },
-      "id": "1418c846-7d27-4756-8612-37f207d83c7a",
-      "name": "Schedule Trigger",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
+      "id": "a1441958-46b3-4f80-ab1a-f20bfade73a0",
+      "name": "n8n Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.1,
       "position": [
-        820,
-        360
-      ]
+        300,
+        220
+      ],
+      "webhookId": "fcdf43e8-919a-4ead-9986-944769b10cd8"
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "=New Lead From Paramount -  {{ $json['Your Full Name'] }}",
+        "emailFormat": "text",
+        "text": "=Name: {{ $json['Your Full Name'] }}\nPhone: {{ $json['Your Phone NUmber'] }}\nEmail:{{ $json['Your Email Address'] }}\nProperty: Paramount\nMessage: {{ $json['Your Message'] }}\n\nThis lead was submitted from the Paramount Square website. \nEnter this information to Appfolio immediately and followup with showing information and current specials. ",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "60b694c2-371e-40de-83cf-7177eff40794",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        560,
+        220
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "n8n Form Trigger": [
+      {
+        "json": {
+          "Your Full Name": "Brandon Stewart",
+          "Your Email Address": "brandon@blazeproperty.com",
+          "Your Phone NUmber": "8063404821",
+          "Your Message": "testing messages",
+          "submittedAt": "2024-11-10T07:51:43.366-06:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2024-11-04T13:35:22.676Z",
-  "versionId": "e6e17da5-2252-4c5a-9fd5-3eac24a7c8a1"
+  "triggerCount": 2,
+  "updatedAt": "2024-11-10T14:10:29.000Z",
+  "versionId": "882ff4da-3a47-4b26-9676-33fbeb1432e3"
 }
