@@ -69,7 +69,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        780,
+        680,
         320
       ]
     },
@@ -148,7 +148,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.1,
       "position": [
-        1000,
+        900,
         320
       ]
     },
@@ -166,8 +166,8 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        1240,
-        300
+        1200,
+        320
       ],
       "credentials": {
         "smtp": {
@@ -188,7 +188,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        560,
+        500,
         320
       ],
       "webhookId": "434c61ae-0a41-4761-b434-6ecdc57f6280"
@@ -202,6 +202,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-10-27T11:11:23.000Z",
-  "versionId": "8806555b-fbb4-41b2-87af-d27de45d8bc8"
+  "updatedAt": "2024-11-10T14:14:22.000Z",
+  "versionId": "d0a2b0cf-b66f-4a85-8ead-abf69ed45a0c"
 }
