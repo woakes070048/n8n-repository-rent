@@ -99,11 +99,12 @@
     ]
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 2,
-  "updatedAt": "2024-11-10T14:10:29.000Z",
-  "versionId": "882ff4da-3a47-4b26-9676-33fbeb1432e3"
+  "updatedAt": "2024-11-11T06:00:22.303Z",
+  "versionId": "9f583a85-c884-4625-a949-5825fe37ab3f"
 }
