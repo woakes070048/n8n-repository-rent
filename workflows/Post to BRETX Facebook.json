@@ -144,14 +144,14 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        840,
-        480
+        800,
+        580
       ]
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT property_name, unit_name, bedrooms, bathrooms, advertised_rent, marketing_title, marketing_description, sqft, application_fee, rentable_uid, unit_address, posted_to_website, appliances, utilities, property_link, image_link, fb_post_date FROM advertising_list"
+        "query": "SELECT \n    property_name, \n    unit_name, \n    bedrooms, \n    bathrooms, \n    advertised_rent, \n    marketing_title, \n    marketing_description, \n    sqft, \n    application_fee, \n    rentable_uid, \n    unit_address, \n    posted_to_website, \n    appliances, \n    utilities, \n    property_link, \n    image_link, \n    fb_post_date\nFROM \n    advertising_list\nWHERE \n    fb_post_date < CURRENT_DATE - INTERVAL 3 DAY\n    OR fb_post_date IS NULL\nLIMIT 5;\n"
       },
       "id": "bca18b4f-44c1-4f51-8071-edf67b5fbc21",
       "type": "n8n-nodes-base.mySql",
@@ -161,6 +161,7 @@
         260,
         760
       ],
+      "alwaysOutputData": true,
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
@@ -200,7 +201,7 @@
       "typeVersion": 2.4,
       "position": [
         1420,
-        820
+        800
       ],
       "credentials": {
         "mySql": {
@@ -324,7 +325,7 @@
       "typeVersion": 1,
       "position": [
         1240,
-        820
+        800
       ],
       "credentials": {
         "facebookGraphApi": {
@@ -342,8 +343,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
       "position": [
-        1060,
-        480
+        1000,
+        600
       ]
     },
     {
@@ -425,6 +426,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-11-18T18:48:56.000Z",
-  "versionId": "2ffe18da-57e2-46a2-bcb6-3655508ffdcc"
+  "updatedAt": "2024-11-19T18:12:08.000Z",
+  "versionId": "2061d6ce-36e9-439f-832e-3c41a5b42f54"
 }
