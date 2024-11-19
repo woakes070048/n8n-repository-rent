@@ -282,8 +282,8 @@
         "rule": {
           "interval": [
             {
-              "field": "hours",
-              "hoursInterval": 3
+              "triggerAtHour": 10,
+              "triggerAtMinute": 12
             }
           ]
         }
@@ -425,6 +425,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-10-21T14:37:54.000Z",
-  "versionId": "40f2013e-0393-4f9a-8c73-b8adbce492f4"
+  "updatedAt": "2024-11-18T18:48:56.000Z",
+  "versionId": "2ffe18da-57e2-46a2-bcb6-3655508ffdcc"
 }
