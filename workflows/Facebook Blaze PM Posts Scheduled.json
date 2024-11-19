@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "MySQL": {
       "main": [
@@ -211,9 +211,13 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2024-11-17T18:53:43.000Z",
+  "triggerCount": 1,
+  "updatedAt": "2024-11-19T16:26:43.000Z",
   "versionId": "8693e360-a8e5-416a-b549-7ef9f846bf8a"
 }
