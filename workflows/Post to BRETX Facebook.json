@@ -358,7 +358,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Use the following text about a property for lease with Blaze Real Estate to make a humorous post. Humor level high. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-414-6021. Output to \"post\" field. {{ $json.marketing_description }}\n"
+              "content": "=Use the following text about a property for lease with Blaze Real Estate for a post to Facebook. Add a touch of warmth and style, highlight key features, play up practicality with wit. Close with a strong call to action. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-414-6021. Output to \"post\" field. {{ $json.marketing_description }}\n"
             }
           ]
         },
@@ -426,6 +426,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-11-19T18:12:08.000Z",
-  "versionId": "2061d6ce-36e9-439f-832e-3c41a5b42f54"
+  "updatedAt": "2024-11-19T19:32:24.000Z",
+  "versionId": "67f626c8-503e-410d-8621-44c5784f629e"
 }
