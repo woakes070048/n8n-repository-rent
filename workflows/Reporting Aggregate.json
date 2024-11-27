@@ -1,11 +1,366 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2024-11-11T20:19:02.903Z",
   "id": "G628He7630aNzso3",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "Reporting Aggregate",
-  "nodes": [],
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                2
+              ],
+              "triggerAtHour": 1
+            }
+          ]
+        }
+      },
+      "id": "092fdd7e-0f51-4981-a9d5-fdff20c1b110",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1_mbKpV2SA-qw38GCHY8XGj6iSZ5sm4MxpPgifKCq4_o",
+          "mode": "list",
+          "cachedResultName": "Blaze Weekly Reporting",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_mbKpV2SA-qw38GCHY8XGj6iSZ5sm4MxpPgifKCq4_o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1331366986,
+          "mode": "list",
+          "cachedResultName": "All",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_mbKpV2SA-qw38GCHY8XGj6iSZ5sm4MxpPgifKCq4_o/edit#gid=1331366986"
+        },
+        "options": {}
+      },
+      "id": "57eb9ad1-5cb7-407c-8abb-0a8c45e667a4",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        440,
+        400
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1HZROqwQ48_K63uOUkPntNcj8lhENF-6WkRuVL7FcFik",
+          "mode": "list",
+          "cachedResultName": "Blaze Trends",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HZROqwQ48_K63uOUkPntNcj8lhENF-6WkRuVL7FcFik/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HZROqwQ48_K63uOUkPntNcj8lhENF-6WkRuVL7FcFik/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.toFormat('MM-dd-yyyy') }}\n",
+            "Column 1": "={{ $json['Column 1'] }}",
+            "GPR": "={{ $json.GPR }}",
+            "Units": "={{ $json.Units }}",
+            "Vacant": "={{ $json.Vacant }}",
+            "Preleased": "={{ $json.Preleased }}",
+            "Physical Occupancy": "={{ $json['Physical Occupancy'] }}",
+            "Pre-Leased Occupancy": "={{ $json['Pre-Leased Occupancy'] }}",
+            "Guest Cards": "={{ $json['Guest Cards'] }}",
+            "Delinquency": "={{ $json.Delinquency }}",
+            "Lease Expirations": "={{ $json['Lease Expirations'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Column 1",
+              "displayName": "Column 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "GPR",
+              "displayName": "GPR",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Units",
+              "displayName": "Units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vacant",
+              "displayName": "Vacant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Preleased",
+              "displayName": "Preleased",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Physical Occupancy",
+              "displayName": "Physical Occupancy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pre-Leased Occupancy",
+              "displayName": "Pre-Leased Occupancy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guest Cards",
+              "displayName": "Guest Cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Delinquency",
+              "displayName": "Delinquency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lease Expirations",
+              "displayName": "Lease Expirations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b04b2c6b-6713-4bd0-b27d-4c0bed1fb17d",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1300,
+        400
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "0ae6cd26-ba28-4a93-aee2-3a5de3f82460",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        660,
+        400
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2c82f726-c87f-4a7c-ac65-449b9815db2e",
+      "name": "Replace Me",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        620
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const row = $json;\nconst sheetName = row[\"Property\"];\nconst metrics = {\n    \"GPR\": row[\"GPR\"],\n    \"Units\": row[\"Units\"],\n    \"Vacant\": row[\"Vacant\"],\n    \"Preleased\": row[\"Preleased\"],\n    \"Physical Occupancy\": row[\"Physical Occupancy\"],\n    \"Pre-Leased Occupancy\": row[\"Pre-Leased Occupancy\"],\n    \"Guest Cards\": row[\"Guest Cards\"],\n    \"Delinquency\": row[\"Delinquency\"],\n    \"Lease Expirations\": row[\"Lease Expirations\"],\n    \"Date\": row[\"Date\"]\n};\nreturn { sheetName, metrics };\n"
+      },
+      "id": "adf7a055-314d-49f5-9557-f2bcc3524004",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1HZROqwQ48_K63uOUkPntNcj8lhENF-6WkRuVL7FcFik",
+          "mode": "list",
+          "cachedResultName": "Blaze Trends",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HZROqwQ48_K63uOUkPntNcj8lhENF-6WkRuVL7FcFik/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Google Sheets').item.json['Column 1'] }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "48918a7e-7340-4294-a08e-48689962e41e",
+      "name": "Google Sheets2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1080,
+        500
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
   "pinData": {},
   "settings": {
     "executionOrder": "v1"
@@ -13,6 +368,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-11-11T20:19:02.903Z",
-  "versionId": "1d747181-8148-4051-ae48-0d263f71fdea"
+  "updatedAt": "2024-11-26T21:58:59.000Z",
+  "versionId": "c3fafb8e-b02e-4c0f-b572-6902beb21b18"
 }
