@@ -1,0 +1,230 @@
+{
+  "active": false,
+  "connections": {
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API1": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-26T22:32:02.286Z",
+  "id": "l5ZcEKsl4qpYh1pW",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Apartment FB Posts",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM apt_social_media_posts\nWHERE last_post_date IS NULL OR last_post_date <= CURDATE() - INTERVAL 100 DAY\nORDER BY last_post_date ASC\nLIMIT 1;",
+        "options": {}
+      },
+      "id": "39ca7bf6-ffdc-4df4-8a4e-b0372e463ba2",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        20,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v13.0",
+        "node": "/329129493627618",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "=Apartment Living Tip #{{ $('MySQL').item.json.number }}\n{{ $('MySQL').item.json.post }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('MySQL').item.json.image_url }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "da15e79b-f188-4c29-8b77-b42198b74508",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        820,
+        380
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "a3LtRYzbJapkaeaV",
+          "name": "Facebook Blaze Real Estate"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE social_media_posts\nSET last_posted_date = CURDATE(), times_posted = times_posted + 1\nWHERE id = {{ $node[\"MySQL\"].json[\"id\"] }};",
+        "options": {}
+      },
+      "id": "b1f79a72-bc00-4ca5-8528-803a4f5242f6",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1060,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "f7cefd32-bd26-4ac4-8bae-40d153d9a22e",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -180,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=Generate an image that represents a tip regarding apartment living. Do not generate images containing text of any kind. This is a visual representation only. your subject is:  {{ $json.post }}.  ",
+        "options": {}
+      },
+      "id": "812a7f75-211b-4ee3-ae02-29bc1b707bcd",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        300,
+        380
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## I'm a note \nThis is the start of a facebook post that pulls from a database of apartment living tips. \n\nOther functions needed, download the image created by AI and upload to FB. Update the database with last post date and post count+1\n",
+        "height": 264,
+        "width": 234
+      },
+      "id": "918eacf9-b80c-4a84-ac26-f1e42545d1ff",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        500,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "10bc5a1b-e612-4f2c-948e-5d53e7700e1d",
+      "name": "Facebook Graph API1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        520,
+        380
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-11-26T22:53:44.000Z",
+  "versionId": "c45dc971-50fe-4757-895b-f0f5998b3cdf"
+}
