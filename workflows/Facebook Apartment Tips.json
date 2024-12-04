@@ -1,0 +1,277 @@
+{
+  "active": true,
+  "connections": {
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-03T22:14:45.623Z",
+  "id": "mqR73JMTGaOnhdCN",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Facebook Apartment Tips",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM apt_social_media_posts\nWHERE last_post_date IS NULL OR last_post_date <= CURDATE() - INTERVAL 90 DAY\nORDER BY last_post_date ASC\nLIMIT 1;",
+        "options": {}
+      },
+      "id": "4a556ae0-b49c-4f27-9150-982097a5bfee",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -240,
+        360
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE apt_social_media_posts\nSET last_post_date = CURDATE(), post_count = post_count + 1\nWHERE number = {{ $node[\"MySQL\"].json[\"number\"] }};",
+        "options": {}
+      },
+      "id": "e40f4a2d-4be6-4a70-814a-c97412c044f2",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1000,
+        360
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "eda41d6e-b3e3-4cb2-9d0b-d788cafa4270",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -420,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "managers@blazeproperty.com; kaleb@aspiremortgageadvisors.com; brandon@blazeproperty.com",
+        "subject": "AI Apartment Facebook Post ",
+        "emailFormat": "text",
+        "text": "=Briefly you will get these until I finish the intranet setup. Use these as you see fit. More subjects, less smoke detectors. The images are AI generated, if inappropriate or just wrong, don't post. :)\n\n\nSubject:  {{ $('MySQL').item.json.post }}\n\nFacebook Post: {{ $('OpenAI1').item.json.message.content }}",
+        "options": {
+          "attachments": "=data"
+        }
+      },
+      "id": "d3a8d08d-7eb3-49e0-a803-8b98f101d89e",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        840,
+        360
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Create a practical but engaging facebook post about the topic:  {{ $json.post }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5824633b-9384-4349-9c4c-9f2b9640f2c4",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        -60,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=facebook-{{ $today }}.png",
+        "options": {
+          "append": false
+        }
+      },
+      "id": "b8f0df7f-ac70-4f81-8914-5b02077ff03b",
+      "name": "Read/Write Files from Disk",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        440,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=You are a an artist for an american apartment commmunity. Generate a practical image about the following text. The image should not include any text:{{ $('MySQL').item.json.post }}",
+        "options": {}
+      },
+      "id": "4d28a716-998c-40f6-a232-4c868700f94d",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        280,
+        360
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.fileName }}",
+        "options": {}
+      },
+      "id": "ce98c90b-db44-42fc-ab6f-eb7a4e7f1879",
+      "name": "Read/Write Files from Disk1",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        660,
+        360
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-12-03T23:38:42.000Z",
+  "versionId": "c3054280-1990-481f-8e1f-2697d34bf6d6"
+}
