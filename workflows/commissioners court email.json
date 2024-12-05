@@ -1,0 +1,117 @@
+{
+  "active": false,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-05T11:39:51.756Z",
+  "id": "qNRaGuoxUNdgHNqj",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "commissioners court email",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "ab439d48-651a-4d39-b033-d8c000e7ce1c",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Commissioner Court Email for Review",
+        "emailFormat": "text",
+        "text": "={{ $json.output }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "e0e65399-0901-4e8d-b453-878a2703a7a8",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1040,
+        400
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistannt"
+        },
+        "prompt": "define",
+        "text": "=Draft an email to the randall county texas commissioners court and the road and bridge department. The street Bobcat Rd in Randall county is in severe disrepair. The efforts of the county have been insufficient and neglectful of the section of road. The county road and bridge department has neglected the road, has used low quality patch repair techniques and when repaving, has only repaved certain sections and left areas of severe disrepair. At present we have over 50 pot holes in less than 1/4 mile of pavement. I have lived in the area for 6+ years and had family in the same area for the past 30 years. This is the most neglected road in the county and it should be addressed with full repaving to prevent damage to resident and travelers vehicles. Address to Randall County Commissioners court 501 16th Street, Suite 305, Canyon, TX 79015. Commissioners Court Judge Christy Dyer, Commissioner Rusty Carnes, Commissioner Eric Barry, Commissioner Bob Robinson, Commissioner Tam Boatler, Road and Bridge Superintendent Tim Sorrells, from Brandon Stewart, Resident and business owner of Blaze Real Estate.  12737 Bobcat Rd, Amarillo, TX 79118. The commissioners court meets the second and 4th tuesday of each month. Include a request to read this letter into the meeting minutes a the next court meeting and include a date. Use the current date {{ $today }} to determine the date of the next meeting. ",
+        "options": {}
+      },
+      "id": "5131b60f-02ad-4e26-ab4e-d2c0df587391",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        660,
+        400
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-12-05T12:09:17.000Z",
+  "versionId": "3e29462b-34c3-45ff-baa9-400299317e4f"
+}
