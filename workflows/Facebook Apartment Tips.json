@@ -152,11 +152,12 @@
     {
       "parameters": {
         "fromEmail": "reports@blzres.com",
-        "toEmail": "managers@blazeproperty.com; kaleb@aspiremortgageadvisors.com; brandon@blazeproperty.com",
+        "toEmail": "managers@blazeproperty.com, kaleb@aspiremortgageadvisors.com, brandon@blazeproperty.com",
         "subject": "AI Apartment Facebook Post ",
         "emailFormat": "text",
         "text": "=Briefly you will get these until I finish the intranet setup. Use these as you see fit. More subjects, less smoke detectors. The images are AI generated, if inappropriate or just wrong, don't post. :)\n\n\nSubject:  {{ $('MySQL').item.json.post }}\n\nFacebook Post: {{ $('OpenAI1').item.json.message.content }}",
         "options": {
+          "appendAttribution": false,
           "attachments": "=data"
         }
       },
@@ -272,6 +273,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-12-03T23:38:42.000Z",
-  "versionId": "c3054280-1990-481f-8e1f-2697d34bf6d6"
+  "updatedAt": "2024-12-05T11:20:11.000Z",
+  "versionId": "f9a93693-9303-42f2-bfb4-0ad8629d7085"
 }
