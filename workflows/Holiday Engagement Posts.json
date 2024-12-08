@@ -1,0 +1,424 @@
+{
+  "active": false,
+  "connections": {
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload media": {
+      "main": [
+        [
+          {
+            "node": "Wordpress Add Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress Add Image": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post on Wordpress": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Post on Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Upload media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-08T14:02:06.277Z",
+  "id": "2jggmwJxeO0DHIy9",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Holiday Engagement Posts",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "select",
+        "table": {
+          "__rl": true,
+          "value": "fb_holidays",
+          "mode": "list",
+          "cachedResultName": "fb_holidays"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "holiday_date",
+              "value": "={{ $today }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6a25dbe1-d266-4469-a5c3-cd8b94a7c4a5",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        320,
+        440
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Featured image",
+        "height": 332.12002573466816,
+        "width": 531.7592769264069,
+        "color": 3
+      },
+      "id": "e6134af5-dd43-49ba-8e3b-d8502ca38c74",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        840,
+        300
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "The image is generated with Dall-E, uploaded to WordPress, and then connected to the post as its featured image",
+        "height": 80,
+        "width": 517.9195082760601,
+        "color": 7
+      },
+      "id": "c66ee172-7cd3-41a1-8e75-bd0ff54e0842",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        840,
+        360
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "postId": "={{ $json.id }}",
+        "updateFields": {
+          "status": "publish",
+          "categories": [
+            41,
+            42
+          ]
+        }
+      },
+      "id": "a0865748-7aaa-4986-8704-d4f1c7ce6aff",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        420
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://blzres.com/wp-json/wp/v2/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Disposition",
+              "value": "=attachment; filename={{ $('Post on Wordpress').item.json.id }}.jpg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "838043eb-e3e2-41fb-8dee-ba8fe60f93e1",
+      "name": "Upload media",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        980,
+        420
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "postId": "={{ $('Post on Wordpress').item.json.id }}",
+        "updateFields": {
+          "content": "={{ $('Post on Wordpress').item.json.content.rendered }}<!-- wp:image {\"id\":{{ $('Upload media').item.json.id }},\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} --><figure class=\"wp-block-image size-full\"><img src=\"{{ $('Upload media').item.json.guid.raw }}\" alt=\"\" class=\"wp-image-{{ $('Upload media').item.json.id }}\"/></figure><!-- /wp:image -->\""
+        }
+      },
+      "id": "7b3c592d-f26c-4d42-a3bd-d4fd8777a72a",
+      "name": "Wordpress Add Image",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        420
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE fb_holidays\nSET image_url = \"{{ $node[\"Upload media\"].json[\"guid\"][\"rendered\"] }}\"\nWHERE holiday_id = {{ $node[\"MySQL\"].json[\"holiday_id\"] }};",
+        "options": {}
+      },
+      "id": "1a5ab11e-3348-4aeb-bdbc-36fbb7283cfd",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1400,
+        420
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "title": "={{ $('MySQL').item.json.holiday_name }} FB Engagement Post",
+        "additionalFields": {
+          "content": "={{ $('MySQL').item.json.holiday_post }}",
+          "status": "draft"
+        }
+      },
+      "id": "c840d61a-8955-4360-9b02-013ddf90608f",
+      "name": "Post on Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "position": [
+        720,
+        420
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "id": "e1b72239-554a-4619-b14a-7cd372ce6193",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        440
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "9d6baa34-13a5-4b95-a9d9-7dca16d2c266",
+              "leftValue": "={{ $today }}",
+              "rightValue": "={{ $json.holiday_date }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5b3504cd-4065-41b4-a5bb-31315a72c7c8",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Test Date and Post\ntriggered daily to query for holiday that matches based on date, If available it will return a pregenerated FB post and request dall-e make a companion image. \ndatabase hoste don sellmyam mysql. Table fb_holidays. ",
+        "height": 328,
+        "width": 707
+      },
+      "id": "46959077-a3f4-49c4-aa62-a9918a5aeaba",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        120,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "83a6710e-e7fc-4b6f-b297-3486039c98ec",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        140,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=You are a marketing guru generate an image that pairs with the subject. Focus on visual representation of the subject. Images should be of a realistic nature. {{ $('MySQL').item.json.holiday_name }} {{ $('MySQL').item.json.holiday_post }}",
+        "options": {
+          "quality": "standard",
+          "size": "1024x1024",
+          "style": "natural"
+        }
+      },
+      "id": "b0a4dbe5-fa06-491e-959f-0d989f729c87",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        860,
+        420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-12-08T16:00:50.000Z",
+  "versionId": "85b013ca-be2e-4fc6-83f0-78662728c54c"
+}
