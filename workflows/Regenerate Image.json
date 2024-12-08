@@ -1,0 +1,18 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2024-12-08T15:05:43.424Z",
+  "id": "3xA5td1LhAsJA162",
+  "meta": null,
+  "name": "Regenerate Image",
+  "nodes": [],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-12-08T15:05:43.424Z",
+  "versionId": "b2fe2101-e7d0-4d5e-9728-39a9648f9ac9"
+}
