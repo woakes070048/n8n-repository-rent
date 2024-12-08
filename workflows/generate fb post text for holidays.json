@@ -1,0 +1,284 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Pull Holiday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Update Holiday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pull Holiday": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Holiday": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-08T13:20:26.135Z",
+  "id": "OZimb5VWD2YReI6z",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "generate fb post text for holidays",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ecd33645-a799-467d-8b38-fae13bb01d47",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistannt"
+        },
+        "prompt": "define",
+        "text": "=Create a fun and engaging facebook post for a property management or apartment community in Texas, USA that references the holiday below. Request engagement from the reader. Output the post text only. {{ $json.holiday_date }} {{ $json.holiday_name }}",
+        "options": {}
+      },
+      "id": "10b1c0f0-8093-4190-8bcb-f42b30ae9f86",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        1180,
+        380
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM fb_holidays\nWHERE holiday_post IS NULL\nORDER BY holiday_date ASC\n\n",
+        "options": {}
+      },
+      "id": "b064c532-0e87-4b23-9273-44fda81ecdac",
+      "name": "Pull Holiday",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        400,
+        400
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "fb_holidays",
+          "mode": "list",
+          "cachedResultName": "fb_holidays"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "=holiday_id",
+        "valueToMatchOn": "={{ $('Edit Fields').item.json.holiday_id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "holiday_post",
+              "value": "={{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ad5201a5-81ce-4534-9755-5762267e0726",
+      "name": "Update Holiday",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1560,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "cd084a0a-ec79-4c49-9085-5526477023ba",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1020,
+        680
+      ],
+      "webhookId": "782d6edf-09f7-4f71-8601-973ef1009bda"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1436d84d-83d5-444d-9d62-0646451bb4a9",
+              "name": "holiday_id",
+              "value": "={{ $json.holiday_id }}",
+              "type": "number"
+            },
+            {
+              "id": "dbaa9937-0480-41ec-9934-f82b3a942424",
+              "name": "holiday_date",
+              "value": "={{ $json.holiday_date }}",
+              "type": "string"
+            },
+            {
+              "id": "3a4e697c-a657-4210-8b1d-c3f8bcce8db8",
+              "name": "holiday_name",
+              "value": "={{ $json.holiday_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8a77b6c6-16ef-4f0a-9293-e4fa04b76cb9",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 15
+      },
+      "id": "c12d0f25-320f-40b7-9880-da42268f8b95",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1780,
+        380
+      ],
+      "webhookId": "cdff795e-e8e9-47a0-b6e1-837e30fdbdef"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "259384e3-a56e-4573-b6a0-55230f28dc87",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        680,
+        380
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-12-08T14:00:59.000Z",
+  "versionId": "dcf056d5-6fe1-4238-b48b-f18af62bb27a"
+}
