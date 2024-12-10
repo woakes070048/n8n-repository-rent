@@ -1,79 +1,22 @@
 {
   "active": false,
   "connections": {
-    "Gmail2": {
+    "Webhook": {
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "SQL Query",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "When clicking ‘Test workflow’": {
+    "SQL Query": {
       "main": [
         [
           {
-            "node": "Gmail4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gmail4": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields1": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MySQL1": {
-      "main": [
-        [],
-        [
-          {
-            "node": "Gmail2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items": {
-      "main": [
-        [],
-        [
-          {
-            "node": "MySQL1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Gmail3": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
+            "node": "Format Response",
             "type": "main",
             "index": 0
           }
@@ -81,150 +24,89 @@
       ]
     }
   },
-  "createdAt": "2024-10-26T18:00:32.908Z",
-  "id": "Sq33rYXcBdZSgJJg",
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "createdAt": "2024-12-09T20:15:23.457Z",
+  "id": "iilwgB0xTIAjt5oW",
+  "meta": null,
   "name": "My workflow 8",
   "nodes": [
     {
       "parameters": {
-        "operation": "removeLabels",
-        "messageId": "={{ $('Gmail4').item.json.id }}",
-        "labelIds": [
-          "INBOX"
-        ]
-      },
-      "id": "b2c0cc28-2b50-445d-a60f-7784fddee27f",
-      "name": "Gmail2",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        1320,
-        380
-      ],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
+        "httpMethod": "POST",
+        "path": "form-response",
+        "responseMode": "lastNode",
+        "options": {
+          "rawBody": false
         }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "addLabels",
-        "messageId": "{{ $('Gmail4').item.json.id }}",
-        "labelIds": [
-          "STARRED"
-        ]
       },
-      "id": "d8b9bfa6-1dd8-49c7-a4fb-30f9dde12cd8",
-      "name": "Gmail3",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        1340,
-        180
-      ],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "id": "0f93921a-5836-4ffb-9db6-c161d2b4b4a6",
-      "name": "When clicking ‘Test workflow’",
-      "type": "n8n-nodes-base.manualTrigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        80,
-        300
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "getAll",
-        "limit": 100,
-        "simple": false,
-        "filters": {},
-        "options": {}
-      },
-      "id": "8fe4b68e-6d8e-43db-9871-39453aa617d4",
-      "name": "Gmail4",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        280,
-        300
+        -460,
+        -80
       ],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "8d16ca08-7b6b-4c55-8937-e45ed546f184",
-              "name": "sender",
-              "value": "={{$json[\"from\"][\"value\"][0][\"address\"]}}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "4dadc1ba-bd6b-43ae-a902-2c8fc74e6b72",
-      "name": "Edit Fields1",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        500,
-        300
-      ]
+      "id": "6e0cc261-8269-429d-b6bb-c3660ed034ec",
+      "webhookId": "232796c5-e5c2-45c4-86ec-57d80cb88692"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT emails FROM brandon_contacts WHERE emails = '{{ $node[\"Edit Fields1\"].json[\"sender\"] }}';\n",
-        "options": {}
+        "query": "SELECT marketing_description, bedrooms, bathrooms, advertised_rent, application_fee, sqft, unit_address, default_deposit, appliances, property_link FROM all_rental_properties WHERE unit_name = '{{ $json[\"body\"][\"unit_name\"] }}';"
       },
-      "id": "938d279c-b885-4a44-9ecf-aa056651be23",
-      "name": "MySQL1",
+      "name": "SQL Query",
       "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
+      "typeVersion": 1,
       "position": [
-        980,
-        220
+        -180,
+        0
       ],
+      "id": "9bd97a55-4c14-4237-b0c2-0b21cc63b04f",
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
           "name": "a2 blazedata mySQL"
         }
-      },
-      "onError": "continueErrorOutput"
+      }
     },
     {
       "parameters": {
+        "functionCode": "const sqlData = $node[\"SQL Query\"].json[0] || {};\n\nreturn {\n    json: {\n        response: `\n        <strong>Property Highlight</strong><br>\n        🔑 ${sqlData.marketing_description || \"Coming Soon!\"}<br><br>\n        💰 Rent: $${sqlData.advertised_rent || \"N/A\"} per month<br>\n        🛏 Bedrooms: ${sqlData.bedrooms || \"N/A\"}<br>\n        🛁 Bathrooms: ${sqlData.bathrooms || \"N/A\"}<br>\n        📏 Square Footage: ${sqlData.sqft || \"Not specified\"}<br><br>\n        📍 Location: ${sqlData.unit_address || \"Address not available\"}<br><br>\n        🍽 Appliances Included: ${sqlData.appliances || \"Not specified\"}<br>\n        📲 Application Fee: $${sqlData.application_fee || \"N/A\"}<br>\n        🔒 Default Deposit: $${sqlData.default_deposit || \"N/A\"}<br><br>\n        🌐 <a href=\"${sqlData.property_link || \"#\"}\">View Property</a>`\n    }\n};"
+      },
+      "name": "Format Response",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        40,
+        0
+      ],
+      "id": "05e7bcec-ed60-4451-af7b-1c4b1bbfde4e"
+    },
+    {
+      "parameters": {},
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.webhookResponse",
+      "typeVersion": 1,
+      "position": [
+        260,
+        0
+      ],
+      "id": "5c82deef-b246-4454-a63c-073fbbe4dbab"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "form_response",
         "options": {}
       },
-      "id": "50083c79-9d30-43c7-b5f0-65b34e612dfd",
-      "name": "Loop Over Items",
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
       "position": [
-        780,
+        -420,
         140
-      ]
+      ],
+      "id": "724254ae-5cf0-4aad-8d53-4d6c3b932a41",
+      "name": "Webhook1",
+      "webhookId": "ca417b2f-39e1-4841-9b0f-4d44f0fbf72b"
     }
   ],
   "pinData": {},
@@ -234,6 +116,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-10-26T18:20:14.000Z",
-  "versionId": "ce5a51c6-3734-45d3-b53d-ee6edb30d1d3"
+  "updatedAt": "2024-12-09T20:15:23.457Z",
+  "versionId": "3c58ad50-4956-4c09-8e46-6037abf30db9"
 }
