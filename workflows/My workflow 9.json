@@ -1,0 +1,158 @@
+{
+  "active": false,
+  "connections": {
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "getinfo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getinfo": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "results": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-09T22:55:31.883Z",
+  "id": "7dAvLFtrZ8CXSfli",
+  "meta": null,
+  "name": "My workflow 9",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistant"
+        },
+        "prompt": "define",
+        "text": "=Create a property description from the following information. Add a touch of warmth and style, highlight key features, describe primary bedroom with flair, play up practicality with wit, Close with a strong call to action. Respond only with properly formatted html without header code for passing back to webhook.  {{ $json.propertyData.advertised_rent }}, {{ $json.propertyData.bedrooms }}, {{ $json.propertyData.bathrooms }}, {{ $json.propertyData.marketing_description }}, {{ $json.propertyData.appliances }}",
+        "options": {}
+      },
+      "id": "fc446a1b-16d8-4abd-8c5d-4bb1b1290aea",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        40
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "44a8e64e-20d4-4d18-a37e-b99634fa9fb7",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {
+          "rawBody": false
+        }
+      },
+      "id": "0964bc7f-1010-4b18-a4d3-006ce8e80912",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        80
+      ],
+      "webhookId": "63e9bc9c-5380-4d55-bd61-ff22e5c7998b"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT marketing_description, bedrooms, bathrooms, advertised_rent, application_fee, sqft, unit_address, default_deposit, appliances, property_link FROM all_rental_properties WHERE unit_name = '{{ $json[\"body\"][\"unit_name\"] }}';"
+      },
+      "name": "getinfo",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        80
+      ],
+      "id": "2662f3b1-1475-4b9f-873a-632421ea967d",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get AI-generated HTML directly from the OpenAI node\nconst aiGeneratedHtml = $node[\"OpenAI\"].json.output || \"<p>No description available.</p>\";\n\n// Get the required fields directly from the `getinfo` node\nconst data = $node[\"getinfo\"].json[0] || {};\nconst rent = data.advertised_rent || \"N/A\";\nconst bedrooms = data.bedrooms || \"N/A\";\nconst bathrooms = data.bathrooms || \"N/A\";\nconst deposit = data.default_deposit || \"N/A\";\nconst appliances = data.appliances || \"N/A\";\nconst address = data.unit_address || \"N/A\";\n\n// Final HTML output\nconst finalOutput = `\n<div style=\"font-family: Arial, sans-serif; color: #333;\">\n  ${aiGeneratedHtml} <!-- AI-generated HTML -->\n  \n  <h3 style=\"color: #2a9d8f; margin-top: 20px;\">Property Details</h3>\n  <ul style=\"list-style: none; padding: 0;\">\n    <li><strong>Rent:</strong> $${rent}</li>\n    <li><strong>Bedrooms:</strong> ${bedrooms}</li>\n    <li><strong>Bathrooms:</strong> ${bathrooms}</li>\n    <li><strong>Deposit:</strong> $${deposit}</li>\n    <li><strong>Appliances:</strong> ${appliances}</li>\n    <li><strong>Address:</strong> ${address}</li>\n  </ul>\n</div>\n`;\n\n// Return the structured response\nreturn {\n    json: {\n        response: finalOutput\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        -20
+      ],
+      "id": "d5eed5a1-2ee0-4d2c-a414-0a80463a2b34",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "functionCode": "return {\n    json: {\n        propertyData: $node[\"getinfo\"].json[0]\n    }\n};"
+      },
+      "name": "results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        180,
+        40
+      ],
+      "id": "4a25070a-640a-41cb-ab9f-da45597ac5bf"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-12-09T22:57:27.000Z",
+  "versionId": "831e8422-2f8e-4fa4-af60-a0498b6e2b2a"
+}
