@@ -1,0 +1,201 @@
+{
+  "active": true,
+  "connections": {
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "getinfo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "results": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getinfo": {
+      "main": [
+        [
+          {
+            "node": "results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-07T17:52:29.069Z",
+  "id": "v5v9vCvAfmZhplGx",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "FB Post Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Your Facebook Post Text",
+        "html": "=Property Information for Copy-Paste<br><br>\n<strong>🔑 Property Highlight</strong><br>\n{{ $json.marketing_description }}<br><br>\n<strong>💰 Rent:</strong> ${{ $json.advertised_rent }} per month<br>\n<strong>🛏 Bedrooms:</strong> {{ $json.bedrooms }}<br>\n<strong>🛁 Bathrooms:</strong> {{ $json.bathrooms }}<br>\n<strong>📏 Square Footage:</strong> {{ $json.sqft }}<br><br>\n<strong>📍 Location:</strong> {{ $json.unit_address }}<br><br>\n<strong>📲 Application Fee:</strong> ${{ $json.application_fee }}<br>\n<strong>🔒 Default Deposit:</strong> ${{ $json.default_deposit }}<br><br>\n<strong>🍽 Appliances Included: </strong>{{ $json.appliances }}<br><br>\n\n--- <br><br>\n<strong>Description</strong><br>\n{{ $json.aiEnhancedDescription }}<br><br>\n---<br><br>\n<strong>🌐 Property Link:</strong> <a href=\"{{ $json.property_link }}\" target=\"_blank\">{{ $json.property_link }}</a><br>\n",
+        "options": {}
+      },
+      "id": "d10e80a0-0464-4c89-b59d-234b7a88b8fd",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        380
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistant"
+        },
+        "prompt": "define",
+        "text": "=Create a property description from the following information. Add a touch of warmth and style, highlight key features, describe primary bedroom with flair, play up practicality with wit, Close with a strong call to action. Respond only with properly formatted html without header code for passing back to webhook.  {{ $json.propertyData.advertised_rent }}, {{ $json.propertyData.bedrooms }}, {{ $json.propertyData.bathrooms }}, {{ $json.propertyData.marketing_description }}, {{ $json.propertyData.appliances }}\n\n",
+        "options": {}
+      },
+      "id": "23053978-7bfd-4ead-aae8-ab8a895f3570",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        580,
+        120
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "44a8e64e-20d4-4d18-a37e-b99634fa9fb7",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {
+          "rawBody": false
+        }
+      },
+      "id": "865176ed-0885-4061-ada2-a78ab4b73111",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        160
+      ],
+      "webhookId": "63e9bc9c-5380-4d55-bd61-ff22e5c7998b"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"response\": \"{{ $json['aiEnhancedDescription'] }} <p>{{ $json['appliances'] }}</p>\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1160,
+        220
+      ],
+      "id": "01d2ed57-f25b-4a45-8a4b-f9e70fde22fb",
+      "name": "Respond to Webhook",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "functionCode": "return {\n    json: {\n        propertyData: $node[\"getinfo\"].json\n    }\n};"
+      },
+      "name": "results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        400,
+        160
+      ],
+      "id": "3debf5fa-80a7-45a6-8676-ce372ce15c30"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT marketing_description, bedrooms, bathrooms, advertised_rent, application_fee, sqft, unit_address, default_deposit, appliances, property_link FROM all_rental_properties WHERE unit_name = '{{ $json[\"body\"][\"unit_name\"] }}';"
+      },
+      "name": "getinfo",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        200,
+        160
+      ],
+      "id": "fff22388-7a34-4f4d-bccc-024ba1ddcc88",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get AI-generated HTML directly from the OpenAI node\nconst aiGeneratedHtml = $node[\"OpenAI\"].json.output || \"<p>No description available.</p>\";\n\n// Get the required fields directly from the `getinfo` or `results` node\nconst rent = $node[\"getinfo\"].json[0]?.advertised_rent || \"N/A\";\nconst bedrooms = $node[\"getinfo\"].json[0]?.bedrooms || \"N/A\";\nconst deposit = $node[\"getinfo\"].json[0]?.default_deposit || \"N/A\";\n\n// Final HTML output\nconst finalOutput = `\n<div style=\"font-family: Arial, sans-serif; color: #333;\">\n  ${aiGeneratedHtml} <!-- AI-generated HTML -->\n  \n  <h3 style=\"color: #2a9d8f; margin-top: 20px;\">Property Details</h3>\n  <ul style=\"list-style: none; padding: 0;\">\n    <li><strong>Rent:</strong>{$node[\"getinfo\"].json[0]?.advertised_rent}</li>\n    <li><strong>Bedrooms:</strong> ${bedrooms}</li>\n    <li><strong>Deposit:</strong> $${deposit}</li>\n  </ul>\n</div>\n`;\n\n// Return the structured response\nreturn {\n    json: {\n        response: finalOutput\n    }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        120
+      ],
+      "id": "c2607aa6-1408-4b12-87f1-aecfc99061b7",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-12-09T22:48:52.000Z",
+  "versionId": "cd61e4e1-9471-4cdc-98d3-6959f55a3d2a"
+}
