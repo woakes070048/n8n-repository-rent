@@ -1,0 +1,271 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract_Attachment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract_Attachment": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Zoho CRM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zoho CRM": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-23T15:56:57.273Z",
+  "id": "nkQgWLLDl4EdwPVR",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Zoho Connection",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "format": "resolved",
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"zoho guest card export\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -1820,
+        -260
+      ],
+      "id": "2e6c5a78-58ab-4584-8c59-e511b89f1af5",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "={{ $json.fileName }}",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        120
+      ],
+      "id": "d3dae9b4-2f81-4a6f-86b0-1e6072968909",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/data/zoho-leads.csv",
+        "dataPropertyName": "attachment_0",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -780,
+        120
+      ],
+      "id": "8c4ff050-6628-4ec0-90f0-1e15e2febee3",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "resource": "lead",
+        "operation": "upsert",
+        "Company": "blazeproperty",
+        "lastName": "={{ $json['Last Name'] }}",
+        "additionalFields": {
+          "Email": "={{ $json[\"Email Address\"] }}",
+          "First_Name": "={{ $json[\"First Name\"] }}",
+          "Lead_Source": "={{ $json.Source }}",
+          "Lead_Status": "={{ $json[\"Last Activity Type\"] }}",
+          "Mobile": "={{ $json[\"Phone Number\"] }}"
+        }
+      },
+      "type": "n8n-nodes-base.zohoCrm",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        -240
+      ],
+      "id": "ad158bac-9cea-4546-9e3e-49368bf6353c",
+      "name": "Zoho CRM",
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "oFsMev3Fm7IhzJD9",
+          "name": "Zoho account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "id": "c3aeec80-6305-4bd4-85ce-0c1659bd64e1",
+      "name": "Extract_Attachment",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1620,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const excelDateToJSDate = (serial) => {\n  const utc_days = Math.floor(serial - 25569);\n  const utc_value = utc_days * 86400;\n  return new Date(utc_value * 1000);\n};\n\nconst formatDateForZoho = (date) => {\n  const year = date.getFullYear();\n  const month = String(date.getMonth() + 1).padStart(2, '0'); // Ensure 2-digit month\n  const day = String(date.getDate()).padStart(2, '0'); // Ensure 2-digit day\n  return `${year}-${month}-${day}`;\n};\n\nconst formatInquiryReceived = (dateTimeString) => {\n  // Split the string into date and time parts\n  const [datePart] = dateTimeString.split(' at ');\n  // Convert to Zoho format (assuming input is already MM/DD/YYYY)\n  const [month, day, year] = datePart.split('/');\n  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;\n};\n\nconst capitalizeName = (name) => {\n  return name\n    .toLowerCase()\n    .split(' ')\n    .map(part => part.charAt(0).toUpperCase() + part.slice(1))\n    .join(' ');\n};\n\nconst splitName = (fullName) => {\n  const [lastName, firstName] = fullName.split(', ').map(name => name.trim());\n  return {\n    firstName: capitalizeName(firstName || ''),\n    lastName: capitalizeName(lastName || ''),\n  };\n};\n\nreturn items.map(item => {\n  const data = item.json;\n\n  // Split the Name field into First Name and Last Name and capitalize them\n  if (data['Name']) {\n    const { firstName, lastName } = splitName(data['Name']);\n    data['First Name'] = firstName;\n    data['Last Name'] = lastName;\n    delete data['Name']; // Optionally remove the original Name field\n  }\n\n  // Convert Excel dates to JS dates and then to Zoho format\n  data['Last Activity Date'] = formatDateForZoho(excelDateToJSDate(data['Last Activity Date']));\n  data['Move In Preference'] = formatDateForZoho(excelDateToJSDate(data['Move In Preference']));\n  data['Latest Interest Date'] = formatDateForZoho(excelDateToJSDate(data['Latest Interest Date']));\n\n  // Reformat 'Inquiry Received' to Zoho date format\n  if (data['Inquiry Received']) {\n    data['Inquiry Received'] = formatInquiryReceived(data['Inquiry Received']);\n  }\n\n  return {\n    json: data\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1080,
+        -240
+      ],
+      "id": "fe43a408-b0f3-495b-9b3e-f1b551f9a79e",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1340,
+        -260
+      ],
+      "id": "9ab9ac48-e1eb-4cf4-86b5-e9f7de3e124d",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "bbe74f76-2897-4c8a-854d-6985ca8eba2c",
+              "leftValue": "={{ $json[\"Email Address\"] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -860,
+        -240
+      ],
+      "id": "19a18fb9-7fd6-427f-9262-b29963dfffe7",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-12-15T17:01:58.000Z",
+  "versionId": "49437ec1-1810-49f1-a88e-efae03a9c3f6"
+}
