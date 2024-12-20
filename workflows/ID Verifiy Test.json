@@ -1,0 +1,49 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2024-12-20T17:35:19.303Z",
+  "id": "nztRhiXHu9zp9Jwx",
+  "meta": null,
+  "name": "ID Verifiy Test",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cedd17a5-d5e0-40dc-a412-a42d04a4b3b4",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-12-20T17:35:19.303Z",
+  "versionId": "ea11cc5c-b47f-47bd-b631-c93529d5912f"
+}
