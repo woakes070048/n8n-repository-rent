@@ -309,7 +309,7 @@
       "credentials": {
         "facebookGraphApi": {
           "id": "qdrfvHaxX5ZPokR1",
-          "name": "Facebook Graph account"
+          "name": "Facebook Graph account Sagebrush"
         }
       }
     },
@@ -415,6 +415,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-09-23T15:44:36.942Z",
-  "versionId": "2ff4baa3-06b1-46e8-b6d7-38e5e4f1b8ab"
+  "updatedAt": "2024-12-29T14:49:27.000Z",
+  "versionId": "68f5164c-8924-449f-9b7f-db52c0398ea8"
 }
