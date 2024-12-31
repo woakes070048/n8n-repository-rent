@@ -657,7 +657,7 @@
   "staticData": {
     "node:Schedule posting every 6 hours": {
       "recurrenceRules": [
-        0
+        12
       ]
     }
   },
