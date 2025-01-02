@@ -1,0 +1,226 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Data Today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Today": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-01-01T22:35:47.855Z",
+  "id": "0Mg8g8l9iaeUc5fY",
+  "meta": null,
+  "name": "Paramount  Occupancy",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Paramount Rent Roll\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        0
+      ],
+      "id": "aa2062c6-c491-496a-b4d1-8796bec1047a",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        0
+      ],
+      "id": "9007a167-4f3b-421c-8aa8-c648d52eedbb",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1oh13D2HsNgbjeniD1n6IZ6AI4oFxvqqoeUotqBSQLnU",
+          "mode": "list",
+          "cachedResultName": "Sagebrush Stats",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oh13D2HsNgbjeniD1n6IZ6AI4oFxvqqoeUotqBSQLnU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 286023081,
+          "mode": "list",
+          "cachedResultName": "Paramount",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1oh13D2HsNgbjeniD1n6IZ6AI4oFxvqqoeUotqBSQLnU/edit#gid=286023081"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $('Data Today').item.json.currentDate }}",
+            "units": "={{ $('Data Today').item.json.Unit }}",
+            "occupancy": "={{ $('Data Today').item.json.Status }}",
+            "market rent": "={{ $('Data Today').item.json[\"Market Rent\"] }}",
+            "rent": "={{ $('Data Today').item.json.Rent }}",
+            "deposit": "={{ $('Data Today').item.json.Deposit }}",
+            "past due": "={{ $('Data Today').item.json[\"Past Due\"] }}",
+            "monthly charges": "={{ $('Data Today').item.json[\"Monthly Charges\"] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "units",
+              "displayName": "units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "occupancy",
+              "displayName": "occupancy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "market rent",
+              "displayName": "market rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "rent",
+              "displayName": "rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "deposit",
+              "displayName": "deposit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "past due",
+              "displayName": "past due",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "monthly charges",
+              "displayName": "monthly charges",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -20,
+        0
+      ],
+      "id": "64a499f1-2441-44b7-969c-060ebfd55345",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Access the data from the previous node\nconst items = $input.all();\n\n// Function to extract numbers from a string (if the string contains numbers)\nconst extractNumber = (value) => {\n  // Ensure the value is treated as a string\n  const str = String(value);\n\n  // Match and return the first number in the string\n  const match = str.match(/[\\d\\.]+/);\n  return match ? parseFloat(match[0]) : null;\n};\n\n// Get the current date and format it as mm/dd/yyyy\nconst today = new Date();\nconst formattedDate = (today.getMonth() + 1).toString().padStart(2, '0') + '/' + \n                      today.getDate().toString().padStart(2, '0') + '/' + \n                      today.getFullYear();\n\n// Process the last row of data\nif (items.length > 0) {\n  const lastRow = items[items.length - 1];\n\n  // Extract numbers from the fields\n  lastRow.json.Unit = extractNumber(lastRow.json.Unit);\n  lastRow.json.Status = extractNumber(lastRow.json.Status);\n  lastRow.json.Sqft = extractNumber(lastRow.json.Sqft);\n  lastRow.json['Market Rent'] = extractNumber(lastRow.json['Market Rent']);\n  lastRow.json.Rent = extractNumber(lastRow.json.Rent);\n  lastRow.json.Deposit = extractNumber(lastRow.json.Deposit);\n  lastRow.json['Past Due'] = extractNumber(lastRow.json['Past Due']);\n  lastRow.json['NSF Count'] = extractNumber(lastRow.json['NSF Count']);\n  lastRow.json['Late Count'] = extractNumber(lastRow.json['Late Count']);\n  lastRow.json['Monthly Charges'] = extractNumber(lastRow.json['Monthly Charges']);\n\n  // Add the current date (formatted) to the output\n  lastRow.json.currentDate = formattedDate;\n\n  // Return the cleaned row with the current date\n  return [{ json: lastRow.json }];\n} else {\n  // If no data exists, return an empty object\n  return [{ json: {} }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        0
+      ],
+      "id": "ddbcc30f-1505-4886-98bc-db092f00ee7f",
+      "name": "Data Today"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-01T22:39:18.000Z",
+  "versionId": "b31c1fe7-80a8-46d3-9dff-1a3fb1f8d972"
+}
