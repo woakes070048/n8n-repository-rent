@@ -1,0 +1,190 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Count Guest Cards",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Count Guest Cards": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-01-01T22:39:56.626Z",
+  "id": "eT0JQ92hvMvlqcF3",
+  "meta": null,
+  "name": "My workflow 10",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Sagebrush Guest Cards\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        -20
+      ],
+      "id": "b8772ed3-edf0-44f7-a507-0dd2eda248b3",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -20
+      ],
+      "id": "8499e89d-87bc-4141-95b5-cffbda59008f",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Initialize counts\nlet guestCardCount = 0;\nlet showingCount = 0;\nlet applicationCount = 0;\n\n// Get the current date\nconst today = new Date();\n\n// Format current date as mm/dd/yyyy\nconst formattedDate = (today.getMonth() + 1).toString().padStart(2, '0') + '/' + \n                      today.getDate().toString().padStart(2, '0') + '/' + \n                      today.getFullYear();\n\n// Calculate the date 7 days ago\nconst pastDate = new Date();\npastDate.setDate(today.getDate() - 7);\n\n// Format past date as mm/dd/yyyy\nconst formattedPastDate = (pastDate.getMonth() + 1).toString().padStart(2, '0') + '/' + \n                          pastDate.getDate().toString().padStart(2, '0') + '/' + \n                          pastDate.getFullYear();\n\n// Date range: pastDate to today\nconst dateRange = `${formattedPastDate}-${formattedDate}`;\n\n// Loop through all items and count based on 'Last Activity Type'\nfor (const item of items) {\n  guestCardCount++; // Count every entry as a guest card\n  \n  // Count showings and applications\n  if (item.json['Last Activity Type'] === 'Showing') {\n    showingCount++;\n  }\n  if (item.json['Last Activity Type'] === 'Rental Application Completed') {\n    applicationCount++;\n  }\n}\n\n// Output the results\nreturn [{\n  json: {\n    guestCards: guestCardCount,\n    showings: showingCount,\n    applications: applicationCount,\n    dateRange: dateRange\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        20,
+        -20
+      ],
+      "id": "886eb44e-3aff-4651-9b85-36350084fd4e",
+      "name": "Count Guest Cards"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1O1CUlhWjQML_OZp6wBX739uXfa58S5h8ojiirgJkBoY",
+          "mode": "list",
+          "cachedResultName": "Guest Card Stats",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1O1CUlhWjQML_OZp6wBX739uXfa58S5h8ojiirgJkBoY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1O1CUlhWjQML_OZp6wBX739uXfa58S5h8ojiirgJkBoY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $json.dateRange }}",
+            "guest_cards": "={{ $json.guestCards }}",
+            "showings": "={{ $json.showings }}",
+            "applications": "={{ $json.applications }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "guest_cards",
+              "displayName": "Guest Cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "showings",
+              "displayName": "Showings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "applications",
+              "displayName": "Applications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        280,
+        -20
+      ],
+      "id": "e185facd-65e4-447f-b8ae-3b11d27f91e9",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-01T22:52:22.000Z",
+  "versionId": "c5df638c-5fff-4ac1-a17a-d1d590036d44"
+}
