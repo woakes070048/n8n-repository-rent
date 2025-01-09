@@ -199,7 +199,7 @@
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
-          "name": "a2 blazedata mySQL"
+          "name": "Blazedata Hostinger"
         }
       }
     },
@@ -260,38 +260,13 @@
       "webhookId": "44a8e64e-20d4-4d18-a37e-b99634fa9fb7"
     }
   ],
-  "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n.blzres.com",
-            "user-agent": "WordPress/6.6.2; https://blzres.com",
-            "content-length": "29",
-            "accept": "*/*",
-            "accept-encoding": "deflate, gzip",
-            "content-type": "application/json; charset=UTF-8",
-            "x-forwarded-for": "68.66.224.54",
-            "x-forwarded-host": "n8n.blzres.com",
-            "x-forwarded-proto": "https"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "unit_name": "9207 Rockwood"
-          },
-          "webhookUrl": "https://n8n.blzres.com/webhook-test/44a8e64e-20d4-4d18-a37e-b99634fa9fb7",
-          "executionMode": "test"
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-11-07T17:51:26.000Z",
-  "versionId": "a8fe81ab-4fdd-492d-8412-b2f6a799458a"
+  "updatedAt": "2025-01-08T17:07:24.000Z",
+  "versionId": "8361b07a-844f-4224-9e85-9581fc29f309"
 }
