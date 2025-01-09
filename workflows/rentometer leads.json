@@ -1,0 +1,38 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-01-08T13:48:58.958Z",
+  "id": "q2ovgZjDGdc6F3OI",
+  "meta": null,
+  "name": "rentometer leads",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6d23531d-6879-4ba7-8079-cab24861e06b",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "z8am6sGqGNWOwv5k",
+          "name": "IMAP account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-08T13:49:14.000Z",
+  "versionId": "f84b383d-0eb0-45e7-bee2-4c6077f48514"
+}
