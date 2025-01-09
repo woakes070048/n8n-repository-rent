@@ -133,8 +133,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        580,
-        340
+        -120,
+        360
       ]
     },
     {
@@ -164,13 +164,13 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1500,
-        820
+        1400,
+        500
       ],
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
-          "name": "a2 blazedata mySQL"
+          "name": "Blazedata Hostinger"
         }
       },
       "onError": "continueRegularOutput"
@@ -185,8 +185,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 1,
       "position": [
-        540,
-        600
+        320,
+        520
       ]
     },
     {
@@ -238,8 +238,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.3,
       "position": [
-        660,
-        800
+        480,
+        520
       ]
     },
     {
@@ -258,7 +258,7 @@
       "typeVersion": 1.2,
       "position": [
         -100,
-        780
+        520
       ]
     },
     {
@@ -290,8 +290,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        840,
-        480
+        640,
+        520
       ],
       "onError": "continueRegularOutput"
     },
@@ -302,8 +302,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        1060,
-        480
+        820,
+        600
       ]
     },
     {
@@ -316,13 +316,13 @@
       "name": "MySQL Node",
       "typeVersion": 1,
       "position": [
-        260,
-        780
+        120,
+        540
       ],
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
-          "name": "a2 blazedata mySQL"
+          "name": "Blazedata Hostinger"
         }
       }
     },
@@ -350,8 +350,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.3,
       "position": [
-        880,
-        820
+        940,
+        500
       ],
       "credentials": {
         "openAiApi": {
@@ -386,8 +386,8 @@
       "type": "n8n-nodes-base.facebookGraphApi",
       "typeVersion": 1,
       "position": [
-        1240,
-        820
+        1260,
+        500
       ],
       "credentials": {
         "facebookGraphApi": {
@@ -432,6 +432,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-12-29T14:34:55.000Z",
-  "versionId": "a26f896f-c7bc-41ba-96df-4ca6b2bd343a"
+  "updatedAt": "2025-01-08T21:11:54.000Z",
+  "versionId": "8df3f316-8e63-4158-8694-bd0b1633979e"
 }
