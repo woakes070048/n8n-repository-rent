@@ -110,7 +110,7 @@
     {
       "parameters": {
         "operation": "upload",
-        "path": "data.blzres.com/data/full-list.csv"
+        "path": "/public_html/data/full-list.csv"
       },
       "id": "447f3fb3-4b91-4ab8-a075-54f5b1b5c302",
       "name": "FTP",
@@ -159,7 +159,7 @@
     },
     {
       "parameters": {
-        "workflowId": "J1zqBM7eFPvcL9Md",
+        "workflowId": "xyabXMpKFXidJwVv",
         "options": {
           "waitForSubWorkflow": true
         }
@@ -171,7 +171,22 @@
       "position": [
         480,
         340
-      ]
+      ],
+      "notesInFlow": true,
+      "notes": "Blaze Get Photos of Active Properties"
+    },
+    {
+      "parameters": {
+        "content": "## Call Workflow\nall_listing and get photos copy"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        380,
+        220
+      ],
+      "id": "13940e2e-b445-4ae6-82e8-7d60f4782767",
+      "name": "Sticky Note"
     }
   ],
   "pinData": {},
@@ -193,6 +208,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-09-23T15:44:37.247Z",
-  "versionId": "ee4b3f1f-bfb7-41f6-b990-3ddc936cd02a"
+  "updatedAt": "2025-01-10T14:22:44.000Z",
+  "versionId": "c1fd4690-3b2f-47e0-989f-abaec9cede47"
 }
