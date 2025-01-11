@@ -1031,7 +1031,8 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Schedule Trigger": {
@@ -1040,6 +1041,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-10T14:22:25.000Z",
-  "versionId": "69a9d35d-f372-4cf7-83c6-a2b15a547325"
+  "updatedAt": "2025-01-11T06:00:59.981Z",
+  "versionId": "33f229f7-e8b8-4d27-806b-c95f3ee7d864"
 }
