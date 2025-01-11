@@ -164,7 +164,7 @@
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
-          "name": "a2 blazedata mySQL"
+          "name": "Blazedata Hostinger"
         }
       }
     },
@@ -205,7 +205,7 @@
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
-          "name": "a2 blazedata mySQL"
+          "name": "Blazedata Hostinger"
         }
       },
       "onError": "continueRegularOutput"
@@ -380,7 +380,25 @@
       }
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2025-01-11T08:00:20.014-06:00",
+          "Readable date": "January 11th 2025, 8:00:20 am",
+          "Readable time": "8:00:20 am",
+          "Day of week": "Saturday",
+          "Year": "2025",
+          "Month": "January",
+          "Day of month": "11",
+          "Hour": "08",
+          "Minute": "00",
+          "Second": "20",
+          "Timezone": "America/Chicago (UTC-06:00)"
+        }
+      }
+    ]
+  },
   "settings": {
     "executionOrder": "v1",
     "errorWorkflow": "Etm1h3dHXQYzby5C"
@@ -415,6 +433,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-11-06T21:37:45.000Z",
-  "versionId": "90aba93e-5943-40a1-8750-c5f00bcddee1"
+  "updatedAt": "2025-01-11T15:05:48.000Z",
+  "versionId": "958cd4b7-15b1-4d07-82d9-4568fac89260"
 }
