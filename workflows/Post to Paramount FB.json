@@ -267,7 +267,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
@@ -363,7 +364,7 @@
     {
       "parameters": {
         "httpRequestMethod": "POST",
-        "graphApiVersion": "v13.0",
+        "graphApiVersion": "v20.0",
         "node": "/109463078470822",
         "edge": "photos",
         "options": {
@@ -432,6 +433,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-01-08T21:11:54.000Z",
-  "versionId": "8df3f316-8e63-4158-8694-bd0b1633979e"
+  "updatedAt": "2025-01-11T15:22:58.000Z",
+  "versionId": "3d53a3b6-b4a1-4c4a-a13f-ede4675ee6fb"
 }
