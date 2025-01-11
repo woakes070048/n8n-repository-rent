@@ -1,0 +1,134 @@
+{
+  "active": true,
+  "connections": {
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "IF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-01-10T21:22:47.026Z",
+  "id": "Iej6nWjIlsKSldCx",
+  "meta": null,
+  "name": "TDHCA Compliance Videos",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://www.tdhca.texas.gov/compliance-program-training-presentations",
+        "responseFormat": "string",
+        "options": {}
+      },
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        160,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "5d68db4f-9a78-4bbe-b559-77a6f3c52098"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"HTTP Request\"].json[\"data\"]}}",
+              "operation": "contains",
+              "value2": "Adjusted"
+            }
+          ]
+        }
+      },
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        340,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "fc61b6c5-704f-46c1-8d95-d117263c854e"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 3
+            }
+          ]
+        }
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "484dbb64-bf3b-46e2-8c0d-82843c719921"
+    },
+    {
+      "parameters": {
+        "fromEmail": "admin@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "TDHCA NSPIRE Training is Posted",
+        "emailFormat": "text",
+        "text": "The webpage https://www.tdhca.texas.gov/compliance-program-training-presentations no has the NSPIRE training available. ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        580,
+        -20
+      ],
+      "id": "35b3d210-6b0f-49af-90c6-a40b5c39109d",
+      "name": "Send Email",
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-11T06:00:59.894Z",
+  "versionId": "e78ffbaf-bda2-4bc2-8318-8d2c820eeb02"
+}
