@@ -63,7 +63,7 @@
             {
               "value1": "={{$node[\"HTTP Request\"].json[\"data\"]}}",
               "operation": "contains",
-              "value2": "Adjusted"
+              "value2": "NSPIRE"
             }
           ]
         }
@@ -129,6 +129,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-11T06:00:59.894Z",
-  "versionId": "e78ffbaf-bda2-4bc2-8318-8d2c820eeb02"
+  "updatedAt": "2025-01-11T11:52:44.000Z",
+  "versionId": "0a09ead3-8026-402f-8c60-cd567061a50d"
 }
