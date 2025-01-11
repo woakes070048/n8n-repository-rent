@@ -816,7 +816,7 @@
             },
             {
               "column": "image_link",
-              "value": "=https://data.blzres.com/data/images/{{ $('Edit Fields1').item.json.image_name }}"
+              "value": "=https://data.blzres.com/images/{{ $('Edit Fields1').item.json.image_name }}"
             },
             {
               "column": "unit_address",
@@ -1041,6 +1041,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-11T06:00:59.981Z",
-  "versionId": "33f229f7-e8b8-4d27-806b-c95f3ee7d864"
+  "updatedAt": "2025-01-11T15:12:52.000Z",
+  "versionId": "d3a2281d-ccc9-49cd-be9a-7c00f1cd5175"
 }
