@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "IF": {
       "main": [
@@ -98,7 +98,7 @@
     },
     {
       "parameters": {
-        "fromEmail": "admin@blzres.com",
+        "fromEmail": "reports@blzres.com",
         "toEmail": "brandon@blazeproperty.com",
         "subject": "TDHCA NSPIRE Training is Posted",
         "emailFormat": "text",
@@ -129,6 +129,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-11T11:52:44.000Z",
-  "versionId": "0a09ead3-8026-402f-8c60-cd567061a50d"
+  "updatedAt": "2025-01-16T12:11:03.000Z",
+  "versionId": "4bd41e61-41d3-44f6-85e9-06978f7b9f14"
 }
