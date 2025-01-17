@@ -19,6 +19,11 @@
             "node": "HTTP Request",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -58,13 +63,7 @@
     },
     "MySQL Query": {
       "main": [
-        [
-          {
-            "node": "HTTP Request3",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -202,47 +201,53 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT * FROM advertising_list WHERE marketing_title LIKE '%Featured%' LIMIT 1;"
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
       },
       "name": "MySQL Query",
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 1,
       "position": [
         -1780,
-        -1240
+        -1260
       ],
       "id": "fd70a50d-bfc3-43c2-b9fe-da7e6266d659",
       "credentials": {
         "mySql": {
-          "id": "OUIfR0k9k0YXHa0V",
-          "name": "Blazedata Hostinger"
+          "id": "Xxc3vEv88ziQDQCM",
+          "name": "Hostinger Blazeproperty"
         }
       }
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://blazeproperty.com/wp-json/custom/v1/featured-property",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "wordpressApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"property_name\": \"={{$json['property_name']}}\",\n  \"advertised_rent\": \"={{$json['advertised_rent']}}\",\n  \"bedrooms\": \"={{$json['bedrooms']}}\",\n  \"bathrooms\": \"={{$json['bathrooms']}}\",\n  \"sqft\": \"={{$json['sqft']}}\",\n  \"description\": \"={{$json['description']}}\",\n  \"application_fee\": \"={{$json['application_fee']}}\",\n  \"unit_address\": \"={{$json['unit_address']}}\",\n  \"appliances\": \"={{$json['appliances']}}\",\n  \"utilities\": \"={{$json['utilities']}}\",\n  \"property_link\": \"={{$json['property_link']}}\",\n  \"image_link\": \"={{$json['image_link']}}\"\n}\n",
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "wp_featured_property",
+          "mode": "list",
+          "cachedResultName": "wp_featured_property"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "id",
         "options": {}
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
       "position": [
-        -1540,
-        -1240
+        -1260,
+        -1400
       ],
-      "id": "f448ed2c-561f-49c0-bb4f-ac6e0700378f",
-      "name": "HTTP Request3",
+      "id": "02cd4b42-bc6c-40d4-ae37-a6daa4328d82",
+      "name": "MySQL1",
       "credentials": {
-        "wordpressApi": {
-          "id": "vP3mdg084tWAWqK7",
-          "name": "Wordpress account 2"
+        "mySql": {
+          "id": "Xxc3vEv88ziQDQCM",
+          "name": "Hostinger Blazeproperty"
         }
       }
     }
@@ -254,6 +259,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-01-16T21:38:15.000Z",
-  "versionId": "01ee749a-73b2-4951-b025-b57464b3ffcc"
+  "updatedAt": "2025-01-17T13:41:29.000Z",
+  "versionId": "26ea8bba-2e5e-4029-8aa2-b98c09944418"
 }
