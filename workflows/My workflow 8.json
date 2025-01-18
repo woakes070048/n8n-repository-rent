@@ -1,22 +1,33 @@
 {
   "active": false,
   "connections": {
-    "Webhook": {
+    "Execute Workflow Trigger": {
       "main": [
         [
           {
-            "node": "SQL Query",
+            "node": "Google Drive1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "SQL Query": {
+    "HTTP Request": {
       "main": [
         [
           {
-            "node": "Format Response",
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -24,89 +35,102 @@
       ]
     }
   },
-  "createdAt": "2024-12-09T20:15:23.457Z",
-  "id": "iilwgB0xTIAjt5oW",
+  "createdAt": "2025-01-18T15:54:55.464Z",
+  "id": "WllXSPGB845NtLuc",
   "meta": null,
   "name": "My workflow 8",
   "nodes": [
     {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "form-response",
-        "responseMode": "lastNode",
-        "options": {
-          "rawBody": false
-        }
-      },
-      "name": "Webhook",
-      "type": "n8n-nodes-base.webhook",
+      "parameters": {},
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
       "position": [
-        -460,
-        -80
+        -540,
+        -20
       ],
-      "id": "6e0cc261-8269-429d-b6bb-c3660ed034ec",
-      "webhookId": "232796c5-e5c2-45c4-86ec-57d80cb88692"
+      "id": "1f7d768d-e977-4ca6-a3b2-682d8628d509",
+      "name": "Execute Workflow Trigger"
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT marketing_description, bedrooms, bathrooms, advertised_rent, application_fee, sqft, unit_address, default_deposit, appliances, property_link FROM all_rental_properties WHERE unit_name = '{{ $json[\"body\"][\"unit_name\"] }}';"
+        "resource": "fileFolder",
+        "queryString": "rent_roll_yesterday.csv",
+        "filter": {},
+        "options": {}
       },
-      "name": "SQL Query",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
       "position": [
-        -180,
-        0
+        100,
+        -20
       ],
-      "id": "9bd97a55-4c14-4237-b0c2-0b21cc63b04f",
+      "id": "80605cd5-9d77-4bb8-9b8e-ce53edb26baf",
+      "name": "Google Drive",
       "credentials": {
-        "mySql": {
-          "id": "OUIfR0k9k0YXHa0V",
-          "name": "a2 blazedata mySQL"
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
         }
       }
     },
     {
       "parameters": {
-        "functionCode": "const sqlData = $node[\"SQL Query\"].json[0] || {};\n\nreturn {\n    json: {\n        response: `\n        <strong>Property Highlight</strong><br>\n        🔑 ${sqlData.marketing_description || \"Coming Soon!\"}<br><br>\n        💰 Rent: $${sqlData.advertised_rent || \"N/A\"} per month<br>\n        🛏 Bedrooms: ${sqlData.bedrooms || \"N/A\"}<br>\n        🛁 Bathrooms: ${sqlData.bathrooms || \"N/A\"}<br>\n        📏 Square Footage: ${sqlData.sqft || \"Not specified\"}<br><br>\n        📍 Location: ${sqlData.unit_address || \"Address not available\"}<br><br>\n        🍽 Appliances Included: ${sqlData.appliances || \"Not specified\"}<br>\n        📲 Application Fee: $${sqlData.application_fee || \"N/A\"}<br>\n        🔒 Default Deposit: $${sqlData.default_deposit || \"N/A\"}<br><br>\n        🌐 <a href=\"${sqlData.property_link || \"#\"}\">View Property</a>`\n    }\n};"
+        "url": "https://www.googleapis.com/drive/v3/files?q=trashed%20%3D%20true&fields=files(id)",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "driveId",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
       },
-      "name": "Format Response",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        40,
-        0
+        -100,
+        -20
       ],
-      "id": "05e7bcec-ed60-4451-af7b-1c4b1bbfde4e"
-    },
-    {
-      "parameters": {},
-      "name": "Respond to Webhook",
-      "type": "n8n-nodes-base.webhookResponse",
-      "typeVersion": 1,
-      "position": [
-        260,
-        0
-      ],
-      "id": "5c82deef-b246-4454-a63c-073fbbe4dbab"
+      "id": "ec25c90f-9bf6-417e-be85-e124a05c0fbc",
+      "name": "HTTP Request",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
     },
     {
       "parameters": {
-        "httpMethod": "POST",
-        "path": "form_response",
+        "resource": "drive",
+        "operation": "get",
+        "driveId": {
+          "__rl": true,
+          "value": "0ANoqNkaxSRr-Uk9PVA",
+          "mode": "list",
+          "cachedResultName": "DataOnly",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANoqNkaxSRr-Uk9PVA"
+        },
         "options": {}
       },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
       "position": [
-        -420,
-        140
+        -360,
+        -20
       ],
-      "id": "724254ae-5cf0-4aad-8d53-4d6c3b932a41",
-      "name": "Webhook1",
-      "webhookId": "ca417b2f-39e1-4841-9b0f-4d44f0fbf72b"
+      "id": "324aa193-8162-48a5-aad8-2cf02aa50fac",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -116,6 +140,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-12-09T20:15:23.457Z",
-  "versionId": "3c58ad50-4956-4c09-8e46-6037abf30db9"
+  "updatedAt": "2025-01-18T18:20:19.000Z",
+  "versionId": "ea5f089d-4155-41f9-8634-90fb5782a361"
 }
