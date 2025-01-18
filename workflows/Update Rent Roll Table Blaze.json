@@ -1,0 +1,373 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Rent_Roll_Current",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Rent_Roll_Yesterday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rent_Roll_Current": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rent_Roll_Yesterday": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare Datasets": {
+      "main": [
+        [],
+        [],
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "MySQL": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-01-18T12:57:42.367Z",
+  "id": "vHkKAbSE5pMmTSBf",
+  "meta": null,
+  "name": "Update Rent Roll Table Blaze",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -20
+      ],
+      "id": "620c9f8b-c00a-495a-b3f1-3feb8019e4c3",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "rent_roll_current.csv",
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -600,
+        -140
+      ],
+      "id": "7526ddc0-88b5-4a2d-84e8-5e7c68874f4b",
+      "name": "Rent_Roll_Current",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "rent_roll_yesterday.csv",
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -600,
+        80
+      ],
+      "id": "f74b44c6-55f3-4fd7-98b5-020bb5ff34c6",
+      "name": "Rent_Roll_Yesterday",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -140
+      ],
+      "id": "5f744715-4506-4913-92e8-4539dcac4224",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.current_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -60,
+        -140
+      ],
+      "id": "137f446d-518d-4d4f-a328-a29b59fb502b",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.yesterday_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -60,
+        80
+      ],
+      "id": "8d54aef1-df85-4d39-984e-9c5062cb03d2",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        160,
+        80
+      ],
+      "id": "1a64fbab-d167-4346-b71c-e554c4077dcb",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Occupancy_ID",
+              "field2": "Occupancy_ID"
+            }
+          ]
+        },
+        "resolve": "preferInput1",
+        "fuzzyCompare": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        740,
+        -40
+      ],
+      "id": "45416a12-43bc-4c47-a5ae-5d6e06c3336f",
+      "name": "Compare Datasets"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "rent_roll_blaze",
+          "mode": "list",
+          "cachedResultName": "rent_roll_blaze"
+        },
+        "columnToMatchOn": "Occupancy_ID",
+        "options": {
+          "detailedOutput": true
+        }
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1020,
+        0
+      ],
+      "id": "aae8a00b-855a-4050-9bad-cc06d586d19a",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8528ddd8-5f38-4279-9b81-3492b8094f79",
+              "name": "yesterday_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -380,
+        80
+      ],
+      "id": "c91ef40a-504a-4bce-b4e9-fbe7b8f4ad0c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "889a2448-f316-4b78-8fc0-3bab917c7036",
+              "name": "current_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -380,
+        -140
+      ],
+      "id": "cce1995e-890b-4baa-bc52-f13a78b04d9f",
+      "name": "Edit Fields1"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-18T15:53:37.000Z",
+  "versionId": "7d61f08b-9003-4f4c-99f8-35230cca64ed"
+}
