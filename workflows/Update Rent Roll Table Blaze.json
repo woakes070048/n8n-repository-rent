@@ -10,7 +10,7 @@
             "index": 0
           },
           {
-            "node": "Rent_Roll_Yesterday",
+            "node": "MySQL1",
             "type": "main",
             "index": 0
           }
@@ -39,18 +39,71 @@
         ]
       ]
     },
-    "Rent_Roll_Yesterday": {
+    "Extract from File": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Compare Datasets",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Drive1": {
+    "Compare Datasets": {
+      "main": [
+        [
+          {
+            "node": "Google Drive3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Google Drive3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
       "main": [
         [
           {
@@ -68,58 +121,6 @@
             "node": "Compare Datasets",
             "type": "main",
             "index": 1
-          }
-        ]
-      ]
-    },
-    "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "Compare Datasets",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Compare Datasets": {
-      "main": [
-        [],
-        [],
-        [
-          {
-            "node": "MySQL",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        []
-      ]
-    },
-    "MySQL": {
-      "main": [
-        []
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "Google Drive1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields1": {
-      "main": [
-        [
-          {
-            "node": "Google Drive",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -156,28 +157,6 @@
       ],
       "id": "7526ddc0-88b5-4a2d-84e8-5e7c68874f4b",
       "name": "Rent_Roll_Current",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "fileFolder",
-        "queryString": "rent_roll_yesterday.csv",
-        "filter": {},
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        -600,
-        80
-      ],
-      "id": "f74b44c6-55f3-4fd7-98b5-020bb5ff34c6",
-      "name": "Rent_Roll_Yesterday",
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "cer2DAVMEta9v7Fb",
@@ -226,44 +205,6 @@
     },
     {
       "parameters": {
-        "operation": "download",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $json.yesterday_id }}",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        -60,
-        80
-      ],
-      "id": "8d54aef1-df85-4d39-984e-9c5062cb03d2",
-      "name": "Google Drive1",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        160,
-        80
-      ],
-      "id": "1a64fbab-d167-4346-b71c-e554c4077dcb",
-      "name": "Extract from File1"
-    },
-    {
-      "parameters": {
         "mergeByFields": {
           "values": [
             {
@@ -273,14 +214,13 @@
           ]
         },
         "resolve": "preferInput1",
-        "fuzzyCompare": true,
         "options": {}
       },
       "type": "n8n-nodes-base.compareDatasets",
       "typeVersion": 2.3,
       "position": [
-        740,
-        -40
+        840,
+        -60
       ],
       "id": "45416a12-43bc-4c47-a5ae-5d6e06c3336f",
       "name": "Compare Datasets"
@@ -302,7 +242,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1020,
+        1180,
         0
       ],
       "id": "aae8a00b-855a-4050-9bad-cc06d586d19a",
@@ -313,29 +253,6 @@
           "name": "Blazedata Hostinger"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "8528ddd8-5f38-4279-9b81-3492b8094f79",
-              "name": "yesterday_id",
-              "value": "={{ $json.id }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -380,
-        80
-      ],
-      "id": "c91ef40a-504a-4bce-b4e9-fbe7b8f4ad0c",
-      "name": "Edit Fields"
     },
     {
       "parameters": {
@@ -359,6 +276,82 @@
       ],
       "id": "cce1995e-890b-4baa-bc52-f13a78b04d9f",
       "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "17_939hcmt75E0NJdSDcYQT2XOEuKNTAE",
+          "mode": "list",
+          "cachedResultName": "rent_roll_current.csv",
+          "cachedResultUrl": "https://drive.google.com/file/d/17_939hcmt75E0NJdSDcYQT2XOEuKNTAE/view?usp=drivesdk"
+        },
+        "newUpdatedFileName": "rent_roll_yesterday.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1600,
+        -20
+      ],
+      "id": "0f89bbe6-ef4c-40cd-b5e9-36f75af1336f",
+      "name": "Google Drive3",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM rent_roll_blaze;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -580,
+        60
+      ],
+      "id": "203292e0-c811-49da-835d-e60b96c4cd66",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -340,
+        60
+      ],
+      "id": "bf0bc2f6-f0a4-4f85-9c68-0e27f67f6bb6",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        60
+      ],
+      "id": "2f6d0df8-8905-43ab-8702-599fd9c4df8a",
+      "name": "Extract from File1"
     }
   ],
   "pinData": {},
@@ -368,6 +361,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-01-18T15:53:37.000Z",
-  "versionId": "7d61f08b-9003-4f4c-99f8-35230cca64ed"
+  "updatedAt": "2025-01-19T12:37:47.000Z",
+  "versionId": "225f0d45-d36d-4b6a-9374-c30325bd74ae"
 }
