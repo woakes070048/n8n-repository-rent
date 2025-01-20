@@ -80,8 +80,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "VyLDgRP2Ip7Kfq1V",
-          "name": "n8nBlaze access to sellmyam_reporting"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
         }
       }
     },
@@ -180,8 +180,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "VyLDgRP2Ip7Kfq1V",
-          "name": "n8nBlaze access to sellmyam_reporting"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
         }
       },
       "onError": "continueRegularOutput"
@@ -219,6 +219,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-11-20T06:00:57.042Z",
-  "versionId": "59336a63-9d5a-4af6-9295-34e14d9aad26"
+  "updatedAt": "2025-01-20T15:59:06.000Z",
+  "versionId": "6e57b53d-211e-4301-9746-8482ca81d3d6"
 }
