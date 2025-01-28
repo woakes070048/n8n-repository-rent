@@ -106,6 +106,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -154,6 +161,13 @@
         [
           {
             "node": "Edit Image1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -232,7 +246,7 @@
     },
     {
       "parameters": {
-        "content": "## Update to get images\nGet full-list.csv from https://data.blzres.com/data and parse\nbinary to xslx \nBuild webpage url from rentable_uid and fetch\nCheck if redirected due to unavailable unit\nAvaialble unit get first image\nupload first image to https://data.blzres.com/images and name rentable_uid.jpg\n\n\n\nSeries 2 workflow\nUpdated to blazeapa_blazedata",
+        "content": "## Update to get images\nGet full-list.csv from https://data.blzres.com/data and parse\nbinary to xslx \nBuild webpage url from rentable_uid and fetch\nCheck if redirected due to unavailable unit\nAvaialble unit get first image\nupload first image to https://data.blzres.com/images and name rentable_uid.jpg\n\n\n\nSeries 2 workflow\nUpdated to hostinger_blazedata",
         "height": 251.39252805115,
         "width": 941.3692722371975,
         "color": 3
@@ -738,7 +752,8 @@
           },
           "response": {
             "response": {
-              "fullResponse": true
+              "fullResponse": true,
+              "neverError": true
             }
           }
         }
@@ -748,9 +763,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -220,
+        -260,
         540
-      ]
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -941,9 +957,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        180,
+        -20,
         780
-      ]
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -1041,6 +1058,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-11T15:12:52.000Z",
-  "versionId": "d3a2281d-ccc9-49cd-be9a-7c00f1cd5175"
+  "updatedAt": "2025-01-28T16:36:11.000Z",
+  "versionId": "03b4d609-d607-4eca-b02d-7f12894f11c7"
 }
