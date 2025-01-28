@@ -1,0 +1,284 @@
+{
+  "active": false,
+  "connections": {
+    "Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Filter only confirmed and with set time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format response": {
+      "main": [
+        [
+          {
+            "node": "Stringify Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract start, end and name": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter only confirmed and with set time": {
+      "main": [
+        [
+          {
+            "node": "Extract start, end and name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "Format response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Input Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-01-28T17:26:49.451Z",
+  "id": "H9gIjG2fcNcMKZN2",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Calendar Check",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "brandon@blazeproperty.com",
+          "mode": "list",
+          "cachedResultName": "brandon@blazeproperty.com"
+        },
+        "returnAll": true,
+        "options": {
+          "timeMin": "={{ $now.minus(1, 'day').toISO() }}",
+          "timeMax": "={{ $now.plus(1, 'month').toISO() }}",
+          "singleEvents": true
+        }
+      },
+      "id": "16dfda5f-0cc1-4976-a3e1-8ec3b513bb12",
+      "name": "Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "position": [
+        40,
+        60
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "dkwhnp6NMsoyxdZp",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "concatenateItems",
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "response",
+        "include": "allFieldsExcept",
+        "fieldsToExclude": "sort",
+        "options": {}
+      },
+      "id": "1168d1d3-6765-45e1-8c15-b82a3b330ddb",
+      "name": "Format response",
+      "type": "n8n-nodes-base.itemLists",
+      "position": [
+        920,
+        60
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "response",
+              "value": "={{ JSON.stringify($json.response) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "83f11c81-ea8a-462f-a4f5-00af13f894af",
+      "name": "Stringify Response",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1140,
+        60
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "start",
+              "value": "={{ DateTime.fromISO($json.start.dateTime).toLocaleString(DateTime.DATE_HUGE) }}, {{ DateTime.fromISO($json.start.dateTime).toLocaleString(DateTime.TIME_24_WITH_SHORT_OFFSET) }}"
+            },
+            {
+              "name": "end",
+              "value": "={{ DateTime.fromISO($json.end.dateTime).toLocaleString(DateTime.DATE_HUGE) }}, {{ DateTime.fromISO($json.end.dateTime).toLocaleString(DateTime.TIME_24_WITH_SHORT_OFFSET) }}"
+            },
+            {
+              "name": "name",
+              "value": "={{ $json.summary }}"
+            },
+            {
+              "name": "sort",
+              "value": "={{ $json.start.dateTime }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d8854822-db2f-4aa5-b8fd-6d5209ef4106",
+      "name": "Extract start, end and name",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        460,
+        60
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "value2": "confirmed"
+            }
+          ],
+          "boolean": [
+            {
+              "value1": "={{ $json.start.dateTime }}",
+              "operation": "notEqual",
+              "value2": "={{ undefined }}"
+            }
+          ]
+        }
+      },
+      "id": "e7a71e7c-1e82-4d6a-a3cd-e8a7eff1c5ae",
+      "name": "Filter only confirmed and with set time",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        240,
+        60
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "### Get all query google events for the next month and extract relevant data",
+        "height": 224.60561166142082,
+        "width": 810.4923211935056
+      },
+      "id": "b30e1cbe-42eb-432d-8db5-79658d3811a0",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "### Wrap the result in `response` object and return ",
+        "height": 220.42397542781927,
+        "width": 444.4130232558142
+      },
+      "id": "98efac6d-d888-4603-bab7-f158010ecf60",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "sort",
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "sort"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5e43653f-598a-42a8-82e0-32578120e0f1",
+      "name": "Sort",
+      "type": "n8n-nodes-base.itemLists",
+      "position": [
+        680,
+        60
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -220,
+        60
+      ],
+      "id": "015fcb60-2444-4aca-a3b3-e1ed4e64b5d6",
+      "name": "Workflow Input Trigger"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-28T17:26:49.451Z",
+  "versionId": "0d32bf87-4dd5-4b39-afeb-b78ed2927fd6"
+}
