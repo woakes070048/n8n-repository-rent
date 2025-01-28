@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Store Query Results": {
       "main": [
@@ -30,17 +30,6 @@
             "node": "Merge",
             "type": "main",
             "index": 1
-          }
-        ]
-      ]
-    },
-    "When chat message received": {
-      "main": [
-        [
-          {
-            "node": "OpenAI",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -158,20 +147,6 @@
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "id": "da4b48b4-5a30-4370-be83-21d52fcf1c78",
-      "name": "When chat message received",
-      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
-      "typeVersion": 1.1,
-      "position": [
-        240,
-        420
-      ],
-      "webhookId": "53257a1a-cdf9-4c99-b958-34e3ddc6bbe6"
-    },
-    {
-      "parameters": {
         "functionCode": "// Access data directly from the Merge node output\nconst data = $input.item.json;\n\n// Retrieve property data and AI-enhanced description directly from available JSON\nconst propertyData = data.propertyData || {};\nconst aiEnhancedDescription = data.output || \"Contact us for more details!\";\n\n// Construct the response text using only available fields\nconst responseText = `\n🔑 **Property Highlight**: ${propertyData.marketing_description || \"Property Coming Soon!\"}\n\n💰 **Rent**: $${propertyData.advertised_rent || \"N/A\"} per month\n🛏 **Bedrooms**: ${propertyData.bedrooms || \"N/A\"}\n🛁 **Bathrooms**: ${propertyData.bathrooms || \"N/A\"}\n📏 **Square Footage**: ${propertyData.sqft || \"Not specified\"}\n\n📍 **Location**: ${propertyData.unit_address || \"Address not available\"}\n\n---\n\n${aiEnhancedDescription}\n\n---\n\n🍽 **Appliances Included**: ${propertyData.appliances || \"Not specified\"}\n\n📲 **Application Fee**: $${propertyData.application_fee || \"N/A\"}\n🔒 **Default Deposit**: $${propertyData.default_deposit || \"N/A\"}\n`;\n\n// Return the formatted response text back to the originating webhook\nreturn {\n    json: {\n        postText: responseText\n    }\n};\n"
       },
       "name": "Format JSON Response",
@@ -186,7 +161,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT marketing_description, bedrooms, bathrooms, advertised_rent, application_fee, sqft, unit_address, default_deposit, appliances\nFROM all_rental_properties \nWHERE unit_name = '{{ $json[\"body\"][\"unit_name\"] }}';\n"
+        "query": "SELECT marketing_description, bedrooms, bathrooms, advertised_rent, application_fee, sqft, unit_address, default_deposit, appliances, property_link\nFROM all_rental_properties \nWHERE unit_name = '{{ $json[\"body\"][\"unit_name\"] }}';\n"
       },
       "name": "SQL Query",
       "type": "n8n-nodes-base.mySql",
@@ -223,7 +198,7 @@
         "fromEmail": "reports@blzres.com",
         "toEmail": "brandon@blazeproperty.com",
         "subject": "Your Facebook Post Text",
-        "html": "=Property Information for Copy-Paste<br><br>\n<strong>🔑 Property Highlight</strong><br>\n{{ $json.marketing_description || \"Property Coming Soon!\" }}<br><br>\n<strong>💰 Rent:</strong> ${{ $json.advertised_rent || \"N/A\" }} per month<br>\n<strong>🛏 Bedrooms:</strong> {{ $json.bedrooms || \"N/A\" }}<br>\n<strong>🛁 Bathrooms:</strong> {{ $json.bathrooms || \"N/A\" }}<br>\n<strong>📏 Square Footage:</strong> {{ $json.sqft || \"Not specified\" }}<br><br>\n<strong>📍 Location:</strong> {{ $json.unit_address || \"Address not available\" }}<br><br>\n--- <br><br>\n<strong>Description</strong><br>\n{{ $json.output || \"Contact us for more details!\" }}<br><br>\n---<br><br>\n<strong>🍽 Appliances Included</strong><br>\n{{ $json.appliances || \"Not specified\" }}<br><br>\n<strong>📲 Application Fee:</strong> ${{ $json.application_fee || \"N/A\" }}<br>\n<strong>🔒 Default Deposit:</strong> ${{ $json.default_deposit || \"N/A\" }}<br>\n",
+        "html": "={{ $json.postText }}\n",
         "options": {}
       },
       "id": "37070650-1485-44f8-8877-91237ef74c98",
@@ -244,29 +219,67 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "44a8e64e-20d4-4d18-a37e-b99634fa9fb7",
-        "options": {
-          "rawBody": false
-        }
+        "path": "22164f2d-b4c0-4044-94ad-6a5aaba85fef",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
       },
-      "id": "b909d5d7-3c3e-4fa4-87da-07abd7e33903",
-      "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -240,
-        340
+        -260,
+        360
       ],
-      "webhookId": "44a8e64e-20d4-4d18-a37e-b99634fa9fb7"
+      "id": "7ed6bcaa-c0ac-4cc3-9e57-508852376b63",
+      "name": "Webhook",
+      "webhookId": "22164f2d-b4c0-4044-94ad-6a5aaba85fef"
+    },
+    {
+      "parameters": {
+        "content": "## I'm a note \nneed url for listing"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        140
+      ],
+      "id": "c9d1fa3a-da81-40b0-a7f5-58d3dca8787d",
+      "name": "Sticky Note"
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.blzres.com",
+            "user-agent": "WordPress/6.7.1; https://blzres.com",
+            "content-length": "28",
+            "accept": "*/*",
+            "accept-encoding": "deflate, gzip, br",
+            "content-type": "application/json; charset=UTF-8",
+            "x-forwarded-for": "77.37.94.145",
+            "x-forwarded-host": "n8n.blzres.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "unit_name": "7909 Prosper"
+          },
+          "webhookUrl": "https://n8n.blzres.com/webhook-test/22164f2d-b4c0-4044-94ad-6a5aaba85fef",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "tags": [],
-  "triggerCount": 3,
-  "updatedAt": "2025-01-20T16:54:19.000Z",
-  "versionId": "8361b07a-844f-4224-9e85-9581fc29f309"
+  "triggerCount": 1,
+  "updatedAt": "2025-01-28T15:04:08.000Z",
+  "versionId": "f1d6bb41-3969-4f6b-a6e5-fb062d0dd8a9"
 }
