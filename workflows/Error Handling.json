@@ -121,6 +121,7 @@
         920
       ],
       "typeVersion": 2.1,
+      "webhookId": "7c0fd49c-7832-4329-bb48-561a54244bc2",
       "credentials": {
         "gmailOAuth2": {
           "id": "LD5x69eYRRI6cdrn",
@@ -312,8 +313,8 @@
       "name": "active && no error handler set && not this  handler workflow",
       "type": "n8n-nodes-base.if",
       "position": [
-        1440,
-        780
+        1420,
+        600
       ],
       "typeVersion": 2
     }
@@ -329,6 +330,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-09-23T15:48:51.000Z",
-  "versionId": "fc8c6481-519a-416c-bf75-149d744bddf7"
+  "updatedAt": "2025-01-28T16:42:48.000Z",
+  "versionId": "443ebde3-affd-47a8-8869-88a498c58dcc"
 }
