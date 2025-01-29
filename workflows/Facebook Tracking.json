@@ -1,0 +1,33 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-01-28T20:38:33.700Z",
+  "id": "iFGNxVft9sbweVyR",
+  "meta": null,
+  "name": "Facebook Tracking",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.facebookTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d9ee22f2-171d-46cc-9a63-0943af1693b5",
+      "name": "Facebook Trigger",
+      "webhookId": "7d56bc7e-461c-4372-a3ae-3284b1b25a8a"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-28T20:55:42.000Z",
+  "versionId": "8556add1-ad05-4892-8498-2e273d434f4b"
+}
