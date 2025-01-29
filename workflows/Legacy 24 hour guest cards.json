@@ -1,0 +1,181 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Upload File to OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract File": {
+      "main": [
+        []
+      ]
+    },
+    "Upload File to OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Analyze File in OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze File in OpenAI": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-01-29T15:54:14.851Z",
+  "id": "4uySFfzlLdkMnQ98",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Legacy 24 hour guest cards",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Yesterday Guest Cards\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        500,
+        600
+      ],
+      "id": "f2660659-832e-4357-b86c-dcddb8f6b622",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "return { json: { file: items[0].binary.attachment_0 } };"
+      },
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        680,
+        460
+      ],
+      "id": "6c4a67f4-00af-41e1-91bc-7c348972d005",
+      "name": "Extract File"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "binaryPropertyName": "=attachment_0",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        740,
+        600
+      ],
+      "id": "064febd5-ffaf-47d9-b780-10a57bcaeaf5",
+      "name": "Upload File to OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "operation": "update",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_smogXn3YxPt57C8r5zJTlwIc",
+          "mode": "list",
+          "cachedResultName": "Report Summary Assistant"
+        },
+        "options": {
+          "codeInterpreter": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        980,
+        600
+      ],
+      "id": "a1decd99-7865-40d4-8bd7-169e5e8a7df5",
+      "name": "Analyze File in OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_smogXn3YxPt57C8r5zJTlwIc",
+          "mode": "list",
+          "cachedResultName": "Report Summary Assistant"
+        },
+        "prompt": "define",
+        "text": "Summarize the report and total guest cards for each property. ouput for email format. ",
+        "options": {
+          "preserveOriginalTools": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1200,
+        600
+      ],
+      "id": "76911b6b-2a0f-4de5-9787-faa9f9419ae0",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-29T17:07:50.000Z",
+  "versionId": "b0f88a50-db61-4617-bca8-636f05e463c8"
+}
