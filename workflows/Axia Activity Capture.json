@@ -1,0 +1,286 @@
+{
+  "active": true,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-01T14:30:53.381Z",
+  "id": "48AK5rj07sSFcGQE",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Axia Activity Capture",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ed026e4e-eed1-41c2-bfe3-4cb1de2e7074",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1060,
+        -280
+      ],
+      "id": "e42982f9-3375-4d6c-b133-77dddd1825a6",
+      "name": "Webhook",
+      "webhookId": "ed026e4e-eed1-41c2-bfe3-4cb1de2e7074"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1l_Rw4sIInYjlwrXNSOcjBmr6Aq8CGCvijhyWqjeZrfI",
+          "mode": "list",
+          "cachedResultName": "Axia Activity",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l_Rw4sIInYjlwrXNSOcjBmr6Aq8CGCvijhyWqjeZrfI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l_Rw4sIInYjlwrXNSOcjBmr6Aq8CGCvijhyWqjeZrfI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Property": "={{ $json.body['[property]'] }}",
+            "Current Occupancy": "={{ $json.body['[current_occ]'] }}",
+            "Future Occupancy": "={{ $json.body['[future_occ]'] }}",
+            "Leases Needed 90%": "={{ $json.body['[leases_needed]'] }}",
+            "Interests": "={{ $json.body['[interests]'] }}",
+            "Showings": "={{ $json.body['[showings]'] }}",
+            "Applications": "={{ $json.body['[apps]'] }}",
+            "Leases": "={{ $json.body['[leases]'] }}",
+            "Vacants": "={{ $json.body['[vacants]'] }}",
+            "Expirations": "={{ $json.body['[expirations]'] }}",
+            "Future Move-Ins": "={{ $json.body['[future_moveins]'] }}",
+            "On Notice": "={{ $json.body['[notice]'] }}",
+            "Date": "={{ $json.body['[created-at]'] }}"
+          },
+          "matchingColumns": [
+            "Property"
+          ],
+          "schema": [
+            {
+              "id": "Property",
+              "displayName": "Property",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Current Occupancy",
+              "displayName": "Current Occupancy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Future Occupancy",
+              "displayName": "Future Occupancy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Leases Needed 90%",
+              "displayName": "Leases Needed 90%",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Interests",
+              "displayName": "Interests",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Showings",
+              "displayName": "Showings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Applications",
+              "displayName": "Applications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Leases",
+              "displayName": "Leases",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vacants",
+              "displayName": "Vacants",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Expirations",
+              "displayName": "Expirations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Future Move-Ins",
+              "displayName": "Future Move-Ins",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "On Notice",
+              "displayName": "On Notice",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "headers",
+              "displayName": "headers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "params",
+              "displayName": "params",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "webhookUrl",
+              "displayName": "webhookUrl",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "executionMode",
+              "displayName": "executionMode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -840,
+        -280
+      ],
+      "id": "f140ea7d-dbe5-4699-90db-541ea40fabe4",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-01T15:20:46.000Z",
+  "versionId": "77b74d51-8f4d-4594-b2c1-21b6424369d2"
+}
