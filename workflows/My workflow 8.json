@@ -1,18 +1,7 @@
 {
   "active": false,
   "connections": {
-    "Execute Workflow Trigger": {
-      "main": [
-        [
-          {
-            "node": "Google Drive1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
+    "Manual Trigger": {
       "main": [
         [
           {
@@ -22,98 +11,50 @@
           }
         ]
       ]
-    },
-    "Google Drive1": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
-  "createdAt": "2025-01-18T15:54:55.464Z",
-  "id": "WllXSPGB845NtLuc",
-  "meta": null,
+  "createdAt": "2025-02-01T15:10:15.327Z",
+  "id": "gVWzaYi3C4uJmuI7",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "My workflow 8",
   "nodes": [
     {
       "parameters": {},
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -540,
-        -20
+        -580,
+        0
       ],
-      "id": "1f7d768d-e977-4ca6-a3b2-682d8628d509",
-      "name": "Execute Workflow Trigger"
+      "id": "09a28c1c-a550-4274-a523-f7dd0eebc35e"
     },
     {
       "parameters": {
-        "resource": "fileFolder",
-        "queryString": "rent_roll_yesterday.csv",
-        "filter": {},
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        100,
-        -20
-      ],
-      "id": "80605cd5-9d77-4bb8-9b8e-ce53edb26baf",
-      "name": "Google Drive",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "url": "https://www.googleapis.com/drive/v3/files?q=trashed%20%3D%20true&fields=files(id)",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "googleDriveOAuth2Api",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "driveId",
-              "value": "={{ $json.id }}"
-            }
-          ]
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1Is8yEEoP5vUYzk756zFBXvKI8XpPCOrds-b7UIVTqXc",
+          "mode": "list",
+          "cachedResultName": "Axia Activity Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Is8yEEoP5vUYzk756zFBXvKI8XpPCOrds-b7UIVTqXc/edit?usp=drivesdk"
         },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -100,
-        -20
-      ],
-      "id": "ec25c90f-9bf6-417e-be85-e124a05c0fbc",
-      "name": "HTTP Request",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "drive",
-        "operation": "get",
+        "name": "Axia Activity",
+        "sameFolder": false,
         "driveId": {
           "__rl": true,
-          "value": "0ANoqNkaxSRr-Uk9PVA",
+          "value": "0ANzIWvPQDPwoUk9PVA",
           "mode": "list",
-          "cachedResultName": "DataOnly",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANoqNkaxSRr-Uk9PVA"
+          "cachedResultName": "AXIA",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANzIWvPQDPwoUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
         },
         "options": {}
       },
@@ -121,10 +62,10 @@
       "typeVersion": 3,
       "position": [
         -360,
-        -20
+        0
       ],
-      "id": "324aa193-8162-48a5-aad8-2cf02aa50fac",
-      "name": "Google Drive1",
+      "id": "6e75e527-8cde-4eb7-8bb0-d7572c5a0886",
+      "name": "Google Drive",
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "cer2DAVMEta9v7Fb",
@@ -140,6 +81,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-01-18T18:20:19.000Z",
-  "versionId": "ea5f089d-4155-41f9-8634-90fb5782a361"
+  "updatedAt": "2025-02-01T15:19:39.000Z",
+  "versionId": "abbefe4e-acd3-4d1b-a76b-bf04ea970f2c"
 }
