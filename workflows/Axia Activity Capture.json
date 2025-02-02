@@ -5,7 +5,18 @@
       "main": [
         [
           {
-            "node": "Google Sheets",
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
             "type": "main",
             "index": 0
           }
@@ -29,7 +40,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -1060,
+        -2300,
         -280
       ],
       "id": "e42982f9-3375-4d6c-b133-77dddd1825a6",
@@ -38,249 +49,150 @@
     },
     {
       "parameters": {
-        "operation": "appendOrUpdate",
-        "documentId": {
+        "table": {
           "__rl": true,
-          "value": "1l_Rw4sIInYjlwrXNSOcjBmr6Aq8CGCvijhyWqjeZrfI",
+          "value": "axia_activity",
           "mode": "list",
-          "cachedResultName": "Axia Activity",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l_Rw4sIInYjlwrXNSOcjBmr6Aq8CGCvijhyWqjeZrfI/edit?usp=drivesdk"
+          "cachedResultName": "axia_activity"
         },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l_Rw4sIInYjlwrXNSOcjBmr6Aq8CGCvijhyWqjeZrfI/edit#gid=0"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "Property": "={{ $json.body['[property]'] }}",
-            "Current Occupancy": "={{ $json.body['[current_occ]'] }}",
-            "Future Occupancy": "={{ $json.body['[future_occ]'] }}",
-            "Leases Needed 90%": "={{ $json.body['[leases_needed]'] }}",
-            "Interests": "={{ $json.body['[interests]'] }}",
-            "Showings": "={{ $json.body['[showings]'] }}",
-            "Applications": "={{ $json.body['[apps]'] }}",
-            "Leases": "={{ $json.body['[leases]'] }}",
-            "Vacants": "={{ $json.body['[vacants]'] }}",
-            "Expirations": "={{ $json.body['[expirations]'] }}",
-            "Future Move-Ins": "={{ $json.body['[future_moveins]'] }}",
-            "On Notice": "={{ $json.body['[notice]'] }}",
-            "Date": "={{ $json.body['[created-at]'] }}"
-          },
-          "matchingColumns": [
-            "Property"
-          ],
-          "schema": [
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
             {
-              "id": "Property",
-              "displayName": "Property",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "column": "property",
+              "value": "={{ $json.body[\"[property]\"] }}"
             },
             {
-              "id": "Current Occupancy",
-              "displayName": "Current Occupancy",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "current_occupancy",
+              "value": "={{ $json.body[\"[current_occ]\"] }}"
             },
             {
-              "id": "Future Occupancy",
-              "displayName": "Future Occupancy",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "future_occupancy",
+              "value": "={{ $json.body[\"[future_occ]\"] }}"
             },
             {
-              "id": "Leases Needed 90%",
-              "displayName": "Leases Needed 90%",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "leases_needed_90",
+              "value": "={{ $json.body[\"[leases_needed]\"] }}"
             },
             {
-              "id": "Interests",
-              "displayName": "Interests",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "interests",
+              "value": "={{ $json.body[\"[interests]\"] }}"
             },
             {
-              "id": "Showings",
-              "displayName": "Showings",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "showings",
+              "value": "={{ $json.body[\"[showings]\"] }}"
             },
             {
-              "id": "Applications",
-              "displayName": "Applications",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "applications",
+              "value": "={{ $json.body[\"[apps]\"] }}"
             },
             {
-              "id": "Leases",
-              "displayName": "Leases",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "leases",
+              "value": "={{ $json.body[\"[leases]\"] }}"
             },
             {
-              "id": "Vacants",
-              "displayName": "Vacants",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "vacants",
+              "value": "={{ $json.body[\"[vacants]\"] }}"
             },
             {
-              "id": "Expirations",
-              "displayName": "Expirations",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "expirations",
+              "value": "={{ $json.body[\"[expirations]\"] }}"
             },
             {
-              "id": "Future Move-Ins",
-              "displayName": "Future Move-Ins",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
+              "column": "future_move_ins",
+              "value": "={{ $json.body[\"[future_moveins]\"] }}"
             },
             {
-              "id": "On Notice",
-              "displayName": "On Notice",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "Date",
-              "displayName": "Date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "headers",
-              "displayName": "headers",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "params",
-              "displayName": "params",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "query",
-              "displayName": "query",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "body",
-              "displayName": "body",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "webhookUrl",
-              "displayName": "webhookUrl",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "executionMode",
-              "displayName": "executionMode",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
+              "column": "on_notice",
+              "value": "={{ $json.body[\"[notice]\"] }}"
             }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
+          ]
         },
         "options": {}
       },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
       "position": [
-        -840,
+        -1900,
         -280
       ],
-      "id": "f140ea7d-dbe5-4699-90db-541ea40fabe4",
-      "name": "Google Sheets",
+      "id": "8e5ac130-eb90-46dc-adf3-7ef70c2582d0",
+      "name": "MySQL",
       "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "OPTs28HKagi0JBEs",
-          "name": "Google Sheets account"
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM axia_activity \nWHERE report_date < NOW() - INTERVAL 30 DAY;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -1660,
+        -280
+      ],
+      "id": "7f610fca-2d8a-4159-b0eb-24204915da25",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
         }
       }
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.blzres.com",
+            "user-agent": "WordPress/6.7.1; https://blzres.com",
+            "content-length": "367",
+            "accept": "*/*",
+            "accept-encoding": "deflate, gzip, br",
+            "content-type": "application/json; charset=UTF-8",
+            "x-forwarded-for": "77.37.94.145",
+            "x-forwarded-host": "n8n.blzres.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "[property]": "NorthPark",
+            "[current_occ]": "90",
+            "[future_occ]": "90",
+            "[leases_needed]": "90",
+            "[interests]": "10",
+            "[showings]": "8",
+            "[apps]": "7",
+            "[leases]": "6",
+            "[vacants]": "5",
+            "[expirations]": "4",
+            "[future_moveins]": "3",
+            "[notice]": "2",
+            "[created-at]": "02/01/2025 at 10:07 pm",
+            "[298]": "https://blzres.com/wp-content/uploads/formidable/26/Region-1-Vacancy-Detail.pdf"
+          },
+          "webhookUrl": "https://n8n.blzres.com/webhook-test/ed026e4e-eed1-41c2-bfe3-4cb1de2e7074",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-02-01T15:20:46.000Z",
-  "versionId": "77b74d51-8f4d-4594-b2c1-21b6424369d2"
+  "updatedAt": "2025-02-02T06:00:38.355Z",
+  "versionId": "cb00fc8e-5d19-44cf-9f5c-ba1b92e1eb3f"
 }
