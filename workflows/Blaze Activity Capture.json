@@ -1,0 +1,277 @@
+{
+  "active": true,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Insert": {
+      "main": [
+        [
+          {
+            "node": "MySQLClear",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "MySQL Insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-02T13:39:20.900Z",
+  "id": "Vhpb7j5ZWB7SpEDR",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Blaze Activity Capture",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "af5469bb-d7a5-4213-80dd-9a0db4785f9b",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -2660,
+        -260
+      ],
+      "id": "1e0ccd65-20aa-46a4-9808-1e3c6c7ce46b",
+      "name": "Webhook",
+      "webhookId": "af5469bb-d7a5-4213-80dd-9a0db4785f9b"
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "blaze_activity",
+          "mode": "list",
+          "cachedResultName": "blaze_activity"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property",
+              "value": "={{ $('Webhook').item.json.body[\"[property]\"] }}"
+            },
+            {
+              "column": "current_occupancy",
+              "value": "={{ $('Webhook').item.json.body[\"[current_occ]\"] }}"
+            },
+            {
+              "column": "future_occupancy",
+              "value": "={{ $('Webhook').item.json.body[\"[future_occ]\"] }}"
+            },
+            {
+              "column": "leases_needed_90",
+              "value": "={{ $('Webhook').item.json.body[\"[leases_needed]\"] }}"
+            },
+            {
+              "column": "interests",
+              "value": "={{ $('Webhook').item.json.body[\"[interests]\"] }}"
+            },
+            {
+              "column": "showings",
+              "value": "={{ $('Webhook').item.json.body[\"[showings]\"] }}"
+            },
+            {
+              "column": "applications",
+              "value": "={{ $('Webhook').item.json.body[\"[apps]\"] }}"
+            },
+            {
+              "column": "leases",
+              "value": "={{ $('Webhook').item.json.body[\"[leases]\"] }}"
+            },
+            {
+              "column": "vacants",
+              "value": "={{ $('Webhook').item.json.body[\"[vacants]\"] }}"
+            },
+            {
+              "column": "expirations",
+              "value": "={{ $('Webhook').item.json.body[\"[expirations]\"] }}"
+            },
+            {
+              "column": "future_move_ins",
+              "value": "={{ $('Webhook').item.json.body[\"[future_moveins]\"] }}"
+            },
+            {
+              "column": "on_notice",
+              "value": "={{ $('Webhook').item.json.body[\"[notice]\"] }}"
+            },
+            {
+              "column": "form_link",
+              "value": "={{ $json.webViewLink }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -2000,
+        -260
+      ],
+      "id": "1067e9cb-4843-43f2-9e6c-2c214cdb7296",
+      "name": "MySQL Insert",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM blaze_activity \nWHERE report_date < NOW() - INTERVAL 30 DAY;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -1760,
+        -260
+      ],
+      "id": "5be4676d-a237-49cd-acac-a82d954b4e59",
+      "name": "MySQLClear",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body['[298]'] }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2440,
+        -260
+      ],
+      "id": "476cfbb5-b1c5-4305-b06b-148a2c509a74",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Webhook').item.json.body['[property]'].replace(/\\s+/g, \"-\") + \"-\" + new Date().toISOString().slice(0, 10) + \".pdf\" }}\n",
+        "driveId": {
+          "__rl": true,
+          "value": "0ANzIWvPQDPwoUk9PVA",
+          "mode": "list",
+          "cachedResultName": "AXIA",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANzIWvPQDPwoUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1O2ByD6YZIyUA6XRiCBeJwbxC-Em2EBkp",
+          "mode": "list",
+          "cachedResultName": "Activity Archive",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1O2ByD6YZIyUA6XRiCBeJwbxC-Em2EBkp"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2220,
+        -260
+      ],
+      "id": "97ef1134-f390-48a2-85e1-aed0ac8397ee",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.blzres.com",
+            "user-agent": "WordPress/6.7.1; https://blzres.com",
+            "content-length": "367",
+            "accept": "*/*",
+            "accept-encoding": "deflate, gzip, br",
+            "content-type": "application/json; charset=UTF-8",
+            "x-forwarded-for": "77.37.94.145",
+            "x-forwarded-host": "n8n.blzres.com",
+            "x-forwarded-proto": "https"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "[property]": "NorthPark",
+            "[current_occ]": "90",
+            "[future_occ]": "90",
+            "[leases_needed]": "90",
+            "[interests]": "10",
+            "[showings]": "8",
+            "[apps]": "7",
+            "[leases]": "6",
+            "[vacants]": "5",
+            "[expirations]": "4",
+            "[future_moveins]": "3",
+            "[notice]": "2",
+            "[created-at]": "02/01/2025 at 10:07 pm",
+            "[298]": "https://blzres.com/wp-content/uploads/formidable/26/Region-1-Vacancy-Detail.pdf"
+          },
+          "webhookUrl": "https://n8n.blzres.com/webhook-test/ed026e4e-eed1-41c2-bfe3-4cb1de2e7074",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-02T13:43:53.000Z",
+  "versionId": "3d237ab7-becc-41ba-b986-077933bd43be"
+}
