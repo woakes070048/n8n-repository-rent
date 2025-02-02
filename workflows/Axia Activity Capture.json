@@ -5,18 +5,40 @@
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "MySQL": {
+    "MySQL Insert": {
       "main": [
         [
           {
-            "node": "MySQL1",
+            "node": "MySQLClear",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "MySQL Insert",
             "type": "main",
             "index": 0
           }
@@ -40,8 +62,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -2300,
-        -280
+        -2660,
+        -260
       ],
       "id": "e42982f9-3375-4d6c-b133-77dddd1825a6",
       "name": "Webhook",
@@ -60,51 +82,55 @@
           "values": [
             {
               "column": "property",
-              "value": "={{ $json.body[\"[property]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[property]\"] }}"
             },
             {
               "column": "current_occupancy",
-              "value": "={{ $json.body[\"[current_occ]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[current_occ]\"] }}"
             },
             {
               "column": "future_occupancy",
-              "value": "={{ $json.body[\"[future_occ]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[future_occ]\"] }}"
             },
             {
               "column": "leases_needed_90",
-              "value": "={{ $json.body[\"[leases_needed]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[leases_needed]\"] }}"
             },
             {
               "column": "interests",
-              "value": "={{ $json.body[\"[interests]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[interests]\"] }}"
             },
             {
               "column": "showings",
-              "value": "={{ $json.body[\"[showings]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[showings]\"] }}"
             },
             {
               "column": "applications",
-              "value": "={{ $json.body[\"[apps]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[apps]\"] }}"
             },
             {
               "column": "leases",
-              "value": "={{ $json.body[\"[leases]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[leases]\"] }}"
             },
             {
               "column": "vacants",
-              "value": "={{ $json.body[\"[vacants]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[vacants]\"] }}"
             },
             {
               "column": "expirations",
-              "value": "={{ $json.body[\"[expirations]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[expirations]\"] }}"
             },
             {
               "column": "future_move_ins",
-              "value": "={{ $json.body[\"[future_moveins]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[future_moveins]\"] }}"
             },
             {
               "column": "on_notice",
-              "value": "={{ $json.body[\"[notice]\"] }}"
+              "value": "={{ $('Webhook').item.json.body[\"[notice]\"] }}"
+            },
+            {
+              "column": "form_link",
+              "value": "={{ $json.webViewLink }}"
             }
           ]
         },
@@ -113,11 +139,11 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -1900,
-        -280
+        -2000,
+        -260
       ],
       "id": "8e5ac130-eb90-46dc-adf3-7ef70c2582d0",
-      "name": "MySQL",
+      "name": "MySQL Insert",
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
@@ -134,15 +160,69 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -1660,
-        -280
+        -1760,
+        -260
       ],
       "id": "7f610fca-2d8a-4159-b0eb-24204915da25",
-      "name": "MySQL1",
+      "name": "MySQLClear",
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
           "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body['[298]'] }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2440,
+        -260
+      ],
+      "id": "c0ce0d3a-f125-4c22-86f5-1a568ed4c589",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Webhook').item.json.body['[property]'].replace(/\\s+/g, \"-\") + \"-\" + new Date().toISOString().slice(0, 10) + \".pdf\" }}\n",
+        "driveId": {
+          "__rl": true,
+          "value": "0ANzIWvPQDPwoUk9PVA",
+          "mode": "list",
+          "cachedResultName": "AXIA",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANzIWvPQDPwoUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1O2ByD6YZIyUA6XRiCBeJwbxC-Em2EBkp",
+          "mode": "list",
+          "cachedResultName": "Activity Archive",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1O2ByD6YZIyUA6XRiCBeJwbxC-Em2EBkp"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -2220,
+        -260
+      ],
+      "id": "89a6b1b2-91ec-4f75-9944-9600dd5c1d12",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
         }
       }
     }
@@ -187,12 +267,11 @@
     ]
   },
   "settings": {
-    "executionOrder": "v1",
-    "errorWorkflow": "Etm1h3dHXQYzby5C"
+    "executionOrder": "v1"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-02-02T06:00:38.355Z",
-  "versionId": "cb00fc8e-5d19-44cf-9f5c-ba1b92e1eb3f"
+  "updatedAt": "2025-02-02T13:38:58.000Z",
+  "versionId": "c8c2fa87-7a8d-4224-a63d-405c931e6828"
 }
