@@ -11,22 +11,13 @@
           }
         ]
       ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "Code",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
-  "createdAt": "2025-01-19T12:52:39.594Z",
-  "id": "KNsfOh2oVUuGStx3",
-  "meta": null,
+  "createdAt": "2025-02-02T12:57:59.767Z",
+  "id": "Hd2Y6dU0kDKBTQkP",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "My workflow 9",
   "nodes": [
     {
@@ -34,38 +25,24 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        0,
+        -580,
         0
       ],
-      "id": "531fb360-ec81-4437-829e-be72bb30b1eb",
+      "id": "bde9e0d2-f979-4fd5-912c-914084b3aa6e",
       "name": "When clicking ‘Test workflow’"
     },
     {
       "parameters": {
-        "url": "https://blazepropertymanagement.appfolio.com/listings/detail/26029411-c06b-4429-b83d-c046f5276bbb",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        220,
+        -360,
         0
       ],
-      "id": "2bfdc9dc-e1a9-44a1-baad-8a4c73419c05",
+      "id": "e22009d1-564d-4b3f-a5ac-84e502499d10",
       "name": "HTTP Request"
-    },
-    {
-      "parameters": {
-        "jsCode": "const cheerio = require('cheerio');\n\n// HTML content from the previous node\nconst html = $json[\"data\"]; // Assuming the response is stored in 'data'\n\n// Load the HTML into cheerio\nconst $ = cheerio.load(html);\n\n// Find all img tags inside the slide div and extract the src attribute\nconst imageUrls = [];\n$('#swipebox-slider .slide img').each((i, el) => {\n  const imgSrc = $(el).attr('src');\n  if (imgSrc) {\n    imageUrls.push(imgSrc);\n  }\n});\n\n// Return the array of image URLs\nreturn {\n  json: {\n    images: imageUrls\n  }\n};\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        440,
-        0
-      ],
-      "id": "7668519a-bd2c-4193-94ab-51d1f1032b71",
-      "name": "Code"
     }
   ],
   "pinData": {},
@@ -75,6 +52,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-01-19T12:57:35.000Z",
-  "versionId": "a2e34f50-7cae-461f-b673-fa2c0f7418c7"
+  "updatedAt": "2025-02-02T12:57:59.767Z",
+  "versionId": "e880bdd7-f06a-48fd-912e-0e1438e0769c"
 }
