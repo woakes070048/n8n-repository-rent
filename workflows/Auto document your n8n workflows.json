@@ -1,17 +1,6 @@
 {
   "active": true,
   "connections": {
-    "OpenAI": {
-      "main": [
-        [
-          {
-            "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Edit Fields": {
       "main": [
         [
@@ -38,7 +27,29 @@
       "main": [
         [
           {
-            "node": "OpenAI",
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
             "type": "main",
             "index": 0
           }
@@ -60,7 +71,7 @@
           "values": [
             {
               "name": "prompt",
-              "stringValue": "\"\"\"PROMPT: The above is a n8n workflow json, please create workflow documentation for the user:. you are the master of brevity, be as concise and brief as possible, output generated documentation only.      ## Guidelines for the documentation  - **Provide a detailed description**: Provide a concise and informative description outlining the template's functionality and expected outcomes. Include a brief setup guide for user convenience. A detailed description not only clarifies the template's purpose but also enhances its discoverability through SEO. It’s advised to use these sections in your description:     - Who is this for?     - What problem is this workflow solving? / use case     - What this workflow does     - Setup     - How to customize this workflow to your needs   Here is an example  ``` # Who is this template for?  This workflow template is designed for **Sales** and **Customer Success** professionals seeking alerts when potential high-value users, prospects, or existing customers register for a Discourse community. Leveraging Clearbit, it retrieves enriched data for the new member to assess their value.  ### Example result in Slack  ![Screenshot 20240221 at 13.51.29.png](https://n8niostorageaccount.blob.core.windows.net/n8nio-strapi-blobs-prod/assets/Screenshot_2024_02_21_at_13_51_29_030961dc1b.png)  # How it works  - Each time a new member is created in Discourse, the workflow runs (powered by Discourse's native Webhooks feature). - After filtering out popular private email accounts, we run the member's email through Clearbit to fetch available information on the member as well as their organization. - If the enriched data meets certain criteria, we send a Slack message to a channel. This message has a few quick actions: `Open LinkedIn profile` and `Email member`  # Set up instructions  Overview is below. Watch this [🎥 quick set up video](https://www.loom.com/share/d379895004374ddc85dc9171ca37c139?sid=bb28df29-bc91-4d32-a657-0bfbaaf50cc7) for detailed instructions on how to get the template running, as well as how to customize it.  1. Complete the `Set up credentials` step when you first open the workflow. You'll need a Discourse (admin user), Clearbit, and Slack account. 2. Set up the Webhook in Discourse, linking the `On new Discourse user` Trigger with your Discourse community. 3. Set the correct channel to send to in the `Post message in channel` step 4. After testing your workflow, swap the Test URL to Production URL in Discourse and activate your workflow  Template was created in n8n `v1.29.1`  ``` \"\"\""
+              "stringValue": "\"\"\"PROMPT: The above is a n8n workflow json, please create workflow documentation for the user:. you are the master of brevity, be as concise and brief as possible, output generated documentation only.      ## Guidelines for the documentation  - **Provide a detailed description**: Provide a concise and informative description outlining the template's functionality and expected outcomes. Include a brief setup guide for user convenience. A detailed description not only clarifies the template's purpose but also enhances its discoverability through SEO. It’s advised to use these sections in your description:     - Who is this for?     - What problem is this workflow solving? / use case     - What this workflow does     - Setup     - How to customize this workflow to your needs   "
             }
           ]
         },
@@ -74,35 +85,6 @@
         240
       ],
       "typeVersion": 3.2
-    },
-    {
-      "parameters": {
-        "resource": "chat",
-        "chatModel": "gpt-4-1106-preview",
-        "prompt": {
-          "messages": [
-            {
-              "content": "={{ $json.input }}"
-            }
-          ]
-        },
-        "options": {},
-        "requestOptions": {}
-      },
-      "id": "9d1e972c-e737-4221-bd8b-dfd8115b9948",
-      "name": "OpenAI",
-      "type": "n8n-nodes-base.openAi",
-      "position": [
-        1020,
-        240
-      ],
-      "typeVersion": 1.1,
-      "credentials": {
-        "openAiApi": {
-          "id": "Navm9hDUnjwpRcbB",
-          "name": "OpenAi account"
-        }
-      }
     },
     {
       "parameters": {
@@ -124,10 +106,11 @@
       "name": "Respond to Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "position": [
-        1240,
-        240
+        1360,
+        460
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "disabled": true
     },
     {
       "parameters": {
@@ -153,7 +136,7 @@
       "name": "n8n Form Trigger",
       "type": "n8n-nodes-base.formTrigger",
       "position": [
-        380,
+        340,
         240
       ],
       "webhookId": "c61492e5-73ce-40d4-b758-d5f09da0fb6c",
@@ -179,6 +162,56 @@
         240
       ],
       "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistannt"
+        },
+        "prompt": "define",
+        "text": "={{ $json.input }}{{ $json.prompt }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        960,
+        240
+      ],
+      "id": "95d64306-edde-42fb-8a6a-486ca26e3be8",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Test Workflor Docs",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1340,
+        200
+      ],
+      "id": "30a7b018-0c29-4570-b234-9789324590bb",
+      "name": "Send Email",
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -188,6 +221,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 2,
-  "updatedAt": "2024-11-11T06:00:22.315Z",
-  "versionId": "89284d78-4d86-4b0b-8b3e-1a4b7d0adeef"
+  "updatedAt": "2025-02-03T14:00:08.000Z",
+  "versionId": "abed44a3-41cf-4092-a64f-51c1cf6d57dd"
 }
