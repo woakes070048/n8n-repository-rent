@@ -267,11 +267,12 @@
     ]
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-02-02T13:38:58.000Z",
-  "versionId": "c8c2fa87-7a8d-4224-a63d-405c931e6828"
+  "updatedAt": "2025-02-03T06:00:38.747Z",
+  "versionId": "87d38873-d6de-4aa6-a2d7-3fafa200dcda"
 }
