@@ -1,54 +1,33 @@
 {
   "active": false,
-  "connections": {
-    "When clicking ‘Test workflow’": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
+  "connections": {},
+  "createdAt": "2025-02-03T18:28:57.456Z",
+  "id": "YquRxy8DVt1p2mHZ",
+  "meta": {
+    "templateCredsSetupCompleted": true
   },
-  "createdAt": "2025-01-19T15:46:17.229Z",
-  "id": "FwZCBZNJaasmvgOg",
-  "meta": null,
   "name": "My workflow 10",
   "nodes": [
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
       "position": [
         0,
         0
       ],
-      "id": "74cbefb3-8598-4f93-b0da-4e52f0615e60",
-      "name": "When clicking ‘Test workflow’"
-    },
-    {
-      "parameters": {
-        "url": "https://blazepropertymanagement.appfolio.com/listings/detail/26029411-c06b-4429-b83d-c046f5276bbb",
-        "options": {
-          "response": {
-            "response": {
-              "fullResponse": true,
-              "responseFormat": "json"
-            }
-          }
+      "id": "7b451446-b951-4417-898f-df23398fe4bf",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "JUy795rBwvcsupA4",
+          "name": "blzres.net Reports Email"
         }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        220,
-        0
-      ],
-      "id": "3fca61bd-1713-4a65-b264-bb17fbdb4c10",
-      "name": "HTTP Request"
+      }
     }
   ],
   "pinData": {},
@@ -58,6 +37,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-01-19T16:10:30.000Z",
-  "versionId": "6526126d-4fe3-437d-a597-516bb53d84e4"
+  "updatedAt": "2025-02-03T18:28:57.456Z",
+  "versionId": "0b63e4f5-79a4-44d5-8850-c2630a17b8f2"
 }
