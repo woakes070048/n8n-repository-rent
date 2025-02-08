@@ -1041,7 +1041,7 @@
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        400,
+        380,
         520
       ]
     }
@@ -1058,6 +1058,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-28T16:36:11.000Z",
-  "versionId": "03b4d609-d607-4eca-b02d-7f12894f11c7"
+  "updatedAt": "2025-02-08T15:53:31.000Z",
+  "versionId": "525626c8-07ee-49b6-b218-d32cf59c1eaa"
 }
