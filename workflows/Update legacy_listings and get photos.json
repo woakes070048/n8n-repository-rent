@@ -123,6 +123,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "IUpdate all_listing table",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -265,7 +272,7 @@
     },
     {
       "parameters": {
-        "path": "/data.blzres.com/data/legacy-list.csv"
+        "path": "/public_html/data/legacy-list.csv"
       },
       "id": "a766b81d-e368-402f-962b-138abe870c2c",
       "name": "FTP",
@@ -667,7 +674,7 @@
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
-          "name": "a2 blazedata mySQL"
+          "name": "Blazedata Hostinger"
         }
       }
     },
@@ -748,7 +755,7 @@
             },
             {
               "column": "image_link",
-              "value": "=https://data.blzres.com/data/images/{{ $('Edit Fields1').item.json.image_name }}"
+              "value": "=https://blzres.com/data/images/{{ $('Edit Fields1').item.json.image_name }}"
             },
             {
               "column": "unit_address",
@@ -821,7 +828,7 @@
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
-          "name": "a2 blazedata mySQL"
+          "name": "Blazedata Hostinger"
         }
       }
     },
@@ -842,7 +849,7 @@
     },
     {
       "parameters": {
-        "url": "https://blazeproperty.com/wp-content/uploads/Blaze-Logo268x126.jpg",
+        "url": "https://blazeproperty.com/wp-content/uploads/fulllogo.png",
         "options": {}
       },
       "id": "a6a8ecb9-4004-4ce7-91ef-229e099849d8",
@@ -850,14 +857,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3420,
-        1460
-      ]
+        3400,
+        1420
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
         "operation": "upload",
-        "path": "=/data.blzres.com/data/images/{{ $('Loop Over Items').item.json.image_name }}",
+        "path": "=/public_html/data/images/{{ $('Loop Over Items').item.json.image_name }}",
         "binaryPropertyName": "=data"
       },
       "id": "bb2d9ae8-70b9-4b48-9f64-9111a203b07a",
@@ -885,8 +893,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        3780,
-        1460
+        3660,
+        1420
       ],
       "credentials": {
         "ftp": {
@@ -912,7 +920,7 @@
       "type": "n8n-nodes-base.editImage",
       "typeVersion": 1,
       "position": [
-        3460,
+        3400,
         1200
       ]
     },
@@ -1027,6 +1035,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-09-23T15:44:37.670Z",
-  "versionId": "f6658801-9a3d-4fb1-a3e0-66353b5e0df6"
+  "updatedAt": "2025-02-08T16:39:29.000Z",
+  "versionId": "9e245ddd-5c0b-4b19-af99-c6f1687c385d"
 }
