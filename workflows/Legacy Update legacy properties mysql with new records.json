@@ -121,7 +121,7 @@
     {
       "parameters": {
         "operation": "upload",
-        "path": "data.blzres.com/data/legacy-list.csv"
+        "path": "/public_html/data/legacy-list.csv"
       },
       "id": "786ee48d-720c-4b28-a686-5b9541c1226c",
       "name": "FTP",
@@ -218,6 +218,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2024-09-23T15:44:38.010Z",
-  "versionId": "492c5331-f008-4486-a9a5-5cd248b36cba"
+  "updatedAt": "2025-02-08T16:13:00.000Z",
+  "versionId": "fb1fcb6e-cf33-4018-be87-e990b0b7b4a2"
 }
