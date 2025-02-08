@@ -1,0 +1,112 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Facebook Page Credentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Facebook Page Credentials": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-08T17:25:01.525Z",
+  "id": "kZFru7C2Y5MVvHAR",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "All FB Posts",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d687861e-eddf-4500-9b71-2674d63289bc",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        -180
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT fb_page_id, fb_access_token FROM facebook_pages WHERE property_name = '{{ $json.property_name }}'",
+        "options": {}
+      },
+      "id": "ad0217e4-9a5d-4094-8471-69d52a1bc7c0",
+      "name": "Get Facebook Page Credentials",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        -180
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v20.0",
+        "node": "={{ $('Get Facebook Page Credentials').json.fb_page_id }}",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $json.marketing_description }} {{ $('If').item.json.rentable_uid }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('If').item.json.image_link }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "3c915855-0542-4a94-beeb-85d076283070",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        60,
+        -180
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": null,
+          "name": "={{ $('Get Facebook Page Credentials').json.fb_access_token }}"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-08T17:25:22.000Z",
+  "versionId": "f90d78bf-bdc9-4cb7-9a28-f12dd1f54933"
+}
