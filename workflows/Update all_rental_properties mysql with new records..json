@@ -76,8 +76,8 @@
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        -460,
-        360
+        -500,
+        460
       ],
       "credentials": {
         "imap": {
@@ -103,7 +103,7 @@
       "typeVersion": 1,
       "position": [
         -300,
-        360
+        460
       ],
       "id": "f7931fe5-0b50-44b4-a4de-399ab4a126e2"
     },
@@ -208,6 +208,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-01-10T14:22:44.000Z",
-  "versionId": "c1fd4690-3b2f-47e0-989f-abaec9cede47"
+  "updatedAt": "2025-02-08T15:55:29.000Z",
+  "versionId": "140ea602-e7a8-4128-bdd6-bdea2c4437f0"
 }
