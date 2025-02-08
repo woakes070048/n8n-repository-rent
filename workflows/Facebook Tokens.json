@@ -1,0 +1,139 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Facebook Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Facebook Pages": {
+      "main": [
+        [
+          {
+            "node": "Format Facebook Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Facebook Data": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2025-02-08T16:59:39.212Z",
+  "id": "nzNIjOvdjW1mdHRf",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Facebook Tokens",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -740,
+        -20
+      ],
+      "id": "3d985392-ffc3-4b6d-8909-8ff1c007991b",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v20.0/me/accounts?access_token=EAAODZBoQvnEABO1UpZAPm9tfh1cVs5EqjkZANv6yiljQ4iYQXvH6xFpAZAryXZCSv9JnJgHiQvRj9hs01dLpfZBN1mMFO5ZAm88T56Kmfw7BTTxSTSoilZCyZBJbkgMISqaZB34y7twKmRVpZB950tc8ImGQ2rQ6k0iuGoB0IQQ8BqHZBzFwoPy2UkaRghfSwdyGNnp1i88BJ7gy1dR7EuS8ZBNfxPbUPgU5Maq0ZD",
+        "options": {}
+      },
+      "id": "79f39478-c98e-4ee6-b116-bb6d1563eb95",
+      "name": "Get Facebook Pages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return items[0].json.data.map(page => ({\n  json: {\n    fb_page_id: page.id,\n    fb_page_name: page.name,\n    fb_access_token: page.access_token\n  }\n}));"
+      },
+      "id": "b707b6f2-483d-4d65-9b00-820b954b29bc",
+      "name": "Format Facebook Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "facebook_pages",
+          "mode": "list",
+          "cachedResultName": "facebook_pages"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "fb_page_id",
+        "valueToMatchOn": "={{ $json.fb_page_id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_name",
+              "value": "={{ $json.fb_page_name }}"
+            },
+            {
+              "column": "fb_access_token",
+              "value": "={{ $json.fb_access_token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -60,
+        -20
+      ],
+      "id": "f904afb0-4e1e-4fe9-89f8-bf8de57b41f1",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-08T17:17:45.000Z",
+  "versionId": "8143c53f-ca26-4e84-9a25-c30ba1aec4b4"
+}
