@@ -1,0 +1,200 @@
+{
+  "active": false,
+  "connections": {
+    "Get Active Listings": {
+      "main": [
+        [
+          {
+            "node": "Split Listings in Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Listings in Batches": {
+      "main": [
+        [
+          {
+            "node": "Generate AI Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Post": {
+      "main": [
+        [
+          {
+            "node": "Post to Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post to Facebook": {
+      "main": [
+        [
+          {
+            "node": "Update MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Active Listings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-09T14:09:18.941Z",
+  "id": "oo5xLivaEswHA0x1",
+  "meta": null,
+  "name": "Axia FB Posts",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    p.fb_page_id, \n    p.fb_access_token, \n    r.property_name, \n    r.unit_name, \n    r.bedrooms, \n    r.bathrooms, \n    r.advertised_rent, \n    r.marketing_title, \n    r.marketing_description, \n    r.sqft, \n    r.application_fee, \n    r.rentable_uid, \n    r.unit_address, \n    r.posted_to_website, \n    r.appliances, \n    r.utilities, \n    r.property_link, \n    r.image_link, \n    r.fb_post_date\nFROM legacy_advertising_list r \nJOIN facebook_pages p \n    ON CONVERT(r.property_name USING utf8mb4) COLLATE utf8mb4_unicode_ci \n       = CONVERT(p.property_name USING utf8mb4) COLLATE utf8mb4_unicode_ci\nWHERE r.posted_to_website = 'yes'\nORDER BY r.property_name, r.fb_post_date ASC\nLIMIT 4;\n",
+        "options": {}
+      },
+      "id": "9130410f-3525-4f64-8c6d-619c3cb3bfac",
+      "name": "Get Active Listings",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -200,
+        -220
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "28f56513-7705-477e-827c-0740acb95222",
+      "name": "Split Listings in Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "content": "=Use the following text about a unit for lease at {{$json.property_name}} to create a compelling, engaging, and fun Facebook post. Be conversational. Include emojis.  \n\n{{ $json.marketing_description }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "672ae7c7-f171-4cec-b21a-a769186e1b5b",
+      "name": "Generate AI Post",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        -220
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v20.0",
+        "node": "={{ $('Split Listings in Batches').item.json.fb_page_id }}",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $json.choices[0].message.content.post }}  {{ $('split_batches').item.json.rentable_uid }} "
+              },
+              {
+                "name": "url",
+                "value": "={{ $('split_batches').item.json.image_link }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "94f80deb-cafe-430a-bdae-418fa6e198f1",
+      "name": "Post to Facebook",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        540,
+        -220
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "a3LtRYzbJapkaeaV",
+          "name": "Facebook Blaze Real Estate"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": "legacy_advertising_list",
+        "columnToMatchOn": "rentable_uid",
+        "options": {}
+      },
+      "id": "dccdd74e-5780-44d2-8599-24b1b5987190",
+      "name": "Update MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        760,
+        -220
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        -220
+      ],
+      "id": "09e6c95d-9da1-4c5a-8881-5782e311f0d2",
+      "name": "When clicking ‘Test workflow’"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-09T14:20:10.000Z",
+  "versionId": "2645e2ca-d091-449c-8ef5-560845e0704b"
+}
