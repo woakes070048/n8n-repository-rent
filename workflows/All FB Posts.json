@@ -22,6 +22,123 @@
           }
         ]
       ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "GetListings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API1": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetListings": {
+      "main": [
+        [
+          {
+            "node": "getpagid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getpagid": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-02-08T17:25:01.525Z",
@@ -38,8 +155,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -620,
-        -180
+        -780,
+        100
       ]
     },
     {
@@ -53,8 +170,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2,
       "position": [
-        -240,
-        -180
+        -520,
+        100
       ],
       "credentials": {
         "mySql": {
@@ -89,13 +206,307 @@
       "type": "n8n-nodes-base.facebookGraphApi",
       "typeVersion": 1,
       "position": [
-        60,
-        -180
+        -280,
+        100
       ],
       "credentials": {
         "facebookGraphApi": {
           "id": null,
           "name": "={{ $('Get Facebook Page Credentials').json.fb_access_token }}"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('GetListings').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "fb_post_id",
+              "value": "={{ $json.post_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f037991a-1f6c-4354-bf24-987efca285be",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        960,
+        -500
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "b4139f83-913d-4dcf-ab12-e1bc4fd56d9c",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        -380,
+        -440
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1db1a60-0572-4f37-9148-89f88a42b375",
+              "name": "property_name",
+              "value": "={{ $('GetListings').item.json.property_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9c456f0c-c98b-4172-a342-75b5720fea6b",
+              "name": "advertised_rent",
+              "value": "={{ $('GetListings').item.json.advertised_rent }}",
+              "type": "string"
+            },
+            {
+              "id": "4b6deb3b-b4cd-485d-93f5-02102cd5ccf4",
+              "name": "marketing_description",
+              "value": "={{ $json.marketing_description }} {{ $('GetListings').item.json.marketing_title }}",
+              "type": "string"
+            },
+            {
+              "id": "51058094-5ac3-476b-adec-f01fc3eeef9c",
+              "name": "rentable_uid",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json.rentable_uid }}",
+              "type": "string"
+            },
+            {
+              "id": "846ec8db-3f37-4d6c-adee-6b706218ab16",
+              "name": "image_link",
+              "value": "={{ $json.image_link }}",
+              "type": "string"
+            },
+            {
+              "id": "f08b8595-411d-4d9c-9651-f1bb209e5693",
+              "name": "property_link",
+              "value": "={{ $json.property_link }}",
+              "type": "string"
+            },
+            {
+              "id": "221f49d6-40cc-49a3-ad53-35ced7661fe3",
+              "name": "fb_page_id",
+              "value": "={{ $('getpagid').item.json.fb_page_id }}",
+              "type": "string"
+            },
+            {
+              "id": "82a9bf90-e959-42db-9d22-cda77da6c8c7",
+              "name": "fb_access_token",
+              "value": "={{ $('getpagid').item.json.fb_access_token }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1976204d-99c4-4803-bf75-6253830e4252",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        -160,
+        -440
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "17e39140-ab6e-4d16-8b70-888b11372f46",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1120,
+        -440
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "459465c3-257f-46d6-982a-f4196a47b121",
+              "leftValue": "={{ $json.property_link }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "86f75709-d754-4f9c-8423-fdca4146f864",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        100,
+        -440
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "id": "0de97057-76bb-4ba7-9f1d-6a0887a05f2b",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        380,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Use the following text about a unit for lease at Paramount Square Apartments to make a humorous post. Humor level high. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-905-6055. {{ $json.marketing_description }}\n"
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "151d37f3-5543-4592-9a95-ff51e6da3530",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        340,
+        -460
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v20.0",
+        "node": "/109463078470822",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.choices[0].message.content.post }}  {{ $('If').item.json.rentable_uid }} "
+              },
+              {
+                "name": "url",
+                "value": "={{ $('If').item.json.image_link }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "ab419600-8646-43fa-bf40-70b8e8da598f",
+      "name": "Facebook Graph API1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -500
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "5LnLBeFQdPIXvziF",
+          "name": "Paramount FB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT property_name, unit_name, bedrooms, bathrooms, advertised_rent, marketing_title, marketing_description, sqft, application_fee, rentable_uid, unit_address, posted_to_website, appliances, utilities, property_link, image_link, fb_post_date FROM all_rental_properties WHERE property_name = 'Paramount Square Apartments' AND posted_to_website = 'yes'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -880,
+        -440
+      ],
+      "id": "06babd1a-c669-43e9-9873-533c93ba2f97",
+      "name": "GetListings",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT fb_page_id, fb_access_token\nFROM facebook_pages\nWHERE property_name LIKE CONCAT('%', '{{ $json.property_name }}', '%')\nLIMIT 1;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -560,
+        -440
+      ],
+      "id": "95fcc742-1efd-4aaf-be4a-b32b164c182c",
+      "name": "getpagid",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
         }
       }
     }
@@ -107,6 +518,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-08T17:25:22.000Z",
-  "versionId": "f90d78bf-bdc9-4cb7-9a28-f12dd1f54933"
+  "updatedAt": "2025-02-08T21:21:14.000Z",
+  "versionId": "123c64cc-4df6-46e2-b7c3-95ad42497b27"
 }
