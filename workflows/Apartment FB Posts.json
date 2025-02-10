@@ -80,8 +80,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "VyLDgRP2Ip7Kfq1V",
-          "name": "n8nBlaze access to sellmyam_reporting"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
         }
       }
     },
@@ -210,7 +210,13 @@
       "position": [
         520,
         380
-      ]
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "5LnLBeFQdPIXvziF",
+          "name": "Paramount FB"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -225,6 +231,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-11-26T22:53:44.000Z",
-  "versionId": "c45dc971-50fe-4757-895b-f0f5998b3cdf"
+  "updatedAt": "2025-02-09T23:40:06.000Z",
+  "versionId": "f751249c-7429-4e76-adad-8725d8770271"
 }
