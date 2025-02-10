@@ -396,6 +396,21 @@
           "name": "Paramount FB"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "### Post to Paramount FB - n8n Workflow Documentation\n\n### Overview - this n8n workflow automates the process of posting rental listings for **Paramount Square Apartments** to Facebook. The workflow retrieves available listings from a MySQL database, generates a humorous post using OpenAI, and posts it along with an image to Facebook via the Facebook Graph API.\n\n---\n\n### Workflow Components\n\n### 1. **Trigger Nodes**\n- **Manual Trigger** (`When clicking ‘Test workflow’`)\n  - Allows the workflow to be executed manually for testing.\n- **Schedule Trigger** (`Schedule Trigger`)\n  - Executes daily at 8 AM to automate the posting process.\n\n### 2. **Database Query**\n- **MySQL Node** (`MySQL Node`)\n  - Queries the `all_rental_properties` table to fetch active rental listings from `Paramount Square Apartments`.\n  - Filters properties that are `posted_to_website = 'yes'`.\n\n### 3. **Batch Processing**\n- **Split In Batches** (`Split In Batches`)\n  - Processes rental listings one at a time to avoid API limitations.\n\n### 4. **Data Transformation**\n- **Edit Fields** (`Edit Fields`)\n  - Extracts and formats required data fields such as:\n    - `property_name`\n    - `advertised_rent`\n    - `marketing_description`\n    - `rentable_uid`\n    - `image_link`\n    - `property_link`\n\n### 5. **Conditional Check**\n- **If Node** (`If`)\n  - Ensures that `property_link` is not empty before proceeding with the post.\n\n### 6. **AI Content Generation**\n- **OpenAI Node** (`OpenAI2`)\n  - Uses GPT-4 to create a humorous and engaging Facebook post based on the listing description.\n  - Includes emojis and the office contact number: `806-905-6055`.\n\n### 7. **Facebook Posting**\n- **Facebook Graph API** (`Facebook Graph API`)\n  - Posts the AI-generated description and the listing image to the `Paramount Square Apartments` Facebook page.\n\n### 8. **Database Update**\n- **MySQL Node** (`MySQL`)\n  - Updates the `fb_post_id` in the `all_rental_properties` table to track successful posts.\n\n### 9. **Fallback Handling**\n- **No Operation** (`No Operation, do nothing`)\n  - Prevents execution errors when no valid listings are found.\n\n---\n\n### Execution Flow\n1. **Trigger**: The workflow starts via manual execution or a scheduled trigger at 8 AM.\n2. **Database Query**: Fetches listings that are ready for posting.\n3. **Batch Processing**: Iterates through each listing one by one.\n4. **Data Transformation**: Extracts relevant details for social media.\n5. **Validation**: Ensures that only listings with a `property_link` are processed.\n6. **AI Generation**: Creates an engaging post using OpenAI.\n7. **Facebook Posting**: Uploads the listing to Facebook along with an image.\n8. **Database Update**: Marks the post as published by storing the Facebook post ID.\n\n---\n\n### Notes\n- The workflow uses predefined credentials for MySQL and Facebook API.\n- If no listings are available, the workflow terminates without errors.\n- OpenAI generates creative, engaging posts to enhance social media engagement.\n- Execution logs and errors are handled gracefully to ensure smooth operation.\n\n---\n\n### Dependencies\n- **n8n instance** with the following integrations:\n  - MySQL database (`Blazedata Hostinger`)\n  - OpenAI API (`GPT-4o`)\n  - Facebook Graph API (`Paramount FB`)\n- **Database Table**: `all_rental_properties`\n- **Facebook Page ID**: `109463078470822` (Paramount Square Apartments)\n\n---\n\n### Future Improvements\n- Implement logging for successful and failed posts.\n- Add a fallback mechanism if OpenAI fails to generate a response.\n- Expand automation to other properties using a dynamic query.\n\n",
+        "height": 820,
+        "width": 640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -340
+      ],
+      "id": "7eb6a6c2-b4db-4538-a74f-2b9378981fcb",
+      "name": "Sticky Note"
     }
   ],
   "pinData": {},
@@ -433,6 +448,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-01-11T15:22:58.000Z",
-  "versionId": "3d53a3b6-b4a1-4c4a-a13f-ede4675ee6fb"
+  "updatedAt": "2025-02-09T22:32:24.000Z",
+  "versionId": "147d603d-f6c1-45df-9655-05f297df4c52"
 }
