@@ -27,7 +27,7 @@
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "UUID Generator",
             "type": "main",
             "index": 0
           }
@@ -38,7 +38,7 @@
       "main": [
         [
           {
-            "node": "Facebook Graph API1",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -50,6 +50,44 @@
         [
           {
             "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UUID Generator": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "FTP",
             "type": "main",
             "index": 0
           }
@@ -76,7 +114,7 @@
       "typeVersion": 2.4,
       "position": [
         20,
-        380
+        -480
       ],
       "credentials": {
         "mySql": {
@@ -111,8 +149,8 @@
       "type": "n8n-nodes-base.facebookGraphApi",
       "typeVersion": 1,
       "position": [
-        820,
-        380
+        1380,
+        -260
       ],
       "credentials": {
         "facebookGraphApi": {
@@ -132,8 +170,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1060,
-        380
+        1560,
+        -260
       ],
       "credentials": {
         "mySql": {
@@ -159,8 +197,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -180,
-        380
+        -420,
+        -360
       ]
     },
     {
@@ -174,8 +212,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.4,
       "position": [
-        300,
-        380
+        180,
+        -480
       ],
       "credentials": {
         "openAiApi": {
@@ -195,28 +233,96 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        500,
-        100
+        960,
+        -120
       ]
     },
     {
       "parameters": {
-        "options": {}
+        "graphApiVersion": "v21.0",
+        "node": "/106038902592798",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message"
+              },
+              {
+                "name": "url"
+              }
+            ]
+          }
+        }
       },
       "id": "10bc5a1b-e612-4f2c-948e-5d53e7700e1d",
       "name": "Facebook Graph API1",
       "type": "n8n-nodes-base.facebookGraphApi",
       "typeVersion": 1,
       "position": [
-        520,
-        380
+        1180,
+        -260
       ],
       "credentials": {
         "facebookGraphApi": {
-          "id": "5LnLBeFQdPIXvziF",
-          "name": "Paramount FB"
+          "id": "cMEJkd1IYoXOgbcU",
+          "name": "Cottonwood FB"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/data/images/fb/fbpost-{{ $json.file_name }}{{ $('UUID Generator').item.json.uuid }}.png"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        740,
+        -360
+      ],
+      "id": "5ec5dde8-aede-4578-bfa5-518f8c2537ef",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-guuid-generator.UUID Generator",
+      "typeVersion": 1,
+      "position": [
+        -220,
+        -360
+      ],
+      "id": "9c4138fd-4d42-42ca-b17d-237e5f465d61",
+      "name": "UUID Generator"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ae05cfeb-afba-4dbb-a2da-61d83695445e",
+              "name": "file_name",
+              "value": "={{ $json.uuid }}.png",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        -360
+      ],
+      "id": "e8bbf106-e883-4953-87a3-5ed4f0679dc1",
+      "name": "Edit Fields"
     }
   ],
   "pinData": {},
@@ -231,6 +337,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-02-09T23:40:06.000Z",
-  "versionId": "f751249c-7429-4e76-adad-8725d8770271"
+  "updatedAt": "2025-02-11T17:55:18.000Z",
+  "versionId": "6d003246-3314-4e13-a2ba-194b2e686372"
 }
