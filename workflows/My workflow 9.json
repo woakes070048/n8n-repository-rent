@@ -13,8 +13,8 @@
       ]
     }
   },
-  "createdAt": "2025-02-02T12:57:59.767Z",
-  "id": "Hd2Y6dU0kDKBTQkP",
+  "createdAt": "2025-02-12T17:47:11.466Z",
+  "id": "62ZXNwYOik8RKdjK",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -25,24 +25,33 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -580,
+        0,
         0
       ],
-      "id": "bde9e0d2-f979-4fd5-912c-914084b3aa6e",
+      "id": "29e3ad12-957b-4ef6-956e-563a7ed16537",
       "name": "When clicking ‘Test workflow’"
     },
     {
       "parameters": {
+        "url": "https://graph.microsoft.com/v1.0/me/todo/lists",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "microsoftGraphSecurityOAuth2Api",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -360,
+        220,
         0
       ],
-      "id": "e22009d1-564d-4b3f-a5ac-84e502499d10",
-      "name": "HTTP Request"
+      "id": "058f66fb-dda8-4c48-8024-af0675c13740",
+      "name": "HTTP Request",
+      "credentials": {
+        "microsoftGraphSecurityOAuth2Api": {
+          "id": "3pt1qCXGVH8yLsc0",
+          "name": "Microsoft Graph Security account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -52,6 +61,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-02T12:57:59.767Z",
-  "versionId": "e880bdd7-f06a-48fd-912e-0e1438e0769c"
+  "updatedAt": "2025-02-12T17:47:11.466Z",
+  "versionId": "c6a19508-3db2-4450-8ce1-0fbe6be122ad"
 }
