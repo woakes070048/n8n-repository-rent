@@ -1,8 +1,8 @@
 {
   "active": false,
   "connections": {},
-  "createdAt": "2025-02-03T18:28:57.456Z",
-  "id": "YquRxy8DVt1p2mHZ",
+  "createdAt": "2025-02-13T17:57:45.191Z",
+  "id": "KTbVGVJo1azn0eHc",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -10,22 +10,24 @@
   "nodes": [
     {
       "parameters": {
-        "postProcessAction": "nothing",
-        "downloadAttachments": true,
-        "options": {}
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
       },
-      "type": "n8n-nodes-base.emailReadImap",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
       "position": [
         0,
         0
       ],
-      "id": "7b451446-b951-4417-898f-df23398fe4bf",
-      "name": "Email Trigger (IMAP)",
+      "id": "5748a428-581f-44fa-9448-6c0c4775f294",
+      "name": "Telegram Trigger",
+      "webhookId": "c08a71c3-cd44-4f80-93dc-974b188872d5",
       "credentials": {
-        "imap": {
-          "id": "JUy795rBwvcsupA4",
-          "name": "blzres.net Reports Email"
+        "telegramApi": {
+          "id": "1s9Mkfabj9V1XLgB",
+          "name": "Telegram account"
         }
       }
     }
@@ -37,6 +39,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-03T18:28:57.456Z",
-  "versionId": "0b63e4f5-79a4-44d5-8850-c2630a17b8f2"
+  "updatedAt": "2025-02-13T17:57:45.191Z",
+  "versionId": "53749485-329a-4980-b6f3-4d8a99c203e4"
 }
