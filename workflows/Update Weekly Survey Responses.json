@@ -44,7 +44,6 @@
   "nodes": [
     {
       "parameters": {
-        "postProcessAction": "nothing",
         "downloadAttachments": true,
         "options": {
           "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Maintenance Reviews\"]]"
@@ -55,7 +54,7 @@
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        260,
+        80,
         460
       ],
       "credentials": {
@@ -69,9 +68,9 @@
       "parameters": {
         "table": {
           "__rl": true,
-          "value": "wp0i_maint_surveys",
+          "value": "maint_surveys",
           "mode": "list",
-          "cachedResultName": "wp0i_maint_surveys"
+          "cachedResultName": "maint_surveys"
         },
         "dataMode": "defineBelow",
         "valuesToSend": {
@@ -81,11 +80,11 @@
               "value": "={{ $json.Respondent }}"
             },
             {
-              "column": "Property",
+              "column": "property",
               "value": "={{ $json.Property }}"
             },
             {
-              "column": "Satisfaction",
+              "column": "satisfaction",
               "value": "={{ $json['How satisfied are you with the overall experience?'] }}"
             },
             {
@@ -93,7 +92,7 @@
               "value": "={{ $json['Any additional feedback?'] }}"
             },
             {
-              "column": "DateSent",
+              "column": "date_received",
               "value": "={{ $json.formattedDateSent }}"
             }
           ]
@@ -110,8 +109,8 @@
       ],
       "credentials": {
         "mySql": {
-          "id": "N9fn0qjTGz1ujomL",
-          "name": "BP sellmyam_a2wp8 Mysql"
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
         }
       }
     },
@@ -124,7 +123,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        620,
+        520,
         460
       ]
     },
@@ -139,7 +138,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        460,
+        280,
         460
       ]
     },
@@ -171,6 +170,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-10-02T05:00:23.568Z",
-  "versionId": "ce05a968-5fd1-443f-9f75-e15b4079c962"
+  "updatedAt": "2025-02-15T17:31:37.000Z",
+  "versionId": "582dc2f1-4525-4688-8a93-35623194adaf"
 }
