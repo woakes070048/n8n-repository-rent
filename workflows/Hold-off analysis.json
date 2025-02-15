@@ -16,7 +16,7 @@
       "main": [
         [
           {
-            "node": "Send Email",
+            "node": "OpenAI1",
             "type": "main",
             "index": 0
           }
@@ -33,6 +33,17 @@
           }
         ]
       ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2024-07-17T10:36:42.950Z",
@@ -44,11 +55,10 @@
   "nodes": [
     {
       "parameters": {
-        "fromEmail": "admin@blzres.com",
+        "fromEmail": "reports@blzres.com",
         "toEmail": "brandon@blazeproperty.com",
         "subject": "=Payment Plan Analysis for  {{ $('Webhook').item.json.body.First_Name }} {{ $('Webhook').item.json.body.Last_Name }}",
-        "emailFormat": "text",
-        "text": "={{ $json.totalAmountPaid }}\n\n{{ $json.totalIncomeGenerated }}\n\n{{ $json.totalMonthlyExpenses }}\n\n{{ $json.abilityToCompletePlan }}\n\n{{ $json.probabilityOfSuccess }} ",
+        "html": "={{ $json.message.content }}",
         "options": {}
       },
       "id": "0b5b0c6d-ac26-4152-a1c0-ddfd485e5fe2",
@@ -57,7 +67,7 @@
       "typeVersion": 2.1,
       "position": [
         1620,
-        360
+        340
       ],
       "credentials": {
         "smtp": {
@@ -76,7 +86,7 @@
           "cachedResultName": "blazebackend"
         },
         "prompt": "define",
-        "text": "=\"Analyze the payment plan viability for a tenant using the provided data. Calculate the date range for the completion of the payment plan including considering rent due on 1st of each month if the payment plan crosses months, the amount of income generated, and consider other bills. Determine if the tenant can reasonably complete the payment plan and still pay the next month's rent on time. Provide a probability of success.\n\n  Tenant Data:\n  - Delinquent Amount: {{ $json.body.Delinquent_Amount }}\n  - Request Date: {{ $json.body.Request_Date }}\n  - First Name: {{ $json.body.First_Name }}\n  - Last Name: {{ $json.body.Last_Name }}\n  - Email: {{ $json.body.Tenant_Email }}\n  - Phone 1: {{ $json.body.Tenant_Phone_1 }}\n  - Phone 2: {{ $json.body.Tenant_Phone_2 }}\n  - Address: {{ $json.body.Tenant_Address }}\n  - Reason: {{ $json.body.Reason }}\n\n  Employment Data:\n  - Employer Name: {{ $json.body.Employer_Name }}\n  - Employer Phone: {{ $json.body.Employer_Phone }}\n  - Employer Address: {{ $json.body.Employer_Address }}\n  - Occupation: {{ $json.body.Occupation }}\n  - Tenure: {{ $json.body.Tenure }}\n  - Monthly Income: {{ $json.body.Monthly_Income }}\n  - Other Income 1: {{ $json.body.Other_Income_1 }}\n  - Other Income 1 Amount: {{ $json.body.Other_Income_1_Amount }}\n  - Other Income 2: {{ $json.body.Other_Income_2 }}\n  - Other Income 2 Amount: {{ $json.body.Other_Income_2_Amount }}\n  - Other Income 3: {{ $json.body.Other_Income_3 }}\n  - Other Income 3 Amount: {{ $json.body.Other_Income_3_Amount }}\n\n  Emergency Contact:\n  - Name: {{ $json.body.Contact_Name }}\n  - Relationship: {{ $json.body.Contact_Relationship }}\n  - Phone: {{ $json.body.Contact_Phone }}\n  - Email: {{ $json.body.Contact_Email }}\n\n  Payment Plan:\n  - Initial Payment: {{ $json.body.Initial_Payment }} on {{ $json.body.Request_Date }}\n  - Payment 1: {{ $json.body.Payment_1 }} on {{ $json.body.Paymenr_1_Date }}\n  - Payment 2: {{ $json.body.Payment_2 }} on {{ $json.body.Payment_2_Date }}\n  - Payment 3: {{ $json.body.Payment_3 }} on {{ $json.body['Payment_3 Date'] }}\n  - Payment 4: {{ $json.body.Payment_4 }} on {{ $json.body.Payment_4_Date }}\n\n  Expenses:\n  - Monthly Rent: {{ $json.body.Monthly_Rent }}\n  - Monthly Bills: {{ $json.body.Monthly_Bills }}\n\n  Please analyze the above information and calculate:\n  1. The total amount paid towards the delinquent amount and the remaining balance after each payment.\n  2. The total income generated each month.\n  3. The total monthly expenses including rent and bills.\n  4. If the tenant will be able to complete the payment plan and pay the next month's rent on time.\n  5. Provide a probability of success in completing the payment plan.\n\n  Do not provide details of the calculations. \"\n\n",
+        "text": "=\"Analyze the payment plan viability for a tenant using the provided data. Calculate the date range for the completion of the payment plan including considering rent due on 1st of each month if the payment plan crosses months, the amount of income generated, and consider other bills. Determine if the tenant can reasonably complete the payment plan and still pay the next month's rent on time. Provide a probability of success.\n\n  Tenant Data:\n  - Delinquent Amount: {{ $json.body.Delinquent_Amount }}\n  - Request Date: {{ $json.body.Request_Date }}\n  - First Name: {{ $json.body.First_Name }}\n  - Last Name: {{ $json.body.Last_Name }}\n  - Email: {{ $json.body.Tenant_Email }}\n  - Phone 1: {{ $json.body.Tenant_Phone1 }}\n  - Phone 2: {{ $json.body.Tenant_Phone2 }}\n  - Address: \n  - Reason: {{ $json.body.Reason }}\n\n  Employment Data:\n  - Employer Name: {{ $json.body.Employer_Name }}\n  - Employer Phone: {{ $json.body.Employer_Phone }}\n  - Employer Address: {{ $json.body.Employer_Address }}\n  - Occupation: {{ $json.body.Occupation }}\n  - Tenure: \n  - Monthly Income: {{ $json.body.Monthly_Income }}\n  - Other Income 1: {{ $json.body.Other_Income_1 }}\n  - Other Income 1 Amount: {{ $json.body.Other_Income_Amount_1 }}\n    - Other Income 2: {{ $json.body.Other_Income_2 }}\n  - Other Income 2 Amount: {{ $json.body.Other_Income_Amount_2 }}\n  - Other Income 3: {{ $json.body.Other_Income_3 }}\n  - Other Income 3 Amount: {{ $json.body.Other_Income_Amount_3 }}\n\n  Emergency Contact:\n  - Name: {{ $json.body.Contact_Name }}\n  - Relationship: {{ $json.body.Contact_Relationship }}\n  - Phone: {{ $json.body.Contact_Phone }}\n  - Email: {{ $json.body.Contact_Email }}\n\n  Payment Plan:\n  - Initial Payment: {{ $json.body.Initial_Payment }} on {{ $json.body.Request_Date }}\n  - Payment 1: {{ $json.body.Payment_1_Amount }} on {{ $json.body.Payment_1_Date }}\n  - Payment 2: {{ $json.body.Payment_2_Amount }} on {{ $json.body.Payment_2_Date }}\n  - Payment 3: {{ $json.body.Payment_3_Amount }} on {{ $json.body.Payment_3_Date }}\n  - Payment 4: {{ $json.body.Payment_4_Amount }} on {{ $json.body.Payment_4_Date }}\n\n  Expenses:\n  - Monthly Rent: {{ $json.body.Monthly_Rent }}\n  - Monthly Bills: \n\n  Please analyze the above information and calculate:\n  1. The total amount paid towards the delinquent amount and the remaining balance after each payment.\n  2. The total income generated each month.\n  3. The total monthly expenses including rent and bills.\n  4. If the tenant will be able to complete the payment plan and pay the next month's rent on time.\n  5. Provide a probability of success in completing the payment plan.\n\n  Do not provide details of the calculations. \"\n\n",
         "options": {}
       },
       "id": "2bfccf8d-1ef4-4037-9134-7be0ac1b81ae",
@@ -84,8 +94,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.3,
       "position": [
-        1020,
-        360
+        660,
+        340
       ],
       "credentials": {
         "openAiApi": {
@@ -103,8 +113,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1400,
-        360
+        1040,
+        340
       ]
     },
     {
@@ -118,10 +128,42 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        820,
-        360
+        460,
+        340
       ],
       "webhookId": "121c8f46-e356-4094-b9b7-16684a3e30eb"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "GPT-4"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Output the following information in an HTML email that is easy to read and breaks down the plan of repayment and probability. \n\n{{ $json['**Total Amount Paid and Remaining Balance'] }}\n\n{{ $json['**Total Income Generated Each Month'] }}\n\n{{ $json['**Total Monthly Expenses Including Rent and Bills'] }}\n\n{{ $json['**Probability of Success'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1260,
+        340
+      ],
+      "id": "3bdbf7c8-8ba5-4fb9-a7d2-73469c8cbfdc",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -132,6 +174,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-09-23T15:44:37.466Z",
-  "versionId": "d8eba0ae-da94-4b1a-be6d-85653197bff0"
+  "updatedAt": "2025-02-15T18:29:39.000Z",
+  "versionId": "4c185831-ee9a-4103-a878-572fa4a908d0"
 }
