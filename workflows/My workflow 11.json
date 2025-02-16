@@ -1,0 +1,335 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-16T12:37:14.744Z",
+  "id": "lZh4Sa3eu3mwudst",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 11",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Daily delinquency\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -1040,
+        -20
+      ],
+      "id": "572acd22-eee3-4d9e-91ef-31159ff54a8d",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -20
+      ],
+      "id": "e9613ffd-f0a9-459c-95de-fd5a58bf7385",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -580,
+        -20
+      ],
+      "id": "646d7d09-c728-4292-a6cb-ea21fc8fa705",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "messageUi": {},
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleChat",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        80
+      ],
+      "id": "03f877a1-22ab-419c-880b-41170eed9429",
+      "name": "Google Chat",
+      "credentials": {
+        "googleApi": {
+          "id": "VUoRDKfLjOAmTOBK",
+          "name": "Google Service Account account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Extract from File": [
+      {
+        "json": {
+          "Unit": "3508 South Tyler Street",
+          "Name": "Chavez, Soriah D.",
+          "Phone Numbers": "Mobile: (806) 471-8484",
+          "Amount Receivable": 2420,
+          "Delinquent Rent": 1850,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45627,
+          "Payment Amount": 990,
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "3005 South Van Buren Street",
+          "Name": "GILBERT, FELICITE L.",
+          "Phone Numbers": "Mobile: (806) 443-3486",
+          "Amount Receivable": 2221,
+          "Delinquent Rent": 1900,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45622,
+          "Payment Amount": 975,
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "4621 Preston Street",
+          "Name": "Aguilar, Marcella V.",
+          "Phone Numbers": "Mobile: (806) 640-2767",
+          "Amount Receivable": 1925.95,
+          "Delinquent Rent": 1585,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45625,
+          "Payment Amount": 850,
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "4221 SW 12th",
+          "Name": "McMurry, Mitchell F.",
+          "Tags": "Rhino, 2025",
+          "Phone Numbers": "Mobile: (806) 333-5848",
+          "Amount Receivable": 1265,
+          "Delinquent Rent": 1150,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45698,
+          "Payment Amount": 200,
+          "Delinquency Notes": "02/11/2025, Said the remainder will be paid 2/19 due to flex pulling membership fee instead of rent;\r\n02/10/2025, Today pay some and rest the 19th. Flex messed up on pulling;\r\n11/14/2023, Getting Bonus Check on Dec 8th and all rent will be paid in full.",
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "3132 Walnut",
+          "Name": "Cisneros , Valerie  A.",
+          "Phone Numbers": "Mobile: (806) 420-1560",
+          "Amount Receivable": 1231.05,
+          "Delinquent Rent": 1053.75,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45660,
+          "Payment Amount": 418.8,
+          "Delinquency Notes": "09/10/2024, Called tenant about their outstanding balance, received no answer, Ashlie is filing 9/11/24. Final Chance was given.;\r\n07/22/2024, Tenant paid $870.00 today, states she will have more tomorrow (7/23/24);\r\n07/16/2024, Talked to tenant, She will be paying the full balance of $1557.25 first thing on Wednesday 7/17/24;\r\n07/16/2024, called tenant regarding $1,557.25, no answer.;\r\n05/07/2024, Will be paying in full on the 8th",
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "4723 Georgia",
+          "Name": "Chaparro, Angelique A.",
+          "Phone Numbers": "Mobile: (806) 679-7398",
+          "Amount Receivable": 1170.99,
+          "Delinquent Rent": 1015.99,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45697,
+          "Payment Amount": 500,
+          "Delinquency Notes": "02/10/2025, Said the rest of rent will be in on the 20th;\r\n08/09/2024, Paying $1100 and the rest by 16th;\r\n07/17/2024, Paid $500, paying the rest on 7/26/24;\r\n07/17/2024, Called Tenant about $1,160, received no answer.",
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "1708 Lake",
+          "Name": "Rangel, Eric R.",
+          "Phone Numbers": "Mobile: (956) 734-7839",
+          "Amount Receivable": 1146.03,
+          "Delinquent Rent": 909.08,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45693,
+          "Payment Amount": 300,
+          "Delinquency Notes": "02/05/2025, started a new job. Paying $300.00 today paying remainder no later than the 14th;\r\n07/16/2024, Tenant states they will be paying the full amount in rent tomorrow 7/17/24;\r\n07/08/2024, Promises to pay the remainder of rent on July 17th (See saved note down below)",
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "1612 Currie",
+          "Name": "Martinez, Veronica",
+          "Phone Numbers": "Phone: (806) 576-7197",
+          "Amount Receivable": 1075,
+          "Delinquent Rent": 1000,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45661,
+          "Payment Amount": 1000,
+          "Delinquency Notes": "09/04/2024, Paying full amount of rent on 9/6/24",
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "6103 Lair",
+          "Name": "Hall, William C.",
+          "Phone Numbers": "Mobile: (559) 514-9538",
+          "Amount Receivable": 1016.5,
+          "Delinquent Rent": 950,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45667,
+          "Payment Amount": 1016.5,
+          "Delinquency Notes": "09/09/2024, Tenant is paying rent on 9/13/24;\r\n07/08/2024, Will be paying the rent on Friday 7/12/24, Daughter was born early causing them to miss work.",
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "3111 Walnut",
+          "Name": "Green, William",
+          "Tags": "Missing PII",
+          "Phone Numbers": "Phone: (806) 703-3127",
+          "Amount Receivable": 1007.28,
+          "Delinquent Rent": 894.65,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45670,
+          "Payment Amount": 500,
+          "Delinquency Notes": "02/10/2025, Paying rent on Friday 14th;\r\n11/04/2024, Tenant is paying $550 on 11/08 and the rest by 11/14;\r\n09/26/2024, Hold off agreement signed 09/26/24;\r\n09/11/2024, Tenant called, paying half 9/19 and the rest the 25th;\r\n07/16/2024, Called William about his promise to pay today, received no answer;\r\n07/11/2024, Will be paid in full by next Wednesday. Changed jobs;\r\n07/03/2024, Is paying the remainder of the rent on 7/10/24;\r\n05/06/2024, Will pay the 8th with late fees in New York;\r\n01/04/2024, Will be in on the 5th of Jan with Dec and Jan rent;\r\n12/28/2023, Will pay December rent on the 3rd of January and January rent on the 5th. ",
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "1819 Darden Street",
+          "Name": "Skeen, Tyler",
+          "Tags": "Rhino, 1710",
+          "Phone Numbers": "Phone: (806) 316-9078",
+          "Amount Receivable": 972.7,
+          "Delinquent Rent": 778.95,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45644,
+          "Payment Amount": 450,
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "4714 Mesa",
+          "Name": "Strickland, Akashia",
+          "Phone Numbers": "Phone: (806) 654-3951",
+          "Amount Receivable": 893,
+          "Delinquent Rent": 788,
+          "Delinquent Subsidy Amount": 933,
+          "Last Payment": 45680,
+          "Payment Amount": 933,
+          "Delinquency Notes": "07/17/2024, Talked to tenant, she will be paying full amount On July 29th and Augusts rent on 8/9/24;\r\n06/12/2024, Will be paying full amount 06/14",
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "808 S. Adams",
+          "Name": "Evans, Akaysha  F.",
+          "Tags": "Missing PII",
+          "Phone Numbers": "Mobile: (806) 881-9292",
+          "Amount Receivable": 805,
+          "Delinquent Rent": 660,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45693,
+          "Payment Amount": 200,
+          "Delinquency Notes": "01/13/2025, Will pay on the 22nd in full job messed up check.;\r\n08/07/2024, Transmission went out on car will have all rent by the 20th with late fees",
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "809-B",
+          "Name": "Campusano, Diana E.",
+          "Phone Numbers": "Mobile: (806) 340-8691",
+          "Amount Receivable": 649.17,
+          "Delinquent Rent": 543.97,
+          "Delinquent Subsidy Amount": 0,
+          "Last Payment": 45693,
+          "Payment Amount": 180,
+          "Payment Plan": 0
+        }
+      },
+      {
+        "json": {
+          "Unit": "Total",
+          "Amount Receivable": 17798.67,
+          "Delinquent Rent": 15079.39,
+          "Delinquent Subsidy Amount": 933,
+          "Payment Amount": 8513.3,
+          "Payment Plan": 0
+        }
+      }
+    ]
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-16T13:45:38.000Z",
+  "versionId": "afe0acfa-78d7-4894-a323-da4c3a60cf89"
+}
