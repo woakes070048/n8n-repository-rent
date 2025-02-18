@@ -206,7 +206,7 @@
     {
       "parameters": {
         "fromEmail": "reports@blzres.com",
-        "toEmail": "managers@blazeproperty.com, Kaleb@aspiremortgageadvisors.com",
+        "toEmail": "managers@blazeproperty.com, Kaleb@aspiremortgageadvisors.com; amy@wnbat.com; talyn@wnbat.com; cindy@wnbat.com; amy.a@axialiving.com; cindy.l@axialiving.com; talyn.p@axialiving.com",
         "subject": "Managers Daily Reminders",
         "html": "={{ $json[\"emailContent\"] }}",
         "options": {
@@ -265,6 +265,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-11-06T06:00:21.626Z",
-  "versionId": "92a83680-61cf-47b3-a207-a8c148ae9eae"
+  "updatedAt": "2025-02-17T18:44:37.000Z",
+  "versionId": "855aab02-e972-49db-bc0d-838116d98065"
 }
