@@ -229,9 +229,9 @@
     },
     {
       "parameters": {
-        "content": "## Update to get images\nGet full-list.csv from https://data.blzres.com/data and parse\nbinary to xslx \nBuild webpage url from rentable_uid and fetch\nCheck if redirected due to unavailable unit\nAvaialble unit get first image\nupload first image to https://data.blzres.com/images and name rentable_uid.jpg\n\n\n\nSeries 2 workflow\nUpdated to a2 database blazeapa_blazedata",
-        "height": 251.39252805115,
-        "width": 941.3692722371975,
+        "content": "## Get Primary Images\n\nPurpose: Gather primary image for each property and store for use in social media advertising. \nImages are used in posting avaialble units on Property/Company Facebook pages. \nThis stores the primary images on a webserver for easy managed retreival. \n\nFile names are stored by UUID.jpg format. Database is updated with the URL of the image on your webserver. \n",
+        "height": 411,
+        "width": 941,
         "color": 3
       },
       "id": "b11b2189-81ac-496c-80e9-423f114267f1",
@@ -239,8 +239,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2780,
-        680
+        3160,
+        760
       ]
     },
     {
@@ -266,8 +266,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        3740,
-        1000
+        2880,
+        960
       ]
     },
     {
@@ -279,8 +279,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        3000,
-        1000
+        2700,
+        960
       ],
       "credentials": {
         "ftp": {
@@ -492,7 +492,8 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
           "conditions": [
             {
@@ -954,7 +955,7 @@
       "typeVersion": 2,
       "position": [
         2680,
-        1460
+        1420
       ]
     },
     {
@@ -1006,6 +1007,35 @@
         1220
       ],
       "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "## Get Data file from FTP\n\nCan be scheduled or called by previous workflow.\n",
+        "height": 420,
+        "width": 760
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        760
+      ],
+      "id": "2734c8fe-ba47-403a-8e3d-f4cd0efa03ad",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Set Field Data from Records\n",
+        "height": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        1140
+      ],
+      "id": "65c7d596-fac7-4c0c-8b24-f8041836f379",
+      "name": "Sticky Note1"
     }
   ],
   "pinData": {},
@@ -1035,6 +1065,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-02-08T16:39:29.000Z",
-  "versionId": "9e245ddd-5c0b-4b19-af99-c6f1687c385d"
+  "updatedAt": "2025-02-21T15:29:35.000Z",
+  "versionId": "93365600-fae7-4ea7-9c20-1d0650edef7a"
 }
