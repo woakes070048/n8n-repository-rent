@@ -1,0 +1,189 @@
+{
+  "active": false,
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-21T16:31:33.398Z",
+  "id": "HP4M86xg8afrPuTY",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Blaze Vendor Update",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Vendor Directory ALL\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -1300,
+        -100
+      ],
+      "id": "58c7a296-da11-434b-b6d3-412456c9610e",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "id": "26e9618a-b01d-4d3a-b4c7-931e5987befe",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1080,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "blaze_vendors",
+          "mode": "list",
+          "cachedResultName": "blaze_vendors"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "vendor_id",
+        "valueToMatchOn": "={{ $json['Vendor Integration ID'] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "company_name",
+              "value": "={{ $json['Company Name'] }}"
+            },
+            {
+              "column": "name",
+              "value": "={{ $json.Name }}"
+            },
+            {
+              "column": "phone_numbers",
+              "value": "={{ $json['Phone Numbers'] }}"
+            },
+            {
+              "column": "email",
+              "value": "={{ $json.Email }}"
+            },
+            {
+              "column": "default_gl_account",
+              "value": "={{ $json['Default GL Account'] }}"
+            },
+            {
+              "column": "payment_type",
+              "value": "={{ $json['Payment Type'] }}"
+            },
+            {
+              "column": "send_1099",
+              "value": "={{ $json['Send 1099?'] }}"
+            },
+            {
+              "column": "tags",
+              "value": "={{ $json.Tags }}"
+            },
+            {
+              "column": "vendor_portal_activated",
+              "value": "={{ $json['Vendor Portal Activated?'] }}"
+            },
+            {
+              "column": "street_address_1",
+              "value": "={{ $json['Street Address 1'] }}"
+            },
+            {
+              "column": "street_address_2",
+              "value": "={{ $json['Street Address 2'] }}"
+            },
+            {
+              "column": "city",
+              "value": "={{ $json.City }}"
+            },
+            {
+              "column": "state",
+              "value": "={{ $json.State }}"
+            },
+            {
+              "column": "zip",
+              "value": "={{ $json.Zip }}"
+            },
+            {
+              "column": "vendor_trades",
+              "value": "={{ $json['Vendor Trades'] }}"
+            },
+            {
+              "column": "first_name",
+              "value": "={{ $json['First Name'] }}"
+            },
+            {
+              "column": "last_name",
+              "value": "={{ $json['Last Name'] }}"
+            },
+            {
+              "column": "vendor_type",
+              "value": "={{ $json['Vendor Type'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -860,
+        -100
+      ],
+      "id": "93280554-53e1-4941-9275-667fe3d057bd",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-21T16:55:11.000Z",
+  "versionId": "4a31276b-1b83-44aa-b4d9-3c951d101ae0"
+}
