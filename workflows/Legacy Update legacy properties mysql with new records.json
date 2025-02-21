@@ -87,8 +87,8 @@
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        -460,
-        360
+        -600,
+        340
       ],
       "credentials": {
         "imap": {
@@ -113,8 +113,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -300,
-        360
+        -400,
+        340
       ],
       "id": "0faa5f32-bd5c-4877-b0a0-2534349b1ac4"
     },
@@ -151,7 +151,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -100,
+        -160,
         340
       ]
     },
@@ -164,7 +164,7 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        80,
+        20,
         340
       ]
     },
@@ -197,6 +197,52 @@
         340
       ],
       "webhookId": "5aec25d3-799e-4679-867e-c2f365e94e14"
+    },
+    {
+      "parameters": {
+        "content": "## Get emailed Report and Process\nCustom Report combining Rent Roll and Unit Directory  with specified fields. \nConvert into readable data\n",
+        "height": 320,
+        "width": 800
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        220
+      ],
+      "id": "b1345bce-352b-415c-968f-b2f4cb3be9b7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Upload to file storage\n\nThis can be google drive or FTP\n",
+        "height": 320,
+        "width": 440,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        220
+      ],
+      "id": "64f31e16-9b70-44a4-abd2-095d1f39a4a5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Call Next Workflow",
+        "height": 320,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        600,
+        220
+      ],
+      "id": "7965186a-c0cb-4e98-b99d-84d81cd766ab",
+      "name": "Sticky Note2"
     }
   ],
   "pinData": {},
@@ -218,6 +264,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-02-08T16:13:00.000Z",
-  "versionId": "fb1fcb6e-cf33-4018-be87-e990b0b7b4a2"
+  "updatedAt": "2025-02-21T17:56:58.000Z",
+  "versionId": "0f01a43a-26a7-47d1-b980-4f9059b2518f"
 }
