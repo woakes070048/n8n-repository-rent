@@ -1,0 +1,205 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "ClickUp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ClickUp": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-16T12:37:14.744Z",
+  "id": "lZh4Sa3eu3mwudst",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Marketing Clickup Test",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -500,
+        0
+      ],
+      "id": "604fc998-bb32-4899-bdba-b1abd2553f51",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        -160
+      ],
+      "id": "c3493fa9-b05f-476c-a5cf-7060348940c4",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14oBHLRNAuSSYvLX3S10C0V8Swh9IRTONZ-qwptbc2JM",
+          "mode": "list",
+          "cachedResultName": "Manager Tasks",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14oBHLRNAuSSYvLX3S10C0V8Swh9IRTONZ-qwptbc2JM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14oBHLRNAuSSYvLX3S10C0V8Swh9IRTONZ-qwptbc2JM/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -280,
+        -80
+      ],
+      "id": "19e97c2d-5103-4b7f-8f9a-32baf3c0b467",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -60,
+        -80
+      ],
+      "id": "7f3a40b3-f963-48bf-a04b-9451b484b941",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get today's weekday (Monday = 1, ..., Friday = 5)\nconst today = new Date();\nconst weekday = today.getDay();  // Sunday = 0, Saturday = 6\n\nconst task = $input.first().json[\"Task Name\"];  // Current task from the loop\nconst isWeekday = weekday >= 1 && weekday <= 5;\n\n// Assign only if:\n// - Daily tasks should run on weekdays\n// - Weekly tasks should match today’s weekday\nif (\n    (task.Type === \"Daily\" && isWeekday) || \n    (task.Type === \"Weekly\" && task.WeekDay === today.toLocaleString('en-US', { weekday: 'long' }))\n) {\n    return [{ \n        \"Task Name\": task[\"Task Name\"],\n        \"Task Description\": task[\"Task Description\"],\n        \"Type\": task.Type,\n        \"WeekDay\": task.WeekDay || \"N/A\"\n    }];\n} else {\n    return [];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        140,
+        -60
+      ],
+      "id": "0ee7f83a-35f0-478d-9526-d196af2dd3ed",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "list",
+        "operation": "update",
+        "team": "9013538799",
+        "space": "90132244837",
+        "folderless": true,
+        "list": "901307099206",
+        "updateFields": {}
+      },
+      "type": "n8n-nodes-base.clickUp",
+      "typeVersion": 1,
+      "position": [
+        320,
+        -60
+      ],
+      "id": "b62c7028-cbec-4125-9b92-5fb5c03dffcb",
+      "name": "ClickUp",
+      "credentials": {
+        "clickUpOAuth2Api": {
+          "id": "MMXKRVuORWjahmXX",
+          "name": "ClickUp account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-23T14:31:26.000Z",
+  "versionId": "4c4569ba-e2f8-4317-b09b-3ea42f4200b3"
+}
