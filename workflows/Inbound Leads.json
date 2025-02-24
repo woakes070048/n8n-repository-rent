@@ -189,8 +189,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -140,
-        -20
+        -120,
+        -140
       ],
       "id": "b9c21abf-b19c-41fd-adc1-a9342fd59e2f",
       "name": "Google Sheets",
@@ -203,7 +203,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const emailText = $json[\"text\"]; // Get the plain text email\n\n// Define regex patterns\nconst namePattern = /CONTACT INFO[\\s\\S]*?\\n([A-Za-z]+)\\s([A-Za-z]+(?:\\s[A-Za-z]+)*)/;\nconst emailPattern = /([\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,})/;\nconst phonePattern = /\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}/;\nconst propertyPattern = /New Lead for\\s(.*?)\\n/;\nconst unitPattern = /unit\\s(\\d+-?\\d*)/;\nconst messagePattern = /COMMENTS\\s*\\n[-]+\\s*\\n([\\s\\S]*?)\\n\\s*Reply/;\nconst sourcePattern = /Source:\\s(.*?)\\n/;\n\n// Extract values using regex\nconst nameMatch = emailText.match(namePattern);\nconst emailMatch = emailText.match(emailPattern);\nconst phoneMatch = emailText.match(phonePattern);\nconst propertyMatch = emailText.match(propertyPattern);\nconst unitMatch = emailText.match(unitPattern);\nconst messageMatch = emailText.match(messagePattern);\nconst sourceMatch = emailText.match(sourcePattern);\n\n// Function to clean the last name and remove initials\nfunction cleanLastName(lastName) {\n    return lastName.replace(/\\b[A-Z]\\b/g, \"\").trim(); // Removes single-letter initials\n}\n\n// Process extracted name\nlet firstName = nameMatch ? nameMatch[1] : null;\nlet lastName = nameMatch ? cleanLastName(nameMatch[2]) : null;\n\n// Construct output object\nconst output = {\n  firstName: firstName,\n  lastName: lastName,\n  email: emailMatch ? emailMatch[1] : null,\n  phone: phoneMatch ? phoneMatch[0] : null,\n  property: propertyMatch ? propertyMatch[1] : null,\n  unit: unitMatch ? unitMatch[1] : null,\n  message: messageMatch ? messageMatch[1].trim().replace(/\\s+/g, \" \") : null,\n  source: sourceMatch ? sourceMatch[1].trim() : null\n};\n\n// Return extracted data\nreturn [output];\n"
+        "jsCode": "const emailText = $json[\"text\"]; // Get the plain text email\n\n// Define regex patterns\nconst namePattern = /CONTACT INFO[\\s\\S]*?\\n([A-Za-z]+)\\s([A-Za-z]+(?:\\s[A-Za-z]+)*)/;\nconst emailPattern = /([\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,})/;\nconst phonePattern = /\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}/;\nconst propertyPattern = /New Lead for\\s(.*?)\\n/;\nconst unitPattern = /unit\\s(\\d+-?\\d*)/;\nconst messagePattern = /COMMENTS\\s*\\n[-]+\\s*\\n([\\s\\S]*?)\\n\\s*Reply/;\nconst sourcePattern = /Source:\\s(.*?)\\n/;\n\n// Function to format names properly\nfunction formatName(name) {\n    return name\n        .replace(/\\b[A-Z]\\b/g, \"\") // Remove single-letter initials\n        .trim()\n        .toLowerCase()\n        .replace(/\\b\\w/g, char => char.toUpperCase()); // Capitalize first letter of each word\n}\n\n// Extract values using regex\nconst nameMatch = emailText.match(namePattern);\nconst emailMatch = emailText.match(emailPattern);\nconst phoneMatch = emailText.match(phonePattern);\nconst propertyMatch = emailText.match(propertyPattern);\nconst unitMatch = emailText.match(unitPattern);\nconst messageMatch = emailText.match(messagePattern);\nconst sourceMatch = emailText.match(sourcePattern);\n\n// Process extracted name\nlet firstName = nameMatch ? formatName(nameMatch[1]) : null;\nlet lastName = nameMatch ? formatName(nameMatch[2]) : null;\n\n// Construct output object\nconst output = {\n  firstName: firstName,\n  lastName: lastName,\n  email: emailMatch ? emailMatch[1] : null,\n  phone: phoneMatch ? phoneMatch[0] : null,\n  property: propertyMatch ? propertyMatch[1] : null,\n  unit: unitMatch ? unitMatch[1] : null,\n  message: messageMatch ? messageMatch[1].trim().replace(/\\s+/g, \" \") : null,\n  source: sourceMatch ? sourceMatch[1].trim() : null\n};\n\n// Return extracted data\nreturn [output];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -222,6 +222,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-23T15:17:32.000Z",
-  "versionId": "ef2e35df-c638-4c4c-861a-9d2bd61e25a1"
+  "updatedAt": "2025-02-24T12:11:13.000Z",
+  "versionId": "07b5742f-d2c2-447d-a9cb-191492ed8a97"
 }
