@@ -16,7 +16,7 @@
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Gmail",
             "type": "main",
             "index": 0
           }
@@ -83,28 +83,6 @@
         [
           {
             "node": "Code1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Monday.com2": {
-      "main": [
-        [
-          {
-            "node": "Gmail",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "Monday.com2",
             "type": "main",
             "index": 0
           }
@@ -350,41 +328,6 @@
       ],
       "id": "c9d23f49-656a-46e5-973f-59629b6d6f46",
       "name": "Assign_Fields"
-    },
-    {
-      "parameters": {
-        "resource": "boardItem",
-        "boardId": "8550223917",
-        "groupId": "topics",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.mondayCom",
-      "typeVersion": 1,
-      "position": [
-        40,
-        200
-      ],
-      "id": "68907a60-2b05-4492-b3ce-885e8f5aca3e",
-      "name": "Monday.com2",
-      "credentials": {
-        "mondayComApi": {
-          "id": "3npySVgJSrX7b9Wu",
-          "name": "Monday.com account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const moveOutItemId = $json[\"id\"];  // Extract the created item ID\nconst subItems = $json[\"subitems\"];  // Retrieve subitems from Set Node\n\n// Format subitems (only names, no preset column values)\nconst output = subItems.map(subItem => ({\n  json: {\n    parentItemId: moveOutItemId,\n    itemName: subItem  // Only the item name, users will set values manually\n  }\n}));\n\nreturn output;\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -400,
-        200
-      ],
-      "id": "b26da7ea-55fa-4a3f-bf1f-7b227876076f",
-      "name": "Code"
     }
   ],
   "pinData": {},
@@ -394,6 +337,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-24T20:56:02.000Z",
-  "versionId": "ae2c3012-2002-495b-9c3d-2067700e512d"
+  "updatedAt": "2025-02-26T12:00:27.000Z",
+  "versionId": "f7b60b89-f554-4bf4-ac65-d3ea1d599e34"
 }
