@@ -44,6 +44,17 @@
           }
         ]
       ]
+    },
+    "Monday.com": {
+      "main": [
+        [
+          {
+            "node": "Monday.com1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-02-25T22:49:56.406Z",
@@ -66,7 +77,7 @@
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        -1040,
+        -1100,
         -80
       ],
       "credentials": {
@@ -85,7 +96,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -820,
+        -940,
         -80
       ],
       "id": "9cd121f1-2421-49fa-b709-b8608cbd95c6",
@@ -98,7 +109,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -600,
+        -760,
         -80
       ],
       "id": "43da9b81-797f-4c3e-a8f5-03c50d4347b2",
@@ -121,6 +132,19 @@
     },
     {
       "parameters": {
+        "jsCode": "const records = $input.all(); // Get all records from previous node\n\n// Function to ensure Move-out is formatted correctly\nfunction formatMoveOutDate(date) {\n    if (!date) return \"\";\n    return date.includes(\"/\") ? date : new Date(date).toISOString().split(\"T\")[0]; // Converts to YYYY-MM-DD if needed\n}\n\n// Process only records with a valid Move-out date\nconst formattedRecords = records\n    .map(record => record.json) // Extract JSON from input\n    .filter(record => record[\"Move-out\"]) // Keep only records with a Move-out date\n    .map(record => {\n        // Ensure First Name and Last Name are not undefined\n        const firstName = record[\"First Name\"] ? record[\"First Name\"].trim() : \"\";\n        const lastName = record[\"Last Name\"] ? record[\"Last Name\"].trim() : \"\";\n        const residentName = `${firstName} ${lastName}`.trim(); // Trim spaces in case one is missing\n\n        // Ensure Property Name is not undefined\n        const propertyName = record[\"Property Name\"] || \"\";\n\n        // Format Move-out date correctly\n        const moveOutFormatted = formatMoveOutDate(record[\"Move-out\"]);\n\n        // Manually create JSON string for Monday.com, ensuring no trailing commas\n        const columnValuesObject = {\n            \"text_mknfdxg0\": residentName, // Resident Name\n            \"text_mknfm8c8\": propertyName, // Property Name\n            \"date4\": { \"date\": moveOutFormatted }, // Move-out Date\n            \"text_mknf4476\": `${record[\"Tenant Street Address 1\"] || \"\"}, ${record[\"Tenant City\"] || \"\"}, ${record[\"Tenant State\"] || \"\"} ${record[\"Tenant Zip\"] || \"\"}`.trim(), // Full Address\n            \"text_mknfsn9v\": record[\"Move-out Reason\"] || \"\", // Move-out Reason\n            \"text_mknfkj1x\": record[\"Forwarding Address\"] || \"\", // Forwarding Address\n            \"status\": { \"index\": 0 }, // Status\n            \"boolean_mknfa9m0\": { \"checked\": false } // Boolean Field\n        };\n\n        return {\n            json: {\n                itemName: `${propertyName} - ${residentName}`.trim(), // ✅ Ensure itemName is always defined\n                columnValues: JSON.stringify(columnValuesObject) // ✅ Convert to a JSON string properly\n            }\n        };\n    });\n\n// Output JSON formatted for Monday.com\nreturn formattedRecords;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -580,
+        -80
+      ],
+      "id": "987d08ca-31ad-4961-bd24-2b1fc8f6bc57",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
         "resource": "boardItem",
         "boardId": "8550223917",
         "groupId": "topics",
@@ -132,10 +156,10 @@
       "type": "n8n-nodes-base.mondayCom",
       "typeVersion": 1,
       "position": [
-        -160,
+        60,
         -80
       ],
-      "id": "7c7e3831-564d-4b0d-a9dc-1da698ec4161",
+      "id": "6cd549e2-9a2d-4fd0-82f3-2b5eec0a8341",
       "name": "Monday.com",
       "credentials": {
         "mondayComApi": {
@@ -146,16 +170,27 @@
     },
     {
       "parameters": {
-        "jsCode": "const records = $input.all(); // Get all records from previous node\n\n// Process only records with a valid Move-out date\nconst formattedRecords = records\n    .map(record => record.json) // Extract JSON from input\n    .filter(record => record[\"Move-out\"]) // Keep only records with a Move-out date\n    .map(record => {\n        const columnValues = {\n            \"text_mknfdxg0\": `${record[\"First Name\"]} ${record[\"Last Name\"]}`.trim(), // Resident Name\n            \"text_mknfm8c8\": record[\"Property Name\"] || \"\", // Property Name\n            \"date4\": { \"date\": record[\"Move-out\"] }, // Move-out Date\n            \"text_mknf4476\": `${record[\"Tenant Street Address 1\"]}, ${record[\"Tenant City\"]}, ${record[\"Tenant State\"]} ${record[\"Tenant Zip\"]}`.trim(), // Full Address\n            \"text_mknfsn9v\": record[\"Move-out Reason\"] || \"\", // Move-out Reason\n            \"text_mknfkj1x\": record[\"Forwarding Address\"] || \"\", // Forwarding Address\n            \"status\": { \"index\": 0 }, // Status\n            \"boolean_mknfa9m0\": { \"checked\": false } // Boolean Field\n        };\n\n        return {\n            json: {\n                itemName: `${record[\"Property Name\"]} - ${record[\"First Name\"]} ${record[\"Last Name\"]}`.trim(),\n                columnValues: JSON.stringify(columnValues) // Ensure JSON format\n            }\n        };\n    });\n\n// Output JSON formatted for Monday.com\nreturn formattedRecords;\n"
+        "resource": "boardItem",
+        "operation": "changeColumnValue",
+        "boardId": "8550223917",
+        "itemId": "={{ $json.id }}",
+        "columnId": "date4",
+        "value": "={{ $('Edit Fields').item.json[\"Move-out\"] }}\n"
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
       "position": [
-        -380,
+        340,
         -80
       ],
-      "id": "987d08ca-31ad-4961-bd24-2b1fc8f6bc57",
-      "name": "Code1"
+      "id": "f194029c-e22b-4da3-a910-28aeb6b8c3e7",
+      "name": "Monday.com1",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -165,6 +200,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-25T23:31:07.000Z",
-  "versionId": "74e6577b-bcc0-4540-a51b-e41f2558f278"
+  "updatedAt": "2025-02-26T14:55:34.000Z",
+  "versionId": "b0f662a2-d1f5-4d38-9414-15882084f402"
 }
