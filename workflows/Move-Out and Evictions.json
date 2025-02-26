@@ -1,0 +1,170 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Monday.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-25T22:49:56.406Z",
+  "id": "HQKxB5jriXE6ytQa",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Move-Out and Evictions",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Tenant Status Export\"]]"
+        }
+      },
+      "id": "110f5058-0810-45a1-bd29-51990b76c65c",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -1040,
+        -80
+      ],
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -820,
+        -80
+      ],
+      "id": "9cd121f1-2421-49fa-b709-b8608cbd95c6",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all(); // Get all records from previous node\n\n// Function to format phone numbers\nfunction formatPhoneNumber(phone) {\n    if (!phone) return \"\";\n    let cleaned = phone.replace(/[^0-9]/g, \"\"); // Remove non-numeric characters\n    if (cleaned.length === 10) return `(${cleaned.slice(0,3)}) ${cleaned.slice(3,6)}-${cleaned.slice(6)}`;\n    if (cleaned.length === 11 && cleaned.startsWith(\"1\")) return `+1 (${cleaned.slice(1,4)}) ${cleaned.slice(4,7)}-${cleaned.slice(7)}`;\n    return cleaned; // Return cleaned if it's not a standard 10/11-digit US number\n}\n\n// Function to convert Excel date codes to MM/DD/YYYY format\nfunction excelDateToMMDDYYYY(serial) {\n    if (!serial || isNaN(serial)) return \"\";\n    const excelEpoch = new Date(1899, 11, 30); // Excel date epoch\n    const date = new Date(excelEpoch.getTime() + serial * 86400000); // Convert serial to date\n    return `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${date.getFullYear()}`;\n}\n\n// Function to keep only the first email in the \"Emails\" field\nfunction getFirstEmail(emailField) {\n    if (!emailField) return \"\";\n    const emails = emailField.split(/[,;\\s]+/); // Split by commas, semicolons, or spaces\n    return emails.length > 0 ? emails[0].trim() : \"\";\n}\n\n// Process records\nconst formattedRecords = records\n    .map(record => record.json) // Extract JSON from input\n    .filter(record => record[\"Tenant Type\"] === \"Financially Responsible\") // Filter Tenant Type\n    .map(record => ({\n        ...record,\n        \"Phone Numbers\": formatPhoneNumber(record[\"Phone Numbers\"]), // Format phone numbers\n        \"Lease To\": excelDateToMMDDYYYY(record[\"Lease To\"]), // Convert Lease To date\n        \"Move-in\": excelDateToMMDDYYYY(record[\"Move-in\"]), // Convert Move-in date\n        \"Move-out\": excelDateToMMDDYYYY(record[\"Move-out\"]), // Convert Move-in date\n        \"Emails\": getFirstEmail(record[\"Emails\"]) // Keep only the first email\n    }));\n\nreturn formattedRecords.map(json => ({ json }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        -80
+      ],
+      "id": "43da9b81-797f-4c3e-a8f5-03c50d4347b2",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "content": "## Move-Out and Eviction Flow to Monday\n\nWorkflow pulls new emailed report from reports@blzres.net extracts and formats data. \n\nTodo:\n\nadd a monday.com node to update records with new data based on Tenant ID field. \n",
+        "height": 460,
+        "width": 320
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        100,
+        -360
+      ],
+      "id": "42609fdb-34a8-4b49-b10e-4b5d88bcdf92",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8550223917",
+        "groupId": "topics",
+        "name": "={{ $json.itemName }}",
+        "additionalFields": {
+          "columnValues": "={{ $json.columnValues }}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -80
+      ],
+      "id": "7c7e3831-564d-4b0d-a9dc-1da698ec4161",
+      "name": "Monday.com",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all(); // Get all records from previous node\n\n// Process only records with a valid Move-out date\nconst formattedRecords = records\n    .map(record => record.json) // Extract JSON from input\n    .filter(record => record[\"Move-out\"]) // Keep only records with a Move-out date\n    .map(record => {\n        const columnValues = {\n            \"text_mknfdxg0\": `${record[\"First Name\"]} ${record[\"Last Name\"]}`.trim(), // Resident Name\n            \"text_mknfm8c8\": record[\"Property Name\"] || \"\", // Property Name\n            \"date4\": { \"date\": record[\"Move-out\"] }, // Move-out Date\n            \"text_mknf4476\": `${record[\"Tenant Street Address 1\"]}, ${record[\"Tenant City\"]}, ${record[\"Tenant State\"]} ${record[\"Tenant Zip\"]}`.trim(), // Full Address\n            \"text_mknfsn9v\": record[\"Move-out Reason\"] || \"\", // Move-out Reason\n            \"text_mknfkj1x\": record[\"Forwarding Address\"] || \"\", // Forwarding Address\n            \"status\": { \"index\": 0 }, // Status\n            \"boolean_mknfa9m0\": { \"checked\": false } // Boolean Field\n        };\n\n        return {\n            json: {\n                itemName: `${record[\"Property Name\"]} - ${record[\"First Name\"]} ${record[\"Last Name\"]}`.trim(),\n                columnValues: JSON.stringify(columnValues) // Ensure JSON format\n            }\n        };\n    });\n\n// Output JSON formatted for Monday.com\nreturn formattedRecords;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -80
+      ],
+      "id": "987d08ca-31ad-4961-bd24-2b1fc8f6bc57",
+      "name": "Code1"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-25T23:31:07.000Z",
+  "versionId": "74e6577b-bcc0-4540-a51b-e41f2558f278"
+}
