@@ -1,0 +1,266 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Monday.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Monday.com1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-26T21:59:47.811Z",
+  "id": "RmGxpAdtIHlrcOSC",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 12",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "Recap of your meeting with socotracapital.com"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        0
+      ],
+      "id": "db226cc1-7a2d-4644-825b-9c17c34c7ef5",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Extract task or action items from the text and output for monday.com task list. {{ $json.text }} output in format JSON that monday.com can read. "
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -400,
+        0
+      ],
+      "id": "c53ebf20-4b68-4f5e-be38-5dc3a73920d2",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8578853242",
+        "groupId": "topics",
+        "name": "={{ $json.message.content.tasks[0].name }}",
+        "additionalFields": {
+          "columnValues": "={{ $json.message.content.tasks[0].description }}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        0
+      ],
+      "id": "1faa7f20-1004-4980-a719-11886afbbe4b",
+      "name": "Monday.com",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "Recap of your meeting with socotracapital.com"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -820,
+        -240
+      ],
+      "id": "7132597c-d24f-453d-b65f-19d9ed87c9c5",
+      "name": "Gmail Trigger1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Extract task items from the email text and output in JSON format suitable for Monday.com. Ensure each task has 'name' and 'description'. {{ $json.text }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -580,
+        -240
+      ],
+      "id": "1d8ef556-c6a3-44f0-9241-054c8393977b",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8578853242",
+        "groupId": "topics",
+        "name": "={{ $json.name }}",
+        "additionalFields": {
+          "columnValues": "={{ $json.columnValues }}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        200,
+        -220
+      ],
+      "id": "2af17869-12e5-45e4-897f-3b441bcb3148",
+      "name": "Monday.com1",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract tasks from OpenAI response\nconst tasks = $json.message.content.tasks || [];\n\n// Ensure tasks array is present\nif (!Array.isArray(tasks) || tasks.length === 0) {\n  return [{ json: { error: \"No tasks found in email summary.\" } }];\n}\n\n// Format each task for Monday.com\nreturn tasks.map(task => ({\n  json: {\n    name: task.name,\n    columnValues: JSON.stringify({\n      \"status\": { \"label\": \"Pending\" },\n      \"details\": task.description,\n      \"due_date\": { \"date\": new Date().toISOString().split('T')[0] }\n    })\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        -240
+      ],
+      "id": "9ab10d7f-4f00-4ca9-a50e-4e666a6d46ab",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-26T23:06:39.000Z",
+  "versionId": "12c09d49-30fa-46d1-b3a7-8094a5dd5df3"
+}
