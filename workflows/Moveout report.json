@@ -1,0 +1,180 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Format Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data": {
+      "main": [
+        [
+          {
+            "node": "Filter Valid Move-out Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Move-out Records": {
+      "main": [
+        [
+          {
+            "node": "Format Data for Monday.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data for Monday.com": {
+      "main": [
+        [
+          {
+            "node": "Monday.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-27T13:35:33.376Z",
+  "id": "MJMo6pNRIqtvkmPb",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Moveout report",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Tenant Status Export\"]]"
+        }
+      },
+      "id": "87b4c3f4-581e-47a4-ae6a-b39a639bae62",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -340,
+        -140
+      ],
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        -140
+      ],
+      "id": "18ba3e86-026c-4bb4-b55f-95bca3b9da73",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\n// Function to format Move-out Date correctly\nfunction formatMoveOutDate(date) {\n    if (!date) return null; // If null or undefined, return null\n    \n    // If it's a number (Excel date format), convert to a real date\n    if (typeof date === \"number\") {\n        const excelEpoch = new Date(1899, 11, 30);\n        const convertedDate = new Date(excelEpoch.getTime() + date * 86400000);\n        return convertedDate.toISOString().split(\"T\")[0]; // Returns YYYY-MM-DD\n    }\n\n    // If it's already a valid date string, return it\n    if (typeof date === \"string\" && !isNaN(Date.parse(date))) {\n        return new Date(date).toISOString().split(\"T\")[0];\n    }\n\n    return null; // If it's an invalid format, return null\n}\n\n// Process records\nconst formattedRecords = records\n    .map(record => record.json)\n    .map(record => ({\n        json: {\n            \"First Name\": record[\"First Name\"] || \"\",\n            \"Last Name\": record[\"Last Name\"] || \"\",\n            \"Property Name\": record[\"Property Name\"] || \"\",\n            \"Move-out\": formatMoveOutDate(record[\"Move-out\"]),\n            \"Forwarding Address\": record[\"Forwarding Address\"] || \"\",\n            \"Tenant Street Address 1\": record[\"Tenant Street Address 1\"] || \"\",\n            \"Tenant City\": record[\"Tenant City\"] || \"\",\n            \"Tenant State\": record[\"Tenant State\"] || \"\",\n            \"Tenant Zip\": record[\"Tenant Zip\"] || \"\"\n        }\n    }));\n\nreturn formattedRecords;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -140
+      ],
+      "id": "0355cc19-067e-451c-b71d-1ff63181cb11",
+      "name": "Format Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\nconst filteredRecords = records\n    .map(record => record.json)\n    .filter(record => record[\"Move-out\"]);\n\nreturn filteredRecords.map(json => ({ json }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        180,
+        -140
+      ],
+      "id": "26fdf8cf-54d1-4277-a14b-512457261eda",
+      "name": "Filter Valid Move-out Records"
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8550223917",
+        "groupId": "topics",
+        "name": "={{ $json.itemName }}",
+        "additionalFields": {
+          "columnValues": "={{ JSON.stringify($json.columnValues) }}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        580,
+        -140
+      ],
+      "id": "08ea753a-deda-4608-b3f0-78af7219ac01",
+      "name": "Monday.com",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\n// Process records to format them properly\nconst formattedRecords = records.map(record => {\n    const data = record.json;\n\n    // Ensure First Name, Last Name, and Property Name are defined\n    const firstName = data[\"First Name\"] ? data[\"First Name\"].trim() : \"Unknown\";\n    const lastName = data[\"Last Name\"] ? data[\"Last Name\"].trim() : \"\";\n    const residentName = `${firstName} ${lastName}`.trim();\n    const propertyName = data[\"Property Name\"] || \"Unknown Property\";\n\n    // Construct item name\n    const itemName = `${propertyName} - ${residentName}`;\n\n    // Format address properly\n    const fullAddress = `${data[\"Tenant Street Address 1\"] || \"\"}, ${data[\"Tenant City\"] || \"\"}, ${data[\"Tenant State\"] || \"\"} ${data[\"Tenant Zip\"] || \"\"}`.trim();\n\n    // Construct column values object for Monday.com\n    const columnValuesObject = {\n        \"status\": { \"index\": 0 },  // Status column (set default index)\n        \"date4\": { \"date\": data[\"Move-out\"] || \"\" }, // Move-out Date\n        \"text_mknfm8c8\": propertyName, // Property Name\n        \"text_mknfdxg0\": residentName, // Resident Name\n        \"boolean_mknfa9m0\": { \"checked\": false }, // eReturn Checkbox\n        \"text_mknf4476\": fullAddress, // Full Tenant Address\n        \"text_mknfkj1x\": data[\"Forwarding Address\"] || \"\" // Forwarding Address\n    };\n\n    return {\n        json: {\n            itemName: itemName, // Ensure this is always a valid string\n            columnValues: columnValuesObject // This remains an object for Monday.com\n        }\n    };\n});\n\nreturn formattedRecords;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        360,
+        -140
+      ],
+      "id": "dcbc5979-a066-42b9-9c96-bc1033737fa3",
+      "name": "Format Data for Monday.com"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-27T14:21:43.000Z",
+  "versionId": "0768cc93-6d66-43e4-86ae-6192b0b8edb8"
+}
