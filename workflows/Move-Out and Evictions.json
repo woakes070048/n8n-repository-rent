@@ -38,7 +38,7 @@
       "main": [
         [
           {
-            "node": "Monday.com",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -47,9 +47,14 @@
     },
     "Monday.com": {
       "main": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
         [
           {
-            "node": "Monday.com1",
+            "node": "Monday.com",
             "type": "main",
             "index": 0
           }
@@ -132,7 +137,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const records = $input.all(); // Get all records from previous node\n\n// Function to ensure Move-out is formatted correctly\nfunction formatMoveOutDate(date) {\n    if (!date) return \"\";\n    return date.includes(\"/\") ? date : new Date(date).toISOString().split(\"T\")[0]; // Converts to YYYY-MM-DD if needed\n}\n\n// Process only records with a valid Move-out date\nconst formattedRecords = records\n    .map(record => record.json) // Extract JSON from input\n    .filter(record => record[\"Move-out\"]) // Keep only records with a Move-out date\n    .map(record => {\n        // Ensure First Name and Last Name are not undefined\n        const firstName = record[\"First Name\"] ? record[\"First Name\"].trim() : \"\";\n        const lastName = record[\"Last Name\"] ? record[\"Last Name\"].trim() : \"\";\n        const residentName = `${firstName} ${lastName}`.trim(); // Trim spaces in case one is missing\n\n        // Ensure Property Name is not undefined\n        const propertyName = record[\"Property Name\"] || \"\";\n\n        // Format Move-out date correctly\n        const moveOutFormatted = formatMoveOutDate(record[\"Move-out\"]);\n\n        // Manually create JSON string for Monday.com, ensuring no trailing commas\n        const columnValuesObject = {\n            \"text_mknfdxg0\": residentName, // Resident Name\n            \"text_mknfm8c8\": propertyName, // Property Name\n            \"date4\": { \"date\": moveOutFormatted }, // Move-out Date\n            \"text_mknf4476\": `${record[\"Tenant Street Address 1\"] || \"\"}, ${record[\"Tenant City\"] || \"\"}, ${record[\"Tenant State\"] || \"\"} ${record[\"Tenant Zip\"] || \"\"}`.trim(), // Full Address\n            \"text_mknfsn9v\": record[\"Move-out Reason\"] || \"\", // Move-out Reason\n            \"text_mknfkj1x\": record[\"Forwarding Address\"] || \"\", // Forwarding Address\n            \"status\": { \"index\": 0 }, // Status\n            \"boolean_mknfa9m0\": { \"checked\": false } // Boolean Field\n        };\n\n        return {\n            json: {\n                itemName: `${propertyName} - ${residentName}`.trim(), // ✅ Ensure itemName is always defined\n                columnValues: JSON.stringify(columnValuesObject) // ✅ Convert to a JSON string properly\n            }\n        };\n    });\n\n// Output JSON formatted for Monday.com\nreturn formattedRecords;\n"
+        "jsCode": "const records = $input.all(); // Get all records from previous node\n\n// Function to format dates to YYYY-MM-DD\nfunction formatMoveOutDate(date) {\n    if (!date) return null;\n    return date.includes(\"/\") ? date : new Date(date).toISOString().split(\"T\")[0]; \n}\n\n// Process only records with a valid Move-out date\nconst formattedRecords = records\n    .map(record => record.json)\n    .filter(record => record[\"Move-out\"]) // Keep only records with a Move-out date\n    .map(record => {\n        // Ensure First Name and Last Name are not undefined\n        const firstName = record[\"First Name\"] ? record[\"First Name\"].trim() : \"\";\n        const lastName = record[\"Last Name\"] ? record[\"Last Name\"].trim() : \"\";\n        const residentName = `${firstName} ${lastName}`.trim();\n\n        // Ensure Property Name is not undefined\n        const propertyName = record[\"Property Name\"] || \"\";\n\n        // Format Move-out date correctly\n        const moveOutFormatted = formatMoveOutDate(record[\"Move-out\"]);\n\n        // Create a valid JSON object (DO NOT STRINGIFY)\n        const columnValuesObject = {\n            \"status\": { \"index\": 0 }, // Default status\n            \"date4\": { \"date\": moveOutFormatted }, // Move-out Date\n            \"text_mknfm8c8\": propertyName, // Property Name\n            \"text_mknfdxg0\": residentName, // Resident Name\n            \"boolean_mknfa9m0\": { \"checked\": false }, // eReturn\n            \"text_mknf4476\": record[\"Tenant Street Address 1\"] ? \n                `${record[\"Tenant Street Address 1\"]}, ${record[\"Tenant City\"]}, ${record[\"Tenant State\"]} ${record[\"Tenant Zip\"]}`.trim() : null, // Full Address\n            \"text_mknfkj1x\": record[\"Forwarding Address\"] || null, // Forwarding Address\n            \"text_mknfsn9v\": record[\"Move-out Reason\"] || null // Move-out Reason\n        };\n\n        return {\n            json: {\n                itemName: `${propertyName} - ${residentName}`.trim(),\n                columnValues: columnValuesObject // ✅ DO NOT STRINGIFY - Must remain an object!\n            }\n        };\n    });\n\nreturn formattedRecords;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -150,17 +155,18 @@
         "groupId": "topics",
         "name": "={{ $json.itemName }}",
         "additionalFields": {
-          "columnValues": "={{ $json.columnValues }}"
+          "columnValues": "={{ $json.columnValues }}\n"
         }
       },
       "type": "n8n-nodes-base.mondayCom",
       "typeVersion": 1,
       "position": [
-        60,
+        -100,
         -80
       ],
       "id": "6cd549e2-9a2d-4fd0-82f3-2b5eec0a8341",
       "name": "Monday.com",
+      "alwaysOutputData": true,
       "credentials": {
         "mondayComApi": {
           "id": "3npySVgJSrX7b9Wu",
@@ -170,27 +176,32 @@
     },
     {
       "parameters": {
-        "resource": "boardItem",
-        "operation": "changeColumnValue",
-        "boardId": "8550223917",
-        "itemId": "={{ $json.id }}",
-        "columnId": "date4",
-        "value": "={{ $('Edit Fields').item.json[\"Move-out\"] }}\n"
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4aab0d44-fbce-4381-a4c6-4e71ee38f9b0",
+              "name": "itemName",
+              "value": "={{ $json.itemName }}",
+              "type": "string"
+            },
+            {
+              "id": "350412bc-3e77-4c64-bae4-51d8dae2ad16",
+              "name": "columnValues",
+              "value": "={{ $json.columnValues }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.mondayCom",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
       "position": [
-        340,
+        -360,
         -80
       ],
-      "id": "f194029c-e22b-4da3-a910-28aeb6b8c3e7",
-      "name": "Monday.com1",
-      "credentials": {
-        "mondayComApi": {
-          "id": "3npySVgJSrX7b9Wu",
-          "name": "Monday.com account"
-        }
-      }
+      "id": "ac1ac4fe-1fb7-4a80-8f5c-777f8f989b11",
+      "name": "Edit Fields"
     }
   ],
   "pinData": {},
@@ -200,6 +211,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-26T14:55:34.000Z",
-  "versionId": "b0f662a2-d1f5-4d38-9414-15882084f402"
+  "updatedAt": "2025-02-27T13:35:22.000Z",
+  "versionId": "003760f7-de40-4986-a2a0-f47e75f754b5"
 }
