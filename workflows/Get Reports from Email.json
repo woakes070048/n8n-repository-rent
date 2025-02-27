@@ -1,0 +1,631 @@
+{
+  "active": false,
+  "connections": {
+    "Setup1": {
+      "main": [
+        [
+          {
+            "node": "Upload PDF to Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Output": {
+      "main": [
+        [
+          {
+            "node": "Append to Reconciliation Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Apply Data Extraction Rules",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rename file1": {
+      "main": [
+        [
+          {
+            "node": "Move to the correct folder1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File2": {
+      "main": [
+        [
+          {
+            "node": "Apply Data Extraction Rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload PDF to Drive1": {
+      "main": [
+        [
+          {
+            "node": "Rename file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Apply Data Extraction Rules",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Data Extraction Rules": {
+      "main": [
+        [
+          {
+            "node": "Map Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to the correct folder1": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Only invoice mails with attachments from a defined email": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Do nothing on other emails1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Setup1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-27T16:26:46.103Z",
+  "id": "Tke1t9iMxVxCXw74",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Get Reports from Email",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Setup Instructions\n\n1. **Gmail and Google Drive Setup**:\n   - Go to n8n credentials and connect your Gmail account\n   - Connect your Google Drive account with appropriate permissions\n   - Ensure you have a destination folder created in Google Drive (current ID: 1fCWCdqrFP3WrjjLc-gJtxMaiaF5lh8Ko)\n\n2. **Google Sheets Setup**:\n   - Connect your Google Sheets account\n   - Create or use an existing spreadsheet for invoice data (current ID: 1gIUnjSWUhsoTOVVd4ZoVjARCGQfGE8s7FWcju3lNajM)\n   - Ensure the spreadsheet has columns for: Invoice date, Invoice Description, Total price, and Fichero\n\n3. **OpenAI Setup**:\n   - Add your OpenAI API key to n8n credentials\n   - The workflow uses GPT-4o for invoice data extraction\n\n4. **Configure Email Filter**:\n   - Update the email filter in the 'Only invoice mails with attachments' node to match your needs\n   - Current filter is set to 'test@gmail.com'",
+        "height": 440
+      },
+      "id": "668214e6-85aa-4ef4-b749-10e2a0b89ce6",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        160,
+        40
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {},
+      "id": "d13b7469-1481-4182-9bb1-24144f89886e",
+      "name": "Do nothing on other emails1",
+      "type": "n8n-nodes-base.noOp",
+      "position": [
+        740,
+        660
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4cca07a2-6a70-4011-a025-65246e652fb9",
+              "name": "url_to_drive_folder",
+              "type": "string",
+              "value": "1cYDmdEBMuMj1tSz9-coDMMLkCX-5VLAm"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "9252001b-264c-4304-b0d0-8314f72be0c2",
+      "name": "Setup1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        500,
+        520
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/upload/drive/v3/files",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "uploadType",
+              "value": "media"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "attachment_0",
+        "options": {}
+      },
+      "id": "ed7c9038-8ff8-4a02-b107-9e606d0cd42b",
+      "name": "Upload PDF to Drive1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        960,
+        460
+      ],
+      "retryOnFail": true,
+      "typeVersion": 4.2,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "newUpdatedFileName": "={{ $('Gmail').item.json.date }}rent_roll.xlsx",
+        "options": {}
+      },
+      "id": "866fdfa0-aa72-46b4-bccf-32aa184a58af",
+      "name": "Rename file1",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1140,
+        460
+      ],
+      "typeVersion": 3,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive",
+          "cachedResultName": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1cYDmdEBMuMj1tSz9-coDMMLkCX-5VLAm",
+          "mode": "id"
+        }
+      },
+      "id": "ba1dd653-91aa-4c09-b84b-2875908ef6fd",
+      "name": "Move to the correct folder1",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1320,
+        460
+      ],
+      "typeVersion": 3,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "a26a2753-691a-493c-8c7b-0daeb263d245",
+      "name": "Extract from File2",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        1940,
+        280
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {
+          "temperature": 0
+        }
+      },
+      "id": "f49098d5-a868-4dd6-a629-ca7f97e7722e",
+      "name": "OpenAI Model",
+      "type": "@n8n/n8n-nodes-langchain.lmOpenAi",
+      "position": [
+        2480,
+        480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsonSchema": "{\n  \"Invoice date\": { \"type\": \"date\" },\n  \"Invoice description\": { \"type\": \"string\" },\n  \"Total price\": { \"type\": \"number\" },\n  \"Fichero\": { \"type\": \"string\" }\n}"
+      },
+      "id": "3a7bc4ae-0e7b-45a1-a4b1-035c5e3c0f02",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        2680,
+        500
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1gIUnjSWUhsoTOVVd4ZoVjARCGQfGE8s7FWcju3lNajM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gIUnjSWUhsoTOVVd4ZoVjARCGQfGE8s7FWcju3lNajM/edit?usp=drivesdk",
+          "cachedResultName": "facturas"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "id",
+          "value": "gid=0"
+        },
+        "columns": {
+          "value": {},
+          "schema": [
+            {
+              "id": "Invoice date",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Invoice date",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Invoice Description",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Invoice Description",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total price",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Total price",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fichero",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Fichero",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "autoMapInputData",
+          "matchingColumns": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "9939d5a3-6921-443d-8bbf-ede73e0516c4",
+      "name": "Append to Reconciliation Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        3020,
+        320
+      ],
+      "typeVersion": 4.3
+    },
+    {
+      "parameters": {
+        "content": "## 3. Use LLMs to Extract Values from Data\n[Read more about Basic LLM Chain](https://docs.n8n.io/integrations/builtin/cluster-nodes/root-nodes/n8n-nodes-langchain.chainllm/)\n\nLarge language models are perfect for data extraction tasks as they can work across a range of document layouts without human intervention. The extracted data can then be sent to a variety of datastores such as spreadsheets, accounting systems and/or CRMs.\n\n**Tip:** The \"Structured Output Parser\" ensures the AI output can be\ninserted to our spreadsheet without additional clean up and/or formatting. ",
+        "height": 656.5014186128178,
+        "width": 805.0578351924228,
+        "color": 7
+      },
+      "id": "578d89e9-380e-423a-bd51-812a6c72b568",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2420,
+        60
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json.output }}",
+        "options": {}
+      },
+      "id": "18c7e6c7-f6d7-4df2-8864-37c83ba2b969",
+      "name": "Map Output",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2820,
+        320
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Given the following invoice in the <invoice> xml tags, extract the following information as listed below.\nIf you cannot the information for a specific item, then leave blank and skip to the next. \n\n* Invoice date\n* Invoice Description: {{ $('Rename file1').item.json.name }}\n* Total price\n* Fichero: =HYPERLINK(\"https://drive.google.com/file/d/{{ $('Move to the correct folder1').item.json.id }}/view\", \"Ver Documento\")\n\n\n<invoice>{{ $json.text }}</invoice>",
+        "hasOutputParser": true
+      },
+      "id": "6db2d806-0dd5-4ae5-88ce-28c82a043bb4",
+      "name": "Apply Data Extraction Rules",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        2480,
+        320
+      ],
+      "typeVersion": 1.4
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\n**Need more attributes?**\nChange it here!",
+        "height": 213.73043662572252,
+        "width": 192.26896179623753
+      },
+      "id": "289f7190-2d3e-4bf1-9011-4387bffc32a9",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2720,
+        580
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 1,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "id": "229200d1-ec13-4970-ae0e-2c8e17da0bdf",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "test@gmail.com"
+            },
+            {
+              "id": "new-condition",
+              "operator": {
+                "type": "boolean",
+                "operation": "isNotEmpty"
+              },
+              "leftValue": "={{ $json.attachments }}"
+            },
+            {
+              "id": "0d5d769e-a043-42ec-9ff3-70aa1ff0e9b1",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "leftValue": "={{ $json.from.value[0].address }}",
+              "rightValue": "test@gmail.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "232c1585-51ee-44b8-af3e-b76f70c6284f",
+      "name": "Only invoice mails with attachments from a defined email",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        780,
+        860
+      ],
+      "typeVersion": 2.1
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger1').item.json.id }}"
+      },
+      "id": "6b5986bb-2661-4042-a820-dfcf3b76a1d8",
+      "name": "Gmail1",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1980,
+        460
+      ],
+      "webhookId": "556cbee3-8de0-4645-9e91-e7c0c252f2ab",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "options": {}
+      },
+      "id": "bedb0bd2-9c2e-49ea-9d2f-be3d68dc6471",
+      "name": "Google Drive1",
+      "type": "n8n-nodes-base.googleDrive",
+      "position": [
+        1540,
+        460
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        580
+      ],
+      "id": "54665d06-121a-43d5-afab-40cfe20f85b3",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "simple": false,
+        "filters": {
+          "q": "\"** Report Courtyard ** Weekly Rent Roll\" "
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        260,
+        540
+      ],
+      "id": "36adcfe3-dbfe-4cd3-a1ab-ba60925c00cb",
+      "name": "Gmail",
+      "webhookId": "e4cd7410-5ce9-4b15-9388-43efdaaaf7be",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-27T17:01:21.000Z",
+  "versionId": "68081da8-28a9-48bb-9c02-e62da7187b2a"
+}
