@@ -1,0 +1,230 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Format Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data": {
+      "main": [
+        [
+          {
+            "node": "Get Existing Monday.com Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Move-out Records": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Existing Monday.com Items1": {
+      "main": [
+        [
+          {
+            "node": "Filter Valid Move-out Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-27T14:22:00.012Z",
+  "id": "EdKY3jIL6aww5Gcs",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Move Out Report New Only",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Tenant Status Export\"]]"
+        }
+      },
+      "id": "979fd681-28e9-4b0c-81c0-72cbb5d4b8d5",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        100,
+        240
+      ],
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        360,
+        240
+      ],
+      "id": "219f0656-c144-499f-be61-58f5bf1e6f89",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\n// Function to format Move-out Date correctly\nfunction formatMoveOutDate(date) {\n    if (!date) return null;\n    if (typeof date === \"number\") {\n        const excelEpoch = new Date(1899, 11, 30);\n        const convertedDate = new Date(excelEpoch.getTime() + date * 86400000);\n        return convertedDate.toISOString().split(\"T\")[0];\n    }\n    if (typeof date === \"string\" && !isNaN(Date.parse(date))) {\n        return new Date(date).toISOString().split(\"T\")[0];\n    }\n    return null;\n}\n\nconst formattedRecords = records\n    .map(record => record.json)\n    .map(record => ({\n        json: {\n            \"First Name\": record[\"First Name\"] || \"\",\n            \"Last Name\": record[\"Last Name\"] || \"\",\n            \"Property Name\": record[\"Property Name\"] || \"\",\n            \"Move-out\": formatMoveOutDate(record[\"Move-out\"]),\n            \"Forwarding Address\": record[\"Forwarding Address\"] || \"\",\n            \"Tenant Street Address 1\": record[\"Tenant Street Address 1\"] || \"\",\n            \"Tenant City\": record[\"Tenant City\"] || \"\",\n            \"Tenant State\": record[\"Tenant State\"] || \"\",\n            \"Tenant Zip\": record[\"Tenant Zip\"] || \"\"\n        }\n    }));\n\nreturn formattedRecords;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        540,
+        240
+      ],
+      "id": "879e95a5-ae14-4295-be78-08556083612f",
+      "name": "Format Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\nconst existingRecords = $node[\"Get Existing Monday.com Items\"].json.map(item => item.name);\n\nconst newRecords = records\n    .map(record => record.json)\n    .filter(record => {\n        const itemName = `${record[\"Property Name\"]} - ${record[\"First Name\"]} ${record[\"Last Name\"]}`.trim();\n        return !existingRecords.includes(itemName);\n    });\n\nreturn newRecords.map(json => ({ json }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        600
+      ],
+      "id": "a5d80cc6-3a1f-47b3-8455-79353e0915f4",
+      "name": "Filter New Move-outs"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\nconst formattedRecords = records.map(record => {\n    const data = record.json;\n\n    const firstName = data[\"First Name\"] ? data[\"First Name\"].trim() : \"Unknown\";\n    const lastName = data[\"Last Name\"] ? data[\"Last Name\"].trim() : \"\";\n    const residentName = `${firstName} ${lastName}`.trim();\n    const propertyName = data[\"Property Name\"] || \"Unknown Property\";\n    const itemName = `${propertyName} - ${residentName}`;\n    const fullAddress = `${data[\"Tenant Street Address 1\"] || \"\"}, ${data[\"Tenant City\"] || \"\"}, ${data[\"Tenant State\"] || \"\"} ${data[\"Tenant Zip\"] || \"\"}`.trim();\n\n    const columnValuesObject = {\n        \"status\": { \"index\": 0 },\n        \"date4\": { \"date\": data[\"Move-out\"] || \"\" },\n        \"text_mknfm8c8\": propertyName,\n        \"text_mknfdxg0\": residentName,\n        \"boolean_mknfa9m0\": { \"checked\": false },\n        \"text_mknf4476\": fullAddress,\n        \"text_mknfkj1x\": data[\"Forwarding Address\"] || \"\"\n    };\n\n    return {\n        json: {\n            itemName: itemName,\n            columnValues: columnValuesObject\n        }\n    };\n});\n\nreturn formattedRecords;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        420
+      ],
+      "id": "aca53283-3b07-45bb-8e87-e70b4627581d",
+      "name": "Format Data for Monday.com"
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8550223917",
+        "groupId": "topics",
+        "name": "={{ $json.itemName }}",
+        "additionalFields": {
+          "columnValues": "={{ JSON.stringify($json.columnValues) }}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        240
+      ],
+      "id": "62fc03ea-4ec2-46fd-99af-2f3266303eff",
+      "name": "Monday.com",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "getAll",
+        "boardId": "8550223917",
+        "groupId": "topics",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        640,
+        440
+      ],
+      "id": "f73b4ed7-6e6b-4628-a137-2cb04d85bf4b",
+      "name": "Get Existing Monday.com Items1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\nconst filteredRecords = records\n    .map(record => record.json)\n    .filter(record => record[\"Move-out\"]);\n\nreturn filteredRecords.map(json => ({ json }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        300
+      ],
+      "id": "2e8dc94a-1e83-47ca-af59-dcda78e4d031",
+      "name": "Filter Valid Move-out Records"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Fetch new move-out records\nconst newMoveOuts = $node[\"Filter Valid Move-out Records\"].json.map(record => record.json);\n\n// Fetch existing move-out records from Monday.com\nconst existingItemsNode = $node[\"Get Existing Monday.com Items1\"].json;\nconst existingRecords = existingItemsNode.length > 0 ? existingItemsNode.map(item => item.name.trim().toLowerCase()) : [];\n\nconst filteredRecords = newMoveOuts.filter(record => {\n    // Construct an item name for comparison\n    const itemName = `${record[\"Property Name\"]} - ${record[\"First Name\"]} ${record[\"Last Name\"]}`.trim().toLowerCase();\n\n    // Keep only records that are NOT in the existing records\n    return !existingRecords.includes(itemName);\n});\n\n// Return only NEW move-out records\nreturn filteredRecords.map(json => ({ json }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        280
+      ],
+      "id": "e25abe69-b514-4ee2-bf85-e70b79bf92a5",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-27T17:01:38.000Z",
+  "versionId": "39db2974-6e5f-4c06-8b94-a4e0addb2a01"
+}
