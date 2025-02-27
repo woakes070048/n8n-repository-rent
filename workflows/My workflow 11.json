@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Gmail Trigger": {
       "main": [
@@ -58,13 +58,7 @@
     },
     "Gmail2": {
       "main": [
-        [
-          {
-            "node": "Monday.com1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Extract_Text": {
@@ -176,7 +170,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        240,
+        -460,
         200
       ],
       "id": "1e9d8521-42bd-4e5f-8f0f-377f6f8551cb",
@@ -200,7 +194,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        420,
+        -280,
         200
       ],
       "id": "177f0b3d-2b9b-469c-bd25-743cf0174dad",
@@ -221,7 +215,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        620,
+        -80,
         200
       ],
       "id": "279d02d9-d47d-422b-9023-5af4ee9b372f",
@@ -231,29 +225,6 @@
         "gmailOAuth2": {
           "id": "LD5x69eYRRI6cdrn",
           "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "boardItem",
-        "operation": "getAll",
-        "boardId": "8550223917",
-        "groupId": "topics",
-        "returnAll": true
-      },
-      "type": "n8n-nodes-base.mondayCom",
-      "typeVersion": 1,
-      "position": [
-        840,
-        200
-      ],
-      "id": "45f40fdc-988e-4f7a-a707-9783db2d6b40",
-      "name": "Monday.com1",
-      "credentials": {
-        "mondayComApi": {
-          "id": "3npySVgJSrX7b9Wu",
-          "name": "Monday.com account"
         }
       }
     },
@@ -334,9 +305,15 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Gmail Trigger": {
+      "Gmail Trigger": {
+        "lastTimeChecked": 1740659640
+      }
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-02-26T12:00:27.000Z",
-  "versionId": "f7b60b89-f554-4bf4-ac65-d3ea1d599e34"
+  "triggerCount": 1,
+  "updatedAt": "2025-02-27T12:34:00.000Z",
+  "versionId": "76f8488f-621d-4ff1-906d-723b4b9f758a"
 }
