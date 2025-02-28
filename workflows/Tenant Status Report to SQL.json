@@ -1,0 +1,183 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Format Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data": {
+      "main": [
+        [
+          {
+            "node": "Filter Valid Move-out Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Move-out Records": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-28T18:09:07.092Z",
+  "id": "nR5wBdYekABlwnfQ",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Tenant Status Report to SQL",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Tenant Status Export\"]]"
+        }
+      },
+      "id": "769f3c43-f871-445a-b1b3-d67535b8db0f",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        -260
+      ],
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -260
+      ],
+      "id": "d30b8072-7d3f-4bf0-8b2e-269cc7bdfc68",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\n// Function to format Move-out Date correctly\nfunction formatMoveOutDate(date) {\n    if (!date) return null; // If null or undefined, return null\n    \n    // If it's a number (Excel date format), convert to a real date\n    if (typeof date === \"number\") {\n        const excelEpoch = new Date(1899, 11, 30);\n        const convertedDate = new Date(excelEpoch.getTime() + date * 86400000);\n        return convertedDate.toISOString().split(\"T\")[0]; // Returns YYYY-MM-DD\n    }\n\n    // If it's already a valid date string, return it\n    if (typeof date === \"string\" && !isNaN(Date.parse(date))) {\n        return new Date(date).toISOString().split(\"T\")[0];\n    }\n\n    return null; // If it's an invalid format, return null\n}\n\n// Process records\nconst formattedRecords = records\n    .map(record => record.json)\n    .map(record => ({\n        json: {\n            \"First Name\": record[\"First Name\"] || \"\",\n            \"Last Name\": record[\"Last Name\"] || \"\",\n            \"Property Name\": record[\"Property Name\"] || \"\",\n            \"Unit\": record[\"Unit\"] || \"\",\n            \"Status\": record[\"Status\"] || \"\",\n            \"Move-out\": formatMoveOutDate(record[\"Move-out\"]),\n            \"Forwarding Address\": record[\"Forwarding Address\"] || \"\",\n            \"Tenant Street Address 1\": record[\"Tenant Street Address 1\"] || \"\",\n            \"Tenant City\": record[\"Tenant City\"] || \"\",\n            \"Tenant State\": record[\"Tenant State\"] || \"\",\n            \"Tenant Zip\": record[\"Tenant Zip\"] || \"\"\n        }\n    }));\n\nreturn formattedRecords;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        -260
+      ],
+      "id": "de89269d-db07-42bc-a2cd-0e00eda317dd",
+      "name": "Format Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\n// Create a Map to store only one record per Unit\nconst recordMap = new Map();\n\n// Process records\nrecords\n    .map(record => record.json)\n    .filter(record => [\"Notice\", \"Evicting\"].includes(record[\"Status\"])) // ✅ Filter by Status ONLY\n    .forEach(record => {\n        const unit = record[\"Unit\"] || \"Unknown Unit\"; // Use Unit field as unique identifier\n\n        // Check if there's already a record for this Unit\n        if (!recordMap.has(unit)) {\n            recordMap.set(unit, {\n                \"First Name\": record[\"First Name\"] || \"\",\n                \"Last Name\": record[\"Last Name\"] || \"\",\n                \"Property Name\": record[\"Property Name\"] || \"\",\n                \"Unit\": unit,\n                \"Status\": record[\"Status\"] || \"Unknown\",\n                \"Move-out\": record[\"Move-out\"] || \"\",\n                \"Forwarding Address\": record[\"Forwarding Address\"] || \"\",\n                \"Tenant Street Address 1\": record[\"Tenant Street Address 1\"] || \"\",\n                \"Tenant City\": record[\"Tenant City\"] || \"\",\n                \"Tenant State\": record[\"Tenant State\"] || \"\",\n                \"Tenant Zip\": record[\"Tenant Zip\"] || \"\"\n            });\n        }\n    });\n\n// Convert Map values to array format\nconst filteredRecords = Array.from(recordMap.values());\n\nreturn filteredRecords.map(json => ({ json }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        -260
+      ],
+      "id": "21146898-b7a5-4083-a5b0-e9acc567d356",
+      "name": "Filter Valid Move-out Records"
+    },
+    {
+      "parameters": {
+        "content": "\nGets email from reports@blzres.net. Etracts all records, formats, filters for current move out records. Adds all fields to the Move-Out Table. \n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        60,
+        -520
+      ],
+      "id": "255e3f3c-69c8-4190-aafa-7696486eefa3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "move-out_monday",
+          "mode": "list",
+          "cachedResultName": "move-out_monday"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "unit",
+        "valueToMatchOn": "={{ $json.Unit }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "item"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        160,
+        -260
+      ],
+      "id": "32595242-0e72-435f-8b51-33f20dbbf4b2",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 16
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-28T18:18:13.000Z",
+  "versionId": "e4f853e2-377c-4655-bc38-17d9604dda24"
+}
