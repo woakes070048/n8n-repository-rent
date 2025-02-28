@@ -1,0 +1,317 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Monday Get Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Format Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data": {
+      "main": [
+        [
+          {
+            "node": "Filter Valid Move-out Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Move-out Records": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        []
+      ]
+    },
+    "Monday Json": {
+      "main": [
+        [
+          {
+            "node": "Monday.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monday Get Records": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        []
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Monday Json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-28T11:08:01.649Z",
+  "id": "LF89k9YLxJpsNWgO",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Moveout Report to Monday copy",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Tenant Status Export\"]]"
+        }
+      },
+      "id": "9fb7f6af-9b24-440d-aba8-1f42fbdb7dd8",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        -260
+      ],
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        -140
+      ],
+      "id": "feba58a3-ada2-4659-8f0a-b14e024930ee",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\n// Function to format Move-out Date correctly\nfunction formatMoveOutDate(date) {\n    if (!date) return null; // If null or undefined, return null\n    \n    // If it's a number (Excel date format), convert to a real date\n    if (typeof date === \"number\") {\n        const excelEpoch = new Date(1899, 11, 30);\n        const convertedDate = new Date(excelEpoch.getTime() + date * 86400000);\n        return convertedDate.toISOString().split(\"T\")[0]; // Returns YYYY-MM-DD\n    }\n\n    // If it's already a valid date string, return it\n    if (typeof date === \"string\" && !isNaN(Date.parse(date))) {\n        return new Date(date).toISOString().split(\"T\")[0];\n    }\n\n    return null; // If it's an invalid format, return null\n}\n\n// Process records\nconst formattedRecords = records\n    .map(record => record.json)\n    .map(record => ({\n        json: {\n            \"First Name\": record[\"First Name\"] || \"\",\n            \"Last Name\": record[\"Last Name\"] || \"\",\n            \"Property Name\": record[\"Property Name\"] || \"\",\n            \"Unit\": record[\"Unit\"] || \"\",\n            \"Status\": record[\"Status\"] || \"\",\n            \"Move-out\": formatMoveOutDate(record[\"Move-out\"]),\n            \"Forwarding Address\": record[\"Forwarding Address\"] || \"\",\n            \"Tenant Street Address 1\": record[\"Tenant Street Address 1\"] || \"\",\n            \"Tenant City\": record[\"Tenant City\"] || \"\",\n            \"Tenant State\": record[\"Tenant State\"] || \"\",\n            \"Tenant Zip\": record[\"Tenant Zip\"] || \"\"\n        }\n    }));\n\nreturn formattedRecords;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -140
+      ],
+      "id": "654b6494-23d0-4add-b0f6-0a88b14a9fd1",
+      "name": "Format Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all();\n\n// Create a Map to store only one record per Unit\nconst recordMap = new Map();\n\n// Process records\nrecords\n    .map(record => record.json)\n    .filter(record => [\"Notice\", \"Evicting\"].includes(record[\"Status\"])) // ✅ Filter by Status ONLY\n    .forEach(record => {\n        const unit = record[\"Unit\"] || \"Unknown Unit\"; // Use Unit field as unique identifier\n\n        // Check if there's already a record for this Unit\n        if (!recordMap.has(unit)) {\n            recordMap.set(unit, {\n                \"First Name\": record[\"First Name\"] || \"\",\n                \"Last Name\": record[\"Last Name\"] || \"\",\n                \"Property Name\": record[\"Property Name\"] || \"\",\n                \"Unit\": unit,\n                \"Status\": record[\"Status\"] || \"Unknown\",\n                \"Move-out\": record[\"Move-out\"] || \"\",\n                \"Forwarding Address\": record[\"Forwarding Address\"] || \"\",\n                \"Tenant Street Address 1\": record[\"Tenant Street Address 1\"] || \"\",\n                \"Tenant City\": record[\"Tenant City\"] || \"\",\n                \"Tenant State\": record[\"Tenant State\"] || \"\",\n                \"Tenant Zip\": record[\"Tenant Zip\"] || \"\"\n            });\n        }\n    });\n\n// Convert Map values to array format\nconst filteredRecords = Array.from(recordMap.values());\n\nreturn filteredRecords.map(json => ({ json }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        -140
+      ],
+      "id": "51fe549b-cd1f-4cfb-ba0e-0e5fd7560ba1",
+      "name": "Filter Valid Move-out Records"
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8550223917",
+        "groupId": "topics",
+        "name": "={{ $json.itemName }}",
+        "additionalFields": {
+          "columnValues": "={{ $json.columnValues }}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        600,
+        -160
+      ],
+      "id": "61252a70-057a-456f-b6c8-4ffa0410c1c1",
+      "name": "Monday.com",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "\nGets email from reports@blzres.net. Etracts all records, formats, filters for current move out records. Adds all fields to the Move-Out Table. \n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        60,
+        -520
+      ],
+      "id": "4f456b8e-373f-47d6-bb8f-cb00c08ed05d",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "={{ $json.column_values.find(col => col.id === \"text_mknkyxv7\").text }}",
+        "joinMode": "keepNonMatches",
+        "outputDataFrom": "input2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        360,
+        -340
+      ],
+      "id": "d4d22f1e-6d05-4696-8e55-6452ab3635ac",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = $input.all(); // Get records from Merge Node\n\n// Process and format records for Monday.com\nconst formattedRecords = records.map(record => {\n    const data = record.json;\n\n    // Ensure essential fields are defined\n    const firstName = data[\"First Name\"] ? data[\"First Name\"].trim() : \"Unknown\";\n    const lastName = data[\"Last Name\"] ? data[\"Last Name\"].trim() : \"\";\n    const residentName = `${firstName} ${lastName}`.trim();\n    const propertyName = data[\"Property Name\"] || \"Unknown Property\";\n    const unit = data[\"Unit\"] || \"\";\n    const moveOutDate = data[\"Move-out\"] ? { \"date\": data[\"Move-out\"] } : { \"date\": \"\" };\n    const statusText = data[\"Status\"] || \"\"; // Store status as text\n\n    // Construct column values object\n    let columnValuesObject = {\n        \"text_mknkyxv7\": unit || \"\", // Unit (Text field)\n        \"date4\": moveOutDate, // Move-out Date\n        \"text_mknfm8c8\": propertyName || \"\", // Property Name\n        \"text_mknfdxg0\": residentName || \"\", // Resident Name\n        \"text_mknkeyk5\": statusText, // Store status as text (e.g., \"Request\" or \"Evicting\")\n        \"boolean_mknfa9m0\": { \"checked\": false }, // eReturn Checkbox\n        \"text_mknf4476\": `${data[\"Tenant Street Address 1\"] || \"\"}, ${data[\"Tenant City\"] || \"\"}, ${data[\"Tenant State\"] || \"\"} ${data[\"Tenant Zip\"] || \"\"}`.trim(), // Full Tenant Address\n        \"text_mknfkj1x\": data[\"Forwarding Address\"] || \"\", // Forwarding Address\n    };\n\n    return {\n        json: {\n            itemName: `${propertyName} - ${residentName}`,\n            columnValues: JSON.stringify(columnValuesObject) // ✅ Properly formatted JSON\n        }\n    };\n});\n\nreturn formattedRecords;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -160
+      ],
+      "id": "7b1da147-f97a-40fb-bc62-b004ede09c4a",
+      "name": "Monday Json"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.monday.com/v2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mondayComApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"query\": \"query { boards(ids: 8550223917) { items_page(limit: 500) { items { id name state column_values { id text } } } } }\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -240,
+        -360
+      ],
+      "id": "852ba322-2c04-45fb-b61c-a007b1e4e066",
+      "name": "Monday Get Records",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const moveOutRecords = $input.all()[0].json;  // Input 1 (Filtered Move-Out Records)\nconst mondayRecords = $input.all()[1].json.data.boards[0].items_page.items;  // Input 2 (Monday.com Records)\n\n// Extract existing units from Monday.com\nconst existingUnits = new Set(mondayRecords.map(item => {\n    const unitColumn = item.column_values.find(col => col.id === \"text_mknkyxv7\");\n    return unitColumn ? unitColumn.text.trim() : null;\n}).filter(unit => unit));  // Remove null/undefined values\n\n// Filter out records that already exist in Monday.com\nconst newRecords = moveOutRecords.filter(record => !existingUnits.has(record.Unit));\n\nreturn newRecords.map(json => ({ json }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -340
+      ],
+      "id": "cdded7ed-6cd9-4093-a6b4-23c907fba6e3",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "data.boards[0].items_page.items[0].column_values[3].text",
+              "field2": "Unit"
+            }
+          ]
+        },
+        "joinMode": "keepNonMatches",
+        "outputDataFrom": "input2",
+        "options": {
+          "fuzzyCompare": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        200,
+        -160
+      ],
+      "id": "696fdcd7-c648-41b6-ae30-e642f7e53e2d",
+      "name": "Merge1"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 16
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-28T17:43:35.000Z",
+  "versionId": "4c5911d0-bec2-4938-b783-9c227ac7f598"
+}
