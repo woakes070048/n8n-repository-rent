@@ -1,11 +1,141 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Monday.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monday.com": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2025-02-28T18:11:10.578Z",
   "id": "wgpVu65P26LOPEV5",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "Moveouts from Monday",
-  "nodes": [],
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        0
+      ],
+      "id": "1628a2b0-e520-4f36-86e7-7c889bd443c1",
+      "name": "When clicking ‘Test workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "getAll",
+        "boardId": "8550223917",
+        "groupId": "topics",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "cc6bc1b7-75ad-484e-bfc6-a926ed0d0ec0",
+      "name": "Monday.com",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "move-out_monday",
+          "mode": "list",
+          "cachedResultName": "move-out_monday"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "unit",
+        "valueToMatchOn": "={{ $json.Unit }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "status",
+              "value": "={{ $json.State }}"
+            },
+            {
+              "column": "item",
+              "value": "={{ $json[\"Item Name\"] }}"
+            },
+            {
+              "column": "Resident",
+              "value": "={{ $json.Resident }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        240,
+        0
+      ],
+      "id": "c4a471bb-cd4b-40a3-a950-d4ef00785d42",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const mondayRecords = $input.all();\n\n// Extract relevant data\nconst extractedRecords = mondayRecords.map(record => {\n    const item = record.json;\n\n    return {\n        json: {\n            \"Item ID\": item.id,\n            \"Item Name\": item.name,\n            \"Created At\": item.created_at,\n            \"State\": item.state,\n            \"Unit\": item.column_values.find(col => col.id === \"text_mknkyxv7\")?.text || \"\",\n            \"Property\": item.column_values.find(col => col.id === \"text_mknfm8c8\")?.text || \"\",\n            \"Resident\": item.column_values.find(col => col.id === \"text_mknfdxg0\")?.text || \"\",\n            \"Move-Out Date\": item.column_values.find(col => col.id === \"date4\")?.text || \"\"\n        }\n    };\n});\n\n// Return structured data\nreturn extractedRecords;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        0
+      ],
+      "id": "1e8eb53b-0a96-43e6-a126-2f809dd86858",
+      "name": "Code"
+    }
+  ],
   "pinData": {},
   "settings": {
     "executionOrder": "v1"
@@ -13,6 +143,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-28T18:11:10.578Z",
-  "versionId": "226431cf-2bea-4543-83a4-5bd6bb601d27"
+  "updatedAt": "2025-02-28T20:27:37.000Z",
+  "versionId": "2850a1ce-f27b-45bb-91df-a5fc36d8ca50"
 }
