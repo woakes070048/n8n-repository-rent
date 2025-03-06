@@ -40,11 +40,24 @@
           }
         ]
       ]
+    },
+    "Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "Calendar Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-02-13T15:49:06.252Z",
   "id": "Z3MfoVKuNOuDTzzs",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "calendarAgent",
   "nodes": [
     {
@@ -59,7 +72,13 @@
       "position": [
         -920,
         360
-      ]
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
     },
     {
       "parameters": {
@@ -202,16 +221,17 @@
       "parameters": {
         "calendar": {
           "__rl": true,
+          "value": "brandon@blazeproperty.com",
           "mode": "list",
-          "value": ""
+          "cachedResultName": "brandon@blazeproperty.com"
         },
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.googleCalendarTool",
       "typeVersion": 1.2,
       "position": [
-        -560,
-        360
+        -480,
+        340
       ],
       "id": "17f1ea5f-61ec-4911-bdf4-6531f9c3f728",
       "name": "Google Calendar",
@@ -230,6 +250,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-13T16:03:07.000Z",
-  "versionId": "6964c48b-52b6-4c44-8eca-198dc4e52750"
+  "updatedAt": "2025-03-05T20:17:05.000Z",
+  "versionId": "1ec9e96d-8cb2-4dc7-b7c0-57d2e61070c5"
 }
