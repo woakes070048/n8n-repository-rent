@@ -51,25 +51,26 @@
           }
         ]
       ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Contact Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-02-13T15:48:47.441Z",
   "id": "AYzwtHRKgOYNPHIM",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "contactAgent",
   "nodes": [
-    {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.2,
-      "position": [
-        -640,
-        300
-      ],
-      "id": "085536bc-015f-482c-8629-4d739515c716",
-      "name": "OpenAI Chat Model",
-      "credentials": {}
-    },
     {
       "parameters": {
         "operation": "search",
@@ -96,7 +97,13 @@
         300
       ],
       "id": "a642f6b3-5882-4323-a50a-b701b16c90e1",
-      "name": "Get Contacts"
+      "name": "Get Contacts",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "30MwKrZ0k7UFqdjN",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
     },
     {
       "parameters": {
@@ -172,7 +179,13 @@
         300
       ],
       "id": "fa1f36da-a8e8-4948-a05d-b3cf47e256d2",
-      "name": "Add or Update Contact"
+      "name": "Add or Update Contact",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "30MwKrZ0k7UFqdjN",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
     },
     {
       "parameters": {
@@ -250,6 +263,25 @@
       ],
       "id": "7c26e4d7-1cb3-48d6-ba24-32e71ae02445",
       "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -620,
+        300
+      ],
+      "id": "696433a1-867b-4575-b83e-fc94ec508f00",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -259,6 +291,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-13T15:48:47.441Z",
-  "versionId": "e67ea977-4502-4757-936d-68b01e880f79"
+  "updatedAt": "2025-03-05T20:17:44.000Z",
+  "versionId": "34a44da8-cb2a-438b-bbe0-63dbbee0317e"
 }
