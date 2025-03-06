@@ -121,7 +121,9 @@
   },
   "createdAt": "2025-02-13T15:45:59.522Z",
   "id": "JWvQhoJB2ig9lxv0",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "emailAgent",
   "nodes": [
     {
@@ -136,7 +138,13 @@
       "position": [
         -1080,
         360
-      ]
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
     },
     {
       "parameters": {
@@ -219,7 +227,13 @@
       ],
       "id": "68cc7cf1-cf05-4273-b066-17c23b09d9df",
       "name": "Send Email",
-      "webhookId": "86c8c4b1-13bb-4ebe-acb9-30e1d7082d55"
+      "webhookId": "86c8c4b1-13bb-4ebe-acb9-30e1d7082d55",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     },
     {
       "parameters": {
@@ -239,7 +253,13 @@
       ],
       "id": "a9b3f052-a702-48bf-8c1b-edc0fda882d7",
       "name": "Get Emails",
-      "webhookId": "af4b3298-9037-44b0-aa12-2acbfbb5e66f"
+      "webhookId": "af4b3298-9037-44b0-aa12-2acbfbb5e66f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     },
     {
       "parameters": {
@@ -259,7 +279,13 @@
       ],
       "id": "f5e17463-8536-4aac-bbc3-b2b994f6daf0",
       "name": "Create Draft",
-      "webhookId": "17016bce-d7d7-428a-a56c-f6ea122db8be"
+      "webhookId": "17016bce-d7d7-428a-a56c-f6ea122db8be",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     },
     {
       "parameters": {
@@ -278,7 +304,13 @@
       ],
       "id": "ebfb5d8a-7313-4b36-804a-d03ac3de24b4",
       "name": "Email Reply",
-      "webhookId": "114785e6-a859-432b-81b4-c490c1c35b1c"
+      "webhookId": "114785e6-a859-432b-81b4-c490c1c35b1c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     },
     {
       "parameters": {
@@ -293,7 +325,13 @@
       ],
       "id": "d09c70c4-1b5f-4838-ad17-466fa930ab8d",
       "name": "Get Labels",
-      "webhookId": "9e08b59e-792d-4566-83f1-9263c9ad86ae"
+      "webhookId": "9e08b59e-792d-4566-83f1-9263c9ad86ae",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     },
     {
       "parameters": {
@@ -309,7 +347,13 @@
       ],
       "id": "fe74de96-444d-490f-93eb-0afb28a3bafd",
       "name": "Label Emails",
-      "webhookId": "0e951529-2e6d-40bf-ac40-fc0947e242e2"
+      "webhookId": "0e951529-2e6d-40bf-ac40-fc0947e242e2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     },
     {
       "parameters": {
@@ -324,7 +368,13 @@
       ],
       "id": "69a668f8-f745-453b-a72e-22e083cd70a0",
       "name": "Mark Unread",
-      "webhookId": "a35af9d8-f67d-4ff9-803f-59ec6356e795"
+      "webhookId": "a35af9d8-f67d-4ff9-803f-59ec6356e795",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     },
     {
       "parameters": {
@@ -347,6 +397,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-02-13T15:45:59.522Z",
-  "versionId": "7b0032b9-23b7-48b6-bdef-9811d5bcb9aa"
+  "updatedAt": "2025-03-05T20:15:57.000Z",
+  "versionId": "0a7b2899-b2fe-44aa-9c80-431a8a67948d"
 }
