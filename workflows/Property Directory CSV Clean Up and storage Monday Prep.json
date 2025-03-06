@@ -1,0 +1,210 @@
+{
+  "active": true,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "FTP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-06T14:49:51.135Z",
+  "id": "8X8OKUfFgckikatw",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Property Directory CSV Clean Up and storage Monday Prep",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Daily Property Directory n8n\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -740,
+        -20
+      ],
+      "id": "3dd078de-5160-47bb-9826-292b5fb63948",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        -20
+      ],
+      "id": "daf8cc36-132a-4341-81d8-b37ce5e3e18a",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Helper function to convert Excel date code to MM/DD/YYYY format\nfunction excelDateToJSDate(serial) {\n    if (!serial || isNaN(serial)) return \"\"; // Handle undefined, null, or non-numeric values\n    const jsDate = new Date((serial - 25569) * 86400000);\n    const month = String(jsDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based\n    const day = String(jsDate.getDate()).padStart(2, '0');\n    const year = jsDate.getFullYear();\n    return `${month}/${day}/${year}`;\n}\n\n// Process input data\nconst items = $input.all().map(item => {\n    let data = item.json;\n\n    return {\n        json: {\n            ...data,\n            \"Property Created On\": data[\"Property Created On\"] ? excelDateToJSDate(data[\"Property Created On\"]) : \"\",\n            \"Contract Expiration\": data[\"Contract Expiration\"] ? excelDateToJSDate(data[\"Contract Expiration\"]) : \"\",\n            \"Management Start Date\": data[\"Management Start Date\"] ? excelDateToJSDate(data[\"Management Start Date\"]) : \"\",\n        }\n    };\n});\n\n// Return cleaned data\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -20
+      ],
+      "id": "bb16777e-600b-4a79-a7f3-b86cdeeef79a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "data4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        -20
+      ],
+      "id": "b8944731-a645-453d-92d1-ff40c9c9feeb",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/data2/properties.csv",
+        "binaryPropertyName": "=data4"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        500,
+        -100
+      ],
+      "id": "41346897-a42b-4016-9991-4049c50698d0",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/data2/archive/properties{{ $today }}.csv"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        500,
+        100
+      ],
+      "id": "cd42a911-50dc-4766-b5da-f47e4bef5d39",
+      "name": "FTP1",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/data/properties.csv",
+        "dataPropertyName": "data4",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -20
+      ],
+      "id": "9173464e-faa3-49fe-bd23-24f8fc727715",
+      "name": "Read/Write Files from Disk"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 27
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-06T16:26:59.000Z",
+  "versionId": "dfa36e7d-d5af-4a6a-8878-873a0b31401c"
+}
