@@ -1,0 +1,283 @@
+{
+  "active": false,
+  "connections": {
+    "Receive Telegram Messages": {
+      "main": [
+        [
+          {
+            "node": "Voice or Text?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Voice or Text?": {
+      "main": [
+        [
+          {
+            "node": "Transcribe Voice to Text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to Monday.com": {
+      "main": [
+        [
+          {
+            "node": "Send Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe Voice to Text": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-06T11:06:05.053Z",
+  "id": "WAPyds0UpCbaqOos",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Telegram Task to Monday",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "815c2638-f9a5-447c-9c0b-e1d37e9c5796",
+      "name": "Receive Telegram Messages",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "position": [
+        -820,
+        820
+      ],
+      "typeVersion": 1.1,
+      "webhookId": "3c784da6-5b5f-4b54-8e0a-2402a0537831",
+      "credentials": {
+        "telegramApi": {
+          "id": "aZpwrn2pBPSdz4Pi",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "voice_condition",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.message.voice.file_id }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Audio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "text_condition",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.message.text || \"\" }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a86d1a85-05c9-46d6-a954-dd8739d1b33f",
+      "name": "Voice or Text?",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -460,
+        920
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "translate",
+        "options": {}
+      },
+      "id": "39a3ec49-1c0a-4a5e-807d-8873f61d0111",
+      "name": "Transcribe Voice to Text",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        -140,
+        800
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8578853242",
+        "groupId": "topics",
+        "name": "={{ $json.task }}",
+        "additionalFields": {
+          "columnValues": "={{ $json.output }}"
+        }
+      },
+      "id": "5ae0987c-b6f9-4c3a-8848-8140d3f9c7ca",
+      "name": "Send to Monday.com",
+      "type": "n8n-nodes-base.mondayCom",
+      "position": [
+        520,
+        940
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Receive Telegram Messages').item.json.message.chat.id }}",
+        "text": "=Task : {{ $json.task }} Task Link :{{ $json.url }}",
+        "additionalFields": {}
+      },
+      "id": "ff0a2255-d782-4e0c-b39a-d299ae540187",
+      "name": "Send Confirmation",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        260,
+        1140
+      ],
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "aZpwrn2pBPSdz4Pi",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistannt"
+        },
+        "prompt": "define",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        20,
+        940
+      ],
+      "id": "6923926a-b083-4fce-bd1a-7acf6e4fc77b",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Receive Telegram Messages": [
+      {
+        "json": {
+          "update_id": 716378786,
+          "message": {
+            "message_id": 18,
+            "from": {
+              "id": 8006400741,
+              "is_bot": false,
+              "first_name": "Brandon",
+              "last_name": "Stewart",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 8006400741,
+              "first_name": "Brandon",
+              "last_name": "Stewart",
+              "type": "private"
+            },
+            "date": 1741263427,
+            "text": "task: create new workflow for telegram task bot. client: blaze"
+          }
+        }
+      }
+    ]
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-06T12:20:51.000Z",
+  "versionId": "f0e270fe-4b78-4101-bc55-0ff3d34ea96d"
+}
