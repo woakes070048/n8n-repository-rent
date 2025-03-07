@@ -150,7 +150,7 @@
       "credentials": {
         "ftp": {
           "id": "87ZwJT7N7b5rycj4",
-          "name": "FTP account"
+          "name": "n8n Data FTP account"
         }
       }
     },
@@ -170,7 +170,7 @@
       "credentials": {
         "ftp": {
           "id": "87ZwJT7N7b5rycj4",
-          "name": "FTP account"
+          "name": "n8n Data FTP account"
         }
       }
     },
@@ -194,7 +194,8 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
@@ -203,6 +204,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-06T16:27:11.000Z",
-  "versionId": "e523e628-a666-49c7-b0f2-67a414b1413b"
+  "updatedAt": "2025-03-07T06:00:39.030Z",
+  "versionId": "68420bdd-b9d1-4f1a-a992-0041b2b5768f"
 }
