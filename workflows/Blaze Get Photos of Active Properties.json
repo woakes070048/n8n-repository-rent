@@ -283,7 +283,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        720,
+        600,
         320
       ]
     },
@@ -302,7 +302,7 @@
       "credentials": {
         "ftp": {
           "id": "87ZwJT7N7b5rycj4",
-          "name": "FTP account"
+          "name": "n8n Data FTP account"
         }
       }
     },
@@ -979,7 +979,7 @@
       "credentials": {
         "ftp": {
           "id": "87ZwJT7N7b5rycj4",
-          "name": "FTP account"
+          "name": "n8n Data FTP account"
         }
       }
     },
@@ -999,7 +999,7 @@
       "credentials": {
         "ftp": {
           "id": "87ZwJT7N7b5rycj4",
-          "name": "FTP account"
+          "name": "n8n Data FTP account"
         }
       }
     },
@@ -1058,6 +1058,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-02-08T15:53:31.000Z",
-  "versionId": "525626c8-07ee-49b6-b218-d32cf59c1eaa"
+  "updatedAt": "2025-03-07T14:38:44.000Z",
+  "versionId": "9d8e793b-dac7-40a6-82dd-9eefaaaf010c"
 }
