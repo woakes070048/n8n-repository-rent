@@ -195,8 +195,8 @@
   "pinData": {},
   "settings": {
     "executionOrder": "v1",
-    "callerPolicy": "workflowsFromSameOwner",
-    "executionTimeout": 60
+    "executionTimeout": 60,
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
@@ -205,6 +205,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-06T16:29:35.000Z",
-  "versionId": "944e03f1-040b-4ea2-85aa-286f00ad2e82"
+  "updatedAt": "2025-03-07T06:00:39.032Z",
+  "versionId": "29fd4b32-3fe9-4b52-a3d8-cd28ff552479"
 }
