@@ -101,7 +101,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -460,
+        -600,
         -20
       ],
       "id": "65b13d0a-4a1e-4fca-b125-6001a8e3269c",
@@ -114,7 +114,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -180,
+        -460,
         -20
       ],
       "id": "144ad286-c6b8-4b17-8682-6b5d3b2d30c1",
@@ -127,7 +127,7 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        20,
+        -320,
         -20
       ],
       "id": "b80886ac-faf2-4ebf-8e46-24a8b82b78e4",
@@ -142,8 +142,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        620,
-        -100
+        20,
+        -140
       ],
       "id": "95b1506e-ee34-42d2-b5d5-2da4d4dee165",
       "name": "FTP",
@@ -162,8 +162,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        620,
-        100
+        20,
+        40
       ],
       "id": "59528e14-ce25-457b-b172-6cee8d6b6f0c",
       "name": "FTP1",
@@ -185,7 +185,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        240,
+        -160,
         -20
       ],
       "id": "729d8828-2f70-4b3c-b7d0-dfdda6341966",
@@ -204,6 +204,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-07T06:00:39.030Z",
-  "versionId": "68420bdd-b9d1-4f1a-a992-0041b2b5768f"
+  "updatedAt": "2025-03-08T13:50:26.000Z",
+  "versionId": "8445bb57-dfba-42b9-9bdf-3ff075518c04"
 }
