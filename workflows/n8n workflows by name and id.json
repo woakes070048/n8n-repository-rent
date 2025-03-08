@@ -27,8 +27,64 @@
       "main": [
         [
           {
-            "node": "Google Sheets",
+            "node": "Loop Over Items",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
             "index": 0
           }
         ]
@@ -55,7 +111,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1200,
+        -1700,
         -20
       ],
       "id": "1c5b4e15-1c7f-4a04-a310-4d59b4f5084e",
@@ -63,16 +119,15 @@
     },
     {
       "parameters": {
-        "returnAll": false,
         "filters": {
-          "activeWorkflows": true
+          "activeWorkflows": false
         },
         "requestOptions": {}
       },
       "type": "n8n-nodes-base.n8n",
       "typeVersion": 1,
       "position": [
-        -1000,
+        -1480,
         -20
       ],
       "id": "6953f391-4d99-4205-afb0-24598e6e6630",
@@ -99,6 +154,24 @@
               "name": "id",
               "value": "={{ $json.id }}",
               "type": "string"
+            },
+            {
+              "id": "9269f30b-ddcf-4cb8-bbc4-3ffa1a27d7ea",
+              "name": "nodes",
+              "value": "={{ $json.nodes }}",
+              "type": "string"
+            },
+            {
+              "id": "7ede9c90-6ff8-42f3-9065-31afd48c6592",
+              "name": "connections",
+              "value": "={{ $json.connections }}",
+              "type": "string"
+            },
+            {
+              "id": "62ecbbbf-f567-4d73-9d8f-b988cf8fbdce",
+              "name": "settings",
+              "value": "={{ $json.settings }}",
+              "type": "string"
             }
           ]
         },
@@ -107,11 +180,141 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -780,
+        -1280,
         -20
       ],
       "id": "ba9b6771-ffe5-4053-80bf-f5d685d95462",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1YBeQNBEweqGtICDu7tv-qYRnDgc-pw39ZJ1sVXQfNMo",
+          "mode": "list",
+          "cachedResultName": "n8n WorkFlow IDs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YBeQNBEweqGtICDu7tv-qYRnDgc-pw39ZJ1sVXQfNMo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 474493273,
+          "mode": "list",
+          "cachedResultName": "n8n-sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YBeQNBEweqGtICDu7tv-qYRnDgc-pw39ZJ1sVXQfNMo/edit#gid=474493273"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Edit Fields').item.json.id }}",
+            "name": "={{ $('Edit Fields').item.json.name }}",
+            "description": "={{ $json.message.content }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -480,
+        -20
+      ],
+      "id": "f86afc23-1a47-4ac2-b4bb-11ec25f8c3cc",
+      "name": "Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert in n8n workflows. Use the data provided to create a new description of what the workflow intends to accomplish. \ncurrent name: {{ $json.name }}\nid: {{ $json.id }}\nnodes: {{ $json.nodes }}\nconnections: {{ $json.connections }}\nsettings: {{ $json.settings }}\n\noutput the following fields in json format\nnew_name\nid\ndescription\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -840,
+        -20
+      ],
+      "id": "6f817f9e-c148-4b20-8419-cadfea9ec414",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        -860,
+        160
+      ],
+      "id": "954f7e2c-b842-4341-8519-7d7af5c56f0b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1060,
+        -20
+      ],
+      "id": "b3e2dc01-da72-4a38-8a69-7a4382e26543",
+      "name": "Loop Over Items"
     },
     {
       "parameters": {
@@ -125,51 +328,47 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": "gid=0",
+          "value": 474493273,
           "mode": "list",
-          "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YBeQNBEweqGtICDu7tv-qYRnDgc-pw39ZJ1sVXQfNMo/edit#gid=0"
+          "cachedResultName": "n8n-sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YBeQNBEweqGtICDu7tv-qYRnDgc-pw39ZJ1sVXQfNMo/edit#gid=474493273"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "Name": "={{ $json.name }}",
-            "ID": "={{ $json.id }}",
-            "Last Update": "={{ $today }}"
+            "id": "={{ $('Edit Fields').item.json.id }}"
           },
           "matchingColumns": [
-            "ID"
+            "id"
           ],
           "schema": [
             {
-              "id": "Name",
-              "displayName": "Name",
+              "id": "name",
+              "displayName": "name",
               "required": false,
               "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
               "removed": false
             },
             {
-              "id": "ID",
-              "displayName": "ID",
+              "id": "description",
+              "displayName": "description",
               "required": false,
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "Last Update",
-              "displayName": "Last Update",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
+              "canBeUsedToMatch": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -177,13 +376,13 @@
         },
         "options": {}
       },
-      "type": "n8n-nodes-base.googleSheets",
+      "type": "n8n-nodes-base.googleSheetsTool",
       "typeVersion": 4.5,
       "position": [
-        -560,
-        -20
+        -720,
+        200
       ],
-      "id": "5206c049-35de-460b-8d0c-1c89713868ce",
+      "id": "cd98a6a6-971c-4f60-8f4e-95cef947fed4",
       "name": "Google Sheets",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -205,6 +404,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-29T06:00:38.629Z",
-  "versionId": "9e3ad95e-2a6e-4465-8c75-b24b0169a32a"
+  "updatedAt": "2025-03-07T20:24:53.000Z",
+  "versionId": "778109db-5bbb-46cb-93c4-e2c4a8d5cccf"
 }
