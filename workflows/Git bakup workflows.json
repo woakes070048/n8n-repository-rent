@@ -207,7 +207,7 @@
       "name": "GitHub",
       "type": "n8n-nodes-base.github",
       "position": [
-        740,
+        760,
         880
       ],
       "typeVersion": 1,
@@ -441,7 +441,8 @@
     },
     {
       "parameters": {
-        "filters": {}
+        "filters": {},
+        "requestOptions": {}
       },
       "id": "1fa1bca7-88c6-4dec-9cc4-1b65659e245f",
       "name": "n8n",
@@ -491,6 +492,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-09-23T15:44:37.478Z",
-  "versionId": "9d7e3c9a-239f-4f4e-b725-3d9cc9357c40"
+  "updatedAt": "2025-03-07T18:58:11.000Z",
+  "versionId": "47d9ae0d-8b61-4f25-b98e-f22c760fbc3e"
 }
