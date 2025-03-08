@@ -1,0 +1,357 @@
+{
+  "active": false,
+  "connections": {
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "UUID Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API1": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UUID Generator": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-26T22:32:02.286Z",
+  "id": "l5ZcEKsl4qpYh1pW",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "FB_Post_ApartmentListings-inactive",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM apt_social_media_posts\nWHERE last_post_date IS NULL OR last_post_date <= CURDATE() - INTERVAL 100 DAY\nORDER BY last_post_date ASC\nLIMIT 1;",
+        "options": {}
+      },
+      "id": "39ca7bf6-ffdc-4df4-8a4e-b0372e463ba2",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        240,
+        -340
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v13.0",
+        "node": "/329129493627618",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "=Apartment Living Tip #{{ $('MySQL').item.json.number }}\n{{ $('MySQL').item.json.post }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('MySQL').item.json.image_url }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "da15e79b-f188-4c29-8b77-b42198b74508",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        -480
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "a3LtRYzbJapkaeaV",
+          "name": "Facebook Blaze Real Estate"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE social_media_posts\nSET last_posted_date = CURDATE(), times_posted = times_posted + 1\nWHERE id = {{ $node[\"MySQL\"].json[\"id\"] }};",
+        "options": {}
+      },
+      "id": "b1f79a72-bc00-4ca5-8528-803a4f5242f6",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1260,
+        -480
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "f7cefd32-bd26-4ac4-8bae-40d153d9a22e",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        -260
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=Generate an image that represents a tip regarding apartment living. Do not generate images containing text of any kind. This is a visual representation only. your subject is:  {{ $json.post }}.  ",
+        "options": {}
+      },
+      "id": "812a7f75-211b-4ee3-ae02-29bc1b707bcd",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        400,
+        -340
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "graphApiVersion": "v21.0",
+        "node": "/106038902592798",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message"
+              },
+              {
+                "name": "url"
+              }
+            ]
+          }
+        }
+      },
+      "id": "10bc5a1b-e612-4f2c-948e-5d53e7700e1d",
+      "name": "Facebook Graph API1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        940,
+        -480
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "cMEJkd1IYoXOgbcU",
+          "name": "Cottonwood FB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/data/images/fb/fbpost-{{ $json.file_name }}{{ $('UUID Generator').item.json.uuid }}.png"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        780,
+        -480
+      ],
+      "id": "5ec5dde8-aede-4578-bfa5-518f8c2537ef",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-guuid-generator.UUID Generator",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -480
+      ],
+      "id": "9c4138fd-4d42-42ca-b17d-237e5f465d61",
+      "name": "UUID Generator"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ae05cfeb-afba-4dbb-a2da-61d83695445e",
+              "name": "file_name",
+              "value": "={{ $json.uuid }}.png",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        620,
+        -480
+      ],
+      "id": "e8bbf106-e883-4953-87a3-5ed4f0679dc1",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "The \"Apartment FB Posts\" workflow is designed to automate the process of posting apartment listings to a Facebook Page. It retrieves apartment data, formats the information, and publishes posts on Facebook, streamlining the social media marketing efforts for apartment rentals.​\n",
+        "height": 140,
+        "width": 460
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -660
+      ],
+      "id": "15856356-24b1-448a-b033-76548c836653",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Apartment Facebook Posts Workflow\n\n## Workflow Function:\nThis workflow automates the retrieval of apartment data and publishes formatted posts on a Facebook Page, streamlining the social media marketing efforts for apartment rentals.\n\n## Workflow Actions:\n\n### **1. Data Retrieval:**\n- The workflow initiates by fetching apartment listing data, likely from an internal database or an external API.\n\n### **2. Data Processing:**\n- It processes the retrieved data to extract relevant details such as apartment name, location, price, and features.\n\n### **3. Content Formatting:**\n- The workflow formats the extracted information into a structured message suitable for a Facebook post.\n\n### **4. Image Handling:**\n- It retrieves associated images for each apartment listing and prepares them for upload.\n\n### **5. Facebook Posting:**\n- Utilizing the Facebook node, the workflow publishes the formatted content and images to the designated Facebook Page.\n",
+        "height": 980,
+        "width": 380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -860
+      ],
+      "id": "7c4da651-c6ac-45c9-88fc-5fb01f6035d1",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-07T18:39:48.000Z",
+  "versionId": "e307e94c-97cb-46da-9b21-85527395fbbd"
+}
