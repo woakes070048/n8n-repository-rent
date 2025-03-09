@@ -1,0 +1,562 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-06T02:31:35.576Z",
+  "id": "MG6vQE3MmZnu5g4B",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "NTV Process",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7e101286-b40f-42cc-9c80-4f5097340aef",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        80,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "path": "/data.blzres.com/data/ntv.csv"
+      },
+      "id": "fcdfc1f5-303d-47cc-88b9-d8cb853283b0",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        400,
+        80
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "table": {
+          "__rl": true,
+          "value": "tenant_ntv",
+          "mode": "list",
+          "cachedResultName": "tenant_ntv"
+        },
+        "deleteCommand": "delete",
+        "options": {}
+      },
+      "id": "ae8eff03-7c07-4415-90bc-2bfaad015808",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        240,
+        80
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Ro5DRlNPdDxqBS4b",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "id": "0b663849-90c4-44eb-bbe9-8b2ecdce514b",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        560,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "f9a602d6-48bd-4fcb-8915-f7d493f8bc88",
+              "leftValue": "={{ $json['Amount Receivable'] }}",
+              "rightValue": 400,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3367e620-5323-4a32-a2ae-3995d5768119",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        720,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0b0542cd-ccdc-4da9-a8f2-680316cd146e",
+              "name": "Tenant_Address",
+              "value": "={{ $json['Tenant Address'] }}",
+              "type": "string"
+            },
+            {
+              "id": "76c8b8c1-444a-4e9d-921a-e3316f28e462",
+              "name": "Tenant_Street_Address_1",
+              "value": "={{ $json['Tenant Street Address 1'] }}",
+              "type": "string"
+            },
+            {
+              "id": "93e40bdc-d769-4c7d-b292-abd17475e163",
+              "name": "Tenant_City",
+              "value": "={{ $json['Tenant City'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d02525eb-9108-49f6-bb84-085b2448803d",
+              "name": "Tenant_State",
+              "value": "={{ $json['Tenant State'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c64b6a3a-b773-480a-889a-31471b7c2ec7",
+              "name": "Tenant_Zip",
+              "value": "={{ $json['Tenant Zip'] }}",
+              "type": "number"
+            },
+            {
+              "id": "5c02757b-8bec-4fcf-9add-ab435223b86e",
+              "name": "Property",
+              "value": "={{ $json.Property }}",
+              "type": "string"
+            },
+            {
+              "id": "49b26ebc-7622-4ba3-a4f8-45243baeca01",
+              "name": "Unit",
+              "value": "={{ $json.Unit }}",
+              "type": "string"
+            },
+            {
+              "id": "6d12d421-82bf-415b-bb4f-5d1454b83ac8",
+              "name": "Tenant",
+              "value": "={{ $json.Tenant }}",
+              "type": "string"
+            },
+            {
+              "id": "5489b2a4-94b1-4e17-a66f-b2604cb29351",
+              "name": "Status",
+              "value": "={{ $json.Status }}",
+              "type": "string"
+            },
+            {
+              "id": "83d13490-0c98-4857-8f1d-2a0b0a68edf7",
+              "name": "Tenant_Type",
+              "value": "={{ $json['Tenant Type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "dfbce23c-b765-4354-8360-01795d665dbc",
+              "name": "Move-in",
+              "value": "={{ $json['Move-in'] }}",
+              "type": "number"
+            },
+            {
+              "id": "77333258-ed63-48ea-833e-b72f421bfd3e",
+              "name": "Lease_To",
+              "value": "={{ $json['Lease To'] }}",
+              "type": "number"
+            },
+            {
+              "id": "904374f4-2b95-4c54-8bd3-c92c34ac0397",
+              "name": "Rent",
+              "value": "={{ $json.Rent }}",
+              "type": "number"
+            },
+            {
+              "id": "3bf88b80-f3d6-4b1a-9b08-f6235dc2d7fb",
+              "name": "Deposit",
+              "value": "={{ $json.Deposit }}",
+              "type": "number"
+            },
+            {
+              "id": "5b5291f6-587d-46e3-985d-61f250eda237",
+              "name": "Lease_From",
+              "value": "={{ $json['Lease From'] }}",
+              "type": "number"
+            },
+            {
+              "id": "833ceed0-42ac-45b8-ade2-a6dc8005b180",
+              "name": "Primary_Tenant",
+              "value": "={{ $json['Primary Tenant'] }}",
+              "type": "string"
+            },
+            {
+              "id": "10640df8-9429-45d0-a988-58dfbc3e2f69",
+              "name": "First_Name",
+              "value": "={{ $json['First Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d1ae574f-de13-408a-8c79-af8e1db3c54d",
+              "name": "Last_Name",
+              "value": "={{ $json['Last Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "2e6e17e6-a45b-4053-9919-335e6e000379",
+              "name": "Amount_Receivable",
+              "value": "={{ $json['Amount Receivable'] }}",
+              "type": "number"
+            },
+            {
+              "id": "178f2cbe-a85e-41fc-98b6-7bcdb7a319d8",
+              "name": "Delinquent_Subsidy_Amount",
+              "value": "={{ $json['Delinquent Subsidy Amount'] }}",
+              "type": "number"
+            },
+            {
+              "id": "30beb071-71ad-4966-84f4-22372b9ab053",
+              "name": "0-30",
+              "value": "={{ $json['0-30'] }}",
+              "type": "number"
+            },
+            {
+              "id": "ab86d524-9c80-4620-8ac4-f8a460452bb5",
+              "name": "30-60",
+              "value": "={{ $json['30-60'] }}",
+              "type": "number"
+            },
+            {
+              "id": "a688c4ca-74ae-462e-9b40-c596f811d5cf",
+              "name": "60-90",
+              "value": "={{ $json['60-90'] }}",
+              "type": "number"
+            },
+            {
+              "id": "f9cc36e2-ea92-4106-9ec3-c8e83ab12719",
+              "name": "Last_Payment",
+              "value": "={{ $json['Last Payment'] }}",
+              "type": "number"
+            },
+            {
+              "id": "d646411b-7cbb-4b6d-914c-da408779347c",
+              "name": "Payment_Amount",
+              "value": "={{ $json['Payment Amount'] }}",
+              "type": "number"
+            },
+            {
+              "id": "d5839d24-66b4-4569-853f-50e1c3d53c5b",
+              "name": "NSF_Count",
+              "value": "={{ $json['NSF Count'] }}",
+              "type": "number"
+            },
+            {
+              "id": "6d7166ca-8eb5-4ac5-82ea-378cbb60b60a",
+              "name": "Delinquent_Rent",
+              "value": "={{ $json['Delinquent Rent'] }}",
+              "type": "number"
+            },
+            {
+              "id": "89098db2-205b-45b9-a6aa-1637749ffbff",
+              "name": "Monthly_Charges",
+              "value": "={{ $json['Monthly Charges'] }}",
+              "type": "number"
+            },
+            {
+              "id": "45fa0dd6-6f9e-4fdf-bf85-fb34f11ef705",
+              "name": "Phone_Numbers",
+              "value": "={{ $json['Phone Numbers'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3e3f194c-3415-4d28-a524-baab6fe2b2ed",
+              "name": "Emails",
+              "value": "={{ $json.Emails }}",
+              "type": "string"
+            },
+            {
+              "id": "e578a395-23db-437c-bf8f-4516aa66dd2d",
+              "name": "Tenant_Street_Address_2",
+              "value": "={{ $json['Tenant Street Address 2'] }}",
+              "type": "string"
+            },
+            {
+              "id": "da0ed5eb-680b-4e11-ae72-2341589d7016",
+              "name": "Tenant_Birthdate",
+              "value": "={{ $json['Tenant Birthdate'] }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": "=",
+        "options": {}
+      },
+      "id": "b658aa52-4369-4534-84ca-29e779d51ac1",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        100,
+        280
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "tenant_ntv",
+          "mode": "list",
+          "cachedResultName": "tenant_ntv"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "=  Tenant_Address",
+        "valueToMatchOn": "={{ $json.Tenant_Address }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "tenant_street_address_1",
+              "value": "={{ $json.Tenant_Street_Address_1 }}"
+            },
+            {
+              "column": "tenant_street_address_2",
+              "value": "={{ $json.Tenant_Street_Address_2 }}"
+            },
+            {
+              "column": "tenant_city",
+              "value": "={{ $json.Tenant_City }}"
+            },
+            {
+              "column": "tenant_state",
+              "value": "={{ $json.Tenant_State }}"
+            },
+            {
+              "column": "tenant_zip",
+              "value": "={{ $json.Tenant_Zip }}"
+            },
+            {
+              "column": "tenant_birthdate",
+              "value": "={{ $json.Tenant_Birthdate }}"
+            },
+            {
+              "column": "property",
+              "value": "={{ $json.Property }}"
+            },
+            {
+              "column": "unit",
+              "value": "={{ $json.Unit }}"
+            },
+            {
+              "column": "tenant",
+              "value": "={{ $json.Tenant }}"
+            },
+            {
+              "column": "status",
+              "value": "={{ $json.Status }}"
+            },
+            {
+              "column": "tenant_type",
+              "value": "={{ $json.Tenant_Type }}"
+            },
+            {
+              "column": "phone_numbers",
+              "value": "={{ $json.Phone_Numbers }}"
+            },
+            {
+              "column": "emails",
+              "value": "={{ $json.Emails }}"
+            },
+            {
+              "column": "move-in",
+              "value": "={{ $json['Move-in'] }}"
+            },
+            {
+              "column": "lease_to",
+              "value": "={{ $json.Lease_To }}"
+            },
+            {
+              "column": "rent",
+              "value": "={{ $json.Rent }}"
+            },
+            {
+              "column": "deposit",
+              "value": "={{ $json.Deposit }}"
+            },
+            {
+              "column": "lease_from",
+              "value": "={{ $json.Lease_From }}"
+            },
+            {
+              "column": "primary_tenant",
+              "value": "={{ $json.Primary_Tenant }}"
+            },
+            {
+              "column": "first_name",
+              "value": "={{ $json.First_Name }}"
+            },
+            {
+              "column": "last_name",
+              "value": "={{ $json.Last_Name }}"
+            },
+            {
+              "column": "amount_receivable",
+              "value": "={{ $json.Amount_Receivable }}"
+            },
+            {
+              "column": "delinquent_subsidy_amount",
+              "value": "={{ $json.Delinquent_Subsidy_Amount }}"
+            },
+            {
+              "column": "0-30",
+              "value": "={{ $json['0-30'] }}"
+            },
+            {
+              "column": "30-60",
+              "value": "={{ $json['30-60'] }}"
+            },
+            {
+              "column": "60-90",
+              "value": "={{ $json['60-90'] }}"
+            },
+            {
+              "column": "last_payment",
+              "value": "={{ $json.Last_Payment }}"
+            },
+            {
+              "column": "payment_amount",
+              "value": "={{ $json.Payment_Amount }}"
+            },
+            {
+              "column": "nsf_count",
+              "value": "={{ $json.NSF_Count }}"
+            },
+            {
+              "column": "delinquent_rent",
+              "value": "={{ $json.Delinquent_Rent }}"
+            },
+            {
+              "column": "monthly_charges",
+              "value": "={{ $json.Monthly_Charges }}"
+            }
+          ]
+        },
+        "options": {
+          "replaceEmptyStrings": true
+        }
+      },
+      "id": "899b9983-249f-4d69-abd8-776ecf4a19e7",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        260,
+        280
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Ro5DRlNPdDxqBS4b",
+          "name": "MySQL account 2"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-06T03:26:00.000Z",
+  "versionId": "03576422-6b8c-47de-ae31-5a545c017944"
+}
