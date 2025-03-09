@@ -1,0 +1,75 @@
+{
+  "active": false,
+  "connections": {
+    "n8n Form Trigger": {
+      "main": [
+        [
+          {
+            "node": "Yourls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-09-18T21:40:16.832Z",
+  "id": "4RhI9UIPjtrAIPH2",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 5",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "6891fbb4-0e67-4538-9080-fa7a53324f83",
+        "formTitle": "URl Shortener and QR",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Address"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "50d6d5e1-c664-41b5-be8a-3f5a5c0a4eed",
+      "name": "n8n Form Trigger",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.1,
+      "position": [
+        820,
+        360
+      ],
+      "webhookId": "6891fbb4-0e67-4538-9080-fa7a53324f83"
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "id": "558ffcd8-0515-4ab0-8eb4-172a853f5b09",
+      "name": "Yourls",
+      "type": "n8n-nodes-base.yourls",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        360
+      ],
+      "credentials": {
+        "yourlsApi": {
+          "id": "TKN8hKISe25ZCk4B",
+          "name": "Yourls account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-09-18T21:40:16.832Z",
+  "versionId": "0c8c9810-fbb5-4f82-a704-f305fb60cd7b"
+}
