@@ -1,0 +1,270 @@
+{
+  "active": true,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-04T13:35:22.676Z",
+  "id": "nn6SMwAtM7vB0tD9",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Reminder Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "1418c846-7d27-4756-8612-37f207d83c7a",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -380,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "139jn_UutdhiJwOffU1oOP09LJmgXgwzikOYzqB4Lt38",
+          "mode": "list",
+          "cachedResultName": "Static Reminders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/139jn_UutdhiJwOffU1oOP09LJmgXgwzikOYzqB4Lt38/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/139jn_UutdhiJwOffU1oOP09LJmgXgwzikOYzqB4Lt38/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "defb0c29-28f6-4d69-8b08-ba0dbe64ebf2",
+      "name": "Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -40,
+        160
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "12flB9sEBbo49cY41GTEU8Xi-nQ67UMsfbg85_o138EM",
+          "mode": "list",
+          "cachedResultName": "Variable Reminders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12flB9sEBbo49cY41GTEU8Xi-nQ67UMsfbg85_o138EM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 919910825,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12flB9sEBbo49cY41GTEU8Xi-nQ67UMsfbg85_o138EM/edit#gid=919910825"
+        },
+        "options": {}
+      },
+      "id": "7ee36ff9-46da-4f03-a480-84c15cb6ab87",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -40,
+        420
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date();\nconst dayOfMonth = today.getDate(); // Get today's day of the month\nconst dayOfWeek = today.getDay(); // Get today's day of the week (0 = Sunday, 1 = Monday, etc.)\n\n// Retrieve all static reminders\nconst staticReminders = $items().map(item => item.json);\n\n// Filter reminders that match either today's day of the month or day of the week\nconst filteredStaticReminders = staticReminders.filter(reminder => {\n    // Convert day and week_day to integers for comparison, defaulting to -1 if undefined\n    const reminderDayOfMonth = parseInt(reminder.day) || -1;\n    const reminderDayOfWeek = parseInt(reminder.week_day) || -1;\n    \n    // Match either today's day of the month or day of the week\n    return reminderDayOfMonth === dayOfMonth || reminderDayOfWeek === dayOfWeek;\n});\n\n// Return all filtered reminders\nreturn filteredStaticReminders.length > 0 ? filteredStaticReminders : [{ json: {} }];\n"
+      },
+      "id": "59315553-006c-4265-846b-aaadf93ece75",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        140,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date();\nconst todayDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`; // Format as MM/DD/YYYY\n\n// Retrieve all variable reminders\nconst variableReminders = $items().map(item => item.json);\n\n// Filter reminders that match today’s date\nconst filteredVariableReminders = variableReminders.filter(reminder => {\n    return reminder.reminder_date === todayDate;\n});\n\n// Return all filtered reminders\nreturn filteredVariableReminders.length > 0 ? filteredVariableReminders : [{ json: {} }];\n"
+      },
+      "id": "4b353971-e9b3-4d46-8968-ede6fa40f0b8",
+      "name": "Code1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        140,
+        420
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "managers@blazeproperty.com, Kaleb@aspiremortgageadvisors.com; amy@wnbat.com; talyn@wnbat.com; cindy@wnbat.com; amy.a@axialiving.com; cindy.l@axialiving.com; talyn.p@axialiving.com",
+        "subject": "Managers Daily Reminders",
+        "html": "={{ $json[\"emailContent\"] }}",
+        "options": {
+          "bccEmail": "brandon@blazeproperty.com"
+        }
+      },
+      "id": "b51e419e-b6ac-4018-b663-901b1a582db0",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        840,
+        280
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "ff003643-5229-4f12-9d5d-f34a73c6b711",
+      "name": "Merge",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        400,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all reminders from the merged node output\nconst mergedReminders = $items().map(item => item.json);\n\n// Check if there are any reminders\nif (mergedReminders.length === 0) {\n    // If no reminders, return an empty output to prevent email sending\n    return [];\n}\n\n// Initialize the email content\nconst todayDate = new Date().toISOString().split('T')[0];\nlet emailContent = `<h2>Daily Reminders for ${todayDate}</h2>`;\n\n// Add each reminder to the email content\nmergedReminders.forEach(reminder => {\n    // Ensure that both title and description are available, falling back to \"No Title\" and \"No Description\" if needed\n    const title = reminder.reminder_title || \"No Title\";\n    const description = reminder.reminder_description || \"No Description\";\n    emailContent += `<p><strong>${title}</strong>: ${description}</p>`;\n});\n\n// Static message including an unordered list for daily action items\nconst staticMessage = `\n<p><strong>Note:</strong> Daily Action Items:</p>\n<ul>\n<li><strong>Report Review</strong> - You should be reviewing the following reports daily - Delinquency, Rent Roll, Receivables Activity, Guest Cards, Applications</li>\n    <li><strong>Post Facebook</strong> - Daily Facebook posts are required on both the property page and in relevant Buy/Sell Groups.</li>\n    <li><strong>Review Applications</strong> - Review any applications that are pending and complete any action steps (e.g., landlord verification, employment verification, etc).</li>\n    <li><strong>Review Make-Ready Board</strong> - Update the status of any changes of units on the make ready board.</li>\n    <li><strong>Walk Property</strong> - As the manager of the property, you should be walking the property on a daily basis to familiarize yourself with any outstanding items that need your attention.</li>\n    <li><strong>Guest Cards</strong> - Contact any pending or new guest cards and send applications to all contacts for that unit.</li>\n</ul>\n<p><strong>Note:</strong> All items above are expected to be completed on time. If a link is provided to instructions or other documentation, please review that before completing work.</p>`;\n\n// Append the static message to the email content\nemailContent += staticMessage;\n\n// Return email content for the Send Email node\nreturn { json: { emailContent } };\n"
+      },
+      "id": "72caa9a4-94b1-4069-8e78-c898f0338a5b",
+      "name": "Code2",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        280
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-17T18:44:37.000Z",
+  "versionId": "855aab02-e972-49db-bc0d-838116d98065"
+}
