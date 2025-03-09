@@ -1,0 +1,384 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Flatten Meta Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten Meta Data": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-19T19:22:01.974Z",
+  "id": "8bHRr1VM1naDcnfF",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Legacy Shared Sheet",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "91b8cbcc-37cf-4ce4-b130-b38ff6f9036c",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        800,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://blzres.com/wp-json/frm/v2/forms/2/entries?page_size=100",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "per_page",
+              "value": "25"
+            },
+            {
+              "name": "order",
+              "value": "desc"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "a8290e7c-f447-4a64-b8b6-33b477c46ccf",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        980,
+        660
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all items passed from the previous node\nconst items = $input.all();\n\n// Define an array to store the flattened results\nconst flattenedResults = [];\n\n// Loop through each item in the input\nitems.forEach(item => {\n  // Loop through each sub-item in the item\n  for (const key in item.json) {\n    if (item.json.hasOwnProperty(key)) {\n      const entry = item.json[key];\n\n      // Extract the necessary fields\n      const flattenedEntry = {\n        id: entry.id,\n        item_key: entry.item_key,\n        first_name: entry.meta[\"name-value\"]?.first || '',\n        last_name: entry.meta[\"name-value\"]?.last || '',\n        location: entry.meta.location || '',\n        occupancy: entry.meta.occupancy || '',\n        vacant: entry.meta.vacant || '',\n        guests: entry.meta.guests || '',\n        delinquency: entry.meta.delinquency || '',\n        delinquency30: entry.meta.delinquency30 || '',\n        evictions: entry.meta.evictions || '',\n        applications: entry.meta.applications || '',\n        move_ins: entry.meta[\"move-ins\"] || '',\n        ready_units: entry.meta[\"ready-units\"] || '',\n        marketing: entry.meta.marketing || '',\n        goodnews: entry.meta.goodnews || '',\n        headlines: entry.meta.headlines || '',\n        issues: entry.meta.issues || '',\n        submit3: entry.meta.submit3 || '',\n        Date: entry.meta.datetime || ''\n      };\n\n      // Add the flattened entry to the results\n      flattenedResults.push({ json: flattenedEntry });\n    }\n  }\n});\n\n// Return the flattened and processed results\nreturn flattenedResults;\n"
+      },
+      "id": "94807d0e-efe0-4384-a619-29f8b071ec95",
+      "name": "Flatten Meta Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "12t8pakOWf8L0u_fRwZ1p4V_RAB8haD6fXsUB_9h7AI8",
+          "mode": "list",
+          "cachedResultName": "WW Legacy Stats",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12t8pakOWf8L0u_fRwZ1p4V_RAB8haD6fXsUB_9h7AI8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12t8pakOWf8L0u_fRwZ1p4V_RAB8haD6fXsUB_9h7AI8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key": "={{ $json.item_key }}",
+            "Issues": "={{ $json.issues }}",
+            "Headlines": "={{ $json.headlines }}",
+            "Good News": "={{ $json.goodnews }}",
+            "Marketing": "={{ $json.marketing }}",
+            "Ready Units": "={{ $json.ready_units }}",
+            "Move-Ins": "={{ $json.move_ins }}",
+            "Evictions": "={{ $json.evictions }}",
+            "Applications": "={{ $json.applications }}",
+            "Delinquency +30": "={{ $json.delinquency30 }}",
+            "Delinquency": "={{ $json.delinquency }}",
+            "Guest Cards": "={{ $json.guests }}",
+            "Vacant": "={{ $json.vacant }}",
+            "Occupancy": "={{ $json.occupancy }}",
+            "Location": "={{ $json.location }}",
+            "Date": "={{ $json.Date }}"
+          },
+          "matchingColumns": [
+            "key"
+          ],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Occupancy",
+              "displayName": "Occupancy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Vacant",
+              "displayName": "Vacant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Guest Cards",
+              "displayName": "Guest Cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Delinquency",
+              "displayName": "Delinquency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Delinquency +30",
+              "displayName": "Delinquency +30",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Evictions",
+              "displayName": "Evictions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Applications",
+              "displayName": "Applications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Move-Ins",
+              "displayName": "Move-Ins",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Ready Units",
+              "displayName": "Ready Units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Marketing",
+              "displayName": "Marketing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Good News",
+              "displayName": "Good News",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Headlines",
+              "displayName": "Headlines",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Issues",
+              "displayName": "Issues",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "key",
+              "displayName": "key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c53c5dae-2a08-442c-984e-6690b9adfd49",
+      "name": "Google Sheets1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [
+        1760,
+        660
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Define the properties to keep\nconst propertiesToKeep = [\n  \"Courtyard Apartments\",\n  \"Oak Terrace - Littlefield\",\n  \"Nelson Street Apartments\",\n  \"Broadstone Apartments\",\n  \"Adobe Trail Complex\",\n  \"NorthPark Town Homes\",\n  \"Jefferson Square Apartments\",\n  \"Cross Keys\",\n  \"RiverEdge\",\n  \"Courtyard Apartments Pampa\"\n];\n\n// Filter items based on location\nconst filteredItems = items.filter(item => {\n  // Safely access the nested location field\n  const location = item.json?.location;\n  return location && propertiesToKeep.includes(location); // Check if the location is valid and in the list\n});\n\n// Return the filtered items\nreturn filteredItems;\n"
+      },
+      "id": "bae4c0cf-c0d7-4985-bfd8-9739599d4a77",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        660
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 12
+            }
+          ]
+        }
+      },
+      "id": "023db079-7d22-4219-8ed9-f7e2de33336e",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        900
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-09-23T15:44:36.730Z",
+  "versionId": "f9100c22-d413-4d77-a6e7-c954c38b1dab"
+}
