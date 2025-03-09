@@ -1,0 +1,267 @@
+{
+  "active": false,
+  "connections": {
+    "IF Contact Exists": {
+      "main": [
+        [
+          {
+            "node": "Update Contact",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Contact Data": {
+      "main": [
+        [
+          {
+            "node": "IF Contact Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Set Contact Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Contacts": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get All Contacts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-17T22:16:01.591Z",
+  "id": "jtgMZhjEG3v9h9pa",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "options": {
+          "publishedOnly": true
+        }
+      },
+      "name": "Mautic",
+      "type": "n8n-nodes-base.mautic",
+      "position": [
+        20,
+        400
+      ],
+      "typeVersion": 1,
+      "id": "b7ab88a6-8b6a-4ef2-a79a-c037bfa17fa9",
+      "credentials": {
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "url": "https://marketing.blzres.com/api/contacts",
+        "options": {}
+      },
+      "name": "Get All Contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        620
+      ],
+      "id": "256f0e11-1687-4b28-bebb-4fbfdd0c676e",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "Dv1lLw9hsfmIn7I3",
+          "name": "Unnamed credential 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "url": "https://your-mautic-instance.com/api/contacts/new",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "name": "Create Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        840,
+        740
+      ],
+      "id": "eabae82a-d2c7-44c4-8294-098fb363837d"
+    },
+    {
+      "parameters": {
+        "authentication": "predefinedCredentialType",
+        "url": "https://your-mautic-instance.com/api/contacts/{{$json[\"id\"]}}/edit",
+        "jsonParameters": true,
+        "options": {}
+      },
+      "name": "Update Contact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        840,
+        540
+      ],
+      "id": "28536214-f43d-49af-9871-cbbcb422fcd1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [],
+          "string": [
+            {
+              "value1": "={{$json[\"email\"]}}",
+              "value2": "={{$json[\"fields\"][\"email\"]}}"
+            }
+          ]
+        }
+      },
+      "name": "IF Contact Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        640,
+        600
+      ],
+      "id": "60f67219-3511-425c-abd7-6fbc1f6b05c3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Set Contact Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        440,
+        640
+      ],
+      "id": "1c5e4e05-c8f7-40e3-aae3-42a8db4c6254"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        240,
+        640
+      ],
+      "id": "b8172807-28fb-4ee0-af26-49f305d3d3d5"
+    },
+    {
+      "parameters": {
+        "url": "https://marketing.blzres.com/api/contacts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "mauticApi",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "2c1fab4e-7170-4618-9a7a-091fe3f2c2b4",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        180,
+        460
+      ],
+      "credentials": {
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "data.blzres.com/data/tenant_directory.csv"
+      },
+      "id": "ab0a3cee-eac7-4ecb-a2de-8cb8b641970e",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        300,
+        280
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "17a08cd7-b57f-4164-908d-641f65150aaa",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        620
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-17T23:00:04.000Z",
+  "versionId": "35dca3aa-65bc-4391-824e-f246ab744d3f"
+}
