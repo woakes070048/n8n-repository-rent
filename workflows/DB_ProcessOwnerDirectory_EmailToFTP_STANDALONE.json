@@ -1,0 +1,262 @@
+{
+  "active": true,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "FTP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-06T14:41:38.287Z",
+  "id": "tVLo202vZ8w7KNrF",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "DB_ProcessOwnerDirectory_EmailToFTP_STANDALONE",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Daily Owner Directory n8n\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -340,
+        -360
+      ],
+      "id": "82d0ac9c-4c8b-413b-8381-9bee6a261594",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        -360
+      ],
+      "id": "7ee4cbb5-fa37-4b73-a918-5f6dba476b65",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Helper function to convert Excel date code to MM/DD/YYYY format\nfunction excelDateToJSDate(serial) {\n    if (!serial || isNaN(serial)) return \"\"; // Handle undefined, null, or non-numeric values\n    const jsDate = new Date((serial - 25569) * 86400000);\n    const month = String(jsDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based\n    const day = String(jsDate.getDate()).padStart(2, '0');\n    const year = jsDate.getFullYear();\n    return `${month}/${day}/${year}`;\n}\n\n// Extract first valid email from a comma-separated string\nfunction getFirstValidEmail(emails) {\n    if (!emails || typeof emails !== \"string\") return \"\"; // Handle missing, null, or non-string values\n    const emailList = emails.split(',').map(email => email.trim()).filter(email => email.includes(\"@\"));\n    return emailList.length > 0 ? emailList[0] : \"\";\n}\n\n// Extract and format the first phone number as (XXX) XXX-XXXX\nfunction cleanPhoneNumber(phoneNumber) {\n    if (!phoneNumber || typeof phoneNumber !== \"string\") return \"\"; // Handle missing, null, or non-string values\n    const digits = phoneNumber.replace(/\\D/g, \"\"); // Remove all non-numeric characters\n    if (digits.length === 10) {\n        return `(${digits.substring(0, 3)}) ${digits.substring(3, 6)}-${digits.substring(6, 10)}`;\n    }\n    return \"\"; // Return empty if not a valid 10-digit number\n}\n\n// Process input data\nconst items = $input.all().map(item => {\n    let data = item.json;\n\n    return {\n        json: {\n            ...data,\n            \"Last Payment Date\": data[\"Last Payment Date\"] ? excelDateToJSDate(data[\"Last Payment Date\"]) : \"\",\n            \"Phone Numbers\": data[\"Phone Numbers\"] ? cleanPhoneNumber(data[\"Phone Numbers\"]) : \"\",\n            \"Email\": data[\"Email\"] ? getFirstValidEmail(data[\"Email\"]) : \"\",\n        }\n    };\n});\n\n// Return cleaned data\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        20,
+        -360
+      ],
+      "id": "4b47c5e8-94b8-40ff-a745-453a646f20ae",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -300,
+        -80
+      ],
+      "id": "cd11556c-9665-422c-bac9-3fee070756fb",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/data2/owners.csv",
+        "binaryPropertyName": "=data"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        140,
+        -120
+      ],
+      "id": "15ee77b6-da0d-4e12-960d-cd62c7cf8678",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/data2/archive/owners{{ $today }}.csv"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        140,
+        80
+      ],
+      "id": "2bf76ac3-bc95-4fd6-9456-d04525c15044",
+      "name": "FTP1",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/data/owners.csv",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        -80
+      ],
+      "id": "5a048fd6-483f-4373-adb4-ba70bfcbb939",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "content": "## 📌 Workflow: DB_ProcessOwnerDirectory_EmailToFTP_STANDALONE\n\n### **Description**\nThis workflow **automates the retrieval, processing, and storage of the daily owner directory**. It extracts an Excel file from an email, cleans and formats data (phone numbers, emails, and dates), and uploads the final CSV to an FTP server while archiving previous versions.\n\n### **Key Actions**\n- 📥 **Triggers:** IMAP Email (Monitors for new owner directory attachments)\n- 🔄 **Processes:** Data extraction, formatting, and file conversion\n- 📤 **Outputs:** FTP upload & local archive\n\n✅ **Standalone Process – No dependencies**\n\nhttps://docs.google.com/document/d/1eAJ4nUqUs6XiPRCIFDzmKmKBRQFLq-ZdmCPhs0KagP8/edit?usp=sharing\n",
+        "height": 740,
+        "width": 660
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        -380
+      ],
+      "id": "21d5bc5f-d59b-4ea2-adbb-2c64f7837fc9",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "executionTimeout": 60,
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 26
+    }
+  },
+  "tags": [
+    {
+      "createdAt": "2025-03-08T13:24:58.615Z",
+      "updatedAt": "2025-03-08T13:24:58.615Z",
+      "id": "9NBFp5smMq2uf5oA",
+      "name": "Email Processing"
+    },
+    {
+      "createdAt": "2025-03-08T13:25:10.159Z",
+      "updatedAt": "2025-03-08T13:25:10.159Z",
+      "id": "BuEyxYDizWzfnSgw",
+      "name": "Property Management"
+    },
+    {
+      "createdAt": "2025-03-08T13:25:15.460Z",
+      "updatedAt": "2025-03-08T13:25:15.460Z",
+      "id": "GcPCfFUU7pMOfdCg",
+      "name": "FTP"
+    },
+    {
+      "createdAt": "2025-03-08T13:24:50.257Z",
+      "updatedAt": "2025-03-08T13:24:50.257Z",
+      "id": "nKpcjJa3PqYY7391",
+      "name": "Database"
+    },
+    {
+      "createdAt": "2025-03-08T13:25:20.224Z",
+      "updatedAt": "2025-03-08T13:25:20.224Z",
+      "id": "vv5EJ9sqm2t2PveD",
+      "name": "Standalone"
+    },
+    {
+      "createdAt": "2025-03-08T13:25:04.868Z",
+      "updatedAt": "2025-03-08T13:25:04.868Z",
+      "id": "xgVFNvPzU9QeauDh",
+      "name": "Data Sync"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-08T13:33:34.000Z",
+  "versionId": "c2081014-c6a1-4cbd-92ec-e2eebc41c4a5"
+}
