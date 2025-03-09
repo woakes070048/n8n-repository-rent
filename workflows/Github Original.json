@@ -1,0 +1,599 @@
+{
+  "active": false,
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Workflow by ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Workflow Data": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Openrouter": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Remove markdown signs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create JSON file": {
+      "main": [
+        [
+          {
+            "node": "Create README",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit JSON file": {
+      "main": [
+        [
+          {
+            "node": "Update readme",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if workflow is on GitHub": {
+      "main": [
+        [
+          {
+            "node": "Edit JSON file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create JSON file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove markdown signs": {
+      "main": [
+        [
+          {
+            "node": "Set JSON filename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set JSON filename": {
+      "main": [
+        [
+          {
+            "node": "Check if workflow is on GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Workflow From List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Workflow by ID": {
+      "main": [
+        [
+          {
+            "node": "Format Workflow Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Workflow From List": {
+      "main": [
+        [
+          {
+            "node": "Format Workflow Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-09T16:44:53.827Z",
+  "id": "jFwM2M6IpyPcf1GJ",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Github Original",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        800,
+        1240
+      ],
+      "id": "d085591a-09b1-4d2d-9ad7-5c46b3283b47",
+      "name": "Execute Workflow Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "const nodes = $input.all()[0].json.nodes\nconst connections = $input.all()[0].json.connections\nconst settings = $input.all()[0].json.settings\nconst staticData = $input.all()[0].json.staticData\nconst meta = $input.all()[0].json.meta\nconst pinData = $input.all()[0].json.pinData\nconst name = $input.all()[0].json.name\n\nconst jsonOutput = {\n  \"workflowName\": name,\n  \"content\": {\n    \"nodes\": nodes,\n    \"connections\": connections,\n    \"settings\": settings,\n    \"staticData\": staticData,\n    \"meta\": meta,\n    \"pinData\": pinData\n  }\n}\n\nreturn jsonOutput\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        1120
+      ],
+      "id": "7357daf6-488e-400d-806d-d4c3010f1a4a",
+      "name": "Format Workflow Data"
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "={{ JSON.stringify($json.content) }}",
+        "options": {
+          "systemMessage": "Analyze the provided JSON file representing an n8n workflow. Based on the content, generate a clear and concise GitHub README file in Markdown format. The README should include the following sections:\n\t1.\tTitle: Extract the title of the workflow.\n\t2.\tDescription: Provide a brief explanation of what the workflow does and the goal it achieves.\n\t3.\tUsed Nodes and Integrations: List all the nodes and external services/integrations used in the workflow.\n\t4.\tSetup Instructions: Explain any necessary steps to set up the workflow when copying it, such as setting environment variables, configuring credentials, or adding required inputs.\n\nUse a professional but chilled-out tone throughout the README. Add a friendly and approachable vibe by including relevant emojis (e.g., ✅ for completed setups, 🚀 for goals, 🔧 for setup steps) where appropriate. The output must strictly adhere to Markdown formatting, starting with a # header for the title. Do not include any content or comments outside the scope of the README file.\n\nExample output:\n```markdown#Workflow Title\\n##Workflow Details```\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        1540,
+        1120
+      ],
+      "id": "6e412922-296f-46e7-bad9-da7b6feb9ef5",
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 1000
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4-turbo-preview",
+        "options": {
+          "baseURL": "https://api.openai.com/v1"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        1320
+      ],
+      "id": "84615c6f-bc98-442d-8bbd-dbc17b9bf7d4",
+      "name": "Openrouter",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "brandonblaze1",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Check if workflow is on GitHub').params.repository.value }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('Format Workflow Data').item.json.workflowName }}/README.md",
+        "fileContent": "={{ $('Remove markdown signs').item.json.output }}",
+        "commitMessage": "=Update readme for {{ $('Format Workflow Data').item.json.workflowName }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2760,
+        980
+      ],
+      "id": "a8a81f33-a878-469f-9249-742e81db1ad3",
+      "name": "Update readme",
+      "credentials": {
+        "githubApi": {
+          "id": "tc844L9IUnwi1x61",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "brandonblaze1",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Check if workflow is on GitHub').params.repository.value }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('Format Workflow Data').item.json.workflowName }}/{{ $json.jsonFileName }}",
+        "fileContent": "={{ JSON.stringify($('Format Workflow Data').item.json.content, null,2) }}",
+        "commitMessage": "=Add {{ $('Set JSON filename').item.json.jsonFileName }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2600,
+        1220
+      ],
+      "id": "fcd1d3f1-a7a2-4910-9ac9-e843458883b6",
+      "name": "Create JSON file",
+      "credentials": {
+        "githubApi": {
+          "id": "tc844L9IUnwi1x61",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "brandonblaze1",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Check if workflow is on GitHub').params.repository.value }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('Format Workflow Data').item.json.workflowName }}/README.md",
+        "fileContent": "={{ $('Remove markdown signs').item.json.output }}",
+        "commitMessage": "=Add readme for {{ $('Format Workflow Data').item.json.workflowName }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2760,
+        1220
+      ],
+      "id": "0594d555-45af-4ddf-a1ff-459b8e21b516",
+      "name": "Create README",
+      "credentials": {
+        "githubApi": {
+          "id": "tc844L9IUnwi1x61",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "brandonblaze1",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Check if workflow is on GitHub').params.repository.value }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('Format Workflow Data').item.json.workflowName }}/{{ $('Set JSON filename').item.json.jsonFileName }}",
+        "fileContent": "={{ JSON.stringify($('Format Workflow Data').item.json.content, null,2) }}",
+        "commitMessage": "=Edit {{ $('Set JSON filename').item.json.jsonFileName }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2600,
+        980
+      ],
+      "id": "e893ab39-d151-4211-b271-19c81d651034",
+      "name": "Edit JSON file",
+      "credentials": {
+        "githubApi": {
+          "id": "tc844L9IUnwi1x61",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "brandonblaze1",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "AAP_1-12-24_automations",
+          "mode": "list",
+          "cachedResultName": "AAP_1-12-24_automations",
+          "cachedResultUrl": "https://github.com/durbaezgomez/AAP_1-12-24_automations"
+        },
+        "filePath": "={{ $('Format Workflow Data').item.json.workflowName }}/{{ $json.jsonFileName }}",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        2380,
+        1120
+      ],
+      "id": "50c88715-b7f7-4ebf-8b48-b3fe3b2ea4bf",
+      "name": "Check if workflow is on GitHub",
+      "alwaysOutputData": false,
+      "credentials": {
+        "githubApi": {
+          "id": "tc844L9IUnwi1x61",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $input.all()[0].json.output\n  .replace(/```markdown/g, '').replace(/```/g, '')\n\nreturn {output}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        1120
+      ],
+      "id": "354f53db-cde7-4217-91f1-f2822ce90baa",
+      "name": "Remove markdown signs"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b99db5ae-ced7-486d-b744-29109453eace",
+              "name": "jsonFileName",
+              "value": "={{ $('Format Workflow Data').item.json.workflowName.toLowerCase().replaceAll(' ','-')+'.json' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2120,
+        1120
+      ],
+      "id": "05dac2f2-5cc7-4c56-9703-ff6b5845518d",
+      "name": "Set JSON filename"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        800,
+        1000
+      ],
+      "id": "3d0d6709-9c58-4461-a123-533d15491eab",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "workflowId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        1240
+      ],
+      "id": "a1328d84-e8d3-485b-a605-38ec84ba4d50",
+      "name": "Get Workflow by ID",
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "workflowId": {
+          "__rl": true,
+          "value": "0Mg8g8l9iaeUc5fY",
+          "mode": "list",
+          "cachedResultName": "Paramount  Occupancy (#0Mg8g8l9iaeUc5fY)"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        1000
+      ],
+      "id": "d706a244-7c91-4d6f-b788-dfc19d8a7fbe",
+      "name": "Get Workflow From List",
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Triggers\n**Manual or from another workflow that passed its ID**",
+        "height": 640,
+        "width": 260,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        720,
+        840
+      ],
+      "id": "eca456e1-cbcf-46b4-8bb7-19a0d907d9fa",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Workflow data\n**Fetches n8n workflow data**",
+        "height": 640,
+        "width": 260,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        980,
+        840
+      ],
+      "id": "10586170-ee93-4517-9178-fbd54050f23a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Format workflow data\n**Selects proper json properties of workflow content**",
+        "height": 640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        840
+      ],
+      "id": "cdc31582-2bc4-4dc0-9340-1593052e5829",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Format workflow data\n**Removes markdown start/end signs and sets proper json fileName**",
+        "height": 640,
+        "width": 440
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        840
+      ],
+      "id": "7f9acaac-614f-41e9-b14b-76310b6b06a1",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent\n**Analyzes workflow json content and creates a README content with markdown formatting**",
+        "height": 640,
+        "width": 360,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1480,
+        840
+      ],
+      "id": "a84c27c2-376b-4499-8d4f-6241606bfbf7",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## GitHub Communication\n**Checks if workflow already has a directory and creates or updates files if they exist**",
+        "height": 640,
+        "width": 680,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2280,
+        840
+      ],
+      "id": "233be740-d927-4bc7-b62c-486d4479b66f",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "# REMEMBER TO SET WORKFLOW AND DESTINATION REPO",
+        "height": 100,
+        "width": 1040
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1160,
+        700
+      ],
+      "id": "cf6b41ef-6dda-41ce-b4bd-c760f0ef21c9",
+      "name": "Sticky Note6"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-09T16:48:56.000Z",
+  "versionId": "e26a07cc-ff38-48da-836a-4d24742b6e7a"
+}
