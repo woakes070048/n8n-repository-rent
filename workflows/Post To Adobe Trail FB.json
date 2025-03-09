@@ -1,0 +1,484 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Node": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-09T22:48:07.852Z",
+  "id": "ReGYozmAMoLCqXMF",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Post To Adobe Trail FB",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "7c7b1885-6bfd-4ca4-9262-a6a9edb78666",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "legacy_properties",
+          "mode": "list",
+          "cachedResultName": "legacy_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('MySQL Node').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "fb_post_id",
+              "value": "={{ $json.post_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b1b8e82c-0855-4305-9c33-e6fb354a7e9f",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1660,
+        500
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "61587414-c313-4e8e-b376-c821b24a90d5",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        320,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1db1a60-0572-4f37-9148-89f88a42b375",
+              "name": "property_name",
+              "value": "={{ $('MySQL Node').item.json.property_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9c456f0c-c98b-4172-a342-75b5720fea6b",
+              "name": "advertised_rent",
+              "value": "={{ $('MySQL Node').item.json.advertised_rent }}",
+              "type": "string"
+            },
+            {
+              "id": "4b6deb3b-b4cd-485d-93f5-02102cd5ccf4",
+              "name": "marketing_description",
+              "value": "={{ $json.marketing_description }} {{ $('MySQL Node').item.json.marketing_title }}",
+              "type": "string"
+            },
+            {
+              "id": "51058094-5ac3-476b-adec-f01fc3eeef9c",
+              "name": "rentable_uid",
+              "value": "=https://wwlegacy.appfolio.com/listings/detail/{{ $json.rentable_uid }}",
+              "type": "string"
+            },
+            {
+              "id": "846ec8db-3f37-4d6c-adee-6b706218ab16",
+              "name": "image_link",
+              "value": "={{ $json.image_link }}",
+              "type": "string"
+            },
+            {
+              "id": "f08b8595-411d-4d9c-9651-f1bb209e5693",
+              "name": "property_link",
+              "value": "={{ $json.property_link }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2c92d97b-f5ce-4947-9f7a-99b457c46b6e",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        480,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "id": "7dcb493f-530e-4ed9-8e0b-054807263bf0",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -100,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "459465c3-257f-46d6-982a-f4196a47b121",
+              "leftValue": "={{ $json.property_link }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b1586683-c0b0-49b1-b537-c241e4c9282b",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        640,
+        520
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "id": "1a492962-90ba-4933-9434-0bdf1e30b53e",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT property_name, unit_name, bedrooms, bathrooms, advertised_rent, marketing_title, marketing_description, sqft, application_fee, rentable_uid, unit_address, posted_to_website, appliances, utilities, property_link, image_link, fb_post_date FROM legacy_properties WHERE property_name = 'Adobe Trail Complex' AND posted_to_website = 'yes'"
+      },
+      "id": "e1592fb7-4f8c-4867-a452-7c9c58c93b31",
+      "type": "n8n-nodes-base.mySql",
+      "name": "MySQL Node",
+      "typeVersion": 1,
+      "position": [
+        120,
+        540
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Use the following text about a unit for lease at NorthPark Townhomes to make a humorous post. Humor level mid. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number (806) 451-5597. Format the response as a **strict JSON object** with this exact structure: { \\\"post\\\": \\\"Generated post content\\\", \\\"phone\\\": \\\"806-451-5597\\\" }. Do not add any extra text or explanations."
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "e888db25-c95a-4de1-b759-8af811eea58a",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        940,
+        500
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v20.0",
+        "node": "/118910231250578",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.choices[0].message.content.post }}  {{ $('If').item.json.rentable_uid }} "
+              },
+              {
+                "name": "url",
+                "value": "={{ $('If').item.json.image_link }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "4ec8bbfc-ed8c-4aeb-bb5a-008e87fba600",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        500
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "oEIKokQFBXTPMwAN",
+          "name": "Adobe FB Posts"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### Post to FB - n8n Workflow Documentation\n\n### Overview - this n8n workflow automates the process of posting rental listings for a property to Facebook. The workflow retrieves available listings from a MySQL database, generates a humorous post using OpenAI, and posts it along with an image to Facebook via the Facebook Graph API.\n---\n### Workflow Components\n### 1. **Trigger Nodes**\n- **Manual Trigger** (`When clicking ‘Test workflow’`)\n  - Allows the workflow to be executed manually for testing.\n- **Schedule Trigger** (`Schedule Trigger`)\n  - Executes daily at 8 AM to automate the posting process.\n### 2. **Database Query**\n- **MySQL Node** (`MySQL Node`)\n  - Queries the table to fetch active rental listings from a property or group\n  - Filters properties that are `posted_to_website = 'yes'`.\n### 3. **Batch Processing**\n- **Split In Batches** (`Split In Batches`)\n  - Processes rental listings one at a time to avoid API limitations.\n### 4. **Data Transformation**\n- **Edit Fields** (`Edit Fields`)\n  - Extracts and formats required data fields such as:\n    - `property_name`\n    - `advertised_rent`\n    - `marketing_description`\n    - `rentable_uid`\n    - `image_link`\n    - `property_link`\n\n\n\n",
+        "height": 720,
+        "width": 620
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        -220
+      ],
+      "id": "0df64cb6-7d9f-44d5-b9cf-676ca12a7def",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "### 5. **Conditional Check**\n- **If Node** (`If`)\n  - Ensures that `property_link` is not empty before proceeding with the post.\n\n### 6. **AI Content Generation**\n- **OpenAI Node** (`OpenAI2`)\n  - Uses GPT-4 to create a humorous and engaging Facebook post based on the listing description.\n  - Includes emojis and the office contact number:\n\n### 7. **Facebook Posting**\n- **Facebook Graph API** (`Facebook Graph API`)\n  - Posts the AI-generated description and the listing image to the `Paramount Square Apartments` Facebook page.\n\n### 8. **Database Update**\n- **MySQL Node** (`MySQL`)\n  - Updates the `fb_post_id` in the `all_rental_properties` table to track successful posts.\n\n### 9. **Fallback Handling**\n- **No Operation** (`No Operation, do nothing`)\n  - Prevents execution errors when no valid listings are found.\n\n---",
+        "height": 700,
+        "width": 420
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        820,
+        -220
+      ],
+      "id": "2013652c-7312-452d-9856-ae2f1194f12d",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Execution Flow\n\n1. **Trigger**: The workflow starts via manual execution or a scheduled trigger at 8 AM.\n2. **Database Query**: Fetches listings that are ready for posting.\n3. **Batch Processing**: Iterates through each listing one by one.\n4. **Data Transformation**: Extracts relevant details for social media.\n5. **Validation**: Ensures that only listings with a `property_link` are processed.\n6. **AI Generation**: Creates an engaging post using OpenAI.\n7. **Facebook Posting**: Uploads the listing to Facebook along with an image.\n8. **Database Update**: Marks the post as published by storing the Facebook post ID.\n",
+        "height": 440,
+        "width": 340
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        -220
+      ],
+      "id": "c46ac0d4-5304-4f01-9d9a-458483192e3b",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Cron 8am": {
+      "recurrencyRules": []
+    },
+    "node:cron 10am": {
+      "recurrencyRules": []
+    },
+    "node:Cron 12": {
+      "recurrencyRules": []
+    },
+    "node:Cron 14": {
+      "recurrencyRules": []
+    },
+    "node:Cron 16": {
+      "recurrencyRules": []
+    },
+    "node:Schedule Trigger": {
+      "recurrencyRules": [],
+      "recurrenceRules": []
+    }
+  },
+  "tags": [
+    {
+      "createdAt": "2024-07-27T22:16:08.252Z",
+      "updatedAt": "2024-07-27T22:16:08.252Z",
+      "id": "Uk7axlMxGS79ju2M",
+      "name": "Facebook"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-21T16:02:53.000Z",
+  "versionId": "ae01dc57-e5bd-4458-b563-cf05efd1bf40"
+}
