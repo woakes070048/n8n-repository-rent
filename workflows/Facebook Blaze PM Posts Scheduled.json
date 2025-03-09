@@ -1,0 +1,224 @@
+{
+  "active": true,
+  "connections": {
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-17T16:47:53.034Z",
+  "id": "REGGhUWBrLY4vB0L",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Facebook Blaze PM Posts Scheduled",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM social_media_posts\nWHERE last_posted_date IS NULL OR last_posted_date <= CURDATE() - INTERVAL 90 DAY\nORDER BY last_posted_date ASC\nLIMIT 1;",
+        "options": {}
+      },
+      "id": "4bf20786-b7d5-4f0d-9cf1-212653e9cd77",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        20,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.image_url }}",
+        "options": {}
+      },
+      "id": "2c70f9a8-5bee-4ef4-92f1-d124a210a08a",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "text": "Create an engaging social media post about the image. When acceptable include blazeproperty.com and phone number 806-414-6021",
+        "inputType": "base64",
+        "options": {}
+      },
+      "id": "d6f75c8f-ccf1-448b-8ccc-8065601a9da3",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        460,
+        380
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v13.0",
+        "node": "/329129493627618",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.content }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('MySQL').item.json.image_url }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "6e11b6db-2e30-4ae9-a7f6-470204a8d4ed",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        660,
+        380
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "a3LtRYzbJapkaeaV",
+          "name": "Facebook Blaze Real Estate"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE social_media_posts\nSET last_posted_date = CURDATE(), times_posted = times_posted + 1\nWHERE id = {{ $node[\"MySQL\"].json[\"id\"] }};",
+        "options": {}
+      },
+      "id": "dc075baa-4139-4529-8f07-9c08ff38f40b",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        840,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "15556a34-729b-4627-9c47-7c54922004d9",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -180,
+        380
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-20T15:59:06.000Z",
+  "versionId": "6e57b53d-211e-4301-9746-8482ca81d3d6"
+}
