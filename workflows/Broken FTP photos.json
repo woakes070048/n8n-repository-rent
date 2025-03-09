@@ -1,0 +1,1064 @@
+{
+  "active": true,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract CSV Data": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract CSV Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Property page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Property page": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IUpdate all_listing table": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Edit Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP Upload Renamed Image": {
+      "main": [
+        [
+          {
+            "node": "IUpdate all_listing table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP1": {
+      "main": [
+        [
+          {
+            "node": "IUpdate all_listing table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image1": {
+      "main": [
+        [
+          {
+            "node": "FTP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image": {
+      "main": [
+        [
+          {
+            "node": "FTP Upload Renamed Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-10T11:21:05.358Z",
+  "id": "J1zqBM7eFPvcL9Md",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Broken FTP photos",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "monthsInterval": 12
+            }
+          ]
+        }
+      },
+      "id": "64380d91-6577-490f-9a4c-7ecc99050c52",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        2460,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Update to get images\nGet full-list.csv from https://data.blzres.com/data and parse\nbinary to xslx \nBuild webpage url from rentable_uid and fetch\nCheck if redirected due to unavailable unit\nAvaialble unit get first image\nupload first image to https://data.blzres.com/images and name rentable_uid.jpg\n\n\n\nSeries 2 workflow\nUpdated to blazeapa_blazedata",
+        "height": 251.39252805115,
+        "width": 941.3692722371975,
+        "color": 3
+      },
+      "id": "3d63e043-8ac1-42dc-a5de-0cccbe015c75",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2780,
+        680
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "c57c5c17-7923-4e82-a85d-2f38da40c31c",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        2460,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "id": "dbea0937-9653-49c1-835b-8ea1385781e7",
+      "name": "Extract CSV Data",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        3740,
+        1000
+      ]
+    },
+    {
+      "parameters": {
+        "path": "/public_html/data/full-list.csv"
+      },
+      "id": "e6292f9e-56a5-4eab-97bc-a1fd088c1c4b",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        3000,
+        1000
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "919bbb04-19a7-4287-9180-6d74baea8c7f",
+              "name": "property_name",
+              "value": "={{ $json['Property Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f0c47bc0-8f39-4c36-95c0-1e362b64bc7f",
+              "name": "unit_name",
+              "value": "={{ $json['Unit Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3cf17249-0413-40b0-90d8-c8035ee0f998",
+              "name": "default_deposit",
+              "value": "={{ $json['Default Deposit'] }}",
+              "type": "string"
+            },
+            {
+              "id": "54c67700-8b56-4fa8-9fc0-92ff1db0a1b0",
+              "name": "bedrooms",
+              "value": "={{ $json.Bedrooms }}",
+              "type": "string"
+            },
+            {
+              "id": "4ef8586c-1985-44e1-aa2e-c658d73adee5",
+              "name": "bathrooms",
+              "value": "={{ $json.Bathrooms }}",
+              "type": "string"
+            },
+            {
+              "id": "b9f914fe-c6fe-4b89-8006-c4626c859c3e",
+              "name": "advertised_rent",
+              "value": "={{ $json['Advertised Rent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a0a22b6a-7308-4a39-b45b-e10b047310cd",
+              "name": "posted_to_website",
+              "value": "={{ $json['Posted To Website'] }}",
+              "type": "string"
+            },
+            {
+              "id": "40b2081b-d6cb-4570-bb2b-eedbad7a61c4",
+              "name": "posted_to_internet",
+              "value": "={{ $json['Posted To Internet'] }}",
+              "type": "string"
+            },
+            {
+              "id": "98a1c00a-435e-4e69-8dee-152ea794a006",
+              "name": "marketing_title",
+              "value": "={{ $json['Marketing Title'] }}",
+              "type": "string"
+            },
+            {
+              "id": "33be0296-8b2a-4755-b30d-688ffbacac52",
+              "name": "marketing_description",
+              "value": "={{ $json['Marketing Description'] }}",
+              "type": "string"
+            },
+            {
+              "id": "035637e0-8a22-41ee-be11-8c245005449a",
+              "name": "sqft",
+              "value": "={{ $json.Sqft }}",
+              "type": "string"
+            },
+            {
+              "id": "b53ed45d-763d-4eb8-8232-2073ffc4ea5a",
+              "name": "application_fee",
+              "value": "={{ $json['Application Fee'] }}",
+              "type": "string"
+            },
+            {
+              "id": "89df92fa-eeac-47b6-9ac8-30cc21c8f6fe",
+              "name": "rentable_uid",
+              "value": "={{ $json['Rentable UID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "5fb918ff-2115-45de-9841-f7c2239f8fbe",
+              "name": "unit_address",
+              "value": "={{ $json['Unit Address'] }}",
+              "type": "string"
+            },
+            {
+              "id": "74e8a678-df01-4d7b-b809-6cefae738acf",
+              "name": "property",
+              "value": "={{ $json['Property Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a5aab8c8-be1d-40f9-a7f7-03738e192472",
+              "name": "unit_street_address_1",
+              "value": "={{ $json['Unit Street Address 1'] }}",
+              "type": "string"
+            },
+            {
+              "id": "17129901-38f8-4fc9-bf2d-825e65b0039b",
+              "name": "unit_street_address_2",
+              "value": "={{ $json['Unit Street Address 2'] }}",
+              "type": "string"
+            },
+            {
+              "id": "73f51585-32be-4afc-bbee-c26a43f8c924",
+              "name": "unit_city",
+              "value": "={{ $json['Unit City'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4107a3fc-92bd-48ab-86c8-80457fcb9ef5",
+              "name": "unit_state",
+              "value": "={{ $json['Unit State'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e45b55c9-8f87-4a8c-b981-95244585c37e",
+              "name": "unit_zip",
+              "value": "={{ $json['Unit Zip'] }}",
+              "type": "string"
+            },
+            {
+              "id": "8d2cc5d9-4c42-4020-962c-bcfd3e66be0d",
+              "name": "market_rent",
+              "value": "={{ $json['Market Rent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "fe633545-52c8-45b4-a427-2c7727a8c006",
+              "name": "tags",
+              "value": "={{ $json.Tags }}",
+              "type": "string"
+            },
+            {
+              "id": "b467b5ca-d9ef-4862-8f8a-aaa3555903e3",
+              "name": "created_on",
+              "value": "={{ $json['Created On'] }}",
+              "type": "number"
+            },
+            {
+              "id": "7bc5b829-e955-401d-8aeb-c7decf829c8b",
+              "name": "description",
+              "value": "={{ $json.Description }}",
+              "type": "string"
+            },
+            {
+              "id": "575b32ec-d981-4d3b-9b94-97ca029821bd",
+              "name": "appliances",
+              "value": "={{ $json.Appliances }}",
+              "type": "string"
+            },
+            {
+              "id": "e8cb4d39-9a6f-4cd3-aa17-f829a5d0a797",
+              "name": "utilities",
+              "value": "={{ $json.Utilities }}",
+              "type": "string"
+            },
+            {
+              "id": "2d298412-28f7-49de-a658-53f5fa98127e",
+              "name": "property_link",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json['Rentable UID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "56317107-fc72-4677-9972-871e54bb4bab",
+              "name": "image_name",
+              "value": "={{ $json['Rentable UID'] }}.jpg",
+              "type": "string"
+            },
+            {
+              "id": "b2a6474c-b835-4f39-a1ad-98ee57154daf",
+              "name": "Status",
+              "value": "={{ $json.Status }}",
+              "type": "string"
+            },
+            {
+              "id": "b591ee54-62a2-41e9-a46a-1ecfedf679a0",
+              "name": "youtube_url",
+              "value": "={{ $json['YouTube URL'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2b8887e-2228-4d52-bf8b-a17197200a02",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2080,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "de035c01-bcd0-46b7-af13-82f6d258ce13",
+              "leftValue": "={{ $json.posted_to_website }}",
+              "rightValue": "No",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "67be81fc-9d86-4d90-bffc-e7a82f37676d",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "Current",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "34b5047a-5b04-4e73-b706-95414bcf1ffc",
+              "leftValue": "{{ $json.Status }}",
+              "rightValue": "Vacant-Rented",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "e3e21e82-7164-4e85-8de5-1fcca9206c38",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2300,
+        1220
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('Edit Fields1').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_name",
+              "value": "={{ $json.property_name }}"
+            },
+            {
+              "column": "unit_name",
+              "value": "={{ $json.unit_name }}"
+            },
+            {
+              "column": "default_deposit",
+              "value": "={{ $json.default_deposit }}"
+            },
+            {
+              "column": "bedrooms",
+              "value": "={{ $json.bedrooms }}"
+            },
+            {
+              "column": "bathrooms",
+              "value": "={{ $json.bathrooms }}"
+            },
+            {
+              "column": "advertised_rent",
+              "value": "={{ $json.advertised_rent }}"
+            },
+            {
+              "column": "posted_to_website",
+              "value": "={{ $json.posted_to_website }}"
+            },
+            {
+              "column": "posted_to_internet",
+              "value": "={{ $json.posted_to_internet }}"
+            },
+            {
+              "column": "marketing_title",
+              "value": "={{ $json.marketing_title }}"
+            },
+            {
+              "column": "marketing_description",
+              "value": "={{ $json.marketing_description }}"
+            },
+            {
+              "column": "sqft",
+              "value": "={{ $json.sqft }}"
+            },
+            {
+              "column": "application_fee",
+              "value": "={{ $json.application_fee }}"
+            },
+            {
+              "column": "unit_address",
+              "value": "={{ $json.unit_address }}"
+            },
+            {
+              "column": "property",
+              "value": "={{ $json.property }}"
+            },
+            {
+              "column": "unit_street_address_1",
+              "value": "={{ $json.unit_street_address_1 }}"
+            },
+            {
+              "column": "unit_street_address_2",
+              "value": "={{ $json.unit_street_address_2 }}"
+            },
+            {
+              "column": "unit_city",
+              "value": "={{ $json.unit_city }}"
+            },
+            {
+              "column": "unit_state",
+              "value": "={{ $json.unit_state }}"
+            },
+            {
+              "column": "unit_zip",
+              "value": "={{ $json.unit_zip }}"
+            },
+            {
+              "column": "market_rent",
+              "value": "={{ $json.market_rent }}"
+            },
+            {
+              "column": "tags",
+              "value": "={{ $json.tags }}"
+            },
+            {
+              "column": "description",
+              "value": "={{ $json.description }}"
+            },
+            {
+              "column": "appliances",
+              "value": "={{ $json.appliances }}"
+            },
+            {
+              "column": "utilities",
+              "value": "={{ $json.utilities }}"
+            },
+            {
+              "column": "status",
+              "value": "={{ $json.Status }}"
+            },
+            {
+              "column": "youtube_url",
+              "value": "={{ $json.youtube_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "323f1040-0c9e-4d78-859d-16d37f2d9f3a",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        2300,
+        1460
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ab6aa64d-c65a-48f2-b683-da42ffe18002",
+              "leftValue": "={{ $json.property_name }}",
+              "rightValue": "Total",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f161263b-d45b-4e07-8893-c3d4ae352976",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2540,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "16725f70-e4e7-4a6e-8d34-61d2f1aa4be3",
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2540,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.property_link }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "3515f96c-1b34-4b32-8851-1b7f1b7e98b6",
+      "name": "Get Property page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2800,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('Edit Fields1').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_name",
+              "value": "={{ $('Edit Fields1').item.json.property_name }}"
+            },
+            {
+              "column": "unit_name",
+              "value": "={{ $('Edit Fields1').item.json.unit_name }}"
+            },
+            {
+              "column": "default_deposit",
+              "value": "={{ $('Edit Fields1').item.json.default_deposit }}"
+            },
+            {
+              "column": "bedrooms",
+              "value": "={{ $('Edit Fields1').item.json.bedrooms }}"
+            },
+            {
+              "column": "bathrooms",
+              "value": "={{ $('Edit Fields1').item.json.bathrooms }}"
+            },
+            {
+              "column": "advertised_rent",
+              "value": "={{ $('Edit Fields1').item.json.advertised_rent }}"
+            },
+            {
+              "column": "posted_to_website",
+              "value": "={{ $('Edit Fields1').item.json.posted_to_website }}"
+            },
+            {
+              "column": "posted_to_internet",
+              "value": "={{ $('Edit Fields1').item.json.posted_to_internet }}"
+            },
+            {
+              "column": "=marketing_title",
+              "value": "={{ $('Edit Fields1').item.json.marketing_title }}"
+            },
+            {
+              "column": "marketing_description",
+              "value": "={{ $('Edit Fields1').item.json.marketing_description }}"
+            },
+            {
+              "column": "sqft",
+              "value": "={{ $('Edit Fields1').item.json.sqft }}"
+            },
+            {
+              "column": "application_fee",
+              "value": "={{ $('Edit Fields1').item.json.application_fee }}"
+            },
+            {
+              "column": "image_link",
+              "value": "=https://data.blzres.com/data/images/{{ $('Edit Fields1').item.json.image_name }}"
+            },
+            {
+              "column": "unit_address",
+              "value": "={{ $('Edit Fields1').item.json.unit_address }}"
+            },
+            {
+              "column": "property",
+              "value": "={{ $('Edit Fields1').item.json.property }}"
+            },
+            {
+              "column": "unit_street_address_1",
+              "value": "={{ $('Edit Fields1').item.json.unit_street_address_1 }}"
+            },
+            {
+              "column": "unit_street_address_2",
+              "value": "={{ $('Edit Fields1').item.json.unit_street_address_2 }}"
+            },
+            {
+              "column": "unit_city",
+              "value": "={{ $('Edit Fields1').item.json.unit_city }}"
+            },
+            {
+              "column": "unit_state",
+              "value": "={{ $('Edit Fields1').item.json.unit_state }}"
+            },
+            {
+              "column": "unit_zip",
+              "value": "={{ $('Edit Fields1').item.json.unit_zip }}"
+            },
+            {
+              "column": "market_rent",
+              "value": "={{ $('Edit Fields1').item.json.market_rent }}"
+            },
+            {
+              "column": "tags",
+              "value": "={{ $('Edit Fields1').item.json.tags }}"
+            },
+            {
+              "column": "description",
+              "value": "={{ $('Edit Fields1').item.json.description }}"
+            },
+            {
+              "column": "appliances",
+              "value": "={{ $('Edit Fields1').item.json.appliances }}"
+            },
+            {
+              "column": "utilities",
+              "value": "={{ $('Edit Fields1').item.json.utilities }}"
+            },
+            {
+              "column": "property_link",
+              "value": "={{ $('Edit Fields1').item.json.property_link }}"
+            },
+            {
+              "column": "youtube_url",
+              "value": "={{ $('Edit Fields1').item.json.youtube_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d57533cb-e449-43ec-a311-1032fb0e4e72",
+      "name": "IUpdate all_listing table",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        3780,
+        1200
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "cssSelector": "img.gallery__large-image",
+              "returnValue": "attribute",
+              "attribute": "src"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "80ce6cda-2ab1-4075-9c9b-83ec5d706042",
+      "name": "HTML",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        3000,
+        1220
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json[''] }}",
+        "options": {}
+      },
+      "id": "c8a1d6be-a8b9-4415-bbe2-1ec8802a9a1e",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3180,
+        1220
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://blazeproperty.com/wp-content/uploads/Blaze-Logo268x126.jpg",
+        "options": {}
+      },
+      "id": "2ab17f92-b36a-4fd5-8b79-b6cbc76818a1",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3200,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/data/images/{{ $('Loop Over Items').item.json.image_name }}",
+        "binaryPropertyName": "=data"
+      },
+      "id": "3c841dd2-f871-421c-8d60-ab00d75b3b97",
+      "name": "FTP Upload Renamed Image",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        3600,
+        1200
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/data.blzres.com/data/images/{{ $('Loop Over Items').item.json.image_name }}"
+      },
+      "id": "6e9bd7a5-78de-4c87-9dd2-d660014f5200",
+      "name": "FTP1",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        3560,
+        1460
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "dataPropertyName": "=data",
+        "text": "={{ $('If1').item.json.property_name }}",
+        "fontSize": 20,
+        "positionX": 0,
+        "positionY": "={{ 384-20 }}",
+        "options": {
+          "font": "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
+        }
+      },
+      "id": "4085649a-aec0-43fa-9f84-a726aeddce33",
+      "name": "Edit Image1",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        3360,
+        1460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "dataPropertyName": "=data",
+        "text": "={{ $('Loop Over Items').item.json.property }}",
+        "fontSize": 20,
+        "positionX": 0,
+        "positionY": 0,
+        "options": {
+          "font": "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
+        }
+      },
+      "id": "699d2abb-44a5-47d9-bfc8-a4476b190775",
+      "name": "Edit Image",
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        3420,
+        1200
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": [
+        0
+      ]
+    }
+  },
+  "tags": [
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    },
+    {
+      "createdAt": "2024-09-07T13:56:55.812Z",
+      "updatedAt": "2024-09-07T13:56:55.812Z",
+      "id": "jX5iavNFG4Ls67W3",
+      "name": "a2"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-10T13:24:03.000Z",
+  "versionId": "048bc2d0-29c6-4a78-92f4-c6bd16e2c439"
+}
