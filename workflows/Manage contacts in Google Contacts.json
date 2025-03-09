@@ -1,0 +1,154 @@
+{
+  "active": false,
+  "connections": {
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Google Contacts3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Contacts3": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-26T17:03:19.523Z",
+  "id": "ft3UQ9R3hzrvYzWl",
+  "meta": {
+    "templateId": "637",
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Manage contacts in Google Contacts",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        180,
+        240
+      ],
+      "typeVersion": 1,
+      "id": "d1e56a86-1928-4e13-9d73-72c8607c6132"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "fields": [
+          "names",
+          "emailAddresses",
+          "phoneNumbers",
+          "addresses",
+          "metadata"
+        ],
+        "options": {}
+      },
+      "id": "fd36cc98-d6de-45a6-bc44-8ac3da176de2",
+      "name": "Google Contacts3",
+      "type": "n8n-nodes-base.googleContacts",
+      "typeVersion": 1,
+      "position": [
+        360,
+        240
+      ],
+      "credentials": {
+        "googleContactsOAuth2Api": {
+          "id": "0KSjJKQ4ZQDhisZU",
+          "name": "Google Contacts account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Get the current contact from the input\nconst contact = $json;\n\n// Array to store found email addresses\nlet emailList = [];\n\n// List of valid Google Contacts email tags\nconst validTags = [\"work\", \"home\", \"other\", \"school\", \"custom\", \"undefined\"];\n\n// Get the emailAddresses object if it exists\nconst emailAddresses = contact.emailAddresses;\n\nif (emailAddresses) {\n  // Iterate through the valid tags\n  validTags.forEach(tag => {\n    // Check if the tag exists in the emailAddresses object\n    if (emailAddresses[tag]) {\n      // Add the emails under this tag to the emailList\n      emailList = emailList.concat(emailAddresses[tag]);\n    }\n  });\n}\n\n// If there are valid emails, return the contact with the emails\nif (emailList.length > 0) {\n  return {\n    json: {\n      contact,\n      emails: emailList\n    }\n  };\n} else {\n  // Skip the contact if no valid emails are found\n  return null;\n}\n"
+      },
+      "id": "5b853217-6efb-4bb8-b651-6d8b29f40e04",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "brandon_contacts",
+          "mode": "list",
+          "cachedResultName": "brandon_contacts"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "emails",
+        "valueToMatchOn": "={{ $json.emails[0] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "familyName",
+              "value": "={{ $json.contact.names.familyName }}"
+            },
+            {
+              "column": "givenName",
+              "value": "={{ $json.contact.names.givenName }}"
+            },
+            {
+              "column": "contactId",
+              "value": "={{ $json.contact.contactId }}"
+            }
+          ]
+        },
+        "options": {
+          "replaceEmptyStrings": true
+        }
+      },
+      "id": "39339c3d-5a4e-4513-8db7-2e8807ff3312",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        780,
+        240
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-10-26T17:37:11.000Z",
+  "versionId": "8efa32b5-b45b-4fda-9351-e3e6295a0dec"
+}
