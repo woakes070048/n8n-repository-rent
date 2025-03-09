@@ -1,0 +1,168 @@
+{
+  "active": false,
+  "connections": {
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "getinfo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "getinfo": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-11-07T17:52:29.069Z",
+  "id": "v5v9vCvAfmZhplGx",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "FB Post Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistant"
+        },
+        "prompt": "define",
+        "text": "=Write a concise and engaging property description for a social media post using the following information:\n- Add warmth and practicality, avoiding excessive fluff.\n- Use emojis sparingly to make the post visually appealing.\n- Include a strong call to action.\n- Display the property link as plain text to ensure it is clickable on social media platforms.\n- Here is the property information: {{ $json.marketing_description }}. \nInclude the line: \"Schedule A Showing Here: {{ $json.property_link }}\" after the description.\n",
+        "options": {}
+      },
+      "id": "17bb27d4-e839-4b30-8ccb-088c581d75f3",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        280,
+        40
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT marketing_description, bedrooms, bathrooms, advertised_rent, application_fee, sqft, unit_address, default_deposit, appliances, property_link FROM all_rental_properties WHERE unit_name = '{{ $json['Unit Name'] }}';"
+      },
+      "name": "getinfo",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        40
+      ],
+      "id": "efd2350c-df31-49cf-8a54-4328fdea291d",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Access AI-generated HTML from the OpenAI node\nlet aiGeneratedHtml = $node[\"OpenAI\"].json.output || \"<p>No description available.</p>\";\n\n// Remove code block markers if they exist in the AI output\naiGeneratedHtml = aiGeneratedHtml.replace(/```html\\s*([\\s\\S]*?)\\s*```/, '$1').trim();\n\n// Access data from the Edit Fields node\nconst data = $node[\"Edit Fields\"].json || {};\n\n// Construct the final response HTML\nconst finalOutput = `\n<div style=\"font-family: Arial, sans-serif; color: #333;\">\n  ${aiGeneratedHtml} <!-- AI-generated HTML -->\n  <br>\n  <h3 style=\"color: #2a9d8f; margin-top: 20px;\">Property Details</h3>\n  <ul style=\"list-style: none; padding: 0;\">\n    <li><strong>Rent:</strong> $${data.advertised_rent || \"N/A\"}</li>\n    <li><strong>Bedrooms:</strong> ${data.bedrooms || \"N/A\"}</li>\n    <li><strong>Bathrooms:</strong> ${data.bathrooms || \"N/A\"}</li>\n    <li><strong>Application Fee:</strong> $${data.application_fee || \"N/A\"}</li>\n    <li><strong>Square Footage:</strong> ${data.sqft ? `${data.sqft} sq ft` : \"Not specified\"}</li>\n    <li><strong>Deposit:</strong> $${data.default_deposit || \"N/A\"}</li>\n    <li><strong>Appliances:</strong> ${data.appliances || \"Not specified\"}</li>\n  </ul>\n  <br>\n  <p>${data.blaze_description || \"Not specified\"}</p>\n</div>\n`;\n\nreturn {\n    json: {\n        response: finalOutput\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        620,
+        40
+      ],
+      "id": "6f4b9f35-2ea2-4357-ad60-2e4379d6df54",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "formTitle": "FB Post Generator",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Unit Name",
+              "requiredField": true
+            }
+          ]
+        },
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -380,
+        40
+      ],
+      "id": "ba679c77-330f-474d-8c48-887755f5f533",
+      "name": "On form submission",
+      "webhookId": "01d9fc2e-65d7-4bf0-bcd8-64d53fbcffa6"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        800,
+        40
+      ],
+      "id": "3bf14274-9d7c-4ad9-95ba-e2b5789719fe",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 2,
+  "updatedAt": "2025-02-08T15:46:35.000Z",
+  "versionId": "71a4bb27-d041-47c8-9247-d5e7d5969d9c"
+}
