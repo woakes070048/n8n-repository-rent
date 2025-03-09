@@ -1,0 +1,324 @@
+{
+  "active": true,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract_Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monday.com": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Monday.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail2": {
+      "main": [
+        []
+      ]
+    },
+    "Extract_Text": {
+      "main": [
+        [
+          {
+            "node": "Assign_Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assign_Fields": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-24T12:11:52.597Z",
+  "id": "pFeye0PtSnh3Nk7V",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Moveout send to monday",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "Move out date requested"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        -120
+      ],
+      "id": "21046ca5-0333-43d7-a415-ce2001618639",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8550223917",
+        "groupId": "topics",
+        "name": "={{ $json.itemName }}",
+        "additionalFields": {
+          "columnValues": "={{ $json.columnValues }}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        200
+      ],
+      "id": "4b4a1f87-6d8d-4e46-bf75-0fb0dc09a661",
+      "name": "Monday.com",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract values from Set Node\nconst property = $json[\"property\"] || \"Unknown Property\";\nconst firstName = $json[\"firstName\"] || \"Unknown\";\nconst lastName = $json[\"lastName\"] || \"Unknown\";\nconst address = $json[\"address\"] || \"No Address\";\nconst moveOutDate = $json[\"moveOutDate\"] || null;\nconst reason = $json[\"reason\"] || \"No Reason Given\";\nconst forwardingAddress = $json[\"forwardingAddress\"] || \"No Forwarding Address\";\nconst securityDepositReturn = $json[\"securityDepositReturnMethod\"] || \"Unknown\";\nconst submittedDate = $json[\"submittedDateTime\"] || null;\n\n// Convert move-out date to Monday.com format (YYYY-MM-DD)\nlet formattedMoveOutDate = null;\nif (moveOutDate) {\n    const dateParts = moveOutDate.split('/');\n    if (dateParts.length === 3) {\n        formattedMoveOutDate = `${dateParts[2]}-${dateParts[0].padStart(2, '0')}-${dateParts[1].padStart(2, '0')}`;\n    }\n}\n\n// Construct JSON object for Monday.com\nreturn [\n  {\n    json: {\n      itemName: `${property} - ${firstName} ${lastName}`,\n      columnValues: JSON.stringify({  // <-- Convert to JSON string\n        \"text_mknfdxg0\": `${firstName} ${lastName}`,  // Resident Name\n        \"text_mknfm8c8\": property,  // Property Name\n        \"date4\": formattedMoveOutDate ? { \"date\": formattedMoveOutDate } : null,  // Move-out Date\n        \"text_mknf4476\": address,  // Address\n        \"text_mknfsn9v\": reason,  // Move-out Reason\n        \"text_mknfkj1x\": forwardingAddress,  // Forwarding Address\n        \"status\": { \"index\": 0 },  // Status: \"Working on it\"\n        \"boolean_mknfa9m0\": { \"checked\": securityDepositReturn.toLowerCase() === \"yes\" }  // eReturn (Yes/No)\n      })\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -120
+      ],
+      "id": "aeb057c2-c29d-4cec-9752-10ab6db87ca3",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_5119264876947508144"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -460,
+        200
+      ],
+      "id": "1e9d8521-42bd-4e5f-8f0f-377f6f8551cb",
+      "name": "Gmail",
+      "webhookId": "b29e9e7f-3742-450c-bebd-8cbe75695d11",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -280,
+        200
+      ],
+      "id": "177f0b3d-2b9b-469c-bd25-743cf0174dad",
+      "name": "Gmail1",
+      "webhookId": "3c3ea648-a94a-461d-9753-3cc560c6b408",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -80,
+        200
+      ],
+      "id": "279d02d9-d47d-422b-9023-5af4ee9b372f",
+      "name": "Gmail2",
+      "webhookId": "77a56d9f-dcf9-4c45-9469-cebfd4ca8b8e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract email text from n8n JSON input\nconst emailText = $json[\"text\"];\n\n// Regex patterns for extracting information\nconst namePattern = /Tenant Name:\\s*([\\w\\s-]+)\\n/;\nconst propertyPattern = /Property:\\s*([\\w\\s-]+)\\n/;\nconst addressPattern = /Address - Unit:\\s*([\\w\\s.,-]+)\\n/;\nconst moveOutDatePattern = /Desired Move Out Date:\\s*([\\d/]+)\\n/;\nconst reasonPattern = /Move Out Reason:\\s*(.+)\\n/;\nconst forwardingAddressPattern = /Forwarding Address:\\s*([\\w\\s.,-]+)\\n/;\nconst securityDepositPattern = /Security Deposit Returned via eCheck:\\s*(\\w+)\\n/;\nconst submittedDatePattern = /Request Submitted On:\\s*([\\d/: ]+\\w{2})\\n/;\n\n// Extract values using regex\nconst nameMatch = emailText.match(namePattern);\nconst propertyMatch = emailText.match(propertyPattern);\nconst addressMatch = emailText.match(addressPattern);\nconst moveOutDateMatch = emailText.match(moveOutDatePattern);\nconst reasonMatch = emailText.match(reasonPattern);\nconst forwardingAddressMatch = emailText.match(forwardingAddressPattern);\nconst securityDepositMatch = emailText.match(securityDepositPattern);\nconst submittedDateMatch = emailText.match(submittedDatePattern);\n\n// Function to capitalize first letter of each word\nconst capitalize = (str) => str.replace(/\\b\\w/g, c => c.toUpperCase());\n\n// Split full name into first and last name\nconst fullName = nameMatch ? nameMatch[1].trim() : \"Unknown Tenant\";\nconst [firstName, ...lastNameParts] = fullName.split(\" \");\nconst lastName = lastNameParts.join(\" \").trim();\n\n// Construct extracted data object\nreturn [\n  {\n    json: {\n      firstName: capitalize(firstName || \"Unknown\"),\n      lastName: capitalize(lastName || \"Unknown\"),\n      property: capitalize(propertyMatch ? propertyMatch[1].trim() : \"Unknown Property\"),\n      address: addressMatch ? addressMatch[1].trim() : \"No Address\",\n      moveOutDate: moveOutDateMatch ? moveOutDateMatch[1].trim() : null,\n      reason: reasonMatch ? reasonMatch[1].trim() : \"No Reason Given\",\n      forwardingAddress: forwardingAddressMatch ? forwardingAddressMatch[1].trim() : \"No Forwarding Address\",\n      securityDepositReturnMethod: securityDepositMatch ? securityDepositMatch[1].trim() : \"Unknown\",\n      submittedDateTime: submittedDateMatch ? submittedDateMatch[1].trim() : null\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -540,
+        -120
+      ],
+      "id": "5a1af99b-1da3-4384-935e-3e6c46197fb6",
+      "name": "Extract_Text"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "882b571f-7419-4651-81dd-ff0a8402bcda",
+              "name": "firstName",
+              "value": "={{ $('Extract_Text').item.json.firstName }}",
+              "type": "string"
+            },
+            {
+              "id": "f0bb50ec-2bd8-416c-ac13-1733edd7acb3",
+              "name": "lastName",
+              "value": "={{ $('Extract_Text').item.json.lastName }}",
+              "type": "string"
+            },
+            {
+              "id": "93b67fab-f4a6-496f-82c8-df8fc68204f0",
+              "name": "property",
+              "value": "={{ $('Extract_Text').item.json.property }}",
+              "type": "string"
+            },
+            {
+              "id": "4733d71c-3c09-4bab-a206-be2f37763bcd",
+              "name": "address",
+              "value": "={{ $('Extract_Text').item.json.address }}",
+              "type": "string"
+            },
+            {
+              "id": "46dfb5d2-fdb2-49a3-87a0-47edc9a1e700",
+              "name": "moveOutDate",
+              "value": "={{ $('Extract_Text').item.json.moveOutDate }}",
+              "type": "string"
+            },
+            {
+              "id": "94f30c4a-2d33-4c2a-afac-f338aecc231a",
+              "name": "reason",
+              "value": "={{ $('Extract_Text').item.json.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "da8d9b9c-74db-46f8-b261-7423109a3bc4",
+              "name": "forwardingAddress",
+              "value": "={{ $('Extract_Text').item.json.forwardingAddress }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -360,
+        -120
+      ],
+      "id": "c9d23f49-656a-46e5-973f-59629b6d6f46",
+      "name": "Assign_Fields"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Gmail Trigger": {
+      "Gmail Trigger": {
+        "lastTimeChecked": 1741529486,
+        "possibleDuplicates": [
+          "1957b3f2348f61da",
+          "1956db3f9ecb060c"
+        ]
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-08T14:50:58.000Z",
+  "versionId": "049dfaf1-41ce-49f3-8d72-db4e8a99e923"
+}
