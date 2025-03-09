@@ -1,0 +1,230 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)1": {
+      "main": [
+        [
+          {
+            "node": "FTP1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract CSV Data1": {
+      "main": [
+        [
+          {
+            "node": "Filter Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Data1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP1": {
+      "main": [
+        [
+          {
+            "node": "Extract CSV Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "FTP Upload1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP Upload1": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Execute Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-22T01:57:01.501Z",
+  "id": "2SXL11aaiYBIkLda",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Unit List Cleaner - Stage 1",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "format": "resolved",
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\"]"
+        }
+      },
+      "id": "2f8c085a-aee6-403b-992d-7e70c22ea077",
+      "name": "Email Trigger (IMAP)1",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        280,
+        400
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "9afa655c-f32e-4443-b7a1-93994f394491",
+      "name": "Extract CSV Data1",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        680,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const data = items.map(item => item.json);\nconst filteredData = data.filter(row => Object.values(row).some(value => value !== null && value !== ''));\nfilteredData.pop(); // Remove the last row (total row)\nreturn filteredData.map(row => ({ json: row }));"
+      },
+      "id": "234f570e-e33b-40a1-8d45-78a9661d9d59",
+      "name": "Filter Data1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        860,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "data/full-list.csv"
+      },
+      "id": "1d19d1fe-6e01-4e59-9c4b-5b2cefdb804b",
+      "name": "FTP Upload1",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        400
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/blzres.com/data/full-list-first.csv",
+        "binaryPropertyName": "attachment_0"
+      },
+      "id": "718bf2cb-7a30-46a1-bd45-aa66bf95e2d5",
+      "name": "FTP1",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        480,
+        400
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "dfcf1e4e-faa1-44cd-b4b9-bc541af69c1c",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1020,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "ZobILSWE1iLTLaYK",
+        "options": {}
+      },
+      "id": "89df7ece-2fd7-4ac5-9d8c-c8a251760868",
+      "name": "Execute Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1740,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "td0n49dakScAtuar",
+        "options": {}
+      },
+      "id": "2f392706-845b-4350-86be-a8abb8605448",
+      "name": "Execute Workflow1",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        620
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)1": {
+      "lastMessageUid": 70
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-07-30T18:38:05.000Z",
+  "versionId": "e73e9516-697e-4e96-a579-d297cf8a60a2"
+}
