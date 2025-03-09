@@ -1,0 +1,335 @@
+{
+  "active": true,
+  "connections": {
+    "n8n": {
+      "main": [
+        [
+          {
+            "node": "active && no error handler set && not this  handler workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set fields": {
+      "main": [
+        [
+          {
+            "node": "n8n | update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "get error handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get error handler": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "active && no error handler set && not this  handler workflow": {
+      "main": [
+        [
+          {
+            "node": "set fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-09-23T15:06:40.822Z",
+  "id": "Etm1h3dHXQYzby5C",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Error Handling",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "665b0224-0263-4e96-a244-1ae3e66aabf1",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "position": [
+        760,
+        934.1688633602625
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "b9adf22c-460c-45d0-8556-7eedb2f43db5",
+      "name": "n8n",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        1220,
+        594.1688633602625
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=  brandon@blazeproperty.com",
+        "subject": "=[n8n] workflow failed:  {{ $json.workflow.name }}",
+        "message": "={{ $json.execution.url }}",
+        "options": {}
+      },
+      "id": "cf73942c-8ef7-4115-8d76-dd414cca495f",
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1020,
+        920
+      ],
+      "typeVersion": 2.1,
+      "webhookId": "7c0fd49c-7832-4329-bb48-561a54244bc2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $workflow.id }}"
+        },
+        "requestOptions": {}
+      },
+      "id": "1d7afd98-519a-4faa-8a0b-1bca543db890",
+      "name": "get error handler",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        980,
+        594.1688633602625
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "workflowObject": "={{ JSON.stringify($json) }}",
+        "requestOptions": {}
+      },
+      "id": "dc4086df-ff9b-43ee-ab75-9e853a20fb68",
+      "name": "n8n | update",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        1820,
+        594.1688633602625
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const data = $json\n\ndata.settings.errorWorkflow = $('get error handler').item.json.id ;\ndelete data.settings.callerPolicy;\n\nreturn {\n  id: data.id,\n  name: data.name,\n  nodes: data.nodes,\n  connections: data.connections,\n  settings: data.settings\n}"
+      },
+      "id": "e33df78c-e488-4eb2-876d-d6c673222ff1",
+      "name": "set fields",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1640,
+        560
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "content": "## Default Error Handler\n\nUpdate this to your preferred notification mechanism",
+        "height": 308.64949804469416,
+        "width": 483.4744075807993
+      },
+      "id": "0ad1df94-7d2a-4922-9bed-32349f439ced",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        700,
+        814.1688633602625
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "get ID of self",
+        "height": 216.67545344104974,
+        "width": 232.91556831986873
+      },
+      "id": "07cc522e-7d90-461d-95fb-ea7f26ea0f65",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        925.0603083429507,
+        541.0120616685901
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "238ecf40-8db5-43e5-9924-972518740848",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        760,
+        594.1688633602625
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "content": "Runs every day at midnight to update new workflows",
+        "height": 219.7116384468202,
+        "width": 214.6984582852457
+      },
+      "id": "a0e7fb08-2b0a-4721-9c1e-bcafd8e658b4",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        700,
+        540
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "290fd302-4e2d-44d6-8a8a-14a0b8f2c360",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.settings.errorWorkflow }}",
+              "rightValue": "=Default Error Handler"
+            },
+            {
+              "id": "2a5799e9-2030-4281-bf11-e7f9777906c5",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              },
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "={{ $('get error handler').item.json.id }}"
+            },
+            {
+              "id": "8bc4c2a0-e094-4426-8ae6-71b6e4fa9842",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.active }}",
+              "rightValue": ""
+            },
+            {
+              "id": "085587af-cb34-4d7c-b6ae-651656720e0a",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "105fda6c-c248-4216-88e9-d186af1c9bc3",
+      "name": "active && no error handler set && not this  handler workflow",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1420,
+        600
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-28T16:42:48.000Z",
+  "versionId": "443ebde3-affd-47a8-8869-88a498c58dcc"
+}
