@@ -1,0 +1,162 @@
+{
+  "active": true,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Monday.com",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-05T15:26:36.857Z",
+  "id": "aSVsJaTxtCwLEbfQ",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Fathom Email to Monday Tasks",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "from:no-reply@fathom.video Subject:Recap of your meeting"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        -20
+      ],
+      "id": "445b2386-33c7-4a90-8c08-868ddef21452",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_H5sZCPDj3ILtC5dA6oUg9xYZ",
+          "mode": "list",
+          "cachedResultName": "Blaze n8n Assistannt"
+        },
+        "prompt": "define",
+        "text": "=Extract action items from the following text and return a structured JSON array with the following keys:\n- \"task\": The action item description.\n- \"assignee\": The person responsible for the task.\n- \"client\": pull from subject line after \"Recap of your meeting with \"\n- \"due_date\": The due date in YYYY-MM-DD format (or null if none is found).\nEnsure the JSON is structured as an array and only return the array.  {{ $json.text }} {{ $json.subject }}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -480,
+        -20
+      ],
+      "id": "2112bf42-896d-4c68-9d09-fad2639d097e",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8578853242",
+        "groupId": "topics",
+        "name": "={{ $json.task }}",
+        "additionalFields": {
+          "columnValues": "={{ $json.output }}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        100,
+        -20
+      ],
+      "id": "d7a9f61d-4915-46f8-8c8a-a2fefe4831ef",
+      "name": "Monday.com",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Monday.com User ID for Brandon Stewart\nconst brandonUserId = \"36641322\"; \n\n// Extract the output from OpenAI node\nlet rawOutput = $item(0).$node[\"OpenAI\"].json[\"output\"];\n\n// Remove markdown formatting (backticks and \"json\" tag)\nrawOutput = rawOutput.replace(/```json\\n|\\n```/g, \"\").trim();\n\n// Attempt to parse JSON\nlet tasks;\ntry {\n    tasks = JSON.parse(rawOutput);\n} catch (error) {\n    throw new Error(\"Failed to parse JSON from OpenAI output. The format might be incorrect.\");\n}\n\n// Ensure tasks is an array\nif (!Array.isArray(tasks)) {\n    throw new Error(`Invalid task data format. Expected an array but got ${typeof tasks}.`);\n}\n\n// Get the current date in YYYY-MM-DD format\nconst currentDate = new Date().toISOString().split(\"T\")[0];\n\n// Convert tasks into Monday.com items\nreturn tasks.map(task => ({\n    json: {\n        task: task.task || \"Untitled Task\", // Task name\n        output: JSON.stringify({\n            person: brandonUserId, // Assign to Brandon Stewart\n            status: \"New\", // Default status\n            date4: { \"date\": currentDate }, // Date added\n            date_mknr4541: task.due_date ? { \"date\": task.due_date } : {}, // Due Date\n            text_mknr1dym: task.client || \"\" // Client (New column, defaults to empty if not provided)\n        })\n    }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -120,
+        -20
+      ],
+      "id": "3028f376-16ee-4a1a-91b9-a73e5152b5a1",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Gmail Trigger": {
+      "Gmail Trigger": {
+        "lastTimeChecked": 1741291190,
+        "possibleDuplicates": [
+          "1956d0afa19ecb43",
+          "1956c353b4890735"
+        ]
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-06T06:00:38.474Z",
+  "versionId": "01371fff-1beb-4b6e-9b2c-ec9e3acdb9a6"
+}
