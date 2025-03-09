@@ -1,0 +1,259 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Client Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Client Details": {
+      "main": [
+        [
+          {
+            "node": "Create Email Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Email Content": {
+      "main": [
+        [
+          {
+            "node": "Send Review Request Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Review Request Email": {
+      "main": [
+        [
+          {
+            "node": "Wait 7 Days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 7 Days": {
+      "main": [
+        [
+          {
+            "node": "Check Review Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Review Exists": {
+      "main": [
+        [
+          {
+            "node": "Review Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Review Exists?": {
+      "main": [
+        [
+          {
+            "node": "Send Follow-Up Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Thank You Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-07T18:38:06.975Z",
+  "id": "L1KtOu5227qpIrRv",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Google REviews",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        280
+      ],
+      "id": "e3e37236-e30b-43db-9765-09f0a5ba3ff1"
+    },
+    {
+      "parameters": {
+        "url": "https://api.appfolio.com/client-details",
+        "options": {},
+        "headerParametersUi": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_API_KEY"
+            }
+          ]
+        }
+      },
+      "name": "Fetch Client Details",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        280
+      ],
+      "id": "b11d3f9c-4589-44c8-aff6-32543b982b27"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Create Email Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        280
+      ],
+      "id": "2338fff5-f8c2-403b-ab88-b76d5a50b2d5"
+    },
+    {
+      "parameters": {
+        "fromEmail": "brandon@blazeproperty.com",
+        "toEmail": "={{$node[\"Create Email Content\"].json[\"email\"]}}",
+        "subject": "={{$node[\"Create Email Content\"].json[\"subject\"]}}",
+        "text": "={{$node[\"Create Email Content\"].json[\"body\"]}}",
+        "options": {}
+      },
+      "name": "Send Review Request Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        40,
+        280
+      ],
+      "id": "672d659c-640b-43cd-934e-7b94946e5f74"
+    },
+    {
+      "parameters": {
+        "amount": 7,
+        "unit": "days"
+      },
+      "name": "Wait 7 Days",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        240,
+        280
+      ],
+      "id": "588dd26a-8703-4af8-b030-fc16ec7c6670"
+    },
+    {
+      "parameters": {
+        "url": "https://api.google.com/check-review",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "email",
+              "value": "={{$node[\"Create Email Content\"].json[\"email\"]}}"
+            }
+          ]
+        }
+      },
+      "name": "Check Review Exists",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        440,
+        280
+      ],
+      "id": "19e31c2f-32f4-4e5f-ac37-60e6a07ab29d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$node[\"Check Review Exists\"].json[\"reviewFound\"]}}",
+              "operation": "true"
+            }
+          ]
+        }
+      },
+      "name": "Review Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        640,
+        280
+      ],
+      "id": "1c42a6b5-6713-44fe-8584-e83ce9ab85d2"
+    },
+    {
+      "parameters": {
+        "fromEmail": "brandon@blazeproperty.com",
+        "toEmail": "={{$node[\"Create Email Content\"].json[\"email\"]}}",
+        "subject": "Friendly Reminder: We Value Your Feedback",
+        "text": "Hi {{$node[\"Create Email Content\"].json[\"customerName\"]}},\n\nJust a friendly reminder to leave us a review if you haven’t had a chance yet. Your feedback is important to us!\n\n[Google Review Link]\n\nBest regards,\nBrandon Stewart\nBlaze Real Estate",
+        "options": {}
+      },
+      "name": "Send Follow-Up Reminder",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        840,
+        180
+      ],
+      "id": "26c23adf-c32d-4beb-9a90-3246180b15bb"
+    },
+    {
+      "parameters": {
+        "fromEmail": "brandon@blazeproperty.com",
+        "toEmail": "={{$node[\"Create Email Content\"].json[\"email\"]}}",
+        "subject": "Thank You for Your Review!",
+        "text": "Hi {{$node[\"Create Email Content\"].json[\"customerName\"]}},\n\nThank you for leaving a review. We appreciate your feedback and are glad to have you as part of our community!\n\nBest regards,\nBrandon Stewart\nBlaze Real Estate",
+        "options": {}
+      },
+      "name": "Send Thank You Message",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        840,
+        380
+      ],
+      "id": "df9f98ac-b440-4d3c-90c0-333024508ff0"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-10T16:52:56.000Z",
+  "versionId": "f42fe988-f2ba-4974-a7d6-1c7a8f743d65"
+}
