@@ -1,0 +1,275 @@
+{
+  "active": false,
+  "connections": {
+    "At midnight every work day": {
+      "main": [
+        [
+          {
+            "node": "Get all emails in the last day",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get the thread of each email": {
+      "main": [
+        [
+          {
+            "node": "Keep only starred emails in inbox",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get all emails in the last day": {
+      "main": [
+        [
+          {
+            "node": "Get the thread of each email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "for each message in the thread": {
+      "main": [
+        [
+          {
+            "node": "Archive message (remove from inbox)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keep only starred emails in inbox": {
+      "main": [
+        [
+          {
+            "node": "Archive thread  (remove from inbox)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "for each message in the thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-10-26T16:45:56.624Z",
+  "id": "BYmLBSEzBiP3AbKl",
+  "meta": {
+    "templateId": "2146",
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Automatically archive Gmail emails from Inbox",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "### 👨‍🎤 Setup\n1. Add your Gmail creds",
+        "height": 80,
+        "width": 379,
+        "color": 5
+      },
+      "id": "b1afd02d-6edf-4540-bf32-09d87cb8a27b",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "3481e6c3-7706-4c7f-8ca6-c96f76d82021",
+      "name": "At midnight every work day",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        460,
+        360
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "👆 Set your schedule. I use this for work emails. For personal emails, I run this daily.",
+        "height": 100,
+        "width": 202,
+        "color": 7
+      },
+      "id": "3c74e4fd-e919-4acb-8092-658f2e71513b",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        440,
+        540
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "returnAll": true,
+        "filters": {
+          "q": "label:inbox",
+          "receivedBefore": "={{ $now.minus({days: 1}) }}"
+        }
+      },
+      "id": "de421702-d012-4ea1-826e-1a4756ff4856",
+      "name": "Get all emails in the last day",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        680,
+        360
+      ],
+      "retryOnFail": true,
+      "typeVersion": 2,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "get",
+        "threadId": "={{ $json.id }}",
+        "options": {}
+      },
+      "id": "ef43b756-5f9c-4c8d-830a-8ccb71562618",
+      "name": "Get the thread of each email",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        900,
+        340
+      ],
+      "retryOnFail": true,
+      "typeVersion": 2,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ JSON.stringify($json.messages).includes('STARRED') }}"
+            }
+          ]
+        }
+      },
+      "id": "bfc3b7e1-651a-4eb5-8882-b21d120d982b",
+      "name": "Keep only starred emails in inbox",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        1120,
+        360
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "messages",
+        "options": {}
+      },
+      "id": "3d8145dc-577d-4e9b-83a7-fdf06afa1b96",
+      "name": "for each message in the thread",
+      "type": "n8n-nodes-base.itemLists",
+      "position": [
+        1540,
+        540
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": "=INBOX"
+      },
+      "id": "1a9083a8-ffd2-403e-bf53-9b9eee87ff5b",
+      "name": "Archive message (remove from inbox)",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1760,
+        540
+      ],
+      "retryOnFail": true,
+      "typeVersion": 2,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "removeLabels",
+        "threadId": "={{ $json.id }}",
+        "labelIds": "=INBOX"
+      },
+      "id": "c51240d0-88cb-461b-82ba-929a2d8a9dde",
+      "name": "Archive thread  (remove from inbox)",
+      "type": "n8n-nodes-base.gmail",
+      "position": [
+        1400,
+        320
+      ],
+      "retryOnFail": true,
+      "typeVersion": 2,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "⭐ Keep starred emails in inbox.. Archive everything else!",
+        "height": 100,
+        "width": 202,
+        "color": 7
+      },
+      "id": "3ca7074f-c912-456c-92e4-08cac8833471",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        540
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-10-26T16:56:32.000Z",
+  "versionId": "0b32d1fa-d457-4efc-a2ae-085b161330f7"
+}
