@@ -1,0 +1,453 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL Node": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-09T23:40:48.420Z",
+  "id": "LmLQBB2jpYL4noog",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Post to Nelson FB",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "5c341b5f-d645-4c06-8a2b-1c6011f11c04",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('MySQL Node').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "fb_post_id",
+              "value": "={{ $json.post_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6afe70ec-eb7d-4ecc-80bf-b8399034620c",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1580,
+        500
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "bd266a0d-280b-4cec-b024-ca1b9ef8447e",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        320,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1db1a60-0572-4f37-9148-89f88a42b375",
+              "name": "property_name",
+              "value": "={{ $('MySQL Node').item.json.property_name }}",
+              "type": "string"
+            },
+            {
+              "id": "9c456f0c-c98b-4172-a342-75b5720fea6b",
+              "name": "advertised_rent",
+              "value": "={{ $('MySQL Node').item.json.advertised_rent }}",
+              "type": "string"
+            },
+            {
+              "id": "4b6deb3b-b4cd-485d-93f5-02102cd5ccf4",
+              "name": "marketing_description",
+              "value": "={{ $json.marketing_description }} {{ $('MySQL Node').item.json.marketing_title }}",
+              "type": "string"
+            },
+            {
+              "id": "51058094-5ac3-476b-adec-f01fc3eeef9c",
+              "name": "rentable_uid",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{ $json.rentable_uid }}",
+              "type": "string"
+            },
+            {
+              "id": "846ec8db-3f37-4d6c-adee-6b706218ab16",
+              "name": "image_link",
+              "value": "={{ $json.image_link }}",
+              "type": "string"
+            },
+            {
+              "id": "f08b8595-411d-4d9c-9651-f1bb209e5693",
+              "name": "property_link",
+              "value": "={{ $json.property_link }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4b40d765-51d5-461f-9372-c1d713c946d2",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        480,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "7eb9b8ac-414c-47ae-8ecf-e407683f529c",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -100,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "459465c3-257f-46d6-982a-f4196a47b121",
+              "leftValue": "={{ $json.property_link }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "15bb6e3b-c949-43bf-a8c6-10ac2de6ec8e",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        640,
+        520
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "id": "0aa788b4-3fd1-4071-a416-d78bb1169735",
+      "name": "No Operation, do nothing",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        820,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT property_name, unit_name, bedrooms, bathrooms, advertised_rent, marketing_title, marketing_description, sqft, application_fee, rentable_uid, unit_address, posted_to_website, appliances, utilities, property_link, image_link, fb_post_date FROM all_rental_properties WHERE property_name = 'Nelson Street Apartments' AND posted_to_website = 'yes'"
+      },
+      "id": "d1f80e74-4c8a-4ef4-bab7-0d9c9a341095",
+      "type": "n8n-nodes-base.mySql",
+      "name": "MySQL Node",
+      "typeVersion": 1,
+      "position": [
+        120,
+        520
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Use the following text about a unit for lease at Nelson Street Apartments to make a humorous post. Humor level high. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-414-6021. {{ $json.marketing_description }}\n"
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "3c2514af-14e0-45ae-a781-c255b7ca24a7",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        940,
+        500
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v20.0",
+        "node": "/113664604954950",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.choices[0].message.content.post }}  {{ $('If').item.json.rentable_uid }} "
+              },
+              {
+                "name": "url",
+                "value": "={{ $('If').item.json.image_link }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "57861a11-d0f5-4305-8655-bc14b24409d1",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1380,
+        500
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "aK6RNIuxYsn5v2cu",
+          "name": "Nelson FB "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### Post to Paramount FB - n8n Workflow Documentation\n\n### Overview - this n8n workflow automates the process of posting rental listings for **Paramount Square Apartments** to Facebook. The workflow retrieves available listings from a MySQL database, generates a humorous post using OpenAI, and posts it along with an image to Facebook via the Facebook Graph API.\n\n---\n\n### Workflow Components\n\n### 1. **Trigger Nodes**\n- **Manual Trigger** (`When clicking ‘Test workflow’`)\n  - Allows the workflow to be executed manually for testing.\n- **Schedule Trigger** (`Schedule Trigger`)\n  - Executes daily at 8 AM to automate the posting process.\n\n### 2. **Database Query**\n- **MySQL Node** (`MySQL Node`)\n  - Queries the `all_rental_properties` table to fetch active rental listings from `Paramount Square Apartments`.\n  - Filters properties that are `posted_to_website = 'yes'`.\n\n### 3. **Batch Processing**\n- **Split In Batches** (`Split In Batches`)\n  - Processes rental listings one at a time to avoid API limitations.\n\n### 4. **Data Transformation**\n- **Edit Fields** (`Edit Fields`)\n  - Extracts and formats required data fields such as:\n    - `property_name`\n    - `advertised_rent`\n    - `marketing_description`\n    - `rentable_uid`\n    - `image_link`\n    - `property_link`\n\n### 5. **Conditional Check**\n- **If Node** (`If`)\n  - Ensures that `property_link` is not empty before proceeding with the post.\n\n### 6. **AI Content Generation**\n- **OpenAI Node** (`OpenAI2`)\n  - Uses GPT-4 to create a humorous and engaging Facebook post based on the listing description.\n  - Includes emojis and the office contact number: `806-905-6055`.\n\n### 7. **Facebook Posting**\n- **Facebook Graph API** (`Facebook Graph API`)\n  - Posts the AI-generated description and the listing image to the `Paramount Square Apartments` Facebook page.\n\n### 8. **Database Update**\n- **MySQL Node** (`MySQL`)\n  - Updates the `fb_post_id` in the `all_rental_properties` table to track successful posts.\n\n### 9. **Fallback Handling**\n- **No Operation** (`No Operation, do nothing`)\n  - Prevents execution errors when no valid listings are found.\n\n---\n\n### Execution Flow\n1. **Trigger**: The workflow starts via manual execution or a scheduled trigger at 8 AM.\n2. **Database Query**: Fetches listings that are ready for posting.\n3. **Batch Processing**: Iterates through each listing one by one.\n4. **Data Transformation**: Extracts relevant details for social media.\n5. **Validation**: Ensures that only listings with a `property_link` are processed.\n6. **AI Generation**: Creates an engaging post using OpenAI.\n7. **Facebook Posting**: Uploads the listing to Facebook along with an image.\n8. **Database Update**: Marks the post as published by storing the Facebook post ID.\n\n---\n\n### Notes\n- The workflow uses predefined credentials for MySQL and Facebook API.\n- If no listings are available, the workflow terminates without errors.\n- OpenAI generates creative, engaging posts to enhance social media engagement.\n- Execution logs and errors are handled gracefully to ensure smooth operation.\n\n---\n\n### Dependencies\n- **n8n instance** with the following integrations:\n  - MySQL database (`Blazedata Hostinger`)\n  - OpenAI API (`GPT-4o`)\n  - Facebook Graph API (`Paramount FB`)\n- **Database Table**: `all_rental_properties`\n- **Facebook Page ID**: `109463078470822` (Paramount Square Apartments)\n\n---\n\n### Future Improvements\n- Implement logging for successful and failed posts.\n- Add a fallback mechanism if OpenAI fails to generate a response.\n- Expand automation to other properties using a dynamic query.\n\n",
+        "height": 820,
+        "width": 640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -340
+      ],
+      "id": "0b16144d-948d-43b0-8457-6edb8945b858",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Cron 8am": {
+      "recurrencyRules": []
+    },
+    "node:cron 10am": {
+      "recurrencyRules": []
+    },
+    "node:Cron 12": {
+      "recurrencyRules": []
+    },
+    "node:Cron 14": {
+      "recurrencyRules": []
+    },
+    "node:Cron 16": {
+      "recurrencyRules": []
+    },
+    "node:Schedule Trigger": {
+      "recurrencyRules": [],
+      "recurrenceRules": []
+    }
+  },
+  "tags": [
+    {
+      "createdAt": "2024-07-27T22:16:08.252Z",
+      "updatedAt": "2024-07-27T22:16:08.252Z",
+      "id": "Uk7axlMxGS79ju2M",
+      "name": "Facebook"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-09T23:46:24.000Z",
+  "versionId": "10ccbd02-40a2-404e-b34c-af1a331b343a"
+}
