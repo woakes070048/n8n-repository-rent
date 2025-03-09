@@ -1,0 +1,130 @@
+{
+  "active": false,
+  "connections": {
+    "Trigger": {
+      "main": [
+        [
+          {
+            "node": "n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "n8n": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-08T14:52:03.255Z",
+  "id": "QHPSIPqZ4moICmo4",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Get Workflows",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -940,
+        0
+      ],
+      "id": "b2a726ca-f7fc-4d50-9c6d-1b4696313787"
+    },
+    {
+      "parameters": {
+        "filters": {
+          "activeWorkflows": true
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        0
+      ],
+      "id": "76440772-1daa-4515-842d-a438b334f4d0",
+      "name": "n8n",
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "n8n_workflows",
+          "mode": "list",
+          "cachedResultName": "n8n_workflows"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "id",
+        "valueToMatchOn": "={{ $json.id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "name",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "column": "nodes",
+              "value": "={{ JSON.stringify($json.nodes) }}"
+            },
+            {
+              "column": "connections",
+              "value": "={{ JSON.stringify($json.connections) }}"
+            },
+            {
+              "column": "settings",
+              "value": "={{ JSON.stringify($json.settings) }}"
+            },
+            {
+              "column": "tags",
+              "value": "={{ JSON.stringify($json.tags) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -300,
+        0
+      ],
+      "id": "9681703e-1c26-4f4d-90df-5fd2d6395597",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-09T13:45:06.000Z",
+  "versionId": "46c7795e-ce19-4997-ac55-0b0faff5c600"
+}
