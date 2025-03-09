@@ -1,0 +1,227 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-23T14:36:44.119Z",
+  "id": "sG6T2kzP4R6v8slu",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Inbound Leads",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "Label_29"
+          ],
+          "q": "New Lead:",
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -500,
+        -20
+      ],
+      "id": "f46b458f-d338-4383-85c1-a383b57d94c9",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1fBG8tjSh5M5Woihp82LWPPilhjyzBlUaK7npbPOKlYk",
+          "mode": "list",
+          "cachedResultName": "inbound leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fBG8tjSh5M5Woihp82LWPPilhjyzBlUaK7npbPOKlYk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fBG8tjSh5M5Woihp82LWPPilhjyzBlUaK7npbPOKlYk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "First Name": "={{ $json.firstName }}",
+            "Last Name": "={{ $json.lastName }}",
+            "email": "={{ $json.email }}",
+            "phone": "={{ $json.phone }}",
+            "property": "={{ $json.property }}",
+            "unit": "={{ $json.unit }}",
+            "message": "={{ $json.message }}",
+            "source": "={{ $json.source }}",
+            "type": "new"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "First Name",
+              "displayName": "First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Name",
+              "displayName": "Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "property",
+              "displayName": "property",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "unit",
+              "displayName": "unit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -120,
+        -140
+      ],
+      "id": "b9c21abf-b19c-41fd-adc1-a9342fd59e2f",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailText = $json[\"text\"]; // Get the plain text email\n\n// Define regex patterns\nconst namePattern = /CONTACT INFO[\\s\\S]*?\\n([A-Za-z]+)\\s([A-Za-z]+(?:\\s[A-Za-z]+)*)/;\nconst emailPattern = /([\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,})/;\nconst phonePattern = /\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}/;\nconst propertyPattern = /New Lead for\\s(.*?)\\n/;\nconst unitPattern = /unit\\s(\\d+-?\\d*)/;\nconst messagePattern = /COMMENTS\\s*\\n[-]+\\s*\\n([\\s\\S]*?)\\n\\s*Reply/;\nconst sourcePattern = /Source:\\s(.*?)\\n/;\n\n// Function to format names properly\nfunction formatName(name) {\n    return name\n        .replace(/\\b[A-Z]\\b/g, \"\") // Remove single-letter initials\n        .trim()\n        .toLowerCase()\n        .replace(/\\b\\w/g, char => char.toUpperCase()); // Capitalize first letter of each word\n}\n\n// Extract values using regex\nconst nameMatch = emailText.match(namePattern);\nconst emailMatch = emailText.match(emailPattern);\nconst phoneMatch = emailText.match(phonePattern);\nconst propertyMatch = emailText.match(propertyPattern);\nconst unitMatch = emailText.match(unitPattern);\nconst messageMatch = emailText.match(messagePattern);\nconst sourceMatch = emailText.match(sourcePattern);\n\n// Process extracted name\nlet firstName = nameMatch ? formatName(nameMatch[1]) : null;\nlet lastName = nameMatch ? formatName(nameMatch[2]) : null;\n\n// Construct output object\nconst output = {\n  firstName: firstName,\n  lastName: lastName,\n  email: emailMatch ? emailMatch[1] : null,\n  phone: phoneMatch ? phoneMatch[0] : null,\n  property: propertyMatch ? propertyMatch[1] : null,\n  unit: unitMatch ? unitMatch[1] : null,\n  message: messageMatch ? messageMatch[1].trim().replace(/\\s+/g, \" \") : null,\n  source: sourceMatch ? sourceMatch[1].trim() : null\n};\n\n// Return extracted data\nreturn [output];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        -20
+      ],
+      "id": "e4677ff6-f631-4528-a803-4821692e963e",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-24T12:11:13.000Z",
+  "versionId": "07b5742f-d2c2-447d-a9cb-191492ed8a97"
+}
