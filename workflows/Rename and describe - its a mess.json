@@ -1,0 +1,327 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        []
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarization Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Summarization Chain",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Summarization Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-09T13:47:06.072Z",
+  "id": "e7UTE3lZ3aTjdZjh",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Rename and describe - its a mess",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        -40
+      ],
+      "id": "c60c4f72-a35e-411c-849e-89106c43f0d8",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id FROM n8n_workflows;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -640,
+        -40
+      ],
+      "id": "0f164e2a-67a9-4d6e-8620-7807ac00d4b4",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -420,
+        -40
+      ],
+      "id": "a8655b9e-e534-4075-831c-526769403ca2",
+      "name": "Loop Over Items",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM n8n_workflows WHERE id = '{{ $('MySQL').item.json.id }}';\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -160,
+        -40
+      ],
+      "id": "e26cbf42-063e-4564-87b4-62c4145a8a78",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_RuqTYX2gGvC6becpvLszGrQ4",
+          "mode": "list",
+          "cachedResultName": "n8n expert"
+        },
+        "prompt": "define",
+        "text": "=Using the following workflow details, generate:\n- A **new concise and professional name** for the workflow.\n- A **summary (2-3 sentences max)** that explains what the workflow does.\n- A **detailed description** explaining the workflow’s logic.\n- A **list of tags** that categorize this workflow.\n\nUsing the following workflow details, generate a structured response in **strict JSON format**. Do NOT return text or explanations—only valid JSON.\n### **Expected JSON Structure:**\n```json\n{\n  \"new_name\": \"Generated Workflow Name\",\n  \"summary\": \"A concise summary of what the workflow does.\",\n  \"description\": \"A detailed description explaining the workflow logic.\",\n  \"tags\": [\"tag1\", \"tag2\", \"tag3\"]\n}\n\nWorkflow Details:\n**Name:** {{ $json.name }}\n**Nodes:** {{ $json.nodes }}\n**Connections:** {{ $json.connections }}\n**Settings:** {{ $json.settings }}\n\n\n\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        0,
+        -260
+      ],
+      "id": "52ba1943-86f1-4f8c-8e42-fdc2ecd544e8",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "={{ $('MySQL1').item.json.name }} to ",
+        "html": "=",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        -20
+      ],
+      "id": "5ce04d7e-2480-4655-aafb-f2665e242b33",
+      "name": "Send Email",
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "let output = $json;\n\n// If the AI response is a string, parse it\nif (typeof output === \"string\") {\n    try {\n        output = JSON.parse(output);\n    } catch (e) {\n        return { error: \"Failed to parse AI response as JSON\" };\n    }\n}\n\n// Extract fields safely\nreturn {\n    name: output.new_name ? output.new_name.trim() : \"No Name Found\",\n    summary: output.summary ? output.summary.trim() : \"No Summary Found\",\n    description: output.description ? output.description.trim() : \"No Description Found\",\n    tags: Array.isArray(output.tags) ? output.tags : []\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        620,
+        -260
+      ],
+      "id": "61b20cd7-56da-4ab1-96c6-a7fb9e2b46c7",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operationMode": "documentLoader",
+        "chunkSize": 5000,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+      "typeVersion": 2,
+      "position": [
+        220,
+        -40
+      ],
+      "id": "4256ced0-bd85-4b4f-a04d-2b73da2db654",
+      "name": "Summarization Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.1,
+      "position": [
+        140,
+        180
+      ],
+      "id": "1d6c5bc5-9595-4d4d-9344-c404b337b77e",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "=",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        300,
+        200
+      ],
+      "id": "f84d4644-90c7-4e1b-b599-b23a21602389",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "=Current Name: {{ $json.name }}/n/n\nNodes: {{ $json.nodes }}/n/n\nConnections: {{ $json.connections }}/n/n\nSettings: {{ $json.settings }}/n/n\ntags: {{ $json.tags }}\n",
+        "binaryPropertyName": "n8n_workflow",
+        "options": {
+          "fileName": "n8n_workflow.txt"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        -40
+      ],
+      "id": "b6da454b-5b47-4e84-9549-ba0298d77840",
+      "name": "Convert to File"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-09T15:03:28.000Z",
+  "versionId": "17b3d002-ef1c-4ad4-98f4-19d27f90f507"
+}
