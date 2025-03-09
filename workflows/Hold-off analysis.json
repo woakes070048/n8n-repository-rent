@@ -1,0 +1,156 @@
+{
+  "active": true,
+  "connections": {
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-17T10:36:42.950Z",
+  "id": "zi03CxETMJAA0DtM",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Hold-off analysis",
+  "nodes": [
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "={{ $('Webhook').item.json.body[\"Manager Email\"] }}",
+        "subject": "=Payment Plan Analysis for  {{ $('Webhook').item.json.body.First_Name }} {{ $('Webhook').item.json.body.Last_Name }}",
+        "html": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "id": "0b5b0c6d-ac26-4152-a1c0-ddfd485e5fe2",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1140,
+        320
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "assistantId": {
+          "__rl": true,
+          "value": "asst_S6EJ4Zp1VbK9JDTyBUhNt62B",
+          "mode": "list",
+          "cachedResultName": "blazebackend"
+        },
+        "prompt": "define",
+        "text": "=Analyze the tenant's ability to complete the provided payment plan while ensuring rent can be paid on time. This is for the managers benefit in analyzing tenants probability of repayment. Suggestions should reflect modification of payment plan for more up front money, higher payment amounts or eviction follow through. **Format the output strictly in JSON** to ensure consistent use in further processing.\n\n### **Tenant Information**\n- **First Name:** {{ $json.body.First_Name }}\n- **Last Name:** {{ $json.body.Last_Name }}\n- **Email:** {{ $json.body.Tenant_Email }}\n- **Phone 1:** {{ $json.body.Tenant_Phone1 }}\n- **Phone 2:** {{ $json.body.Tenant_Phone2 }}\n- **Reason for Delinquency:** {{ $json.body.Reason || \"Not Provided\"}}\n\n### **Employment & Income**\n- **Employer Name:** {{ $json.body.Employer_Name }}\n- **Employer Phone:** {{ $json.body.Employer_Phone }}\n- **Employer Address:** {{ $json.body.Employer_Address }}\n- **Occupation:** {{ $json.body.Occupation }}\n- **Tenure:** \n- **Monthly Income:** ${{ $json.body.Monthly_Income }}\n\n### **Additional Income**\n- **Other Income 1 Source:** {{ $json.body.Other_Income_1 || \"None\"}}\n- **Other Income 1 Amount:** ${{ $json.body.Other_Income_Amount_1 || \"0\" }}\n- **Other Income 1 Recurring:** {{ $json.body.OIA_1_Once || \"Monthly\"}}\n\n- **Other Income 2 Source:** {{ $json.body.Other_Income_2 || \"None\" }}\n- **Other Income 2 Amount:** ${{ $json.body.Other_Income_Amount_2 || \"0\" }}\n- **Other Income 2 Recurring:** {{ $json.body.OIA_2_Once || \"Monthly\"}}\n\n- **Other Income 3 Source:** {{ $json.body.Other_Income_3 || \"None\" }}\n- **Other Income 3 Amount:** ${{ $json.body.Other_Income_Amount_3 || \"0\" }}\n- **Other Income 3 Recurring:** {{ $json.body.OIA_3_Once || \"Monthly\"}}\n\n### **Expenses**\n- **Monthly Rent:** ${{ $json.body.Monthly_Rent }}\n- **Monthly Bills:** ${{ $json.body.Monthly_Bills }}\n- **Delinquent Amount:** ${{ $json.body.Delinquent_Amount }}\n\n### **Payment Plan Details**\n- **Initial Payment:** ${{ $json.body.Initial_Payment }} on {{ $json.body.Initial_Payment_Date || \"N/A\" }}\n- **Payment 1 Amount:** ${{ $json.body.Payment_1_Amount || \"0\" }} on {{ $json.body.Payment_1_Date || \"N/A\" }}\n- **Payment 2 Amount:** ${{ $json.body.Payment_2_Amount || \"0\" }} on {{ $json.body.Payment_2_Date || \"N/A\" }}\n- **Payment 3 Amount:** ${{ $json.body.Payment_3_Amount || \"0\" }} on {{ $json.body.Payment_3_Date || \"N/A\" }}\n- **Payment 4 Amount:** ${{ $json.body.Payment_4_Amount || \"0\" }} on {{ $json.body.Payment_4_Date || \"N/A\" }}\n\n---\n\n### **Analysis Requirements**\nPerform the following calculations and return the results strictly in JSON format:\n\n1. **Total Amount Paid & Remaining Balance**  \n   - Sum all payments made toward the delinquent amount.\n   - Calculate the remaining balance after each payment.\n\n2. **Total Monthly Income**  \n   - Sum all **recurring** and **one-time** income sources.\n   - Identify any unreliable income sources.\n\n3. **Total Monthly Expenses**  \n   - Sum up rent and all fixed expenses.\n   - Indicate if the total income is insufficient to cover expenses.\n\n4. **Feasibility of Completing the Payment Plan**  \n   - Determine if the tenant can **stay current on rent** after completing the plan.\n\n5. **Probability of Success**  \n   - Factor in **employment status, income predictability, and expenses**.\n   - Assign a **percentage probability (e.g., 80%)** of successfully completing the plan.\n\n6. **Conclusion & Recommendations**  \n   - If feasible, suggest ways to **stay on track**.\n   - If high risk, suggest **alternative solutions** (e.g., financial assistance, modified plan, eviction).\n\n---\n\n### **Output JSON Format**\nEnsure the response follows this exact **structured JSON** format:\n```json\n{\n  \"total_paid_remaining_balance\": \"Calculation of total paid and remaining balance\",\n  \"total_income_monthly\": \"Calculation of total monthly income\",\n  \"total_expenses_monthly\": \"Calculation of total monthly expenses\",\n  \"rent_affordability_next_month\": \"Determination of whether next month's rent can be paid\",\n  \"probability_success\": \"Probability of successfully completing the payment plan\",\n  \"recommendations\": \"Final conclusions and recommendations\"\n}",
+        "options": {}
+      },
+      "id": "2bfccf8d-1ef4-4037-9134-7be0ac1b81ae",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        420,
+        320
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "121c8f46-e356-4094-b9b7-16684a3e30eb",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "323df2ef-9962-4858-b2d8-8653640149bb",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        320
+      ],
+      "webhookId": "121c8f46-e356-4094-b9b7-16684a3e30eb"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "GPT-4"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Output the following information in an HTML email that is easy to read and breaks down the plan of repayment and probability. {{ $('OpenAI').item.json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        740,
+        320
+      ],
+      "id": "3bdbf7c8-8ba5-4fb9-a7d2-73469c8cbfdc",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-16T12:33:14.000Z",
+  "versionId": "adceea4b-df7d-4b8f-b9b3-f6640e8a76d8"
+}
