@@ -1,0 +1,217 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Property",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "ParseReport",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Property": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ParseReport": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-03T18:28:57.456Z",
+  "id": "YquRxy8DVt1p2mHZ",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "RentRoll Report Daily Update",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "format": "resolved",
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Rent Roll\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -1560,
+        -80
+      ],
+      "id": "7b451446-b951-4417-898f-df23398fe4bf",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "rQhepyx6Tzc3cAyi",
+          "name": "MIgadu blzres.net"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1340,
+        -80
+      ],
+      "id": "a128f94c-c27a-41bd-b14c-a1459d34aaad",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the email text from the incoming JSON.\n// Adjust if your email data is in a different field.\nconst emailText = $json.text || '';\n\nlet propertyValue = '';\n\n// Split the text into individual lines.\nconst lines = emailText.split('\\n');\n\n// Loop through the lines and look for one that starts with \"Property:\"\nfor (const line of lines) {\n  if (line.trim().startsWith('Property:')) {\n    // Remove \"Property:\" from the line and trim any extra whitespace.\n    propertyValue = line.replace('Property:', '').trim();\n    break; // Exit the loop once found.\n  }\n}\n\n// Return the extracted property value.\nreturn [{ json: { property: propertyValue } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1260,
+        -280
+      ],
+      "id": "a5a11d7a-a060-4d7b-ac59-f1a766b66c32",
+      "name": "Get Property"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter to get the Totals row\nconst totalsRow = $input.all().find(row => row.json['Property'] === 'Total');\n\nif (!totalsRow) {\n    throw new Error('No Totals row found in the input data.');\n}\n\n// Helper function to safely parse numeric values\nfunction parseNumber(value) {\n    if (typeof value === 'string') {\n        return parseFloat(value.replace(/,/g, '').trim()) || 0; // Remove commas and convert to number\n    } else if (typeof value === 'number') {\n        return value; // Already a number\n    }\n    return 0; // Default to 0 for null, undefined, or unexpected types\n}\n\n// Extract data from the Totals row\nreturn {\n    units: parseNumber(totalsRow.json['Unit']?.match(/[\\d.]+/g)?.[0]), // Extract numeric value from \"## Units\"\n    occupancy: parseNumber(totalsRow.json['Status']?.match(/[\\d.]+/g)?.[0]), // Extract numeric value from \"##% Occupied\"\n    market_rent: parseNumber(totalsRow.json['Market Rent']), // Market Rent\n    rent: parseNumber(totalsRow.json['Rent']), // Rent\n    past_due: parseNumber(totalsRow.json['Past Due']), // Past Due\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        -80
+      ],
+      "id": "d15b8039-81dd-44f9-93a4-df409ddd355f",
+      "name": "ParseReport"
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -920,
+        -100
+      ],
+      "id": "c6e0bf8d-29e7-4612-aabb-92e646721bde",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "rent_roll_totals",
+          "mode": "list",
+          "cachedResultName": "rent_roll_totals"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_name",
+        "valueToMatchOn": "={{ $json.property }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "units",
+              "value": "={{ $json.units }}"
+            },
+            {
+              "column": "occupancy",
+              "value": "={{ $json.occupancy }}"
+            },
+            {
+              "column": "market_rent",
+              "value": "={{ $json.market_rent }}"
+            },
+            {
+              "column": "rent",
+              "value": "={{ $json.rent }}"
+            },
+            {
+              "column": "past_due",
+              "value": "={{ $json.past_due }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -600,
+        -80
+      ],
+      "id": "70ed393a-d6ac-4c2b-b395-b919e43cf0ba",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 7
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-06T12:52:11.000Z",
+  "versionId": "67cd3c4e-4242-479a-9606-5fc88bacff71"
+}
