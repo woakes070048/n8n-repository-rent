@@ -1,0 +1,394 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Mautic",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mautic1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mautic": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-17T23:00:50.579Z",
+  "id": "E5IFfoq3q3BSGMxf",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "8f2229e9-3214-485c-a27f-91305c62b693",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        60,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "path": "data.blzres.com/data/tenant_directory.csv"
+      },
+      "id": "d7fef416-d399-4364-8d12-c18387a30b12",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        180
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      },
+      "notes": "Download data.blzres.com/data/tenant_directory.csv"
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "options": {}
+      },
+      "id": "035aba34-0c50-4ff0-b220-bf35bf72cf3c",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        380,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "6e6aec9f-4189-468a-b288-8ab10d16a7b2",
+              "leftValue": "={{ $json.Emails }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ae01ab07-4f0a-499f-80b9-3f3746b8f1ae",
+      "name": "Filter",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [
+        760,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM mautic_data\nWHERE firstname = '{{ $json[\"First Name\"] }}' AND lastname = '{{ $json[\"Last Name\"] }}' AND email = '{{ $json[\"Emails\"] }}'\n",
+        "options": {}
+      },
+      "id": "cc9e298a-2868-4754-a4b8-2b2b715f1ceb",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        980,
+        180
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Cxxv6w2tRXt2wyu4",
+          "name": "n8n database"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "7acfc771-f06c-4720-bec1-20945be0a473",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c7ceae96-8058-4c6f-885d-42d7713b33fb",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "contactId": "={{ $json.id }}",
+        "updateFields": {
+          "addressUi": {
+            "addressValues": {
+              "address1": "={{ $('Filter').item.json['Tenant Street Address 1'] }}",
+              "address2": "={{ $('Filter').item.json[\"Tenant Street Address 2\"] }}",
+              "city": "={{ $('Filter').item.json[\"Tenant City\"] }}",
+              "state": "={{ $('Filter').item.json['Tenant State'] }}",
+              "zipCode": "={{ $('Filter').item.json[\"Tenant Zip\"] }}"
+            }
+          },
+          "customFieldsUi": {
+            "customFieldValues": [
+              {
+                "fieldId": "status",
+                "fieldValue": "={{ $('Filter').item.json.Status }}"
+              },
+              {
+                "fieldId": "unit",
+                "fieldValue": "={{ $('Filter').item.json.Unit }}"
+              },
+              {
+                "fieldId": "moveout",
+                "fieldValue": "={{ $('Filter').item.json[\"Move-out\"] }}"
+              }
+            ]
+          },
+          "firstName": "={{ $('Filter').item.json[\"First Name\"] }}",
+          "lastName": "={{ $('Filter').item.json[\"Last Name\"] }}"
+        },
+        "options": {}
+      },
+      "id": "d3459923-f739-4dcf-b100-05b29a15801d",
+      "name": "Mautic",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        440
+      ],
+      "credentials": {
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mapping of state abbreviations to full state names\nconst stateAbbreviations = {\n    \"AL\": \"Alabama\",\n    \"AK\": \"Alaska\",\n    \"AZ\": \"Arizona\",\n    \"AR\": \"Arkansas\",\n    \"CA\": \"California\",\n    \"CO\": \"Colorado\",\n    \"CT\": \"Connecticut\",\n    \"DE\": \"Delaware\",\n    \"FL\": \"Florida\",\n    \"GA\": \"Georgia\",\n    \"HI\": \"Hawaii\",\n    \"ID\": \"Idaho\",\n    \"IL\": \"Illinois\",\n    \"IN\": \"Indiana\",\n    \"IA\": \"Iowa\",\n    \"KS\": \"Kansas\",\n    \"KY\": \"Kentucky\",\n    \"LA\": \"Louisiana\",\n    \"ME\": \"Maine\",\n    \"MD\": \"Maryland\",\n    \"MA\": \"Massachusetts\",\n    \"MI\": \"Michigan\",\n    \"MN\": \"Minnesota\",\n    \"MS\": \"Mississippi\",\n    \"MO\": \"Missouri\",\n    \"MT\": \"Montana\",\n    \"NE\": \"Nebraska\",\n    \"NV\": \"Nevada\",\n    \"NH\": \"New Hampshire\",\n    \"NJ\": \"New Jersey\",\n    \"NM\": \"New Mexico\",\n    \"NY\": \"New York\",\n    \"NC\": \"North Carolina\",\n    \"ND\": \"North Dakota\",\n    \"OH\": \"Ohio\",\n    \"OK\": \"Oklahoma\",\n    \"OR\": \"Oregon\",\n    \"PA\": \"Pennsylvania\",\n    \"RI\": \"Rhode Island\",\n    \"SC\": \"South Carolina\",\n    \"SD\": \"South Dakota\",\n    \"TN\": \"Tennessee\",\n    \"TX\": \"Texas\",\n    \"UT\": \"Utah\",\n    \"VT\": \"Vermont\",\n    \"VA\": \"Virginia\",\n    \"WA\": \"Washington\",\n    \"WV\": \"West Virginia\",\n    \"WI\": \"Wisconsin\",\n    \"WY\": \"Wyoming\"\n};\n\n// Function to convert Excel date numbers to YYYY-MM-DD format\nfunction convertExcelDate(excelDate) {\n    // Check if the excelDate is a valid number\n    if (typeof excelDate === 'number' && !isNaN(excelDate)) {\n        const date = new Date((excelDate - 25569) * 86400 * 1000);\n        // Check if the date is valid\n        if (!isNaN(date.getTime())) {\n            return date.toISOString().split('T')[0];\n        }\n    }\n    // If the date is invalid, return null or a placeholder\n    return null;\n}\n\n// Initialize an array to store the processed items\nconst processedItems = [];\n\n// Loop through each item in the input\nfor (let item of items) {\n    let input = item.json;\n\n    // Translate state abbreviations to full names\n    input[\"Tenant State\"] = stateAbbreviations[input[\"Tenant State\"]] || input[\"Tenant State\"];\n    input[\"Property State\"] = stateAbbreviations[input[\"Property State\"]] || input[\"Property State\"];\n\n    // Convert Excel date numbers to actual dates\n    input[\"Move-in\"] = convertExcelDate(input[\"Move-in\"]);\n    input[\"Lease To\"] = convertExcelDate(input[\"Lease To\"]);\n    input[\"Tenant Birthdate\"] = convertExcelDate(input[\"Tenant Birthdate\"]);\n    input[\"Lease From\"] = convertExcelDate(input[\"Lease From\"]);\n    input[\"Eligible for Rent Increase\"] = convertExcelDate(input[\"Eligible for Rent Increase\"]);\n\n    // Add the processed item to the array\n    processedItems.push({ json: input });\n}\n\n// Return the processed items array\nreturn processedItems;\n"
+      },
+      "id": "2e00fd65-edf9-4e3a-8d9e-0680d4916f91",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        580,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Download File\ndownload and load data.blzres.com/data/tenant_directory.csv for processing\n",
+        "height": 386,
+        "width": 354
+      },
+      "id": "4233d87d-02e6-4499-9281-ac7c4726bb04",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Convert fields\nProcess to convert state field, date from excel to standard, \nFilter for valid email addresses only\n",
+        "height": 383,
+        "width": 368,
+        "color": 3
+      },
+      "id": "b3959368-cc95-400b-9f8e-d7f14e036034",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        540,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## SQL match\n\nCheck against ancilllary table mautic_data to get ID\n",
+        "height": 376,
+        "width": 194
+      },
+      "id": "31f96aab-81e1-4505-a702-ef4cd6228430",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        920,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Update Mautic Contact\n\nIf the contact has an ID- \nupdate the contact. ",
+        "height": 300,
+        "width": 255
+      },
+      "id": "c8e0fc94-2783-45f7-99d8-7b6d782d1517",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "additionalFields": {},
+        "options": {}
+      },
+      "id": "3a115ba6-ef91-471b-818e-9703b19e4fd1",
+      "name": "Mautic1",
+      "type": "n8n-nodes-base.mautic",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        40
+      ],
+      "credentials": {
+        "mauticApi": {
+          "id": "5tdqtoSOtaUwNpSz",
+          "name": "Mautic account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-09-02T18:08:58.000Z",
+  "versionId": "12da900f-2187-4189-8a71-5a399f737e2b"
+}
