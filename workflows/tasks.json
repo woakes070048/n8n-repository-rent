@@ -1,0 +1,204 @@
+{
+  "active": true,
+  "connections": {
+    "Retrieve Tasks": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Create Task in New List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Task in New List": {
+      "main": [
+        [
+          {
+            "node": "Delete Original Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Original Task": {
+      "main": [
+        [
+          {
+            "node": "NoOp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NoOp": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Retrieve Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-27T16:46:24.975Z",
+  "id": "01swcMYC9fVaJ08Q",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "tasks",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "task": "UEJqMjVuZ0Y1elc3QmVnLQ",
+        "returnAll": true,
+        "additionalFields": {}
+      },
+      "name": "Retrieve Tasks",
+      "type": "n8n-nodes-base.googleTasks",
+      "typeVersion": 1,
+      "position": [
+        0,
+        420
+      ],
+      "id": "cd58e0f0-dd68-43f1-8247-24d518878c57",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "HrZWWSJj3Jhveuos",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        200,
+        420
+      ],
+      "id": "8f916fc9-896e-4dfb-af5c-216ae03d674d"
+    },
+    {
+      "parameters": {
+        "task": "UEJqMjVuZ0Y1elc3QmVnLQ",
+        "title": "={{ $json[\"title\"] }}",
+        "additionalFields": {
+          "notes": ""
+        }
+      },
+      "name": "Create Task in New List",
+      "type": "n8n-nodes-base.googleTasks",
+      "typeVersion": 1,
+      "position": [
+        400,
+        420
+      ],
+      "id": "85556e4d-543d-4b0e-be0a-21495561e4c7",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "HrZWWSJj3Jhveuos",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "task": "UEJqMjVuZ0Y1elc3QmVnLQ",
+        "taskId": "={{ $('Retrieve Tasks').item.json.id }}"
+      },
+      "name": "Delete Original Task",
+      "type": "n8n-nodes-base.googleTasks",
+      "typeVersion": 1,
+      "position": [
+        600,
+        420
+      ],
+      "id": "ecb673a0-4357-4e07-a7a5-8ddbd02908fd",
+      "credentials": {
+        "googleTasksOAuth2Api": {
+          "id": "HrZWWSJj3Jhveuos",
+          "name": "Google Tasks account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "name": "NoOp",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        800,
+        420
+      ],
+      "id": "5f8faa2e-b7a4-4f05-9a59-60732fa2430c"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7,
+              "triggerAtMinute": 45
+            }
+          ]
+        }
+      },
+      "id": "a391e293-bbea-4d0e-b52f-d74eb040a3d1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -200,
+        420
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-09-23T15:44:36.514Z",
+  "versionId": "fbf40bad-f4ce-4093-9eb6-4b4fc76cfeed"
+}
