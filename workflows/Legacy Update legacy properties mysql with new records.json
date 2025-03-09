@@ -1,0 +1,269 @@
+{
+  "active": true,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Check Filename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Filename": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-08-11T12:08:28.015Z",
+  "id": "RLQQ6PoqsPTdiFlk",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Legacy Update legacy properties mysql with new records",
+  "nodes": [
+    {
+      "parameters": {
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Legacy List - Do Not Delete\"]]"
+        }
+      },
+      "id": "f7bfe26a-d63c-42b7-a3e8-7f73d68bcd06",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        340
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$binary.attachment_0.fileName}}",
+              "operation": "regex",
+              "value2": "^report_builder-unit_directory-\\d{8}\\.csv$"
+            }
+          ]
+        }
+      },
+      "name": "Check Filename",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        340
+      ],
+      "id": "0faa5f32-bd5c-4877-b0a0-2534349b1ac4"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/data/legacy-list.csv"
+      },
+      "id": "786ee48d-720c-4b28-a686-5b9541c1226c",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        240,
+        340
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "id": "81bc9dd7-fe36-4898-ba13-7e05958bac79",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "be2c6891-12cf-4fcf-9fb5-325669706f75",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "nhTNCUhxuWLFuQKg",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "95dd50af-9a02-4294-b13c-c3b1756b328e",
+      "name": "Execute Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        700,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "id": "7bb5cfab-47a8-4a04-807a-61b44d805cd5",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        340
+      ],
+      "webhookId": "5aec25d3-799e-4679-867e-c2f365e94e14"
+    },
+    {
+      "parameters": {
+        "content": "## Get emailed Report and Process\nCustom Report combining Rent Roll and Unit Directory  with specified fields. \nConvert into readable data\n",
+        "height": 320,
+        "width": 800
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        220
+      ],
+      "id": "b1345bce-352b-415c-968f-b2f4cb3be9b7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Upload to file storage\n\nThis can be google drive or FTP\n",
+        "height": 320,
+        "width": 440,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        220
+      ],
+      "id": "64f31e16-9b70-44a4-abd2-095d1f39a4a5",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Call Next Workflow",
+        "height": 320,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        600,
+        220
+      ],
+      "id": "7965186a-c0cb-4e98-b99d-84d81cd766ab",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 2329
+    }
+  },
+  "tags": [
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-21T17:56:58.000Z",
+  "versionId": "0f01a43a-26a7-47d1-b980-4f9059b2518f"
+}
