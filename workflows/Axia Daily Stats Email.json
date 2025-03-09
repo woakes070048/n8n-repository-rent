@@ -1,0 +1,267 @@
+{
+  "active": false,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive2": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2025-02-01T14:44:00.717Z",
+  "id": "0dVP0OL30yeL2ZWd",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Axia Daily Stats Email",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -680,
+        0
+      ],
+      "id": "fa13e994-cd70-4fd0-ae82-dce505357478",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1l_Rw4sIInYjlwrXNSOcjBmr6Aq8CGCvijhyWqjeZrfI",
+          "mode": "list",
+          "cachedResultName": "Axia Activity",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l_Rw4sIInYjlwrXNSOcjBmr6Aq8CGCvijhyWqjeZrfI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1l_Rw4sIInYjlwrXNSOcjBmr6Aq8CGCvijhyWqjeZrfI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -460,
+        0
+      ],
+      "id": "939b5eb1-01cb-4ecb-b308-fb47a4d0a391",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Axia Daily",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -20,
+        0
+      ],
+      "id": "55c4210b-0ba6-4c5b-acc7-5b3ca68cfd43",
+      "name": "Send Email",
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ensure data is an array\nconst data = Array.isArray($input.all()) ? $input.all().map(item => item.json) : [];\n\nif (data.length === 0) {\n    return [{ html: \"<p>No data available.</p>\" }];\n}\n\n// Define table headers\nlet htmlTable = `\n<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">\n  <thead>\n    <tr>\n      <th>Property</th>\n      <th>Current Occupancy</th>\n      <th>Future Occupancy</th>\n      <th>Leases Needed 90%</th>\n      <th>Interests</th>\n      <th>Showings</th>\n      <th>Applications</th>\n      <th>Leases</th>\n      <th>Vacants</th>\n      <th>Expirations</th>\n      <th>Future Move-Ins</th>\n      <th>On Notice</th>\n      <th>Date</th>\n    </tr>\n  </thead>\n  <tbody>`;\n\n// Add rows dynamically\ndata.forEach(row => {\n    htmlTable += `\n    <tr>\n      <td>${row[\"Property\"]}</td>\n      <td>${row[\"Current Occupancy\"]}%</td>\n      <td>${row[\"Future Occupancy\"]}%</td>\n      <td>${row[\"Leases Needed 90%\"]}</td>\n      <td>${row[\"Interests\"]}</td>\n      <td>${row[\"Showings\"]}</td>\n      <td>${row[\"Applications\"]}</td>\n      <td>${row[\"Leases\"]}</td>\n      <td>${row[\"Vacants\"]}</td>\n      <td>${row[\"Expirations\"]}</td>\n      <td>${row[\"Future Move-Ins\"]}</td>\n      <td>${row[\"On Notice\"]}</td>\n      <td>${row[\"Date\"]}</td>\n    </tr>`;\n});\n\nhtmlTable += `</tbody></table>`;\n\n// Output the HTML table\nreturn [{ html: htmlTable }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "c8e16010-4fb5-4594-b55e-bb3d5e723e1e",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "Axia Activity",
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        200,
+        0
+      ],
+      "id": "0b40235d-4aa3-4ec2-9846-e43723f96773",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "value": "0ANzIWvPQDPwoUk9PVA",
+          "mode": "list",
+          "cachedResultName": "AXIA",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANzIWvPQDPwoUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1O2ByD6YZIyUA6XRiCBeJwbxC-Em2EBkp",
+          "mode": "list",
+          "cachedResultName": "Activity Archive",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1O2ByD6YZIyUA6XRiCBeJwbxC-Em2EBkp"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        640,
+        0
+      ],
+      "id": "19f8f712-7db8-4cbb-b139-530848a29afe",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "=Axia Activity {{ $now }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        420,
+        0
+      ],
+      "id": "518f28e9-45b2-4831-a97b-e152d067ecb2",
+      "name": "Google Drive2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-01T15:07:43.000Z",
+  "versionId": "f88560fa-f0f0-4c85-bae8-24938661af40"
+}
