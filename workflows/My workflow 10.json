@@ -1,0 +1,140 @@
+{
+  "active": false,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Data Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Processing": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-02-15T20:51:24.999Z",
+  "id": "42uXYH90DEuz22FY",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 10",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "121c8f46-e356-4094-b9b7-16684a3e30eb",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "c6fa8d9a-dc13-46ae-9cef-a39989fc4af3",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        140,
+        60
+      ],
+      "webhookId": "121c8f46-e356-4094-b9b7-16684a3e30eb"
+    },
+    {
+      "parameters": {
+        "functionCode": "const body = $json.body;\n\nconst toNumber = (val) => isNaN(parseFloat(val)) ? 0 : parseFloat(val);\nconst formatDate = (date) => date ? new Date(date).toISOString().split('T')[0] : 'N/A';\n\nreturn [{\n  json: {\n    delinquent_amount: toNumber(body.Delinquent_Amount) || 0,\n    request_date: formatDate(body.Request_Date) || 'N/A',\n    first_name: body.First_Name || 'Unknown',\n    last_name: body.Last_Name || 'Unknown',\n    employer_name: body.Employer_Name || 'Unemployed',\n    employer_phone: body.Employer_Phone || 'N/A',\n    employer_address: body.Employer_Address || 'N/A',\n    occupation: body.Occupation || 'N/A',\n    tenure: body.Tenure || 'N/A',\n    monthly_income: toNumber(body.Monthly_Income) || 0,\n    other_income: [\n      { source: body.Other_Income_1 || 'None', amount: toNumber(body.Other_Income_Amount_1) || 0, recurring: body.OIA_1_Once ?? 'Unknown' },\n      { source: body.Other_Income_2 || 'None', amount: toNumber(body.Other_Income_Amount_2) || 0, recurring: body.OIA_2_Once ?? 'Unknown' },\n      { source: body.Other_Income_3 || 'None', amount: toNumber(body.Other_Income_Amount_3) || 0, recurring: body.OIA_3_Once ?? 'Unknown' }\n    ].filter(income => income.amount > 0),\n    rent: toNumber(body.Monthly_Rent) || 0,\n    bills: toNumber(body.Monthly_Bills) || 0,\n    payments: [\n      { amount: toNumber(body.Initial_Payment) || 0, date: formatDate(body.Request_Date) || 'N/A' },\n      { amount: toNumber(body.Payment_1_Amount) || 0, date: formatDate(body.Payment_1_Date) || 'N/A' },\n      { amount: toNumber(body.Payment_2_Amount) || 0, date: formatDate(body.Payment_2_Date) || 'N/A' },\n      { amount: toNumber(body.Payment_3_Amount) || 0, date: formatDate(body.Payment_3_Date) || 'N/A' },\n      { amount: toNumber(body.Payment_4_Amount) || 0, date: formatDate(body.Payment_4_Date) || 'N/A' }\n    ].filter(payment => payment.amount > 0)\n  }\n}];\n"
+      },
+      "id": "e4276487-8cdf-47ac-ab33-7be32952e131",
+      "name": "Data Processing",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        380,
+        80
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "={{ $('Webhook').item.json.body[\"Manager Email\"] }}",
+        "subject": "=Payment Plan Analysis for  {{ $json.first_name }} {{ $json.last_name }}",
+        "html": "<html><body><h2>Payment Plan Analysis for {{ $json.first_name }} {{ $json.last_name }}</h2>\n<p><strong>Total Paid & Remaining Balance:</strong> {{ $json.total_paid_remaining_balance || 'Data not available' }}</p>\n<p><strong>Total Monthly Income:</strong> {{ $json.total_income_monthly || 'Data not available' }}</p>\n<p><strong>Total Monthly Expenses:</strong> {{ $json.total_expenses_monthly || 'Data not available' }}</p>\n<p><strong>Probability of Success:</strong> {{ $json.probability_success || 'Data not available' }}</p>\n<p><strong>Recommendations:</strong> {{ $json.recommendations || 'No recommendations available' }}</p>\n</body></html>",
+        "options": {}
+      },
+      "id": "83031a91-c282-403c-a3e3-1efad69fd0bc",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [
+        1100,
+        80
+      ],
+      "typeVersion": 2.1,
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "GPT-4"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Analyze tenant payment ability with structured financial details. Provide clear numerical calculations and structured JSON output. Ignore missing values and only analyze available data.{{ $json.delinquent_amount }}\n{{ $json.request_date }}\n{{ $json.first_name }}\n{{ $json.last_name }}\n{{ $json.employer_name }}\n{{ $json.employer_phone }}\n{{ $json.employer_address }}\n{{ $json.occupation }}\n{{ $json.tenure }}\n{{ $json.monthly_income }}\n{{ $json.other_income }}\n{{ $json.rent }}\n{{ $json.bills }}\n{{ $json.payments }}\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        560,
+        80
+      ],
+      "id": "3de8b4de-95f4-4b33-9dcd-8646e6186651",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-02-15T21:26:39.000Z",
+  "versionId": "40be2d57-7e8b-47e9-a2c3-60517f51dfb5"
+}
