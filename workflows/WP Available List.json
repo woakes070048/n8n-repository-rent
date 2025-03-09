@@ -1,0 +1,220 @@
+{
+  "active": true,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress": {
+      "main": [
+        [
+          {
+            "node": "Wordpress1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate HTML Content1": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Generate HTML Content1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-07-21T19:53:28.466Z",
+  "id": "FRaQXLWGHitER9ph",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "WP Available List",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "37d3dffc-6dbd-4817-8f81-42a1d29c4ad9",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "title": "=Daily Available Units {{ $json.formattedDate }}",
+        "additionalFields": {
+          "content": "={{ $json.content }}"
+        }
+      },
+      "id": "75d32ade-6aad-485b-af4a-2c04b16789f0",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        2020,
+        500
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "postId": "={{ $json.id }}",
+        "updateFields": {
+          "status": "publish"
+        }
+      },
+      "id": "cef85bf8-09f8-4a9e-ac8f-9c8d03616d49",
+      "name": "Wordpress1",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        500
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Get SQL Data\nGets sql data from hosted mysql database\nDatabase is updated daily at in early am. \n9am post of all available properties to WP Intranet\n\n",
+        "height": 444,
+        "width": 445
+      },
+      "id": "900c24de-0f18-4305-81b0-7316978c2023",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1240,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Generate Wordpress post\nCreates a daily wordpress post that contains all of the \ninformation regarding available listings for that day. \n\n\nUpdated to blazeapa_blazedata",
+        "height": 439,
+        "width": 773,
+        "color": 3
+      },
+      "id": "baaed8a7-f38c-49e3-a1d1-ed60aadf89d3",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "const properties = items.map(item => item.json);\n\n// Get the current date\nconst now = new Date();\nconst formattedDate = now.toLocaleDateString('en-US');\n\nlet content = '<table border=\"1\" style=\"border-collapse: collapse; width: 100%;\">';\ncontent += '<tr><th>Property Name</th><th>Unit Name</th><th>Bedrooms</th><th>Bathrooms</th><th>Advertised Rent</th><th>Image</th></tr>';\n\nproperties.forEach(property => {\n    const propertyLink = property.property_link ? `<a href=\"${property.property_link}\">${property.property_name}</a>` : property.property_name;\n    content += '<tr>';\n    content += `<td>${propertyLink}</td>`;\n    content += `<td>${property.unit_name}</td>`;\n    content += `<td>${property.bedrooms}</td>`;\n    content += `<td>${property.bathrooms}</td>`;\n    content += `<td>${property.advertised_rent}</td>`;\n    content += `<td>\n    <a href=\"${property.image_link}\" target=\"_blank\">\n        <img src=\"${property.image_link}\" alt=\"Property Image\" />\n    </a>\n</td>`;\n    content += '</tr>';\n});\n\ncontent += '</table>';\n\nreturn [{ json: { content, formattedDate } }];"
+      },
+      "name": "Generate HTML Content1",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1780,
+        500
+      ],
+      "id": "ff671827-6609-4feb-bfc2-27395d74635e"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM all_rental_properties\nWHERE posted_to_website = 'yes';\n",
+        "options": {}
+      },
+      "id": "c8720486-a25b-427b-aed4-793d2b843195",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1500,
+        500
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "a2 blazedata mySQL"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": [],
+      "recurrenceRules": []
+    }
+  },
+  "tags": [
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    },
+    {
+      "createdAt": "2024-09-07T13:56:55.812Z",
+      "updatedAt": "2024-09-07T13:56:55.812Z",
+      "id": "jX5iavNFG4Ls67W3",
+      "name": "a2"
+    },
+    {
+      "createdAt": "2024-08-17T11:18:13.801Z",
+      "updatedAt": "2024-08-17T11:18:13.801Z",
+      "id": "r68tdPXG0q2verIL",
+      "name": "Intranet"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-09-23T15:44:36.759Z",
+  "versionId": "7f0cf107-63fa-4de0-86b4-c0c649987f08"
+}
