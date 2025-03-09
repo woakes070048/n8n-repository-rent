@@ -1,0 +1,194 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2024-08-07T21:56:03.622Z",
+  "id": "HdnHkBJmnyChFeSa",
+  "meta": null,
+  "name": "google reviews 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Daily Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -980,
+        500
+      ],
+      "id": "dd98f38f-b064-4dcc-ab53-03c2ca34c48e"
+    },
+    {
+      "parameters": {
+        "filePath": "/path/to/your/clients.csv"
+      },
+      "name": "Read Client CSV",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "typeVersion": 1,
+      "position": [
+        -780,
+        500
+      ],
+      "id": "8d71d797-e61e-47c7-bbb7-8e0032ecf00f"
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ","
+        }
+      },
+      "name": "Convert CSV to JSON",
+      "type": "n8n-nodes-base.csvToJson",
+      "typeVersion": 1,
+      "position": [
+        -580,
+        500
+      ],
+      "id": "75f5cf83-98a4-44b2-a083-4c5797d2cfe7"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Process Clients Individually",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        -380,
+        500
+      ],
+      "id": "4e337c27-4f60-405f-975a-40b386fd2efd"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Create Email Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        500
+      ],
+      "id": "999b39cf-c564-4f62-884b-d6ef9a592260"
+    },
+    {
+      "parameters": {
+        "fromEmail": "brandon@blazeproperty.com",
+        "toEmail": "={{$node[\"Create Email Content\"].json[\"email\"]}}",
+        "subject": "={{$node[\"Create Email Content\"].json[\"subject\"]}}",
+        "text": "={{$node[\"Create Email Content\"].json[\"body\"]}}",
+        "options": {}
+      },
+      "name": "Send Survey Request Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        20,
+        500
+      ],
+      "id": "827166b9-9f5e-4101-a6d8-a856cd547525"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "captureSurveyResponse",
+        "options": {}
+      },
+      "name": "Capture Survey Response",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        220,
+        500
+      ],
+      "id": "7f4dab9f-8d36-49b0-b87d-f4bb87cde36b"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json[\"tone\"]}}",
+              "operation": "contains",
+              "value2": "positive"
+            }
+          ]
+        }
+      },
+      "name": "Review Tone?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        420,
+        500
+      ],
+      "id": "4a245c52-d74d-44c3-ad92-28b49b3e651c"
+    },
+    {
+      "parameters": {
+        "url": "https://www.google.com/maps/contrib/114923752383118049874/reviews",
+        "options": {},
+        "queryParametersUi": {
+          "parameter": [
+            {
+              "name": "review",
+              "value": "={{$json[\"comments\"]}}"
+            },
+            {
+              "name": "rating",
+              "value": "5"
+            }
+          ]
+        }
+      },
+      "name": "Redirect to Google Review",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        620,
+        400
+      ],
+      "id": "e6091382-e803-414e-9c4a-16fa55182519"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Thank You Email Content",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        620,
+        600
+      ],
+      "id": "3ca92851-4256-4e0a-9bfc-71722eb5f013"
+    },
+    {
+      "parameters": {
+        "fromEmail": "brandon@blazeproperty.com",
+        "toEmail": "={{$node[\"Thank You Email Content\"].json[\"email\"]}}",
+        "subject": "={{$node[\"Thank You Email Content\"].json[\"subject\"]}}",
+        "text": "={{$node[\"Thank You Email Content\"].json[\"body\"]}}",
+        "options": {}
+      },
+      "name": "Send Thank You Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        820,
+        600
+      ],
+      "id": "156a4187-01dd-4377-bebd-e7c42aa93801"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-08-07T21:56:03.622Z",
+  "versionId": "5fbb3c37-e88b-4609-99fe-b6746b48ce0f"
+}
