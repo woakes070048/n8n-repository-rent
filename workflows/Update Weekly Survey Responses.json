@@ -1,0 +1,175 @@
+{
+  "active": true,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Convert Excel Date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Excel Date": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-09-29T15:35:00.960Z",
+  "id": "jjMGrp2wG1APWO7p",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Weekly Survey Responses",
+  "nodes": [
+    {
+      "parameters": {
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Maintenance Reviews\"]]"
+        }
+      },
+      "id": "908565f3-5b10-4e08-aa88-128449b937cb",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        80,
+        460
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "maint_surveys",
+          "mode": "list",
+          "cachedResultName": "maint_surveys"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "respondent",
+              "value": "={{ $json.Respondent }}"
+            },
+            {
+              "column": "property",
+              "value": "={{ $json.Property }}"
+            },
+            {
+              "column": "satisfaction",
+              "value": "={{ $json['How satisfied are you with the overall experience?'] }}"
+            },
+            {
+              "column": "feedback",
+              "value": "={{ $json['Any additional feedback?'] }}"
+            },
+            {
+              "column": "date_received",
+              "value": "={{ $json.formattedDateSent }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9fe8bfb5-5869-4e64-bc0e-a0a849052761",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        800,
+        460
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function to convert Excel date to JS Date\nfunction excelDateToJSDate(excelDate) {\n  if (isNaN(excelDate) || excelDate === '') {\n    console.log(\"Invalid Excel date:\", excelDate);\n    return null; // Return null if the date is invalid or empty\n  }\n\n  const baseDate = new Date(1900, 0, 1); // Excel base date: January 1, 1900\n  return new Date(baseDate.getTime() + (excelDate - 2) * 24 * 60 * 60 * 1000); // Subtract 2 days for Excel's leap year bug and convert days to ms\n}\n\n// Function to format JS Date to MySQL DATE format (YYYY-MM-DD)\nfunction formatDateToMySQL(jsDate) {\n  if (!jsDate || isNaN(jsDate.getTime())) {\n    return null; // Return null for invalid dates\n  }\n\n  const day = String(jsDate.getDate()).padStart(2, '0');\n  const month = String(jsDate.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed\n  const year = jsDate.getFullYear();\n  return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format\n}\n\n// Iterate over the items from the previous node\nreturn items.map(item => {\n  // Extract the 'Date Sent' and 'Date Received' from the JSON\n  const dateSent = item.json[\"Date Sent\"];\n  const dateReceived = item.json[\"Date Received\"];\n  \n  console.log(\"Date Sent (Excel):\", dateSent); // Log the Excel date for debugging\n  console.log(\"Date Received (Excel):\", dateReceived);\n\n  // Convert Excel dates to JS dates\n  const jsDateSent = excelDateToJSDate(dateSent);\n  const jsDateReceived = excelDateToJSDate(dateReceived);\n\n  // Format JS dates to MySQL date format (YYYY-MM-DD)\n  const formattedDateSent = formatDateToMySQL(jsDateSent);\n  const formattedDateReceived = formatDateToMySQL(jsDateReceived);\n\n  // Add the formatted dates to the JSON output\n  item.json.formattedDateSent = formattedDateSent;\n  item.json.formattedDateReceived = formattedDateReceived;\n  \n  return item;\n});\n"
+      },
+      "id": "3d620749-71cd-4769-90a6-71c37c184e71",
+      "name": "Convert Excel Date",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        520,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "id": "0dd68ed4-dd6c-4e0b-90d1-7e2c57a2a634",
+      "name": "Extract from File1",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        280,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Updates website database with new surveys \n\nReceives an emailed report called maintenance reviews\nExtracts the new data\nFormats correct dates\nInserts records into wp0i_maint_surveys on blazeproperty.com\n",
+        "height": 204,
+        "width": 769
+      },
+      "id": "8ddd6ca8-bd2d-4ee2-b54f-b3e331e59fc0",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        260,
+        220
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 2275
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-02-15T17:31:37.000Z",
+  "versionId": "582dc2f1-4525-4688-8a93-35623194adaf"
+}
