@@ -1,0 +1,378 @@
+{
+  "active": true,
+  "connections": {
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Post on Wordpress": {
+      "main": [
+        [
+          {
+            "node": "Generate featured image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload media": {
+      "main": [
+        [
+          {
+            "node": "Wordpress Add Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress Add Image": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Post on Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate featured image": {
+      "main": [
+        [
+          {
+            "node": "Upload media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-12-05T21:16:08.580Z",
+  "id": "vb7CXQ9kzMXfQBtf",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Daily Renting Tips Wordpress copy",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Featured image",
+        "height": 387.12002573466816,
+        "width": 557.7592769264069,
+        "color": 3
+      },
+      "id": "0e23e99a-08d1-4f09-8f6d-5d8b11b6b4ed",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1100,
+        1480
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "The image is generated with Dall-E, uploaded to WordPress, and then connected to the post as its featured image",
+        "height": 80,
+        "width": 517.9195082760601,
+        "color": 7
+      },
+      "id": "45f34f49-d49b-42b6-95c7-72e7b31b6081",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        1540
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 1
+            }
+          ]
+        }
+      },
+      "id": "10b8dcfb-96e5-466b-a4ca-14588373471e",
+      "name": "Schedule Trigger1",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        280,
+        1620
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "postId": "={{ $json.id }}",
+        "updateFields": {
+          "status": "publish",
+          "categories": [
+            41,
+            42
+          ]
+        }
+      },
+      "id": "f369874e-31c8-435b-9c91-64b07257637f",
+      "name": "Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        1620
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "title": "=Daily Facebook Tip for Renters",
+        "additionalFields": {
+          "content": "={{ $json.message.content }}",
+          "status": "draft"
+        }
+      },
+      "id": "787d25b6-ee12-4bcf-91c3-8066e6447665",
+      "name": "Post on Wordpress",
+      "type": "n8n-nodes-base.wordpress",
+      "position": [
+        940,
+        1620
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://blzres.com/wp-json/wp/v2/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Disposition",
+              "value": "=attachment; filename={{ $('Post on Wordpress').item.json.id }}.jpg"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "9d2a2b5a-e112-4e59-8f88-27db14c7d0f2",
+      "name": "Upload media",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1260,
+        1620
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "postId": "={{ $('Post on Wordpress').item.json.id }}",
+        "updateFields": {
+          "content": "={{ $('Post on Wordpress').item.json.content.rendered }}<!-- wp:image {\"id\":{{ $('Upload media').item.json.id }},\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} --><figure class=\"wp-block-image size-full\"><img src=\"{{ $('Upload media').item.json.guid.raw }}\" alt=\"\" class=\"wp-image-{{ $('Upload media').item.json.id }}\"/></figure><!-- /wp:image -->\""
+        }
+      },
+      "id": "4197e8af-3c04-4969-a261-5cce57026b86",
+      "name": "Wordpress Add Image",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        1620
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM apt_social_media_posts\nWHERE last_post_date IS NULL OR last_post_date <= CURDATE() - INTERVAL 90 DAY\nORDER BY last_post_date ASC\nLIMIT 1;",
+        "options": {}
+      },
+      "id": "984454ea-6754-4a5c-8433-5cff5632a3f3",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        460,
+        1620
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a marketing guru for aa apartment community in Texas. Create a practical but engaging facebook post about the topic:  {{ $json.post }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "251ac33b-6b47-4d99-8193-76d8b8c249c9",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        600,
+        1620
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE apt_social_media_posts\nSET last_post_date = CURDATE(), post_count = post_count + 1\nWHERE number = {{ $node[\"MySQL\"].json[\"number\"] }};",
+        "options": {}
+      },
+      "id": "3c12e1b9-c01a-4214-88aa-b090d022df55",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1720,
+        1620
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=You are a marketing guru for aa apartment community in Texas. Create a practical but engaging image about the topic below. Do not generate images with text of any kind:  {{ $('OpenAI').item.json.message.content }}",
+        "options": {
+          "quality": "standard",
+          "size": "1024x1024",
+          "style": "vivid"
+        }
+      },
+      "id": "907f2787-0496-48eb-b4c9-4dff95991aeb",
+      "name": "Generate featured image",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1120,
+        1620
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    },
+    "node:Schedule Trigger1": {
+      "recurrencyRules": [],
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-28T16:41:31.000Z",
+  "versionId": "bb0717be-65b9-4e09-9c73-bdf8d73bea6e"
+}
