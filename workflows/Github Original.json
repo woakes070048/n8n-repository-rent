@@ -100,7 +100,7 @@
       "main": [
         [
           {
-            "node": "n8n",
+            "node": "Get Workflow From List",
             "type": "main",
             "index": 0
           }
@@ -128,17 +128,6 @@
           }
         ]
       ]
-    },
-    "n8n": {
-      "main": [
-        [
-          {
-            "node": "Get Workflow by ID",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "createdAt": "2025-03-09T16:44:53.827Z",
@@ -155,10 +144,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1320,
-        1120
+        2880,
+        2060
       ],
-      "id": "7357daf6-488e-400d-806d-d4c3010f1a4a",
+      "id": "7d194491-822b-4011-ad6a-cefafd6ab850",
       "name": "Format Workflow Data"
     },
     {
@@ -173,10 +162,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.7,
       "position": [
-        1540,
-        1120
+        3100,
+        2060
       ],
-      "id": "6e412922-296f-46e7-bad9-da7b6feb9ef5",
+      "id": "6c5434dc-f354-4909-abe3-2581d8165a84",
       "name": "AI Agent",
       "retryOnFail": true,
       "waitBetweenTries": 1000
@@ -191,10 +180,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1,
       "position": [
-        1560,
-        1320
+        3120,
+        2260
       ],
-      "id": "84615c6f-bc98-442d-8bbd-dbc17b9bf7d4",
+      "id": "31731544-ec0a-47ec-880a-265f6fa7b6cd",
       "name": "Openrouter",
       "credentials": {
         "openAiApi": {
@@ -224,10 +213,10 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1,
       "position": [
-        2760,
-        980
+        4320,
+        1920
       ],
-      "id": "a8a81f33-a878-469f-9249-742e81db1ad3",
+      "id": "3332ea7b-60c1-4ca8-ab42-22e4ae59ae17",
       "name": "Update readme",
       "credentials": {
         "githubApi": {
@@ -246,20 +235,20 @@
         },
         "repository": {
           "__rl": true,
-          "value": "={{ $('Check if workflow is on GitHub').params.repository.value }}",
+          "value": "={{ $('Format Workflow Data').item.json.workflowName }}",
           "mode": "name"
         },
-        "filePath": "={{ $('Format Workflow Data').item.json.workflowName }}/{{ $json.jsonFileName }}",
+        "filePath": "={{ $json.jsonFileName }}",
         "fileContent": "={{ JSON.stringify($('Format Workflow Data').item.json.content, null,2) }}",
         "commitMessage": "=Add {{ $('Set JSON filename').item.json.jsonFileName }}"
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1,
       "position": [
-        2600,
-        1220
+        4160,
+        2160
       ],
-      "id": "fcd1d3f1-a7a2-4910-9ac9-e843458883b6",
+      "id": "3fdc5a6a-3dff-4b6d-ae3d-e20da328a09a",
       "name": "Create JSON file",
       "credentials": {
         "githubApi": {
@@ -288,10 +277,10 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1,
       "position": [
-        2760,
-        1220
+        4320,
+        2160
       ],
-      "id": "0594d555-45af-4ddf-a1ff-459b8e21b516",
+      "id": "da3b082b-ec98-4bbe-ade6-0ad2ceefecbd",
       "name": "Create README",
       "credentials": {
         "githubApi": {
@@ -321,10 +310,10 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1,
       "position": [
-        2600,
-        980
+        4160,
+        1920
       ],
-      "id": "e893ab39-d151-4211-b271-19c81d651034",
+      "id": "5607319e-8ec0-4d60-9c26-0344b487b8f1",
       "name": "Edit JSON file",
       "credentials": {
         "githubApi": {
@@ -355,10 +344,10 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1,
       "position": [
-        2380,
-        1120
+        3940,
+        2060
       ],
-      "id": "50c88715-b7f7-4ebf-8b48-b3fe3b2ea4bf",
+      "id": "3845d0f8-9408-473f-8b43-ab67dd1bc04d",
       "name": "Check if workflow is on GitHub",
       "alwaysOutputData": false,
       "credentials": {
@@ -376,10 +365,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1920,
-        1120
+        3480,
+        2060
       ],
-      "id": "354f53db-cde7-4217-91f1-f2822ce90baa",
+      "id": "064fec88-31fe-4572-aa88-07e2afde98ef",
       "name": "Remove markdown signs"
     },
     {
@@ -399,10 +388,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2120,
-        1120
+        3680,
+        2060
       ],
-      "id": "05dac2f2-5cc7-4c56-9703-ff6b5845518d",
+      "id": "efc040e2-8405-44d3-8dc3-1b20e6fe9ea0",
       "name": "Set JSON filename"
     },
     {
@@ -410,10 +399,10 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        600,
-        1240
+        2360,
+        1940
       ],
-      "id": "3d0d6709-9c58-4461-a123-533d15491eab",
+      "id": "36becaaa-8b31-433f-9673-e7076b261a6f",
       "name": "When clicking ‘Test workflow’"
     },
     {
@@ -429,17 +418,18 @@
       "type": "n8n-nodes-base.n8n",
       "typeVersion": 1,
       "position": [
-        1040,
-        1240
+        2600,
+        2180
       ],
-      "id": "a1328d84-e8d3-485b-a605-38ec84ba4d50",
+      "id": "00151ccb-5c5b-4cdf-89f8-cd4604b55bd2",
       "name": "Get Workflow by ID",
       "credentials": {
         "n8nApi": {
           "id": "UjH1vFHaVrXZkoWc",
           "name": "n8n account"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -455,18 +445,17 @@
       "type": "n8n-nodes-base.n8n",
       "typeVersion": 1,
       "position": [
-        1040,
-        1000
+        2600,
+        1940
       ],
-      "id": "d706a244-7c91-4d6f-b788-dfc19d8a7fbe",
+      "id": "8df3afce-2185-4498-a8f4-0e5cfc97f44a",
       "name": "Get Workflow From List",
       "credentials": {
         "n8nApi": {
           "id": "UjH1vFHaVrXZkoWc",
           "name": "n8n account"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -478,10 +467,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        720,
-        840
+        2280,
+        1780
       ],
-      "id": "eca456e1-cbcf-46b4-8bb7-19a0d907d9fa",
+      "id": "2665a920-0cfc-49ed-af27-695c557050f1",
       "name": "Sticky Note"
     },
     {
@@ -494,10 +483,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        980,
-        840
+        2540,
+        1780
       ],
-      "id": "10586170-ee93-4517-9178-fbd54050f23a",
+      "id": "a270d43c-fa45-46e2-9af5-e4589213f981",
       "name": "Sticky Note1"
     },
     {
@@ -508,10 +497,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1240,
-        840
+        2800,
+        1780
       ],
-      "id": "cdc31582-2bc4-4dc0-9340-1593052e5829",
+      "id": "88dc63ec-050f-4d76-8442-f3bb985700dd",
       "name": "Sticky Note2"
     },
     {
@@ -523,10 +512,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1840,
-        840
+        3400,
+        1780
       ],
-      "id": "7f9acaac-614f-41e9-b14b-76310b6b06a1",
+      "id": "08d0a2d6-aee1-4533-940c-e197868d4cf0",
       "name": "Sticky Note3"
     },
     {
@@ -539,10 +528,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1480,
-        840
+        3040,
+        1780
       ],
-      "id": "a84c27c2-376b-4499-8d4f-6241606bfbf7",
+      "id": "c05342ec-751c-4bc9-8b9c-7b25c3631455",
       "name": "Sticky Note4"
     },
     {
@@ -555,10 +544,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2280,
-        840
+        3840,
+        1780
       ],
-      "id": "233be740-d927-4bc7-b62c-486d4479b66f",
+      "id": "d1d82ed3-3cb1-4bbe-b17b-cabb55b85ed8",
       "name": "Sticky Note5"
     },
     {
@@ -570,31 +559,11 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1160,
-        700
+        2720,
+        1640
       ],
-      "id": "cf6b41ef-6dda-41ce-b4bd-c760f0ef21c9",
+      "id": "7419fa00-e4e2-4dba-a58d-a575dc38a318",
       "name": "Sticky Note6"
-    },
-    {
-      "parameters": {
-        "filters": {},
-        "requestOptions": {}
-      },
-      "type": "n8n-nodes-base.n8n",
-      "typeVersion": 1,
-      "position": [
-        820,
-        1240
-      ],
-      "id": "e9e3dbfa-94f0-43fa-8b03-ed462d6e236e",
-      "name": "n8n",
-      "credentials": {
-        "n8nApi": {
-          "id": "UjH1vFHaVrXZkoWc",
-          "name": "n8n account"
-        }
-      }
     }
   ],
   "pinData": {},
@@ -604,6 +573,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-11T11:51:14.000Z",
-  "versionId": "43019cb6-409a-40bd-9b4f-c9e2a002e967"
+  "updatedAt": "2025-03-12T05:16:36.000Z",
+  "versionId": "ef8f1881-080b-47d5-bc75-0382682c4845"
 }
