@@ -1,0 +1,152 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-12T06:37:03.344Z",
+  "id": "0OvHfDFIcVXFQGAz",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Guest Card Update",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -620,
+        -40
+      ],
+      "id": "f068b08f-261f-435d-85ae-fed317599fd3",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "path": "/public_html/data2/guest_card.csv"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -40
+      ],
+      "id": "1ba0015f-e182-43d3-bfd2-d09480c01550",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        -40
+      ],
+      "id": "fa083cad-876c-46db-9b70-a13685d40722",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function to validate email format using regex\nfunction isValidEmail(email) {\n    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n    return emailRegex.test(email);\n}\n\n// Get input data\nconst items = $input.all();\n\n// Filter records with valid emails\nconst filteredItems = items.filter(item => {\n    if (item.json[\"Email Address\"]) {\n        return isValidEmail(item.json[\"Email Address\"]);\n    }\n    return false;\n});\n\n// Return only valid records\nreturn filteredItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        -40
+      ],
+      "id": "26bd7fb7-017b-4371-bc20-26a667e51691",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://www.zohoapis.com/crm/v2/Guests/{{ $json['Guest Card ID'] }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"data\": [\n    {\n      \"Guest Card ID\": \"14115\",\n      \"Guest Name\": \"Murante, Megan\",\n      \"Email\": \"mtouchton1112@gmail.com\",\n      \"Phone 1\": \"(585) 230-0459\",\n      \"Inquiry Received\": \"03/01/2025 at 09:00 AM\",\n      \"Last Activity\": \"3/11/2025\",\n      \"Last Interest\": \"3/11/2025\",\n      \"Latest Source\": \"Rent.\",\n      \"Source Type\": \"Rent.\",\n      \"Inquiry ID\": \"34925\",\n      \"Property ID\": \"329\"\n    }\n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        -40
+      ],
+      "id": "c1f81512-b24d-4255-95d7-41495f545a68",
+      "name": "HTTP Request",
+      "credentials": {
+        "zohoOAuth2Api": {
+          "id": "oFsMev3Fm7IhzJD9",
+          "name": "Zoho account"
+        },
+        "oAuth2Api": {
+          "id": "sODHV8CzUo2cjXFG",
+          "name": "Zoho CRM API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-12T07:04:30.000Z",
+  "versionId": "4c25cf3c-e36a-477a-90d0-3cec5ccb6001"
+}
