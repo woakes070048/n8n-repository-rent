@@ -38,7 +38,18 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Zoho CRM",
             "type": "main",
             "index": 0
           }
@@ -58,8 +69,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -620,
-        -40
+        -900,
+        -80
       ],
       "id": "f068b08f-261f-435d-85ae-fed317599fd3",
       "name": "When clicking ‘Test workflow’"
@@ -71,8 +82,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        -400,
-        -40
+        -680,
+        -80
       ],
       "id": "1ba0015f-e182-43d3-bfd2-d09480c01550",
       "name": "FTP",
@@ -90,8 +101,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -180,
-        -40
+        -460,
+        -80
       ],
       "id": "fa083cad-876c-46db-9b70-a13685d40722",
       "name": "Extract from File"
@@ -103,39 +114,69 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        40,
-        -40
+        -180,
+        -80
       ],
       "id": "26bd7fb7-017b-4371-bc20-26a667e51691",
       "name": "Code"
     },
     {
       "parameters": {
-        "method": "PUT",
-        "url": "=https://www.zohoapis.com/crm/v2/Guests/{{ $json['Guest Card ID'] }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "oAuth2Api",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"data\": [\n    {\n      \"Guest Card ID\": \"14115\",\n      \"Guest Name\": \"Murante, Megan\",\n      \"Email\": \"mtouchton1112@gmail.com\",\n      \"Phone 1\": \"(585) 230-0459\",\n      \"Inquiry Received\": \"03/01/2025 at 09:00 AM\",\n      \"Last Activity\": \"3/11/2025\",\n      \"Last Interest\": \"3/11/2025\",\n      \"Latest Source\": \"Rent.\",\n      \"Source Type\": \"Rent.\",\n      \"Inquiry ID\": \"34925\",\n      \"Property ID\": \"329\"\n    }\n  ]\n}\n",
-        "options": {}
+        "resource": "lead",
+        "operation": "upsert",
+        "Company": "Blaze",
+        "lastName": "={{ $json[\"Name\"].split(\",\")[0].trim() }}\n",
+        "additionalFields": {
+          "Email": "={{ $json[\"Email Address\"] }}",
+          "First_Name": "={{ $json[\"Name\"].split(\",\")[1].trim() }}",
+          "Lead_Source": "={{ $json.Source }}",
+          "Mobile": "={{ $json[\"Phone Number\"] }}"
+        }
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.zohoCrm",
+      "typeVersion": 1,
       "position": [
-        260,
-        -40
+        940,
+        -80
       ],
-      "id": "c1f81512-b24d-4255-95d7-41495f545a68",
-      "name": "HTTP Request",
+      "id": "a669cba4-1ee5-4e19-b67a-8f8d84686d14",
+      "name": "Zoho CRM",
       "credentials": {
         "zohoOAuth2Api": {
           "id": "oFsMev3Fm7IhzJD9",
           "name": "Zoho account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "o3-mini",
+          "mode": "list",
+          "cachedResultName": "O3-MINI"
         },
-        "oAuth2Api": {
-          "id": "sODHV8CzUo2cjXFG",
-          "name": "Zoho CRM API"
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an AI model designed to score real estate leads based on their engagement and likelihood of conversion.\n\nAnalyze the following lead data and assign a score from 0 to 100 based on:\n- Recent activity (calls, visits get higher scores)\n- Number of inquiries received\n- Move-in date (sooner dates score higher)\n- Lead source (trusted sources like \"Rent.\" get higher scores)\n\nLead Data:\nName: {{ $json.Name }}\nInquiry Received: {{ $json.inquiry_received }}\nMove-in Preference: {{ $json.move_in_preference }}\nLast Activity Type: {{ $json[\"last_activity_type\"] }}\nTotal Interests: {{ $json[\"total_interests\"] }}\nShowings: {{ $json[\"showings\"] }}\nLead Source: {{ $json[\"lead_source\"] }}\n\nProvide a single number as output (0-100), where 100 is the highest quality lead.\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        60,
+        -80
+      ],
+      "id": "fa7e37ee-9a1f-4e07-b4ce-5470e373f4b4",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
         }
       }
     }
@@ -147,6 +188,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-12T07:04:30.000Z",
-  "versionId": "4c25cf3c-e36a-477a-90d0-3cec5ccb6001"
+  "updatedAt": "2025-03-14T12:26:49.000Z",
+  "versionId": "730ad8a9-eac0-43ca-a0a2-815f4d28922c"
 }
