@@ -159,7 +159,7 @@
         "messages": {
           "values": [
             {
-              "content": "=You are an AI model designed to score real estate leads based on their engagement and likelihood of conversion.\n\nAnalyze the following lead data and assign a score from 0 to 100 based on:\n- Recent activity (calls, visits get higher scores)\n- Number of inquiries received\n- Move-in date (sooner dates score higher)\n- Lead source (trusted sources like \"Rent.\" get higher scores)\n\nLead Data:\nName: {{ $json.Name }}\nInquiry Received: {{ $json.inquiry_received }}\nMove-in Preference: {{ $json.move_in_preference }}\nLast Activity Type: {{ $json[\"last_activity_type\"] }}\nTotal Interests: {{ $json[\"total_interests\"] }}\nShowings: {{ $json[\"showings\"] }}\nLead Source: {{ $json[\"lead_source\"] }}\n\nProvide a single number as output (0-100), where 100 is the highest quality lead.\n"
+              "content": "=You are an AI model designed to score real estate leads based on their engagement and likelihood of conversion.\n\nAnalyze the following lead data and assign a score from 0 to 100 based on:\n- Full Contact Information available\n- Recent activity (calls, visits get higher scores)\n- Number of inquiries received\n- Move-in date (sooner dates score higher)\n- Lead source (trusted sources like \"Rent.\" get higher scores)\n\nLead Data:\nName: {{ $json.Name }}\nEmail: {{ $json['Email Address'] }}\nPhone: {{ $json['Phone Number'] }}\nInquiry Received: {{ $json['Inquiry Received'] }}\nMove-in Preference: {{ $json['Move In Preference'] }}\nLast Activity Type: \nTotal Interests: {{ $json['Total Interests Received'] }}\nShowings: {{ $json.Showings }}\nLead Source: {{ $json.Source }}\n\nProvide a single number as output (0-100), where 100 is the highest quality lead.\n"
             }
           ]
         },
@@ -168,7 +168,7 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        60,
+        220,
         -80
       ],
       "id": "fa7e37ee-9a1f-4e07-b4ce-5470e373f4b4",
@@ -188,6 +188,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-14T12:26:49.000Z",
-  "versionId": "730ad8a9-eac0-43ca-a0a2-815f4d28922c"
+  "updatedAt": "2025-03-15T11:22:31.000Z",
+  "versionId": "3896dcff-18bd-4967-bcd7-45b2dc35a5aa"
 }
