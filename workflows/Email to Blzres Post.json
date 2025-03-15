@@ -1,0 +1,18 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-03-15T14:22:18.563Z",
+  "id": "bJsJldKWqGcUdkYs",
+  "meta": null,
+  "name": "Email to Blzres Post",
+  "nodes": [],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-15T14:22:18.563Z",
+  "versionId": "4285ecf1-b08f-4b6f-8e84-46f61e05fb9d"
+}
