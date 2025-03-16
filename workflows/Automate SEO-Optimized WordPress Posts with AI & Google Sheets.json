@@ -1,0 +1,807 @@
+{
+  "active": false,
+  "connections": {
+    "Set image": {
+      "main": [
+        [
+          {
+            "node": "Update Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SEO Expert": {
+      "main": [
+        [
+          {
+            "node": "Set metatag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get context": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set context": {
+      "main": [
+        [
+          {
+            "node": "Generate article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set metatag": {
+      "main": [
+        [
+          {
+            "node": "Finish work",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Sheet": {
+      "main": [
+        [
+          {
+            "node": "SEO Expert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload image": {
+      "main": [
+        [
+          {
+            "node": "Set image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate image": {
+      "main": [
+        [
+          {
+            "node": "Upload image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate title": {
+      "main": [
+        [
+          {
+            "node": "Add draft to WP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add draft to WP": {
+      "main": [
+        [
+          {
+            "node": "Generate image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate article": {
+      "main": [
+        [
+          {
+            "node": "Generate title",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "SEO Expert",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "SEO Expert",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Set context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-16T12:31:55.281Z",
+  "id": "IaEfsEDtyo65lSsm",
+  "meta": {
+    "templateId": "3085",
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Automate SEO-Optimized WordPress Posts with AI & Google Sheets",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "5c88bf7d-cd9d-4b76-8233-6e5927692e7a",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        160,
+        620
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1GBIfQVv3aeYF0OFkQJNcZgDSqktWDDbeWSlhPPVpYCA",
+          "mode": "list",
+          "cachedResultName": "Blaze_Blog_Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GBIfQVv3aeYF0OFkQJNcZgDSqktWDDbeWSlhPPVpYCA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GBIfQVv3aeYF0OFkQJNcZgDSqktWDDbeWSlhPPVpYCA/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "d3fc9ed5-9ddc-480d-9fa8-f0a66bb69520",
+      "name": "Get context",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        440,
+        620
+      ],
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3e8d2523-66aa-46fe-adcc-39dc78b9161e",
+              "name": "prompt",
+              "type": "string",
+              "value": "={{ $json['Blog Post Idea'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "27a1aaf2-435f-4fcc-b7be-f88f2e51a6c7",
+      "name": "Set context",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        940,
+        620
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4-turbo-preview",
+          "mode": "list",
+          "cachedResultName": "GPT-4-TURBO-PREVIEW"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an SEO Copywriter and you need to find a title of maximum 60 characters for the following article:\n{{ $json.message.content }}\n\nInstructions:\n- Use keywords contained in the article\n- Do not use any HTML characters\n- Output only the string containing the title.\n- Do not use quotes. The only characters allowed are: and ,"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 2048
+        }
+      },
+      "id": "b2f0a242-ef9f-42d9-974b-e823f23bf37f",
+      "name": "Generate title",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1480,
+        620
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.5-preview",
+          "mode": "list",
+          "cachedResultName": "GPT-4.5-PREVIEW"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=an SEO-friendly article on these topics:\n{{ $json.prompt }}\n\nInstructions:\n- In the introduction, introduce the topic that will be covered in more detail in the rest of the text\n- The introduction should be about 60 words\n- The conclusion should be about 60 words\n- Use the conclusion to summarize everything said in the article and offer a conclusion to the reader\n- Write a maximum of 2-3 chapters.\n- Chapters should follow a logical flow and not repeat the same ideas.\n- Chapters should be related to each other and not isolated blocks of text. The text should flow and follow a linear logic.\n- Do not start chapters with \"Chapter 1\", \"Chapter 2\", \"Chapter 3\" ... write only the chapter title\n- For the text, use HTML for formatting, but limit yourself to bold, italics, paragraphs and lists.\n- Do not put the output between ```html but only the text\n- Do not use markdown for formatting.\n- Go deeper into the topic you are talking about, don't just throw superficial information out there\n- I only want HTML format in output"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 2048
+        }
+      },
+      "id": "b3b30328-0dfe-4471-9195-d411e737df5e",
+      "name": "Generate article",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        1180,
+        620
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "title": "={{ $json.message.content }}",
+        "additionalFields": {
+          "content": "={{ $('Generate article').item.json.message.content }}",
+          "status": "draft"
+        }
+      },
+      "id": "e3f7d28b-ac23-4192-bd46-127491240ee2",
+      "name": "Add draft to WP",
+      "type": "n8n-nodes-base.wordpress",
+      "position": [
+        1780,
+        620
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=Generate a real photo image used as a blog post cover:\n\nImage prompt:\n{{ $('Generate title').item.json.message.content }}, photography, realistic, sigma 85mm f/1.4",
+        "options": {
+          "quality": "hd",
+          "size": "1024x1024",
+          "style": "natural"
+        }
+      },
+      "id": "3ebcf40b-7a3b-43fa-a075-0e6dfaa2665e",
+      "name": "Generate image",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        400,
+        900
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://blzres.com/wp-json/wp/v2/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Disposition",
+              "value": "=attachment; filename=\"copertina-{{ $('Add draft to WP').item.json.id }}.jpg\""
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "2eedf2db-660b-4e1e-a38d-34ad2ddb1314",
+      "name": "Upload image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        840,
+        900
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://blzres.com/wp-json/wp/v2/posts/{{ $('Add draft to WP').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "featured_media",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "58e3aa00-a1d7-4b19-916e-4d07dd7c2009",
+      "name": "Set image",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1040,
+        900
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1GBIfQVv3aeYF0OFkQJNcZgDSqktWDDbeWSlhPPVpYCA",
+          "mode": "list",
+          "cachedResultName": "Blaze_Blog_Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GBIfQVv3aeYF0OFkQJNcZgDSqktWDDbeWSlhPPVpYCA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GBIfQVv3aeYF0OFkQJNcZgDSqktWDDbeWSlhPPVpYCA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Published": "={{ $json.date }}",
+            "row_number": "={{ $('Get context').item.json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Blog Post Idea",
+              "displayName": "Blog Post Idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Published",
+              "displayName": "Published",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "6f9277be-26c4-4d01-9e61-acf3ab90739d",
+      "name": "Update Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        1300,
+        900
+      ],
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create metatitle and metadescription in the language of the following product:\n- Title: {{ $('Add draft to WP').item.json.title.rendered }}\n- Content: {{ $('Add draft to WP').item.json.content.rendered }}\n- Excerpt: {{ $('Add draft to WP').item.json.excerpt.rendered }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an expert SEO content optimizer specialized in creating meta tags for both web pages and blog articles. Your task is to analyze the provided content and generate optimized meta tags based on the content type.\n\nMETA TAG REQUIREMENTS:\n\n1. Meta Title (max 60 characters):\n   - Include primary keyword near the beginning\n   - State the main value proposition\n   - Include brand name when relevant\n   - Use action-oriented language for commercial pages\n   - Format: Primary Keyword | Main Benefit | Brand (if applicable)\n\n2. Meta Description (max 160 characters):\n   - Lead with unique selling proposition\n   - Include primary and secondary keywords naturally\n   - Add clear call-to-action\n   - Highlight key benefits or features\n   - Address user pain points\n   - Tease the main insights or findings\n   - Mention key topics covered\n   - Use engaging question or statement\n   - Include expertise indicators\n   - Promise value or solution\n\nANALYSIS PROCESS:\n1. Content Assessment:\n   - Identify content type and purpose\n   - Extract main topic and keywords\n   - Determine search intent\n   - Identify target audience\n   - Note key differentiators\n\n2. Optimization Strategy:\n   - Align with search intent\n   - Consider competition level\n   - Factor in brand guidelines\n   - Account for content freshness\n   - Optimize for click-through rate\n\nOUTPUT FORMAT:\nPlease provide meta tags in the required format\n\nVALIDATION CHECKLIST:\n- Title length ≤ 60 characters\n- Description length ≤ 160 characters\n- Primary keyword included in both\n- Matches identified search intent\n- Appropriate for content type\n- Clear value proposition\n- Compelling call-to-action\n- Natural keyword placement\n- Proper grammar and spelling\n- Mobile display optimized\n- Don't use placeholder\n\nBEST PRACTICES:\n- Avoid clickbait or misleading content\n- Use power words appropriately\n- Maintain brand voice and tone\n- Ensure mobile snippet optimization\n- Consider local SEO when relevant\n- Keep seasonal content timely\n- Use numbers and data when available\n- Include price/offers if applicable\n- Add emotional triggers when appropriate\n- Consider SERP feature optimization\n\nTECHNICAL GUIDELINES:\n- No double quotes in meta description\n- Avoid unnecessary special characters\n- Use UTF-8 encoding\n- Capitalize properly\n- Avoid keyword cannibalization\n- Respect brand guidelines\n- Consider local market variations\n- Update meta tags for seasonal content\n- Monitor CTR performance\n- A/B test when possible\n\nRemember: The goal is to create meta tags that serve both search engines and users effectively while maintaining specificity for the content type and maximizing organic click-through rates."
+            }
+          ]
+        }
+      },
+      "id": "1d880c40-af32-4c78-9fa2-fb6b120039d3",
+      "name": "SEO Expert",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1660,
+        900
+      ],
+      "typeVersion": 1.5
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"metatitle\": {\n\t\t\t\"type\": \"string\"\n\t\t},\n\t\t\"metadescription\": {\n\t\t\t\"type\": \"string\"\n\t\t}\n\t}\n}"
+      },
+      "id": "c4833efe-1b43-42e7-a5ec-cca1908f327b",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        1860,
+        1140
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://blzres.com/wp-json/wp/v2/posts/{{ $('Add draft to WP').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"meta\":{\n    \"_yoast_wpseo_title\":\"{{ $json.output.metatitle }}\",\n    \"_yoast_wpseo_metadesc\":\"{{ $json.output.metadescription }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "962e5d6f-df35-4e5c-b46e-9c2164a3648d",
+      "name": "Set metatag",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        400,
+        1180
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "eRveX6BhqCl8xFCY",
+          "name": "Wordpress APP"
+        },
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1GBIfQVv3aeYF0OFkQJNcZgDSqktWDDbeWSlhPPVpYCA",
+          "mode": "list",
+          "cachedResultName": "Blaze_Blog_Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GBIfQVv3aeYF0OFkQJNcZgDSqktWDDbeWSlhPPVpYCA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GBIfQVv3aeYF0OFkQJNcZgDSqktWDDbeWSlhPPVpYCA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Blog Post Idea",
+              "displayName": "Blog Post Idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Published",
+              "displayName": "Published",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "55e8e3c3-2270-4227-863c-e7cf1337c13b",
+      "name": "Finish work",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        840,
+        1180
+      ],
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Fetches the context of the article you want to generate via AI",
+        "height": 240,
+        "width": 180
+      },
+      "id": "f50be61f-7502-4186-9952-22e740de896e",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        420,
+        540
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Create the draft post on Wordpress with the article text and the title that were previously generated",
+        "height": 240,
+        "width": 280
+      },
+      "id": "149e3535-60fb-4547-8dad-567a47f9bc4b",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1480,
+        540
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "Upload the generated image to Wordpress media and then associate it with the newly created article",
+        "height": 220,
+        "width": 400
+      },
+      "id": "779e3a0d-1429-4973-9757-fa1645796cbd",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        580,
+        840
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "The SEO expert analyzes the created article and generates the appropriate meta title and meta description",
+        "height": 220,
+        "width": 420
+      },
+      "id": "9b375c3e-3c3a-44e9-b234-2538e6f33d32",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1340,
+        840
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "The generated metadata is associated with the post",
+        "height": 200,
+        "width": 220
+      },
+      "id": "d4c503c9-9d0f-4411-a3a6-bdd77f782a77",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        340,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Optimize WordPress Blog Posts with AI\n\nThis is a powerful tool for automating the creation and optimization of blog posts, saving time and ensuring high-quality, SEO-friendly content for Wordpress with Yoast plugin. \n\n[Clone this Sheet](https://docs.google.com/spreadsheets/d/1WlmjnObleBuHRno_axjc-GjV7Wg9gCoIsOK1PD4TxGU/edit?usp=sharing) and in the \"Prompt\" column write the topic that will then be developed by the AI",
+        "width": 820,
+        "color": 3
+      },
+      "id": "8d7a1d61-3fbe-4d76-9f2d-68b4c9de23bb",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        380,
+        240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1620,
+        1160
+      ],
+      "id": "054617c1-199b-44bd-a813-ac99fa0c854f",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all unpublished articles from the Google Sheet\nconst articles = items.filter(item => !item.json.Published);\n\n// Ensure there are unpublished articles available\nif (articles.length === 0) {\n  return [];\n}\n\n// Select a random article from the list\nconst randomIndex = Math.floor(Math.random() * articles.length);\nconst selectedArticle = articles[randomIndex];\n\n// Add a timestamp to indicate it's selected (optional)\nselectedArticle.json.SelectedAt = new Date().toISOString();\n\nreturn [selectedArticle];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        620
+      ],
+      "id": "3f2c2b7b-2409-4ff2-894b-394f9db33c7c",
+      "name": "Code"
+    }
+  ],
+  "pinData": {},
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-16T13:53:28.000Z",
+  "versionId": "aa1a5f40-a66d-4965-a23f-f19f10b72e3f"
+}
