@@ -165,6 +165,17 @@
           }
         ]
       ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-03-16T12:31:55.281Z",
@@ -208,7 +219,7 @@
       "name": "Get context",
       "type": "n8n-nodes-base.googleSheets",
       "position": [
-        440,
+        660,
         620
       ],
       "typeVersion": 4.5,
@@ -237,7 +248,7 @@
       "name": "Set context",
       "type": "n8n-nodes-base.set",
       "position": [
-        940,
+        1160,
         620
       ],
       "typeVersion": 3.4
@@ -265,7 +276,7 @@
       "name": "Generate title",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "position": [
-        1480,
+        1700,
         620
       ],
       "typeVersion": 1.8,
@@ -299,7 +310,7 @@
       "name": "Generate article",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "position": [
-        1180,
+        1400,
         620
       ],
       "typeVersion": 1.8,
@@ -322,14 +333,14 @@
       "name": "Add draft to WP",
       "type": "n8n-nodes-base.wordpress",
       "position": [
-        1780,
+        2000,
         620
       ],
       "typeVersion": 1,
       "credentials": {
         "wordpressApi": {
-          "id": "VXzYYztQ5s3nKwus",
-          "name": "Wordpress account"
+          "id": "vP3mdg084tWAWqK7",
+          "name": "Wordpress account 2"
         }
       }
     },
@@ -347,7 +358,7 @@
       "name": "Generate image",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "position": [
-        400,
+        620,
         900
       ],
       "typeVersion": 1.8,
@@ -361,7 +372,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://blzres.com/wp-json/wp/v2/media",
+        "url": "https://blazeproperty.com/wp-json/wp/v2/media",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "wordpressApi",
         "sendHeaders": true,
@@ -382,21 +393,22 @@
       "name": "Upload image",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        840,
+        920,
         900
       ],
       "typeVersion": 4.2,
       "credentials": {
         "wordpressApi": {
-          "id": "VXzYYztQ5s3nKwus",
-          "name": "Wordpress account"
+          "id": "vP3mdg084tWAWqK7",
+          "name": "Wordpress account 2"
         }
-      }
+      },
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://blzres.com/wp-json/wp/v2/posts/{{ $('Add draft to WP').item.json.id }}",
+        "url": "=https://blazeproperty.com/wp-json/wp/v2/posts/{{ $('Add draft to WP').item.json.id }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "wordpressApi",
         "sendQuery": true,
@@ -414,14 +426,14 @@
       "name": "Set image",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        1040,
+        1260,
         900
       ],
       "typeVersion": 4.2,
       "credentials": {
         "wordpressApi": {
-          "id": "VXzYYztQ5s3nKwus",
-          "name": "Wordpress account"
+          "id": "vP3mdg084tWAWqK7",
+          "name": "Wordpress account 2"
         }
       }
     },
@@ -502,7 +514,7 @@
       "name": "Update Sheet",
       "type": "n8n-nodes-base.googleSheets",
       "position": [
-        1300,
+        1520,
         900
       ],
       "typeVersion": 4.5,
@@ -530,7 +542,7 @@
       "name": "SEO Expert",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "position": [
-        1660,
+        1880,
         900
       ],
       "typeVersion": 1.5
@@ -544,7 +556,7 @@
       "name": "Structured Output Parser",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "position": [
-        1860,
+        2080,
         1140
       ],
       "typeVersion": 1.2
@@ -552,7 +564,7 @@
     {
       "parameters": {
         "method": "PUT",
-        "url": "=https://blzres.com/wp-json/wp/v2/posts/{{ $('Add draft to WP').item.json.id }}",
+        "url": "=https://blazeproperty.com/wp-json/wp/v2/posts/{{ $('Add draft to WP').item.json.id }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "wordpressApi",
         "sendHeaders": true,
@@ -573,7 +585,7 @@
       "name": "Set metatag",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        400,
+        620,
         1180
       ],
       "typeVersion": 4.2,
@@ -583,8 +595,8 @@
           "name": "Wordpress APP"
         },
         "wordpressApi": {
-          "id": "VXzYYztQ5s3nKwus",
-          "name": "Wordpress account"
+          "id": "vP3mdg084tWAWqK7",
+          "name": "Wordpress account 2"
         }
       }
     },
@@ -607,8 +619,14 @@
         },
         "columns": {
           "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
+          "value": {
+            "row_number": "={{ $('Get context').item.json.row_number }}",
+            "Published": "={{ $json.date }}",
+            "Blog Post Idea": "={{ $json.title.rendered }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
           "schema": [
             {
               "id": "Category",
@@ -617,7 +635,8 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true
+              "canBeUsedToMatch": true,
+              "removed": true
             },
             {
               "id": "Blog Post Idea",
@@ -626,7 +645,48 @@
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Published",
+              "displayName": "Published",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "SelectedAt",
+              "displayName": "SelectedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Blog Post Idea",
+              "displayName": "Blog Post Idea",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
             },
             {
               "id": "Published",
@@ -646,7 +706,7 @@
               "type": "string",
               "canBeUsedToMatch": true,
               "readOnly": true,
-              "removed": true
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -658,7 +718,7 @@
       "name": "Finish work",
       "type": "n8n-nodes-base.googleSheets",
       "position": [
-        840,
+        1060,
         1180
       ],
       "typeVersion": 4.5,
@@ -771,7 +831,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        1620,
+        1840,
         1160
       ],
       "id": "054617c1-199b-44bd-a813-ac99fa0c854f",
@@ -790,11 +850,28 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        680,
+        900,
         620
       ],
       "id": "3f2c2b7b-2409-4ff2-894b-394f9db33c7c",
       "name": "Code"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        840
+      ],
+      "id": "351928f2-6b96-4620-8ed0-004bdb51a092",
+      "name": "Schedule Trigger"
     }
   ],
   "pinData": {},
@@ -802,6 +879,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-16T13:53:28.000Z",
-  "versionId": "aa1a5f40-a66d-4965-a23f-f19f10b72e3f"
+  "updatedAt": "2025-03-17T12:01:20.000Z",
+  "versionId": "885c7991-1574-468b-a4f5-47297cea3879"
 }
