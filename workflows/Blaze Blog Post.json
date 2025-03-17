@@ -1,0 +1,387 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "UUID Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Email Data": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        []
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress": {
+      "main": [
+        [
+          {
+            "node": "Wordpress Add Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Upload media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload media": {
+      "main": [
+        [
+          {
+            "node": "Wordpress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "UUID Generator": {
+      "main": [
+        [
+          {
+            "node": "Format Email Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-17T10:42:04.984Z",
+  "id": "awMZBhpQ1bxiSGmy",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Blaze Blog Post",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "format": "resolved",
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"WordPress Post\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -620,
+        -40
+      ],
+      "id": "bd8e1879-3116-4fb8-be2f-af933b430eab",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "title": "={{ $('Format Email Data').item.json.Subject }}",
+        "additionalFields": {
+          "content": "={{ $('Code').item.json.formattedContent }}",
+          "status": "draft"
+        }
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        40,
+        180
+      ],
+      "id": "cde740f2-6c27-4acb-a5cb-0ee7005ab725",
+      "name": "Wordpress",
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let content = $input.first().json.html || \"\";\n// Ensure content isn't empty\nif (!content.trim()) {\n    return [{ formattedContent: \"ERROR: No valid email content detected\" }];\n}\n\n// Remove HTML comments\ncontent = content.replace(/<!--[\\s\\S]*?-->/g, \"\");\n\n// Remove inline styles\ncontent = content.replace(/style=\"[^\"]*\"/g, \"\");\n\n// Remove <div> tags but keep their content\ncontent = content.replace(/<\\/?div[^>]*>/gi, \"\");\n\n// Remove <span> tags but keep their content\ncontent = content.replace(/<\\/?span[^>]*>/gi, \"\");\n\n// Step down headers: Convert all <h1> and <h2> to <h3>\ncontent = content.replace(/<h1[^>]*>/gi, \"<h3>\").replace(/<\\/h1>/gi, \"</h3>\");\ncontent = content.replace(/<h2[^>]*>/gi, \"<h3>\").replace(/<\\/h2>/gi, \"</h3>\");\n\n// Remove all <strong> and <b> tags but keep text inside\ncontent = content.replace(/<\\/?(strong|b)>/gi, \"\");\n\n// Fix bullet points by ensuring <ul> and <li> are correctly formatted\ncontent = content.replace(/<li>(.*?)<\\/li>/gi, \"<li>$1</li>\");\n\n// Ensure paragraphs remain intact\ncontent = content.replace(/<p[^>]*>/gi, \"<p>\").replace(/<\\/p>/gi, \"</p>\");\n\n// Remove <hr> separators\ncontent = content.replace(/<hr\\s*\\/?>/gi, \"\");\n\n// Reduce excessive line breaks and <br> tags\ncontent = content.replace(/(\\s*<br\\s*\\/?>\\s*){2,}/gi, \"<br>\\n\");\n\n// More aggressive **signature removal** based on common phrases\nconst signatureTriggers = [\n    \"--\", // Common separator for signatures\n    \"Texas Real Estate Commission Information About Brokerage Services\",\n    \"Consumer Protection Notice\",\n    \"Brandon Stewart, Broker\",\n    \"Blaze Real Estate\",\n    \"Schedule an Appointment Here\",\n    \"4018 SW 50th\",\n    \"Amarillo, TX 79101\",\n    \"806-414-6021\"\n];\n\nfor (const trigger of signatureTriggers) {\n    const signatureRegex = new RegExp(trigger + \"[\\\\s\\\\S]*\", \"i\");\n    content = content.replace(signatureRegex, \"\").trim();\n}\n\n// Trim final content\nreturn [{ formattedContent: content }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        -40
+      ],
+      "id": "34047e68-4cd6-49a3-abff-9e44c8c02b8e",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bc562377-1a42-469d-93df-c5b74f3fc5fe",
+              "name": "html",
+              "value": "={{ $('Email Trigger (IMAP)').item.json.html }}",
+              "type": "string"
+            },
+            {
+              "id": "442175bb-fdfd-4828-99ef-3b306926a911",
+              "name": "Subject",
+              "value": "={{ $('Email Trigger (IMAP)').item.json.headers.subject.replace(/^Subject:\\s*/i, \"\").replace(/\\s*WordPress Post\\s*$/i, \"\") }}\n",
+              "type": "string"
+            },
+            {
+              "id": "faad24df-d543-4b87-adeb-710b353cd6a6",
+              "name": "text",
+              "value": "={{ $('Email Trigger (IMAP)').item.json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "c2b6318c-1824-4f0a-ba63-243a96bf6eab",
+              "name": "uuid",
+              "value": "={{ $json.uuid }}.png",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -180,
+        -40
+      ],
+      "id": "b99bb1a2-5943-4de5-a437-e2ebc6dbc00d",
+      "name": "Format Email Data"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4",
+          "mode": "list",
+          "cachedResultName": "GPT-4"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Format the html input for optimal reading. Nothing stronger than an H3 tag for sections and subsections. \n\n{{ $json.html }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -260,
+        -240
+      ],
+      "id": "836953d9-6e07-4317-96de-2c73a56436a2",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=Create an image without text that compliments the article title and content. Cultural diversity is fine this company is located in Texas USA.\n {{ $('Format Email Data').item.json.text.substring(0, 500)  }}",
+        "options": {
+          "quality": "hd",
+          "style": "natural"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        240,
+        -40
+      ],
+      "id": "3f69670d-840b-4770-bfc2-4606d48be645",
+      "name": "OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "postId": "={{ $json.id }}",
+        "updateFields": {
+          "content": "={{ $('Wordpress').item.json.content.rendered }}<!-- wp:image {\"id\":{{ $('Upload media').item.json.id }},\"sizeSlug\":\"full\",\"linkDestination\":\"none\"} --><figure class=\"wp-block-image size-full\"><img src=\"{{ $('Upload media').item.json.guid.raw }}\" alt=\"\" class=\"wp-image-{{ $('Upload media').item.json.id }}\"/></figure><!-- /wp:image -->\n"
+        }
+      },
+      "id": "a8b024cd-7280-413e-86ee-83c9e5f9cd61",
+      "name": "Wordpress Add Image",
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        260,
+        180
+      ],
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('Format Email Data').item.json.uuid }}",
+        "options": {
+          "append": false
+        }
+      },
+      "id": "4f5d460e-a0e7-460f-bcce-93bbb6b270d6",
+      "name": "Read/Write Files from Disk",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.fileName }}",
+        "options": {}
+      },
+      "id": "bb0a3c29-f377-424c-ba58-c16e8f72643e",
+      "name": "Read/Write Files from Disk1",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://blzres.com/wp-json/wp/v2/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Disposition",
+              "value": "=attachment; filename={{ $('Read/Write Files from Disk1').item.json.fileName }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "=data",
+        "options": {}
+      },
+      "id": "fbf14159-79d7-4b13-93ce-9d34ceaf7d9a",
+      "name": "Upload media",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -180,
+        180
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "wordpressApi": {
+          "id": "VXzYYztQ5s3nKwus",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-guuid-generator.UUID Generator",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -40
+      ],
+      "id": "12e094df-017b-4a43-8431-9dd1cc7bd70b",
+      "name": "UUID Generator"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 1216
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-17T10:42:04.984Z",
+  "versionId": "78f45259-5f3a-4d33-b4eb-5a7a51755da8"
+}
