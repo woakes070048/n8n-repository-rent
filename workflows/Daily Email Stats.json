@@ -60,7 +60,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -480,
+        -560,
         -160
       ]
     },
@@ -75,7 +75,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2,
       "position": [
-        -260,
+        -300,
         -60
       ],
       "credentials": {
@@ -139,7 +139,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -480,
+        -560,
         40
       ],
       "id": "d892c253-72aa-45e1-911d-252ab1751e3f",
@@ -153,6 +153,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-17T22:02:56.000Z",
-  "versionId": "51c30bb2-e034-4673-a92f-fe4b2ed7579e"
+  "updatedAt": "2025-03-18T10:15:19.000Z",
+  "versionId": "d149d737-5241-4186-b0c4-e48d0873ad67"
 }
