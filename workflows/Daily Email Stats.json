@@ -1,0 +1,158 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL - Query Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL - Query Properties": {
+      "main": [
+        [
+          {
+            "node": "Build HTML Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build HTML Table": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL - Query Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-17T21:51:52.768Z",
+  "id": "2X7KEUkkQF5fgHLU",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Daily Email Stats",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "aabbecab-8d42-476b-b516-92e7791e90d2",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  property_id,\n  property_name,\n  total_units,\n  occupied_units,\n  occupancy_rate,\n  projected_occupied_units,\n  projected_occupancy_rate,\n  total_delinquent_rent,\n  total_rent,\n  delinquency_percent,\n  total_guest_cards,\n  active_guest_cards,\n  applications,\n  showings\nFROM daily_data\nWHERE property_id IN (329, 330, 689, 690, 691, 692, 693, 694, 695);\n",
+        "options": {}
+      },
+      "id": "8a3ff190-0471-4df5-96ea-233632d8cc01",
+      "name": "MySQL - Query Properties",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        -260,
+        -60
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Get all items from the previous node (MySQL query)\nconst items = $input.all();\n\n// 2) Define the columns and their display order\nconst columns = [\n  { label: 'Property ID', field: 'property_id' },\n  { label: 'Property Name', field: 'property_name' },\n  { label: 'Total Units', field: 'total_units' },\n  { label: 'Occupied Units', field: 'occupied_units' },\n  { label: 'Occupancy Rate', field: 'occupancy_rate' },\n  { label: 'Projected Occupied Units', field: 'projected_occupied_units' },\n  { label: 'Projected Occupancy Rate', field: 'projected_occupancy_rate' },\n  { label: 'Total Delinquent Rent', field: 'total_delinquent_rent' },\n  { label: 'Total Rent', field: 'total_rent' },\n  { label: 'Delinquency %', field: 'delinquency_percent' },\n  { label: 'Total Guest Cards', field: 'total_guest_cards' },\n  { label: 'Active Guest Cards', field: 'active_guest_cards' },\n  { label: 'Applications', field: 'applications' },\n  { label: 'Showings', field: 'showings' },\n];\n\n// 3) Start building the HTML table, with some basic inline styling\nlet html = `\n<table\n  style=\"\n    border: 1px solid #ccc;\n    border-collapse: collapse;\n    width: auto;\n    font-family: Arial, sans-serif;\n    font-size: 14px;\n  \"\n>\n  <thead>\n    <tr style=\"background-color: #f0f0f0;\">\n`;\n\n// 4) Create the header row\ncolumns.forEach(({ label }) => {\n  html += `\n      <th\n        style=\"\n          border: 1px solid #ccc;\n          padding: 6px 12px;\n          white-space: nowrap;\n          text-align: left;\n        \"\n      >\n        ${label}\n      </th>\n  `;\n});\n\nhtml += `\n    </tr>\n  </thead>\n  <tbody>\n`;\n\n// 5) Add rows for each item, with alternating background color\nitems.forEach((item, index) => {\n  const rowData = item.json;\n  const rowColor = index % 2 === 0 ? '#fff' : '#fafafa'; // Alternate row shading\n\n  html += `\n    <tr style=\"background-color: ${rowColor};\">\n  `;\n\n  // Build each cell in the specified column order\n  columns.forEach(({ field }) => {\n    html += `\n      <td\n        style=\"\n          border: 1px solid #ccc;\n          padding: 6px 12px;\n          white-space: nowrap;\n        \"\n      >\n        ${rowData[field] ?? ''}\n      </td>\n    `;\n  });\n\n  html += `</tr>`;\n});\n\nhtml += `\n  </tbody>\n</table>\n`;\n\n// 6) Append the requested note below the table\nhtml += `\n<p style=\"font-family: Arial, sans-serif; margin-top: 1em;\">\n  <strong>Guest Card count for the past 7 days.</strong> This is a rolling value.<br/>\n  All other data is as of report generation this morning.<br/>\n  Showings are only counted if they are entered into the system or self-scheduled.\n</p>\n`;\n\n// 7) Return the HTML as one single item, which you can feed into your Email node\nreturn [\n  {\n    json: {\n      htmlTable: html\n    }\n  }\n];\n"
+      },
+      "id": "382d2eba-6ceb-4512-b2c8-5dffabb5c734",
+      "name": "Build HTML Table",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -60,
+        -60
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "kaleb@aspiremortgageadvisors.com",
+        "subject": "Daily Data Summary",
+        "emailFormat": "html",
+        "html": "={{ $json.htmlTable }}",
+        "options": {
+          "ccEmail": "tammie@blazeproperty.com; brandon@blazeproperty.com"
+        }
+      },
+      "id": "d15b879d-0a45-4331-ac5b-9f581e82b212",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        140,
+        -60
+      ],
+      "webhookId": "38e17e06-5764-4cb6-92d5-d3e90b6acc2b",
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        40
+      ],
+      "id": "d892c253-72aa-45e1-911d-252ab1751e3f",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-17T22:02:56.000Z",
+  "versionId": "51c30bb2-e034-4673-a92f-fe4b2ed7579e"
+}
