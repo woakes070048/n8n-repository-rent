@@ -1,0 +1,315 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL - Query Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "MySQL - Query Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL - Query Properties": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-18T09:54:07.537Z",
+  "id": "1yXc2gnz2jEp8reO",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Google Sheets Reports",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b3b1f6cd-b999-4911-986a-12a144c3f3bd",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        -140
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  property_id,\n  property_name,\n  total_units,\n  occupied_units,\n  occupancy_rate,\n  projected_occupied_units,\n  projected_occupancy_rate,\n  total_delinquent_rent,\n  total_rent,\n  delinquency_percent,\n  total_guest_cards,\n  active_guest_cards,\n  applications,\n  showings, \n  monthly_received,\n  daily_received\nFROM daily_data\n\n",
+        "options": {}
+      },
+      "id": "9be29c99-8bd2-4ad7-bab0-074a819d4e4f",
+      "name": "MySQL - Query Properties",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        -300,
+        -40
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8,
+              "triggerAtMinute": 15
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -520,
+        60
+      ],
+      "id": "7ae46c84-480a-415b-a9b2-8b7b2dbce359",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1_mbKpV2SA-qw38GCHY8XGj6iSZ5sm4MxpPgifKCq4_o",
+          "mode": "list",
+          "cachedResultName": "Blaze Weekly Reporting",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_mbKpV2SA-qw38GCHY8XGj6iSZ5sm4MxpPgifKCq4_o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 571474483,
+          "mode": "list",
+          "cachedResultName": "Raw Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_mbKpV2SA-qw38GCHY8XGj6iSZ5sm4MxpPgifKCq4_o/edit#gid=571474483"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "property_name": "={{ $json.property_name }}",
+            "total_units": "={{ $json.total_units }}",
+            "occupied_units": "={{ $json.occupied_units }}",
+            "occupancy_rate": "={{ $json.occupancy_rate }}",
+            "projected_occupied_units": "={{ $json.projected_occupied_units }}",
+            "projected_occupancy_rate": "={{ $json.projected_occupancy_rate }}",
+            "total_delinquent_rent": "={{ $json.total_delinquent_rent }}",
+            "total_rent": "={{ $json.total_rent }}",
+            "delinquency_percent": "={{ $json.delinquency_percent }}",
+            "total_guest_cards": "={{ $json.total_guest_cards }}",
+            "active_guest_cards": "={{ $json.active_guest_cards }}",
+            "applications": "={{ $json.applications }}",
+            "showings": "={{ $json.showings }}",
+            "daily_received": "={{ $json.daily_received }}",
+            "monthly_received": "={{ $json.monthly_received }}",
+            "property_id": "={{ $json.property_id }}"
+          },
+          "matchingColumns": [
+            "property_id"
+          ],
+          "schema": [
+            {
+              "id": "property_id",
+              "displayName": "property_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "property_name",
+              "displayName": "property_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_units",
+              "displayName": "total_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "occupied_units",
+              "displayName": "occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "occupancy_rate",
+              "displayName": "occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "projected_occupied_units",
+              "displayName": "projected_occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "projected_occupancy_rate",
+              "displayName": "projected_occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_delinquent_rent",
+              "displayName": "total_delinquent_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_rent",
+              "displayName": "total_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent",
+              "displayName": "delinquency_percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_guest_cards",
+              "displayName": "total_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "active_guest_cards",
+              "displayName": "active_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "applications",
+              "displayName": "applications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "showings",
+              "displayName": "showings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "monthly_received",
+              "displayName": "monthly_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "daily_received",
+              "displayName": "daily_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -80,
+        -40
+      ],
+      "id": "15b24322-6f04-44e6-8e23-1af2b8feda06",
+      "name": "Google Sheets",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-18T10:30:18.000Z",
+  "versionId": "776577e5-9f76-40e8-b274-3f960a0d6540"
+}
