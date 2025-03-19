@@ -663,10 +663,13 @@
     {
       "parameters": {
         "fromEmail": "reports@blzres.com",
-        "toEmail": "brandon@blazeproperty.com",
+        "toEmail": "brandon@blazeproperty.com; wally@aspiremortgageadvisors.com; kaleb@aspiremortgageadvisors.com",
         "subject": "Wally Daily Delinquency",
         "html": "={{ $json.emailBody }}",
-        "options": {}
+        "options": {
+          "appendAttribution": false,
+          "replyTo": "brandon@blazeproperty.com"
+        }
       },
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
@@ -827,6 +830,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-18T12:51:49.000Z",
-  "versionId": "f7484404-5450-4479-9bde-09d09ff639d9"
+  "updatedAt": "2025-03-19T12:46:21.000Z",
+  "versionId": "50702ab8-fdab-4ee2-804b-60c0b8475412"
 }
