@@ -66,7 +66,8 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
@@ -75,6 +76,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-18T09:50:07.000Z",
-  "versionId": "08b6852c-eb05-47d9-bf7a-f41167dd48f2"
+  "updatedAt": "2025-03-19T05:00:20.948Z",
+  "versionId": "231698bf-a900-4aca-9043-668bd8d8cc44"
 }
