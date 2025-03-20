@@ -5,7 +5,7 @@
       "main": [
         [
           {
-            "node": "Google Sheets",
+            "node": "Google Sheets1",
             "type": "main",
             "index": 0
           }
@@ -22,17 +22,52 @@
           }
         ]
       ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-03-18T10:13:26.842Z",
   "id": "14PzP2sHGUxSRR6x",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "4 - Query Daily Data",
   "nodes": [
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  property_id,\n  property_name,\n  total_units,\n  occupied_units,\n  occupancy_rate,\n  projected_occupied_units,\n  projected_occupancy_rate,\n  total_delinquent_rent,\n  total_rent,\n  delinquency_percent,\n  total_guest_cards,\n  active_guest_cards,\n  applications,\n  showings, \n  monthly_received\n  daily_received\nFROM daily_data\nWHERE property_id IN (579, 580);\n",
+        "query": "SELECT\n  property_id,\n  property_name,\n  total_units,\n  occupied_units,\n  occupancy_rate,\n  projected_occupied_units,\n  projected_occupancy_rate,\n  total_delinquent_rent,\n  total_rent,\n  delinquency_percent,\n  total_guest_cards,\n  active_guest_cards,\n  applications,\n  showings, \n  monthly_received,\n  daily_received,\n  delinquency_percent_receivable,\n  delinquency_percent_rent_only,\n  vacant_rented_count,\n  vacant_unrented_count,\n  notice_rented_count,\n  notice_unrented_count,\n  vacant_unrented_json,\n  vacant_rented_json  \nFROM daily_data\nWHERE property_id IN (579, 580);\n",
         "options": {}
       },
       "id": "25dbfc02-dfa7-49d2-903f-c4ca42d5ef8d",
@@ -40,7 +75,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2,
       "position": [
-        200,
+        -40,
         -20
       ],
       "credentials": {
@@ -62,10 +97,10 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": 1661946687,
+          "value": 410763090,
           "mode": "list",
-          "cachedResultName": "Raw Data",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_b7ux8fStn6oEE450GF4YHxYdOwkii7_M4nc77TfsKI/edit#gid=1661946687"
+          "cachedResultName": "Units",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_b7ux8fStn6oEE450GF4YHxYdOwkii7_M4nc77TfsKI/edit#gid=410763090"
         },
         "columns": {
           "mappingMode": "autoMapInputData",
@@ -73,8 +108,8 @@
           "matchingColumns": [],
           "schema": [
             {
-              "id": "Raw",
-              "displayName": "Raw",
+              "id": "property_id",
+              "displayName": "property_id",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -82,15 +117,31 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "row_number",
-              "displayName": "row_number",
+              "id": "property_name",
+              "displayName": "property_name",
               "required": false,
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true,
-              "readOnly": true,
-              "removed": true
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "unit_number",
+              "displayName": "unit_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -101,7 +152,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        400,
+        780,
         -20
       ],
       "id": "d5d91b9f-3866-4a82-b22d-e5f2e32eb770",
@@ -118,11 +169,100 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -20,
+        -260,
         -20
       ],
       "id": "386b44e2-2ed4-4b36-a3ba-c2d224dace84",
       "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ensure input data is available\nif (!items || items.length === 0) {\n    throw new Error(\"No input data found.\");\n}\n\n// Initialize output array\nlet output = [];\n\n// Process each property\nitems.forEach(item => {\n    const propertyID = item.json.property_id;\n    const propertyName = item.json.property_name;\n\n    // Convert JSON arrays to lists\n    const vacantUnrentedUnits = JSON.parse(item.json.vacant_unrented_json || \"[]\");\n    const vacantRentedUnits = JSON.parse(item.json.vacant_rented_json || \"[]\");\n    const noticeUnrentedUnits = JSON.parse(item.json.notice_unrented_json || \"[]\");\n    const noticeRentedUnits = JSON.parse(item.json.notice_rented_json || \"[]\");\n\n    // Push each unit as a new row\n    vacantUnrentedUnits.forEach(unit => {\n        output.push({\n            json: {\n                \"Property ID\": propertyID,\n                \"Property Name\": propertyName,\n                \"Status\": \"Vacant-Unrented\",\n                \"Unit Number\": unit\n            }\n        });\n    });\n\n    vacantRentedUnits.forEach(unit => {\n        output.push({\n            json: {\n                \"Property ID\": propertyID,\n                \"Property Name\": propertyName,\n                \"Status\": \"Vacant-Rented\",\n                \"Unit Number\": unit\n            }\n        });\n    });\n\n    noticeUnrentedUnits.forEach(unit => {\n        output.push({\n            json: {\n                \"Property ID\": propertyID,\n                \"Property Name\": propertyName,\n                \"Status\": \"Notice-Unrented\",\n                \"Unit Number\": unit\n            }\n        });\n    });\n\n    noticeRentedUnits.forEach(unit => {\n        output.push({\n            json: {\n                \"Property ID\": propertyID,\n                \"Property Name\": propertyName,\n                \"Status\": \"Notice-Rented\",\n                \"Unit Number\": unit\n            }\n        });\n    });\n});\n\n// Return formatted unit data for Google Sheets\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        -20
+      ],
+      "id": "99e06295-6ae2-4940-b72e-95c1f649e4dd",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1_b7ux8fStn6oEE450GF4YHxYdOwkii7_M4nc77TfsKI",
+          "mode": "list",
+          "cachedResultName": "Sample Blaze Reporting",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_b7ux8fStn6oEE450GF4YHxYdOwkii7_M4nc77TfsKI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 410763090,
+          "mode": "list",
+          "cachedResultName": "Units",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_b7ux8fStn6oEE450GF4YHxYdOwkii7_M4nc77TfsKI/edit#gid=410763090"
+        },
+        "clear": "specificRange",
+        "range": "A2:D"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        180,
+        -20
+      ],
+      "id": "86ad4a39-7829-4ce7-9d7d-c93052106d0c",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4c9f0586-64d4-450f-8b03-0df72a73c41a",
+              "name": "property_id",
+              "value": "={{ $json[\"Property ID\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "5a4a0a4a-65e4-42b4-8ce6-8bbdc6d5cf5d",
+              "name": "property_name",
+              "value": "={{ $json[\"Property Name\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "7b68d50b-afe1-4372-9d12-328ca20acf86",
+              "name": "status",
+              "value": "={{ $json.Status }}",
+              "type": "string"
+            },
+            {
+              "id": "9f847fb0-fca4-4500-8adb-c723046b0c96",
+              "name": "unit_number",
+              "value": "={{ $json[\"Unit Number\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        600,
+        -20
+      ],
+      "id": "4bc2f7e1-4a2b-4fe1-885f-fe055c008cee",
+      "name": "Edit Fields"
     }
   ],
   "pinData": {},
@@ -132,6 +272,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-20T02:09:56.000Z",
-  "versionId": "0326c2c5-6aa5-4b08-a33d-8be37134d644"
+  "updatedAt": "2025-03-20T12:36:49.000Z",
+  "versionId": "11887dac-d0ae-4e57-af54-355e3e8e1634"
 }
