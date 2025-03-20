@@ -1,0 +1,321 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-20T10:22:17.696Z",
+  "id": "klF6Q8mqIHH0jjUn",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "2 - Process Unit Counts",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -80
+      ],
+      "id": "0bde9549-aeaf-4669-8242-616fef360d7f",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "path": "/public_html/data/rent_totals.csv"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        20
+      ],
+      "id": "9dde66a1-c168-4544-929e-5ab0a3a257fd",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -380,
+        20
+      ],
+      "id": "42fe97d5-ea7e-41b6-9663-7f12de6a88b0",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ensure input data is available\nif (!items || items.length === 0) {\n    throw new Error(\"No input data found.\");\n}\n\n// Define the status categories to track\nconst statusCategories = [\"Vacant-Unrented\", \"Vacant-Rented\", \"Notice-Unrented\", \"Notice Rented\"];\n\n// Initialize data storage\nconst propertyData = {};\n\n// Process each item (row)\nitems.forEach(item => {\n    const propertyID = item.json[\"Property ID\"];\n    const propertyName = item.json[\"Property Name\"];\n    const unit = item.json[\"Unit\"];\n    const status = item.json[\"Status\"];\n\n    // Ensure the property ID and Unit are valid\n    if (!propertyID || !unit) return;\n\n    // Initialize property entry if it does not exist\n    if (!propertyData[propertyID]) {\n        propertyData[propertyID] = {\n            \"Property Name\": propertyName,\n            \"Status Counts\": {},\n            \"Units By Status\": {}\n        };\n    }\n\n    // Initialize status count if it does not exist\n    if (!propertyData[propertyID][\"Status Counts\"][status]) {\n        propertyData[propertyID][\"Status Counts\"][status] = 0;\n    }\n\n    // Increment the count for this status type\n    propertyData[propertyID][\"Status Counts\"][status]++;\n\n    // If it's one of the tracked vacancy/notice statuses, store unit numbers\n    if (statusCategories.includes(status)) {\n        if (!propertyData[propertyID][\"Units By Status\"][status]) {\n            propertyData[propertyID][\"Units By Status\"][status] = [];\n        }\n        propertyData[propertyID][\"Units By Status\"][status].push(unit);\n    }\n});\n\n// Format the structured property data for database update\nconst formattedPropertyData = [];\nfor (const propertyID in propertyData) {\n    formattedPropertyData.push({\n        \"Property ID\": propertyID,\n        \"Property Name\": propertyData[propertyID][\"Property Name\"],\n        \"Status Counts\": propertyData[propertyID][\"Status Counts\"],\n        \"Units By Status\": propertyData[propertyID][\"Units By Status\"]\n    });\n}\n\n// Return data for n8n workflow\nreturn [\n    {\n        json: {\n            propertyData: formattedPropertyData\n        }\n    }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        20
+      ],
+      "id": "48d5282f-900a-4ab6-b394-77ecc71e74a6",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ensure input data is available\nif (!items || items.length === 0 || !items[0].json.propertyData) {\n    throw new Error(\"No property data found.\");\n}\n\n// Extract the propertyData array\nconst properties = items[0].json.propertyData;\n\n// Convert each property object into an individual item\nconst output = properties.map(property => ({\n    json: {\n        \"Property ID\": property[\"Property ID\"],\n        \"Property Name\": property[\"Property Name\"],\n        \"Vacant-Rented Count\": property[\"Status Counts\"][\"Vacant-Rented\"] || 0,\n        \"Vacant-Unrented Count\": property[\"Status Counts\"][\"Vacant-Unrented\"] || 0,\n        \"Notice-Rented Count\": property[\"Status Counts\"][\"Notice Rented\"] || 0,\n        \"Notice-Unrented Count\": property[\"Status Counts\"][\"Notice-Unrented\"] || 0,\n        \"Vacant-Unrented JSON\": JSON.stringify(property[\"Units By Status\"][\"Vacant-Unrented\"] || []),\n        \"Vacant-Rented JSON\": JSON.stringify(property[\"Units By Status\"][\"Vacant-Rented\"] || [])\n    }\n}));\n\n// Return the processed data for n8n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        20,
+        20
+      ],
+      "id": "280a689c-3487-44ef-a9ba-1177468b2916",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "81445d00-913c-4ce9-b8e4-4e54a44f5fa5",
+              "name": "property_id",
+              "value": "={{ $json[\"Property ID\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "8b16bfd3-d496-41d1-88e1-c96ff238bfbd",
+              "name": "vacant_rented_count",
+              "value": "={{ $json[\"Vacant-Rented Count\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "97c2ce4f-6cde-4103-92fd-02bf6183734e",
+              "name": "vacant_unrented_count",
+              "value": "={{ $json[\"Vacant-Unrented Count\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "6475385c-c953-47cd-9c52-946019a464dd",
+              "name": "notice_rented_count",
+              "value": "={{ $json[\"Notice-Rented Count\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "3439a863-8084-4429-8cbd-dcd7e611895f",
+              "name": "notice_unrented_count",
+              "value": "={{ $json[\"Notice-Unrented Count\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "e9cb9167-a8a8-47f2-ae95-734536820b22",
+              "name": "vacnt_unrented_json",
+              "value": "={{ $json[\"Vacant-Unrented JSON\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "dc040be4-8e04-4914-9b0d-c459c614a8be",
+              "name": "vacant_rented_json",
+              "value": "={{ $json[\"Vacant-Rented JSON\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "13c21479-e63a-41fe-8daf-94d9cd570012",
+              "name": "notice_unrented_json",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a5e03d3c-06df-428a-aacd-3855cd698b7e",
+              "name": "notice_rented_json",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        20
+      ],
+      "id": "c0e07e64-599b-4b57-8a84-3e201f808b04",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "daily_data",
+          "mode": "list",
+          "cachedResultName": "daily_data"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_id",
+        "valueToMatchOn": "={{ $json.property_id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "vacant_rented_count",
+              "value": "={{ $json.vacant_rented_count }}"
+            },
+            {
+              "column": "vacant_unrented_count",
+              "value": "={{ $json.vacant_unrented_count }}"
+            },
+            {
+              "column": "notice_rented_count",
+              "value": "={{ $json.notice_rented_count }}"
+            },
+            {
+              "column": "notice_unrented_count",
+              "value": "={{ $json.notice_unrented_count }}"
+            },
+            {
+              "column": "vacant_unrented_json",
+              "value": "={{ $json.vacnt_unrented_json }}"
+            },
+            {
+              "column": "vacant_rented_json",
+              "value": "={{ $json.vacant_rented_json }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        460,
+        20
+      ],
+      "id": "481122dc-0843-4c13-8cf8-dfd0a993b5df",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6,
+              "triggerAtMinute": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        120
+      ],
+      "id": "254b0f7d-3d7a-43f3-8c75-ffe994c7ff28",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-20T11:01:19.000Z",
+  "versionId": "972d2a01-44c0-4307-acbe-acd477e34444"
+}
