@@ -1,0 +1,81 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-20T02:21:28.342Z",
+  "id": "kofWEJH48AZaeyQe",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "1 - Get Applications",
+  "nodes": [
+    {
+      "parameters": {
+        "format": "resolved",
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Apartment Rent Totals\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "409027b2-9dfc-43ad-b5a4-282a9b6f569b",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/data/rent_totals.csv",
+        "binaryPropertyName": "attachment_0"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "c3632d04-c48d-4e51-9c2d-e69cb0c29e3c",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 1305
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-20T02:21:28.342Z",
+  "versionId": "5e8e309e-4e42-4762-8db4-f851b33473dc"
+}
