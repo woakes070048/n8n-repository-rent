@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Email Trigger (IMAP)": {
       "main": [
@@ -76,6 +76,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-20T02:18:26.000Z",
+  "updatedAt": "2025-03-20T11:01:24.000Z",
   "versionId": "754a71bd-e52c-42c4-a877-2f34a5e66e0c"
 }
