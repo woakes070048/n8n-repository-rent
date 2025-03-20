@@ -1,0 +1,306 @@
+{
+  "active": false,
+  "connections": {
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "FTP2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code5": {
+      "main": [
+        [
+          {
+            "node": "Format Manager Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Convert to binary",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter Wally Portfolio",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to binary": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Wally Portfolio": {
+      "main": [
+        [
+          {
+            "node": "Format Wally Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Wally Email": {
+      "main": [
+        [
+          {
+            "node": "Send Wally Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Manager Email": {
+      "main": [
+        [
+          {
+            "node": "Send Manager Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-19T20:25:01.361Z",
+  "id": "ev5QuMGAPjz6sZOv",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "7 - Email reports",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "delinquency_performace.json",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -160
+      ],
+      "id": "0a35fa56-d6cf-45c3-b8b2-eca6a6c44bee",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/data/delinquency.json"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        20,
+        -160
+      ],
+      "id": "1b880da3-caf2-434e-b16a-127a2291e6f8",
+      "name": "FTP2",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Example code that modifies each incoming item:\n// We'll just demonstrate adding myNewField = 1, or you can remove this node if not needed.\n\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -420,
+        240
+      ],
+      "id": "ca861ed5-5911-4ec5-8faf-a14ed12b462d",
+      "name": "Code5"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -900,
+        40
+      ],
+      "id": "4c3c0aba-31a8-4c6f-b4e5-bce59159d925",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM daily_data;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -680,
+        40
+      ],
+      "id": "eb20484f-27f3-4ba9-9434-1f6266d7a658",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.stringify($input.all().map(item => item.json), null, 2);\n\nreturn [\n  {\n    json: {},\n    binary: {\n      data: {\n        data: Buffer.from(data).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'delinquency.json'\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        -160
+      ],
+      "id": "9d763b0d-b436-4863-9ac5-3cc7e6b82083",
+      "name": "Convert to binary"
+    },
+    {
+      "parameters": {
+        "jsCode": "// If you only want certain property_ids to pass through, update the array.\n\nconst propertyIdsToSend = [\"689\", \"329\", \"690\", \"693\", \"330\", \"694\", \"695\", \"690\", \"691\"];\n\n// Keep items whose property_id matches\nconst filteredData = items.filter(item => {\n    return propertyIdsToSend.includes(String(item.json[\"property_id\"]));\n});\n\nreturn filteredData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        40
+      ],
+      "id": "179afd73-0f86-4a7d-8708-e94fe024f269",
+      "name": "Filter Wally Portfolio"
+    },
+    {
+      "parameters": {
+        "jsCode": "let emailBody = `\n    <h2>Delinquency Report</h2>\n    <p>This report details delinquency for the properties to date as a percentage of occupied units.</p>\n    <p>If a property is not represented, it either has no delinquency or no data available.</p>\n    <table border='1' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>\n        <tr>\n            <th>Property Name</th>\n            <th>Total Rent</th>\n            <th>Total Delinquent</th>\n            <th>Delinquency %</th>\n        </tr>`;\n\nitems.forEach(item => {\n    let row = item.json;\n\n    const propName = row.property_name || \"Unknown\";\n\n    let totalRent = parseFloat(row.total_rent || 0);\n    let totalDelinquent = parseFloat(row.total_delinquent_rent || 0) + parseFloat(row.delinquent_subsidy || 0) + parseFloat(row.delinquent_fees || 0);\n\n    let dpStr = row.delinquency_percent || \"0%\";\n\n    emailBody += `<tr>\n        <td>${propName}</td>\n        <td>$${totalRent.toLocaleString()}</td>\n        <td>$${totalDelinquent.toLocaleString()}</td>\n        <td>${dpStr}</td>\n    </tr>`;\n});\n\nemailBody += `</table>`;\n\nreturn [{ json: { emailBody } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        40
+      ],
+      "id": "40d9a43c-6148-46d1-a5a0-4b08fb692837",
+      "name": "Format Wally Email"
+    },
+    {
+      "parameters": {
+        "jsCode": "let emailBody = `\n    <h2>Delinquency Report</h2>\n    <p>This report details delinquency for the properties to date as a percentage of occupied units.</p>\n    <p>If a property is not represented, it either has no delinquency or no data available.</p>\n    <table border='1' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>\n        <tr>\n            <th>Property Name</th>\n            <th>Total Rent</th>\n            <th>Total Delinquent Rent</th>\n            <th>Delinquency %</th>\n        </tr>`;\n\nitems.forEach(item => {\n    let row = item.json;\n\n    let totalRent = parseFloat(row.total_rent || 0);\n    let delinquentRent = parseFloat(row.total_delinquent_rent || 0);\n\n    let dpStr = row.delinquency_percent || \"0%\";\n    let dpValue = parseFloat(dpStr);\n\n    let delinquencyColor = \"black\";\n    if (dpValue > 10) {\n        delinquencyColor = \"red\";\n    } else if (dpValue >= 5) {\n        delinquencyColor = \"yellow\";\n    } else {\n        delinquencyColor = \"green\";\n    }\n\n    let delinquentRentColor = (delinquentRent > 5000) ? \"orange\" : \"black\";\n\n    emailBody += `<tr>\n        <td>${row.property_name || \"Unknown\"}</td>\n        <td>$${totalRent.toLocaleString()}</td>\n        <td style=\"color: ${delinquentRentColor};\">$${delinquentRent.toLocaleString()}</td>\n        <td style=\"color: ${delinquencyColor};\">${dpStr}</td>\n    </tr>`;\n});\n\nemailBody += `</table>`;\n\nreturn [{ json: { emailBody } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        240
+      ],
+      "id": "e72c09c8-08dd-4baa-bb84-0a490e13f947",
+      "name": "Format Manager Email"
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Daily Delinquency Percentages",
+        "html": "={{ $json.emailBody }}",
+        "options": {
+          "ccEmail": "brandon@blazeproperty.com"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        20,
+        240
+      ],
+      "id": "4c7d6115-361e-4eee-ac41-d23e7834232a",
+      "name": "Send Manager Email",
+      "webhookId": "e024fe9b-8fb3-4d08-91b7-5c055a7a1a8c",
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Wally Daily Delinquency",
+        "html": "={{ $json.emailBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        20,
+        40
+      ],
+      "id": "2f63c31d-d49a-448a-8cce-238eeed222d1",
+      "name": "Send Wally Email",
+      "webhookId": "0a150469-7e8d-47cd-adc5-6f0be6ad5ce0",
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-20T02:06:47.000Z",
+  "versionId": "5e2428e5-06b7-41cf-b757-78c79532a1ba"
+}
