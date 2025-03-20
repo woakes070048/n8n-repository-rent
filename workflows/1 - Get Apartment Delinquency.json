@@ -1,0 +1,81 @@
+{
+  "active": true,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-17T14:16:01.207Z",
+  "id": "KctCA5P7392Clq3V",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "1 - Get Apartment Delinquency",
+  "nodes": [
+    {
+      "parameters": {
+        "format": "resolved",
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Apartment Delinquency Daily\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        0
+      ],
+      "id": "80e661c4-635d-42b5-84d8-1ebedba0a85c",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/data/delinquency.csv",
+        "binaryPropertyName": "attachment_0"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -140,
+        0
+      ],
+      "id": "803460f9-c9cf-430b-afc3-1c910e3a25bf",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 1304
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-20T02:11:02.000Z",
+  "versionId": "4a99f57f-51cc-459c-928f-6836dbb519fc"
+}
