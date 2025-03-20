@@ -1,0 +1,81 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-20T02:13:59.254Z",
+  "id": "GckWamo3DcbDDvZ1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "1 - Get Apartment Daily Guest Cards",
+  "nodes": [
+    {
+      "parameters": {
+        "format": "resolved",
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Apartment Guest Cards Past 7 Days\"]]"
+        }
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0aa05dd3-6c5e-48df-b3e5-298963371f04",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/data/apartment_guest_cards.csv",
+        "binaryPropertyName": "attachment_0"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "c258cd8e-b390-4198-96b0-acb123fb8e38",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Email Trigger (IMAP)": {
+      "lastMessageUid": 1302
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-20T02:18:26.000Z",
+  "versionId": "754a71bd-e52c-42c4-a877-2f34a5e66e0c"
+}
