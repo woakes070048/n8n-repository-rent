@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Email Trigger (IMAP)": {
       "main": [
@@ -24,7 +24,7 @@
       "parameters": {
         "format": "resolved",
         "options": {
-          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Apartment Rent Totals\"]]"
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Apartment Applicatiions\"]]"
         }
       },
       "type": "n8n-nodes-base.emailReadImap",
@@ -76,6 +76,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-20T02:21:28.342Z",
-  "versionId": "5e8e309e-4e42-4762-8db4-f851b33473dc"
+  "updatedAt": "2025-03-20T11:12:50.000Z",
+  "versionId": "5be89974-ef34-44a0-919f-b4c8ee10f7e8"
 }
