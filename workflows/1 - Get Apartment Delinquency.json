@@ -30,7 +30,7 @@
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        -360,
+        -480,
         0
       ],
       "id": "80e661c4-635d-42b5-84d8-1ebedba0a85c",
@@ -71,11 +71,11 @@
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
-      "lastMessageUid": 1304
+      "lastMessageUid": 1320
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-20T02:11:02.000Z",
-  "versionId": "4a99f57f-51cc-459c-928f-6836dbb519fc"
+  "updatedAt": "2025-03-20T11:07:30.000Z",
+  "versionId": "745d3124-31b7-42a0-a087-afcbf097e250"
 }
