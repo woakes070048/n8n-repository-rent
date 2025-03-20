@@ -1,0 +1,327 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-17T20:13:48.580Z",
+  "id": "VENUmkAclq9qCQFg",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "2 - Process Daily Occupancy",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1560,
+        -280
+      ],
+      "id": "844a5c89-4f9a-4ddc-aa7e-b3ac8764f4c8",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "path": "/public_html/data/rent_totals.csv"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        -20
+      ],
+      "id": "a6601ac7-199d-4105-9da7-c1a82b2f1e84",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1160,
+        -20
+      ],
+      "id": "660169d7-b91b-4065-9fcb-ee69d3c24062",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Get data\nlet allItems = $input.all();\n\n// Try the most common scenario: allItems[0].json is already an array\nlet rows = allItems[0].json;\n\nif (!Array.isArray(rows)) {\n  // Maybe it's in allItems[0].json.data?\n  if (allItems[0].json.data && Array.isArray(allItems[0].json.data)) {\n    rows = allItems[0].json.data;\n  } else {\n    // Maybe each item is a single row:\n    rows = allItems.map(item => item.json).flat();\n  }\n}\n\n// If it's still not an array, throw an error\nif (!Array.isArray(rows)) {\n  throw new Error(\"We couldn’t find an array in the expected paths. Please check the output of the previous node.\");\n}\n\n// 2) Initialize occupancy counters\nconst occupancyMap = {};\n\n// 3) Loop through each row\nrows.forEach(row => {\n  // Get the property ID\n  if (!row.hasOwnProperty(\"Property ID\")) return;\n  const propertyId = String(row[\"Property ID\"]).trim();\n  if (!propertyId) return;\n\n  // Normalize status\n  const status = String(row[\"Status\"] || \"\").toLowerCase().trim();\n\n  // Initialize if needed\n  if (!occupancyMap[propertyId]) {\n    occupancyMap[propertyId] = {\n      total: 0,\n      occupied: 0,\n      projectedOccupied: 0\n    };\n  }\n\n  // Increment total\n  occupancyMap[propertyId].total += 1;\n\n  // Count \"current\" as occupied\n  if (status === \"current\") {\n    occupancyMap[propertyId].occupied += 1;\n  }\n\n  // Projected occupancy: current + vacant-rented + notice-rented\n  if ([\"current\", \"vacant-rented\", \"notice-rented\"].includes(status)) {\n    occupancyMap[propertyId].projectedOccupied += 1;\n  }\n});\n\n// 4) Build output\nconst output = Object.keys(occupancyMap).map(propertyId => {\n  const { total, occupied, projectedOccupied } = occupancyMap[propertyId];\n  const occRate = total > 0 ? ((occupied / total) * 100).toFixed(2) + \"%\" : \"0.00%\";\n  const projectedRate = total > 0 ? ((projectedOccupied / total) * 100).toFixed(2) + \"%\" : \"0.00%\";\n\n  return {\n    \"Property ID\": propertyId,\n    \"Total Units\": total,\n    \"Occupied Units\": occupied,\n    \"Occupancy Rate\": occRate,\n    \"Projected Occupied Units\": projectedOccupied,\n    \"Projected Occupancy Rate\": projectedRate\n  };\n});\n\n// 5) Return final occupancy results\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -980,
+        -20
+      ],
+      "id": "3b27d026-0e0c-4769-94c8-f96e9cd1e138",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT `Property ID`, `Property`\nFROM `property_directory`\nWHERE `Property ID` IN ({{ $json[\"Property ID\"] }})\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -800,
+        -20
+      ],
+      "id": "5144c09b-f393-41f4-a35b-ae2f6dcc69e5",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "24d0196e-6f74-4a98-8c5e-c8a3d124a940",
+              "name": "Property ID",
+              "value": "={{ $json['Property ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "76184067-9033-4b2d-a872-7e3b5cd381f2",
+              "name": "Property",
+              "value": "={{ $json.Property }}",
+              "type": "string"
+            },
+            {
+              "id": "c94d6792-91f2-4e1f-83eb-01f6bebe464e",
+              "name": "Property ID",
+              "value": "={{ $('Code').item.json['Property ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "397e6660-377e-409a-b25f-07f76bea7627",
+              "name": "Total Units",
+              "value": "={{ $('Code').item.json['Total Units'] }}",
+              "type": "number"
+            },
+            {
+              "id": "45dd41be-e4a4-47e4-85b3-854eed905b54",
+              "name": "Occupied Units",
+              "value": "={{ $('Code').item.json['Occupied Units'] }}",
+              "type": "number"
+            },
+            {
+              "id": "350b54b8-f05f-4640-be2d-47e72a5d2bd4",
+              "name": "Occupancy Rate",
+              "value": "={{ $('Code').item.json['Occupancy Rate'] }}",
+              "type": "string"
+            },
+            {
+              "id": "bce2cc57-4297-452c-9312-abbdcb6f97c0",
+              "name": "Projected Occupied Units",
+              "value": "={{ $('Code').item.json['Projected Occupied Units'] }}",
+              "type": "number"
+            },
+            {
+              "id": "8dc817db-ccc2-4156-b942-7bb48d3ba1cd",
+              "name": "Projected Occupancy Rate",
+              "value": "={{ $('Code').item.json['Projected Occupancy Rate'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -620,
+        -20
+      ],
+      "id": "474db683-deba-4414-9d68-f5df4effa2ac",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "daily_data",
+          "mode": "list",
+          "cachedResultName": "daily_data"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_id",
+        "valueToMatchOn": "={{ $json['Property ID'] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_id",
+              "value": "={{ $json['Property ID'] }}"
+            },
+            {
+              "column": "property_name",
+              "value": "={{ $json.Property }}"
+            },
+            {
+              "column": "total_units",
+              "value": "={{ $json[\"Total Units\"] }}"
+            },
+            {
+              "column": "occupied_units",
+              "value": "={{ $json[\"Occupied Units\"] }}"
+            },
+            {
+              "column": "occupancy_rate",
+              "value": "={{ $json[\"Occupancy Rate\"] }}"
+            },
+            {
+              "column": "projected_occupied_units",
+              "value": "={{ $json[\"Projected Occupied Units\"] }}"
+            },
+            {
+              "column": "projected_occupancy_rate",
+              "value": "={{ $json[\"Projected Occupancy Rate\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -400,
+        -20
+      ],
+      "id": "c8931750-8da1-4ff0-8a26-640efd463985",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1600,
+        -20
+      ],
+      "id": "350b6133-4cfe-4988-a3c9-32ab55bd4d43",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-20T02:20:59.000Z",
+  "versionId": "c79531a5-2475-4124-bc7b-60c355598fa1"
+}
