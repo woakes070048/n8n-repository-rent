@@ -146,7 +146,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "=SELECT `Property ID`, `Property`\nFROM `property_directory`\nWHERE `Property ID` IN ({{ $json[\"Property ID\"] }})\n",
+        "query": "=SELECT `property_id`, `property_name`\nFROM `property_directory`\nWHERE `property_id` IN ({{ $json[\"Property ID\"] }})\n",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -171,13 +171,13 @@
             {
               "id": "24d0196e-6f74-4a98-8c5e-c8a3d124a940",
               "name": "Property ID",
-              "value": "={{ $json['Property ID'] }}",
+              "value": "={{ $json.property_id }}",
               "type": "string"
             },
             {
               "id": "76184067-9033-4b2d-a872-7e3b5cd381f2",
               "name": "Property",
-              "value": "={{ $json.Property }}",
+              "value": "={{ $json.property_name }}",
               "type": "string"
             },
             {
@@ -322,6 +322,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-20T02:20:59.000Z",
-  "versionId": "c79531a5-2475-4124-bc7b-60c355598fa1"
+  "updatedAt": "2025-03-21T13:43:33.000Z",
+  "versionId": "8e103fb2-7c8a-4eb7-bcad-b683c5e4b32e"
 }
