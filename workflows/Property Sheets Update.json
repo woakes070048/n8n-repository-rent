@@ -1,11 +1,928 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2025-03-20T16:43:26.506Z",
   "id": "D8QbmsVNTacm3z0x",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "Property Sheets Update",
-  "nodes": [],
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "4e9af8a3-41e5-4890-9600-7a7e30c8382e",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "path": "/public_html/data/property_directory.csv"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        0
+      ],
+      "id": "0597ad00-7eb6-440c-b9f6-4ffa6a727f8a",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "15HnzGEZEzlebY5J8xAIi2NgjE9fptUdvBMi-mhPezB0",
+          "mode": "list",
+          "cachedResultName": "n8n property directory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15HnzGEZEzlebY5J8xAIi2NgjE9fptUdvBMi-mhPezB0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15HnzGEZEzlebY5J8xAIi2NgjE9fptUdvBMi-mhPezB0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Property": "={{ $json[\"Property Name\"] }}",
+            "Units": "={{ $json.Units }}",
+            "Sqft": "={{ $json.Sqft }}",
+            "Management Fee Percent": "={{ $json[\"Management Fee Percent\"] }}",
+            "Minimum Fee": "={{ $json[\"Minimum Fee\"] }}",
+            "Waive Fees When Vacant": "={{ $json[\"Waive Fees When Vacant\"] }}",
+            "Reserve": "={{ $json.Reserve }}",
+            "Description": "={{ $json.Description }}",
+            "Property Name": "={{ $json[\"Property Name\"] }}",
+            "Property ID": "={{ $json[\"Property ID\"] }}",
+            "Property Integration ID": "={{ $json[\"Property Integration ID\"] }}",
+            "Property Address": "={{ $json[\"Property Address\"] }}",
+            "Property Street Address 1": "={{ $json[\"Property Street Address 1\"] }}",
+            "Property City": "={{ $json[\"Property City\"] }}",
+            "Property State": "={{ $json[\"Property State\"] }}",
+            "Property Zip": "={{ $json[\"Property Zip\"] }}",
+            "Property County": "={{ $json[\"Property County\"] }}",
+            "Vendor 1099 Payer": "={{ $json[\"Vendor 1099 Payer\"] }}",
+            "Portfolio": "={{ $json.Portfolio }}",
+            "Premium Status": "={{ $json[\"Premium Status\"] }}",
+            "Premium Monthly Cap": "={{ $json[\"Premium Monthly Cap\"] }}",
+            "Premium Activation Date": "={{ $json[\"Premium Activation Date\"] }}",
+            "Owner ID(s)": "={{ $json[\"Owner ID(s)\"] }}",
+            "Property Group ID(s)": "={{ $json[\"Property Group ID(s)\"] }}",
+            "Portfolio ID": "={{ $json[\"Portfolio ID\"] }}",
+            "Portfolio UUID": "={{ $json[\"Portfolio UUID\"] }}",
+            "Visibility": "={{ $json.Visibility }}",
+            "Maintenance Limit": "={{ $json[\"Maintenance Limit\"] }}",
+            "Site Manager Name": "={{ $json[\"Site Manager Name\"] }}",
+            "Site Manager Phone Number": "={{ $json[\"Site Manager Phone Number\"] }}",
+            "Management Fee Type": "={{ $json[\"Management Fee Type\"] }}",
+            "Lease Fee Type": "={{ $json[\"Lease Fee Type\"] }}",
+            "Lease Fee Percent": "={{ $json[\"Lease Fee Percent\"] }}",
+            "Renewal Fee Percent": "={{ $json[\"Renewal Fee Percent\"] }}",
+            "Owner Payment Type": "={{ $json[\"Owner Payment Type\"] }}",
+            "Property Type": "={{ $json[\"Property Type\"] }}",
+            "Property Created On": "={{ new Date((parseInt($json[\"Property Created On\"]) - 25569) * 86400000).toLocaleDateString(\"en-US\") }}\n",
+            "Property Created By": "={{ $json[\"Property Created By\"] }}",
+            "Owner(s)": "={{ $json[\"Owner(s)\"] }}",
+            "Prepayment Type": "={{ $json[\"Prepayment Type\"] }}",
+            "Late Fee Type": "={{ $json[\"Late Fee Type\"] }}",
+            "Late Fee Base Amount": "={{ $json[\"Late Fee Daily Amount\"] }}",
+            "Late Fee Daily Amount": "={{ $json[\"Late Fee Daily Amount\"] }}",
+            "Grace Period": "={{ $json[\"Grace Period\"] }}",
+            "Grace Balance": "={{ $json[\"Grace Balance\"] }}",
+            "Max Daily Late Fees Amount": "={{ $json[\"Max Daily Late Fees Amount\"] }}",
+            "Ignore Partial Payments": "={{ $json[\"Ignore Partial Payments\"] }}",
+            "Admin Fee Amount": "={{ $json[\"Admin Fee Amount\"] }}",
+            "Year Built": "={{ $json[\"Year Built\"] }}",
+            "Contract Expiration": "={{ new Date((parseInt($json[\"Contract Expiration\"]) - 25569) * 86400000).toLocaleDateString(\"en-US\") }}",
+            "Management Start Date": "={{ new Date((parseInt($json[\"Management Start Date\"]) - 25569) * 86400000).toLocaleDateString(\"en-US\") }}",
+            "Management End Date": "={{ $json[\"Management End Date\"] ? new Date((parseInt($json[\"Management End Date\"]) - 25569) * 86400000).toLocaleDateString(\"en-US\") : \"\" }}\n",
+            "Management End Reason": "={{ $json[\"Management End Reason\"] }}",
+            "Owner Agent": "={{ $json[\"Owner Agent\"] }}",
+            "Class": "={{ $json.Class }}",
+            "Amenities": "={{ $json.Amenities }}",
+            "Listing Type": "={{ $json[\"Listing Type\"] }}"
+          },
+          "matchingColumns": [
+            "Property Integration ID"
+          ],
+          "schema": [
+            {
+              "id": "Property",
+              "displayName": "Property",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Market Rent",
+              "displayName": "Market Rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Units",
+              "displayName": "Units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sqft",
+              "displayName": "Sqft",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Management Flat Fee",
+              "displayName": "Management Flat Fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Management Fee Percent",
+              "displayName": "Management Fee Percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Minimum Fee",
+              "displayName": "Minimum Fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Maximum Fee",
+              "displayName": "Maximum Fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Waive Fees When Vacant",
+              "displayName": "Waive Fees When Vacant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Reserve",
+              "displayName": "Reserve",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Home Warranty Expiration",
+              "displayName": "Home Warranty Expiration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Insurance Expiration",
+              "displayName": "Insurance Expiration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Tax Year End",
+              "displayName": "Tax Year End",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Owner(s) - Phone Numbers",
+              "displayName": "Owner(s) - Phone Numbers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Name",
+              "displayName": "Property Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property ID",
+              "displayName": "Property ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Integration ID",
+              "displayName": "Property Integration ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Property Address",
+              "displayName": "Property Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Street Address 1",
+              "displayName": "Property Street Address 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Street Address 2",
+              "displayName": "Property Street Address 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property City",
+              "displayName": "Property City",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property State",
+              "displayName": "Property State",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Zip",
+              "displayName": "Property Zip",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property County",
+              "displayName": "Property County",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tax Authority",
+              "displayName": "Tax Authority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Vendor 1099 Payer",
+              "displayName": "Vendor 1099 Payer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Portfolio",
+              "displayName": "Portfolio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Premium Status",
+              "displayName": "Premium Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Premium Monthly Cap",
+              "displayName": "Premium Monthly Cap",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Premium Activation Date",
+              "displayName": "Premium Activation Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner ID(s)",
+              "displayName": "Owner ID(s)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Group ID(s)",
+              "displayName": "Property Group ID(s)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Portfolio ID",
+              "displayName": "Portfolio ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Portfolio UUID",
+              "displayName": "Portfolio UUID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Visibility",
+              "displayName": "Visibility",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Maintenance Limit",
+              "displayName": "Maintenance Limit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Maintenance Notes",
+              "displayName": "Maintenance Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Site Manager Name",
+              "displayName": "Site Manager Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Site Manager Phone Number",
+              "displayName": "Site Manager Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Management Fee Type",
+              "displayName": "Management Fee Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lease Fee Type",
+              "displayName": "Lease Fee Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lease Flat Fee",
+              "displayName": "Lease Flat Fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Lease Fee Percent",
+              "displayName": "Lease Fee Percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Renewal Fee Type",
+              "displayName": "Renewal Fee Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Renewal Flat Fee",
+              "displayName": "Renewal Flat Fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Renewal Fee Percent",
+              "displayName": "Renewal Fee Percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Future Management Fee Start Date",
+              "displayName": "Future Management Fee Start Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Future Management Fee Percent",
+              "displayName": "Future Management Fee Percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Future Management Flat Fee",
+              "displayName": "Future Management Flat Fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Future Minimum Fee",
+              "displayName": "Future Minimum Fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Future Maximum Fee",
+              "displayName": "Future Maximum Fee",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Future Management Fee Type",
+              "displayName": "Future Management Fee Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Future Waive Fees When Vacant",
+              "displayName": "Future Waive Fees When Vacant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner Payment Type",
+              "displayName": "Owner Payment Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Type",
+              "displayName": "Property Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Created On",
+              "displayName": "Property Created On",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property Created By",
+              "displayName": "Property Created By",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner(s)",
+              "displayName": "Owner(s)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Prepayment Type",
+              "displayName": "Prepayment Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Late Fee Type",
+              "displayName": "Late Fee Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Late Fee Base Amount",
+              "displayName": "Late Fee Base Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Late Fee Daily Amount",
+              "displayName": "Late Fee Daily Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Grace Period",
+              "displayName": "Grace Period",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Grace Period Fixed Day",
+              "displayName": "Grace Period Fixed Day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Grace Balance",
+              "displayName": "Grace Balance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Max Daily Late Fees Amount",
+              "displayName": "Max Daily Late Fees Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ignore Partial Payments",
+              "displayName": "Ignore Partial Payments",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Admin Fee Amount",
+              "displayName": "Admin Fee Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Year Built",
+              "displayName": "Year Built",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contract Expiration",
+              "displayName": "Contract Expiration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Management Start Date",
+              "displayName": "Management Start Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Management End Date",
+              "displayName": "Management End Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Management End Reason",
+              "displayName": "Management End Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner Agent",
+              "displayName": "Owner Agent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Renter's Tax Region Code",
+              "displayName": "Renter's Tax Region Code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Class",
+              "displayName": "Class",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Online Maintenance Request Instructions",
+              "displayName": "Online Maintenance Request Instructions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Amenities",
+              "displayName": "Amenities",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Listing Type",
+              "displayName": "Listing Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        220,
+        0
+      ],
+      "id": "c50803a7-62b8-4bb9-a8d6-a90f348977cc",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        0
+      ],
+      "id": "e15d8c57-ec29-468f-9d8b-8b9899a7c599",
+      "name": "Extract from File"
+    }
+  ],
   "pinData": {},
   "settings": {
     "executionOrder": "v1"
@@ -13,6 +930,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-20T16:43:26.506Z",
-  "versionId": "80061937-7f14-41f3-a198-008b495925a4"
+  "updatedAt": "2025-03-20T19:12:42.000Z",
+  "versionId": "12a9f92e-864e-4365-82e2-f0fbfce71873"
 }
