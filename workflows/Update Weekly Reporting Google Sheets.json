@@ -1,0 +1,798 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Legacy Properties",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get All Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Legacy Properties": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Properties": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-20T22:05:07.887Z",
+  "id": "hiS0Em1UMeBqs4eK",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Weekly Reporting Google Sheets",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        -60
+      ],
+      "id": "d4ef50b2-c8be-4f91-bb63-00fafff89f2d",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1dcGHUcQ0KIygyWvY8kqp4JZJcQ7ceZhy2oiBFUqvp3s",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 614782390,
+          "mode": "list",
+          "cachedResultName": "Raw Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dcGHUcQ0KIygyWvY8kqp4JZJcQ7ceZhy2oiBFUqvp3s/edit#gid=614782390"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "property_id": "={{ $json.property_id }}",
+            "property_name": "={{ $json.property_name }}",
+            "total_units": "={{ $json.total_units }}",
+            "occupied_units": "={{ $json.occupied_units }}",
+            "vacant_rented_json": "={{ $json.vacant_rented_json }}",
+            "vacant_unrented_json": "={{ $json.vacant_unrented_json }}",
+            "notice_unrented_count": "={{ $json.notice_unrented_count }}",
+            "notice_rented_count": "={{ $json.notice_rented_count }}",
+            "vacant_unrented_count": "={{ $json.vacant_unrented_count }}",
+            "vacant_rented_count": "={{ $json.vacant_rented_count }}",
+            "delinquency_percent_no_subsidies": "={{ $json.delinquency_percent_no_subsidies }}",
+            "delinquency_percent_rent_only": "={{ $json.delinquency_percent_rent_only }}",
+            "delinquency_percent_receivable": "={{ $json.delinquency_percent_receivable }}",
+            "daily_received": "={{ $json.daily_received }}",
+            "monthly_received": "={{ $json.monthly_received }}",
+            "showings": "={{ $json.showings }}",
+            "applications": "={{ $json.applications }}",
+            "active_guest_cards": "={{ $json.active_guest_cards }}",
+            "total_guest_cards": "={{ $json.total_guest_cards }}",
+            "delinquency_percent": "={{ $json.delinquency_percent }}",
+            "total_rent": "={{ $json.total_rent }}",
+            "delinquent_fees": "={{ $json.delinquent_fees }}",
+            "delinquent_subsidy": "={{ $json.delinquent_subsidy }}",
+            "total_delinquent_rent": "={{ $json.total_delinquent_rent }}",
+            "total_receivable": "={{ $json.total_receivable }}",
+            "projected_occupancy_rate": "={{ $json.projected_occupancy_rate }}",
+            "projected_occupied_units": "={{ $json.projected_occupied_units }}",
+            "occupancy_rate": "={{ $json.occupancy_rate }}"
+          },
+          "matchingColumns": [
+            "property_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "property_id",
+              "displayName": "property_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "property_name",
+              "displayName": "property_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_units",
+              "displayName": "total_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "occupied_units",
+              "displayName": "occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "occupancy_rate",
+              "displayName": "occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "projected_occupied_units",
+              "displayName": "projected_occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "projected_occupancy_rate",
+              "displayName": "projected_occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_receivable",
+              "displayName": "total_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_delinquent_rent",
+              "displayName": "total_delinquent_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquent_subsidy",
+              "displayName": "delinquent_subsidy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquent_fees",
+              "displayName": "delinquent_fees",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_rent",
+              "displayName": "total_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent",
+              "displayName": "delinquency_percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_guest_cards",
+              "displayName": "total_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "active_guest_cards",
+              "displayName": "active_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "applications",
+              "displayName": "applications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "showings",
+              "displayName": "showings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "monthly_received",
+              "displayName": "monthly_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "daily_received",
+              "displayName": "daily_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent_receivable",
+              "displayName": "delinquency_percent_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent_rent_only",
+              "displayName": "delinquency_percent_rent_only",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent_no_subsidies",
+              "displayName": "delinquency_percent_no_subsidies",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_rented_count",
+              "displayName": "vacant_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_unrented_count",
+              "displayName": "vacant_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_rented_count",
+              "displayName": "notice_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_unrented_count",
+              "displayName": "notice_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_unrented_json",
+              "displayName": "vacant_unrented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_rented_json",
+              "displayName": "vacant_rented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -40,
+        -180
+      ],
+      "id": "5bcc1448-bee5-4a07-9b5e-ba46ceb9d185",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * \nFROM daily_data \nWHERE property_id IN (329, 330, 689, 690, 691, 692, 693, 694, 695);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -340,
+        -180
+      ],
+      "id": "b1b2f463-ee3b-4b38-9039-eb87df28f359",
+      "name": "Get Legacy Properties",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * \nFROM daily_data \nWHERE property_id IN (187, 236, 244, 423, 561, 579, 580, 581, 657, 685);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -360,
+        60
+      ],
+      "id": "6ccb3aa2-7698-4264-847f-c60173d63957",
+      "name": "Get All Properties",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1_mbKpV2SA-qw38GCHY8XGj6iSZ5sm4MxpPgifKCq4_o",
+          "mode": "list",
+          "cachedResultName": "Blaze Weekly Reporting",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_mbKpV2SA-qw38GCHY8XGj6iSZ5sm4MxpPgifKCq4_o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 571474483,
+          "mode": "list",
+          "cachedResultName": "Raw Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_mbKpV2SA-qw38GCHY8XGj6iSZ5sm4MxpPgifKCq4_o/edit#gid=571474483"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "property_id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "property_id",
+              "displayName": "property_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "property_name",
+              "displayName": "property_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_units",
+              "displayName": "total_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "occupied_units",
+              "displayName": "occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "occupancy_rate",
+              "displayName": "occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projected_occupied_units",
+              "displayName": "projected_occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "projected_occupancy_rate",
+              "displayName": "projected_occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_receivable",
+              "displayName": "total_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_delinquent_rent",
+              "displayName": "total_delinquent_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delinquent_subsidy",
+              "displayName": "delinquent_subsidy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delinquent_fees",
+              "displayName": "delinquent_fees",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_rent",
+              "displayName": "total_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delinquency_percent",
+              "displayName": "delinquency_percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "total_guest_cards",
+              "displayName": "total_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "active_guest_cards",
+              "displayName": "active_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "applications",
+              "displayName": "applications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "showings",
+              "displayName": "showings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "monthly_received",
+              "displayName": "monthly_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "daily_received",
+              "displayName": "daily_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delinquency_percent_receivable",
+              "displayName": "delinquency_percent_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delinquency_percent_rent_only",
+              "displayName": "delinquency_percent_rent_only",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "delinquency_percent_no_subsidies",
+              "displayName": "delinquency_percent_no_subsidies",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vacant_rented_count",
+              "displayName": "vacant_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vacant_unrented_count",
+              "displayName": "vacant_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notice_rented_count",
+              "displayName": "notice_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notice_unrented_count",
+              "displayName": "notice_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vacant_unrented_json",
+              "displayName": "vacant_unrented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vacant_rented_json",
+              "displayName": "vacant_rented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -40,
+        60
+      ],
+      "id": "228698f4-e5be-455e-ba00-838b85727e0d",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "n8n Workflow: MySQL Property Data to Google Sheets\n\nDescription\nThis n8n workflow retrieves property data from a MySQL database and appends or updates the data in Google Sheets. The workflow is triggered manually and consists of the following steps:\n\n1. **Manual Trigger** - Starts the workflow when manually triggered.\n2. **Retrieve Legacy Property Data** - Executes a SQL query to fetch data for specific legacy properties from the `daily_data` table in MySQL.\n3. **Retrieve All Property Data** - Executes a SQL query to fetch data for all properties from the `daily_data` table in MySQL.\n4. **Update Google Sheets for Legacy Properties** - Appends or updates the retrieved legacy property data in a specified Google Sheets document.\n5. **Update Google Sheets for All Properties** - Appends or updates the retrieved property data in a second Google Sheets document.\n\n",
+        "height": 380,
+        "width": 540
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        -420
+      ],
+      "id": "849b3be0-06ca-4382-b37e-b9fbb5c079d1",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-21T03:28:04.000Z",
+  "versionId": "a4212c60-a372-4f56-bf25-6d3fd35c4eec"
+}
