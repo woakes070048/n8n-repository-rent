@@ -365,7 +365,7 @@
     },
     {
       "parameters": {
-        "jsCode": "if (!Array.isArray($input.all())) {\n    throw new Error(\"Input is not an array. Ensure the previous node outputs a JSON array.\");\n}\n\nconst items = $input.all();\n\nconst output = items.map(item => {\n    const row = { ...item.json };\n\n    const totalRent = parseFloat(row[\"total_rent\"] || 0);\n    const delinquentRent = parseFloat(row[\"delinquent_rent\"] || 0);\n    const delinquentSubsidy = parseFloat(row[\"delinquent_subsidy\"] || 0);\n    const delinquentFees = parseFloat(row[\"delinquent_fees\"] || 0);\n\n    // Calculate totalDelinquent and totalReceivable\n    const totalDelinquent = delinquentRent + delinquentSubsidy + delinquentFees;\n    const totalReceivable = totalDelinquent; // total receivable is the same as total delinquent in this case.\n\n    // 1. Delinquency as a percentage of total_receivable\n    const percentOfReceivable = totalReceivable > 0 ? ((totalReceivable / totalRent) * 100) : 0;\n    row[\"delinquency_percent_receivable\"] = parseFloat(percentOfReceivable.toFixed(2));\n\n    // 2. Delinquency as a percentage of total_rent only\n    const percentOfRentOnly = totalRent > 0 ? (((delinquentSubsidy + delinquentRent) / totalRent) * 100) : 0;\n    row[\"delinquency_percent_rent_only\"] = parseFloat(percentOfRentOnly.toFixed(2));\n\n    // 3. Delinquency as a percentage of total_rent without subsidies\n    const delinquentWithoutSubsidy = delinquentRent + delinquentFees;\n    const percentWithoutSubsidies = totalRent > 0 ? ((delinquentWithoutSubsidy / totalRent) * 100) : 0;\n    row[\"delinquency_percent_no_subsidies\"] = parseFloat(percentWithoutSubsidies.toFixed(2));\n\n    return { json: row };\n});\n\nreturn output;"
+        "jsCode": "if (!Array.isArray($input.all())) {\n    throw new Error(\"Input is not an array. Ensure the previous node outputs a JSON array.\");\n}\n\nconst items = $input.all();\n\nconst output = items.map(item => {\n    const row = { ...item.json };\n\n    // Parse and default to 0\n    const totalRent = parseFloat(row[\"total_rent\"] || 0);\n    const delinquentRent = parseFloat(row[\"delinquent_rent\"] || 0);\n    const delinquentSubsidy = parseFloat(row[\"delinquent_subsidy\"] || 0);\n    const delinquentFees = parseFloat(row[\"delinquent_fees\"] || 0);\n\n    // Calculate totals\n    const totalDelinquent = delinquentRent + delinquentSubsidy + delinquentFees;\n    const totalReceivable = totalDelinquent;\n\n    // 1. Delinquency as a percentage of total_receivable\n    let percentOfReceivable = 0;\n    if (totalReceivable > 0 && totalRent > 0) {\n        percentOfReceivable = (totalReceivable / totalRent) * 100;\n    }\n    row[\"delinquency_percent_receivable\"] = parseFloat(percentOfReceivable.toFixed(2));\n\n    // 2. Delinquency as a percentage of total_rent only\n    let percentOfRentOnly = 0;\n    if (totalRent > 0) {\n        percentOfRentOnly = ((delinquentSubsidy + delinquentRent) / totalRent) * 100;\n    }\n    row[\"delinquency_percent_rent_only\"] = parseFloat(percentOfRentOnly.toFixed(2));\n\n    // 3. Delinquency as a percentage of total_rent without subsidies\n    const delinquentWithoutSubsidy = delinquentRent + delinquentFees;\n    let percentWithoutSubsidies = 0;\n    if (totalRent > 0) {\n        percentWithoutSubsidies = (delinquentWithoutSubsidy / totalRent) * 100;\n    }\n    row[\"delinquency_percent_no_subsidies\"] = parseFloat(percentWithoutSubsidies.toFixed(2));\n\n    return { json: row };\n});\n\nreturn output;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
@@ -887,12 +887,11 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1",
-    "errorWorkflow": "Etm1h3dHXQYzby5C"
+    "executionOrder": "v1"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-21T05:00:19.761Z",
-  "versionId": "7bde60a6-28b5-4fd2-bbd6-74960f8d68e2"
+  "updatedAt": "2025-03-21T11:56:09.000Z",
+  "versionId": "e13a9bc6-12cc-4232-9ad2-ec778245d4ed"
 }
