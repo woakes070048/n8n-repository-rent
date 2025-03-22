@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -146,7 +146,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "=SELECT `Property ID`, `Property`\nFROM `property_directory`\nWHERE `Property ID` IN ({{ $json['Property ID'] }});\n",
+        "query": "=SELECT `property_id`, `Property`\nFROM `property_directory`\nWHERE `property_id` IN ({{ $json['Property ID'] }});\n",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -171,7 +171,7 @@
             {
               "id": "24d0196e-6f74-4a98-8c5e-c8a3d124a940",
               "name": "Property ID",
-              "value": "={{ $json['Property ID'] }}",
+              "value": "={{ $json['property_id'] }}",
               "type": "string"
             },
             {
@@ -247,7 +247,8 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 9
+              "triggerAtHour": 6,
+              "triggerAtMinute": 2
             }
           ]
         }
@@ -260,19 +261,6 @@
       ],
       "id": "76f81d7e-fbc1-4898-8982-0699cf7ee72d",
       "name": "Schedule Trigger"
-    },
-    {
-      "parameters": {
-        "content": "The last step completed is the code node. Need to create a field for Monthly total receipts. and match id to property name. \n"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -980,
-        -280
-      ],
-      "id": "cd20105c-42d6-4dfa-ae20-49c5a0e1ca7d",
-      "name": "Sticky Note"
     }
   ],
   "pinData": {},
@@ -287,6 +275,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-20T02:05:32.000Z",
-  "versionId": "b83f11d9-cc83-465b-ba2e-c8c056bb34f0"
+  "updatedAt": "2025-03-22T17:01:49.000Z",
+  "versionId": "55b5033e-7388-4d09-a8f7-0046b3a7dc8c"
 }
