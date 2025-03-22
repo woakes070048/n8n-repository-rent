@@ -119,9 +119,7 @@
     },
     {
       "parameters": {
-        "filters": {
-          "activeWorkflows": false
-        },
+        "filters": {},
         "requestOptions": {}
       },
       "type": "n8n-nodes-base.n8n",
@@ -208,7 +206,7 @@
           "value": {
             "id": "={{ $('Edit Fields').item.json.id }}",
             "name": "={{ $('Edit Fields').item.json.name }}",
-            "description": "={{ $json.message.content }}"
+            "description": "={{ $json.output }}"
           },
           "matchingColumns": [
             "id"
@@ -249,7 +247,7 @@
           "convertFieldsToString": false
         },
         "options": {
-          "cellFormat": "USER_ENTERED"
+          "cellFormat": "RAW"
         }
       },
       "type": "n8n-nodes-base.googleSheets",
@@ -265,8 +263,7 @@
           "id": "OPTs28HKagi0JBEs",
           "name": "Google Sheets account"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -404,6 +401,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-07T20:24:53.000Z",
-  "versionId": "778109db-5bbb-46cb-93c4-e2c4a8d5cccf"
+  "updatedAt": "2025-03-22T11:38:25.000Z",
+  "versionId": "99c39b41-c0b4-400f-b172-b477c6fc8f5c"
 }
