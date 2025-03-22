@@ -1,0 +1,253 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-22T15:53:55.095Z",
+  "id": "3EErGsXgA7IiwiW4",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Get Reports From Gmail",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "has:attachment to:brandon+reports@blazeproperty.com n8n",
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -200
+      ],
+      "id": "b31cff7f-7b04-44ec-8985-77ea55c0cedb",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputDataFieldName": "attachment_0",
+        "name": "={{ $json.headers.subject.replace('Subject: ', '') }}.csv\n",
+        "driveId": {
+          "__rl": true,
+          "value": "0ANoqNkaxSRr-Uk9PVA",
+          "mode": "list",
+          "cachedResultName": "DataOnly",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANoqNkaxSRr-Uk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "12YmAN21AqUablEdnlh-f3QsTTtiYKMHy",
+          "mode": "list",
+          "cachedResultName": "n8n reports active",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/12YmAN21AqUablEdnlh-f3QsTTtiYKMHy"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        500,
+        -200
+      ],
+      "id": "a4f8fcd6-b13c-48aa-868d-0f11545c3978",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        -200
+      ],
+      "id": "14bffc4f-e2d1-4f13-b68e-51903b5e1b6d",
+      "name": "Gmail",
+      "webhookId": "9cc28317-e6aa-498b-8d03-14075b77a15c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_6005462562915862491"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        940,
+        -200
+      ],
+      "id": "fb43167c-0aab-4df0-aea2-26b4b1f86ead",
+      "name": "Gmail1",
+      "webhookId": "9ccdee91-2352-458d-a323-9f8488c3ccd1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1160,
+        -200
+      ],
+      "id": "138956c7-17d8-47cc-af04-a1428aebca7b",
+      "name": "Gmail2",
+      "webhookId": "06af0bc6-2f7f-464b-a84e-bf45651f5b80",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Gets emails with the following criteria:\ncontains n8n in subject\nto: brandon+reports@blazeproperty.com \nUnread\nhas:attachment\n",
+        "height": 340,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -380
+      ],
+      "id": "45c9215e-d90a-4ba0-bab2-cd7716cbe669",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Uploads to shared drive:\ndata only/n8n reports\n",
+        "height": 340,
+        "width": 220,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -380
+      ],
+      "id": "ceb6d821-f829-4888-bb5d-9d0633387530",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "archives the message and moves to a label reports\\n8n reports for archiving\n",
+        "height": 340,
+        "width": 640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        680,
+        -380
+      ],
+      "id": "fe46a93e-1dd3-47b1-929a-251c3a2ab23b",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Gmail Trigger": {
+      "lastTimeChecked": 1742661101
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-22T16:31:54.000Z",
+  "versionId": "65059c59-fffc-41de-a9db-0f5205a1ac85"
+}
