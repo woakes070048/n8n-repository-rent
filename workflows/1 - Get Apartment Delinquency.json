@@ -1,7 +1,18 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
       "main": [
         [
           {
@@ -62,6 +73,19 @@
           "name": "n8n Data FTP account"
         }
       }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -460,
+        180
+      ],
+      "id": "c2228ad0-b33a-4989-88de-a7c6b50d7383",
+      "name": "When Executed by Another Workflow"
     }
   ],
   "pinData": {},
@@ -71,11 +95,11 @@
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
-      "lastMessageUid": 1348
+      "lastMessageUid": 1369
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-20T11:07:30.000Z",
-  "versionId": "745d3124-31b7-42a0-a087-afcbf097e250"
+  "updatedAt": "2025-03-22T16:31:59.000Z",
+  "versionId": "1fb68455-7008-44d6-a58b-9037372e120a"
 }
