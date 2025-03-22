@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "Email Trigger (IMAP)": {
       "main": [
@@ -56,6 +56,8 @@
       ],
       "id": "5a523668-9b4f-45f9-a2e6-eb1ff7d997ea",
       "name": "FTP",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
       "credentials": {
         "ftp": {
           "id": "87ZwJT7N7b5rycj4",
@@ -71,11 +73,11 @@
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
-      "lastMessageUid": 1350
+      "lastMessageUid": 1371
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-20T02:10:25.000Z",
-  "versionId": "3b306718-bb12-4982-93ef-a813aaaf9cb2"
+  "updatedAt": "2025-03-22T16:32:05.000Z",
+  "versionId": "1abaad5c-288a-429a-b36b-c780dcac971a"
 }
