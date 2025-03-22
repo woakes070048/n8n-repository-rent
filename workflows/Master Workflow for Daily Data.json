@@ -1,0 +1,91 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Email": {
+      "main": [
+        []
+      ]
+    },
+    "Code": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "createdAt": "2025-03-22T11:52:35.250Z",
+  "id": "SV0fA9vtQxL8oSvP",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Master Workflow for Daily Data",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "format": "raw",
+        "options": {}
+      },
+      "id": "9b0c6975-7247-40e6-9f3b-b8a0241090ab",
+      "name": "Email Trigger",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        -80
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const subject = $json.subject.toLowerCase();\n\nif (subject.includes(\"guest cards\")) {\n  return [{ workflow: \"GckWamo3DcbDDvZ1\" }];\n}\nif (subject.includes(\"delinquency\")) {\n  return [{ workflow: \"KctCA5P7392Clq3V\" }];\n}\nif (subject.includes(\"applications\")) {\n  return [{ workflow: \"kofWEJH48AZaeyQe\" }];\n}\nif (subject.includes(\"receivables\")) {\n  return [{ workflow: \"cUeMh90Ms5FXFLyl\" }];\n}\nif (subject.includes(\"rent totals\")) {\n  return [{ workflow: \"UG7N3C424rw8fq37\" }];\n}\n\nreturn [{ workflow: null }];\n"
+      },
+      "id": "a212c4bd-2ec6-47b8-975b-ae969eb9bfb9",
+      "name": "Route Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const attachments = [];\n\nfor (const key of Object.keys($json)) {\n  if (key.startsWith(\"attachment_\")) {\n    attachments.push({\n      json: {\n        filename: $json[key].fileName || key,\n        mimeType: $json[key].mimeType,\n        data: $json[key].data,\n        keyUsed: key,\n        subject: $json.subject,\n      }\n    });\n  }\n}\n\nreturn attachments.length > 0 ? attachments : [{ json: { error: \"No attachments found\", keys: Object.keys($json) } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -120,
+        -80
+      ],
+      "id": "1de29595-ab32-48c0-9219-b4eb12d43ca1",
+      "name": "Code",
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-22T13:29:01.000Z",
+  "versionId": "d320789d-b6af-4b16-aa7e-0235d90c78e0"
+}
