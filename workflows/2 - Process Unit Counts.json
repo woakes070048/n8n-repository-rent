@@ -5,18 +5,7 @@
       "main": [
         [
           {
-            "node": "FTP",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "FTP": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
+            "node": "Google Drive",
             "type": "main",
             "index": 0
           }
@@ -27,36 +16,47 @@
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Summarize Property Status",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code": {
+    "Google Drive": {
       "main": [
         [
           {
-            "node": "Code1",
+            "node": "Extract from File",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code1": {
+    "Summarize Property Status": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Property Summary for Output",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Edit Fields": {
+    "Property Summary for Output": {
+      "main": [
+        [
+          {
+            "node": "Set Data Fields Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Data Fields Final": {
       "main": [
         [
           {
@@ -71,7 +71,7 @@
       "main": [
         [
           {
-            "node": "FTP",
+            "node": "Google Drive",
             "type": "main",
             "index": 0
           }
@@ -91,30 +91,11 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -720,
-        -80
+        -840,
+        -120
       ],
       "id": "0bde9549-aeaf-4669-8242-616fef360d7f",
       "name": "When clicking ‘Test workflow’"
-    },
-    {
-      "parameters": {
-        "path": "/public_html/data/rent_totals.csv"
-      },
-      "type": "n8n-nodes-base.ftp",
-      "typeVersion": 1,
-      "position": [
-        -540,
-        20
-      ],
-      "id": "9dde66a1-c168-4544-929e-5ab0a3a257fd",
-      "name": "FTP",
-      "credentials": {
-        "ftp": {
-          "id": "87ZwJT7N7b5rycj4",
-          "name": "n8n Data FTP account"
-        }
-      }
     },
     {
       "parameters": {
@@ -126,11 +107,127 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -380,
-        20
+        -420,
+        0
       ],
       "id": "42fe97d5-ea7e-41b6-9663-7f12de6a88b0",
       "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "daily_data",
+          "mode": "list",
+          "cachedResultName": "daily_data"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_id",
+        "valueToMatchOn": "={{ $json.property_id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "vacant_rented_count",
+              "value": "={{ $json.vacant_rented_count }}"
+            },
+            {
+              "column": "vacant_unrented_count",
+              "value": "={{ $json.vacant_unrented_count }}"
+            },
+            {
+              "column": "notice_rented_count",
+              "value": "={{ $json.notice_rented_count }}"
+            },
+            {
+              "column": "notice_unrented_count",
+              "value": "={{ $json.notice_unrented_count }}"
+            },
+            {
+              "column": "vacant_unrented_json",
+              "value": "={{ $json.vacant_unrented_json }}"
+            },
+            {
+              "column": "notice_unrented_json",
+              "value": "={{ $json.notice_unrented_json }}"
+            },
+            {
+              "column": "vacant_rented_json",
+              "value": "={{ $json.vacant_rented_json }}"
+            },
+            {
+              "column": "notice_eviction_count",
+              "value": "={{ $json[\"Notice-Eviction Count\"] }}"
+            },
+            {
+              "column": "vacant_unrented_json",
+              "value": "={{ $json[\"Vacant-Unrented\"] }}"
+            },
+            {
+              "column": "notice_eviction",
+              "value": "={{ $json[\"Notice-Eviction\"] }}"
+            },
+            {
+              "column": "lease_30",
+              "value": "={{ $json.lease_30 }}"
+            },
+            {
+              "column": "lease_60",
+              "value": "={{ $json.lease_60 }}"
+            },
+            {
+              "column": "lease_90",
+              "value": "={{ $json.lease_90 }}"
+            },
+            {
+              "column": "lease_m2m",
+              "value": "={{ $json.lease_m2m }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        340,
+        0
+      ],
+      "id": "481122dc-0843-4c13-8cf8-dfd0a993b5df",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1Xk2iAoo0iQyCh5fTktPWYN9etCRP1BX3",
+          "mode": "list",
+          "cachedResultName": "n8n Apartment Rent Totals.csv\n",
+          "cachedResultUrl": "https://drive.google.com/file/d/1Xk2iAoo0iQyCh5fTktPWYN9etCRP1BX3/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -620,
+        0
+      ],
+      "id": "2c34dcdb-86ff-4419-9b95-092a6c926214",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
     },
     {
       "parameters": {
@@ -139,11 +236,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -200,
-        20
+        -220,
+        0
       ],
       "id": "48d5282f-900a-4ab6-b394-77ecc71e74a6",
-      "name": "Code"
+      "name": "Summarize Property Status"
     },
     {
       "parameters": {
@@ -152,11 +249,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        20,
-        20
+        -40,
+        0
       ],
       "id": "280a689c-3487-44ef-a9ba-1177468b2916",
-      "name": "Code1"
+      "name": "Property Summary for Output"
     },
     {
       "parameters": {
@@ -265,100 +362,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        240,
-        20
+        160,
+        0
       ],
       "id": "c0e07e64-599b-4b57-8a84-3e201f808b04",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "operation": "upsert",
-        "table": {
-          "__rl": true,
-          "value": "daily_data",
-          "mode": "list",
-          "cachedResultName": "daily_data"
-        },
-        "dataMode": "defineBelow",
-        "columnToMatchOn": "property_id",
-        "valueToMatchOn": "={{ $json.property_id }}",
-        "valuesToSend": {
-          "values": [
-            {
-              "column": "vacant_rented_count",
-              "value": "={{ $json.vacant_rented_count }}"
-            },
-            {
-              "column": "vacant_unrented_count",
-              "value": "={{ $json.vacant_unrented_count }}"
-            },
-            {
-              "column": "notice_rented_count",
-              "value": "={{ $json.notice_rented_count }}"
-            },
-            {
-              "column": "notice_unrented_count",
-              "value": "={{ $json.notice_unrented_count }}"
-            },
-            {
-              "column": "vacant_unrented_json",
-              "value": "={{ $json.vacant_unrented_json }}"
-            },
-            {
-              "column": "notice_unrented_json",
-              "value": "={{ $json.notice_unrented_json }}"
-            },
-            {
-              "column": "vacant_rented_json",
-              "value": "={{ $json.vacant_rented_json }}"
-            },
-            {
-              "column": "notice_eviction_count",
-              "value": "={{ $json[\"Notice-Eviction Count\"] }}"
-            },
-            {
-              "column": "vacant_unrented_json",
-              "value": "={{ $json[\"Vacant-Unrented\"] }}"
-            },
-            {
-              "column": "notice_eviction",
-              "value": "={{ $json[\"Notice-Eviction\"] }}"
-            },
-            {
-              "column": "lease_30",
-              "value": "={{ $json.lease_30 }}"
-            },
-            {
-              "column": "lease_60",
-              "value": "={{ $json.lease_60 }}"
-            },
-            {
-              "column": "lease_90",
-              "value": "={{ $json.lease_90 }}"
-            },
-            {
-              "column": "lease_m2m",
-              "value": "={{ $json.lease_m2m }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        460,
-        20
-      ],
-      "id": "481122dc-0843-4c13-8cf8-dfd0a993b5df",
-      "name": "MySQL",
-      "credentials": {
-        "mySql": {
-          "id": "OUIfR0k9k0YXHa0V",
-          "name": "Blazedata Hostinger"
-        }
-      }
+      "name": "Set Data Fields Final"
     },
     {
       "parameters": {
@@ -366,7 +374,7 @@
           "interval": [
             {
               "triggerAtHour": 6,
-              "triggerAtMinute": 5
+              "triggerAtMinute": 2
             }
           ]
         }
@@ -374,10 +382,10 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -720,
-        120
+        -820,
+        160
       ],
-      "id": "254b0f7d-3d7a-43f3-8c75-ffe994c7ff28",
+      "id": "b85e7a7d-0ae2-464b-9fda-ae21c592f975",
       "name": "Schedule Trigger"
     }
   ],
@@ -393,6 +401,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-21T22:04:25.000Z",
-  "versionId": "75e43bd3-2204-45ed-9399-e1617ed7e02d"
+  "updatedAt": "2025-03-22T17:01:24.000Z",
+  "versionId": "7d2004c2-3fb3-4d3c-826b-9bc9432d1591"
 }
