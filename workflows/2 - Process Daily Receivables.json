@@ -1,28 +1,6 @@
 {
   "active": true,
   "connections": {
-    "When clicking ‘Test workflow’": {
-      "main": [
-        [
-          {
-            "node": "FTP",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "FTP": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Extract from File": {
       "main": [
         [
@@ -71,7 +49,18 @@
       "main": [
         [
           {
-            "node": "FTP",
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
             "type": "main",
             "index": 0
           }
@@ -87,36 +76,6 @@
   "name": "2 - Process Daily Receivables",
   "nodes": [
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -1560,
-        -280
-      ],
-      "id": "3fa33b48-9d78-4a76-8160-67929e5cec2a",
-      "name": "When clicking ‘Test workflow’"
-    },
-    {
-      "parameters": {
-        "path": "/public_html/data/daily_receivables.csv"
-      },
-      "type": "n8n-nodes-base.ftp",
-      "typeVersion": 1,
-      "position": [
-        -1380,
-        -20
-      ],
-      "id": "1e209e4c-6bd5-4d77-b655-90f1b39ddef0",
-      "name": "FTP",
-      "credentials": {
-        "ftp": {
-          "id": "87ZwJT7N7b5rycj4",
-          "name": "n8n Data FTP account"
-        }
-      }
-    },
-    {
       "parameters": {
         "operation": "xlsx",
         "options": {}
@@ -124,8 +83,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -1160,
-        -20
+        -960,
+        -400
       ],
       "id": "9986050d-d7b4-4005-92ef-781b44b38b98",
       "name": "Extract from File"
@@ -137,8 +96,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -980,
-        -20
+        -700,
+        -200
       ],
       "id": "4c39f25f-8363-49fd-b11d-e4c5dd396c17",
       "name": "Code"
@@ -146,14 +105,14 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "=SELECT `Property ID`, `Property`\nFROM `property_directory`\nWHERE `Property ID` IN ({{ $json[\"Property ID\"] }})\n",
+        "query": "=SELECT `property_id`, `Property`\nFROM `property_directory`\nWHERE `property_id` IN ({{ $json[\"Property ID\"] }})\n",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -800,
-        -20
+        -540,
+        -200
       ],
       "id": "862a8dd9-14d2-4a63-8955-15005a42dd09",
       "name": "MySQL",
@@ -171,7 +130,7 @@
             {
               "id": "24d0196e-6f74-4a98-8c5e-c8a3d124a940",
               "name": "Property ID",
-              "value": "={{ $json['Property ID'] }}",
+              "value": "={{ $json['property_id'] }}",
               "type": "string"
             },
             {
@@ -193,8 +152,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -620,
-        -20
+        -380,
+        -200
       ],
       "id": "42420f52-7f83-47f8-9fa7-98466d93d769",
       "name": "Edit Fields"
@@ -224,8 +183,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -400,
-        -20
+        -140,
+        -200
       ],
       "id": "18c34c60-5e3d-4d66-9df7-aa6d00c81d81",
       "name": "MySQL1",
@@ -249,24 +208,85 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1600,
-        -20
+        -1400,
+        -220
       ],
-      "id": "58a04272-4839-4a5f-b0e4-087a11dcb642",
-      "name": "Schedule Trigger"
+      "id": "146ed95d-06df-4e96-9f81-e511e1e083c3",
+      "name": "Schedule Trigger",
+      "notes": "Trigger 6am daily"
     },
     {
       "parameters": {
-        "content": "The last step completed is the code node. Need to create a field for Monthly total receipts. and match id to property name. \n"
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1o39yt-5TfhYTxcq-gcCmCGQwkWZDRyoB",
+          "mode": "list",
+          "cachedResultName": "n8n Apartment Receivables Yesterday.csv\n",
+          "cachedResultUrl": "https://drive.google.com/file/d/1o39yt-5TfhYTxcq-gcCmCGQwkWZDRyoB/view?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1120,
+        -400
+      ],
+      "id": "04d19bd7-39ba-425a-a4b2-4a3ceea7fb1d",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Receivables Daily\n\nGet file from drive and extract. ",
+        "height": 360,
+        "width": 300
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -980,
-        -280
+        -1140,
+        -540
       ],
-      "id": "5ca3beaa-26b8-4c81-8d41-57679c5adabf",
+      "id": "41fa2c28-ae5d-4ca1-af5e-6abdb7c8bef1",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Process Data and Calculate \nthis matches all data and calculates per property preparing data for sql insertion\n",
+        "height": 340,
+        "width": 460,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -340
+      ],
+      "id": "97477c33-a7a3-4399-a08b-1e9a3290ab6b",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Update SQL Records\nupdate table daily_data with new information\n",
+        "height": 340,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        -340
+      ],
+      "id": "13b82f9c-88b6-40f1-be56-3362d8cdb2be",
+      "name": "Sticky Note2"
     }
   ],
   "pinData": {},
@@ -281,6 +301,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-20T02:04:52.000Z",
-  "versionId": "832269a5-7b04-459e-936c-2924e4cb0aee"
+  "updatedAt": "2025-03-22T16:51:24.000Z",
+  "versionId": "8de74107-9ec7-44aa-85e5-668297306087"
 }
