@@ -887,11 +887,12 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-21T11:56:09.000Z",
-  "versionId": "e13a9bc6-12cc-4232-9ad2-ec778245d4ed"
+  "updatedAt": "2025-03-22T05:00:19.675Z",
+  "versionId": "5a44d65c-ce4a-4b74-9fa2-3692267dcb51"
 }
