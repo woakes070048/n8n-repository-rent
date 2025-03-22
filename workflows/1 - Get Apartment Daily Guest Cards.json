@@ -1,7 +1,18 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
       "main": [
         [
           {
@@ -24,14 +35,14 @@
       "parameters": {
         "format": "resolved",
         "options": {
-          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Apartment Guest Cards Past 7 Days\"]]"
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Apartment Guest Cards\"]]"
         }
       },
       "type": "n8n-nodes-base.emailReadImap",
       "typeVersion": 2,
       "position": [
-        0,
-        0
+        -20,
+        -140
       ],
       "id": "0aa05dd3-6c5e-48df-b3e5-298963371f04",
       "name": "Email Trigger (IMAP)",
@@ -62,6 +73,19 @@
           "name": "n8n Data FTP account"
         }
       }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -20,
+        100
+      ],
+      "id": "a234cc76-274c-4222-8cab-6f70cde13b9e",
+      "name": "When Executed by Another Workflow"
     }
   ],
   "pinData": {},
@@ -71,11 +95,11 @@
   },
   "staticData": {
     "node:Email Trigger (IMAP)": {
-      "lastMessageUid": 1302
+      "lastMessageUid": 1368
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-20T11:01:24.000Z",
-  "versionId": "754a71bd-e52c-42c4-a877-2f34a5e66e0c"
+  "updatedAt": "2025-03-22T16:32:00.000Z",
+  "versionId": "1fb68455-7008-44d6-a58b-9037372e120a"
 }
