@@ -1,0 +1,203 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-22T17:01:58.185Z",
+  "id": "zAay8oLCfywjDm0A",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "2 - Process Daily Guest Cards copy",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1560,
+        -280
+      ],
+      "id": "ea19d552-7bd3-4ce1-a892-be96b61f34dc",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "path": "/public_html/data/apartment_guest_cards.csv"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        -20
+      ],
+      "id": "d90cb70f-01ca-4f52-8130-e8a6ed72eb13",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1160,
+        -20
+      ],
+      "id": "7b50a34d-f841-4f06-a007-09ecc462e59b",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "//\n// 1) Get the data from the previous node\n//\nlet allItems = $input.all();\n\n// Try the typical scenario: allItems[0].json is the array of rows\nlet rows = allItems[0].json;\n\n// If that didn’t work, your data might be in allItems[0].json.data\n// or each row might be in a separate item. Adjust as needed.\nif (!Array.isArray(rows)) {\n  // Maybe it's in allItems[0].json.data?\n  if (allItems[0].json.data && Array.isArray(allItems[0].json.data)) {\n    rows = allItems[0].json.data;\n  } else {\n    // Possibly each item is a row\n    rows = allItems.map(item => item.json).flat();\n  }\n}\n\n// If it's still not an array, throw an error\nif (!Array.isArray(rows)) {\n  throw new Error(\n    \"We couldn’t find an array in the expected paths. Please check the Extract from File node output.\"\n  );\n}\n\n//\n// 2) Initialize a data map to track guest card counts\n//\nconst guestCardMap = {};\n\n//\n// 3) Loop over each row\n//\nrows.forEach(row => {\n  // Make sure the row has a Property ID\n  if (!row.hasOwnProperty(\"Property ID\")) return;\n\n  const propertyId = String(row[\"Property ID\"]).trim();\n  if (!propertyId) return;\n\n  // Read & normalize the status\n  const status = String(row[\"Status\"] || \"\").toLowerCase().trim();\n\n  // If the status is \"inactive,\" we skip it entirely\n  if (status === \"inactive\") {\n    return;\n  }\n\n  // Initialize map if needed\n  if (!guestCardMap[propertyId]) {\n    guestCardMap[propertyId] = {\n      total: 0,\n      active: 0,\n      applicationCompleted: 0,\n    };\n  }\n\n  // If the status is either \"active\" or \"application completed,\" count it\n  if (status === \"active\") {\n    guestCardMap[propertyId].active += 1;\n    guestCardMap[propertyId].total += 1;\n  } else if (status === \"application completed\") {\n    guestCardMap[propertyId].applicationCompleted += 1;\n    guestCardMap[propertyId].total += 1;\n  }\n});\n\n//\n// 4) Create the output array for each property\n//\nconst output = Object.keys(guestCardMap).map(propertyId => {\n  const data = guestCardMap[propertyId];\n  return {\n    \"Property ID\": propertyId,\n    \"Total Guest Cards (Active + Completed)\": data.total,\n    \"Active\": data.active,\n    \"Application Completed\": data.applicationCompleted\n  };\n});\n\n//\n// 5) Return the final results\n//\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -980,
+        -20
+      ],
+      "id": "fd988322-0685-459f-8c7e-f6fd21ce7066",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "daily_data",
+          "mode": "list",
+          "cachedResultName": "daily_data"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_id",
+        "valueToMatchOn": "={{ $json['Property ID'] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "total_guest_cards",
+              "value": "={{ $json['Total Guest Cards (Active + Completed)'] }}"
+            },
+            {
+              "column": "active_guest_cards",
+              "value": "={{ $json.Active }}"
+            },
+            {
+              "column": "applications",
+              "value": "={{ $json['Application Completed'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -700,
+        -20
+      ],
+      "id": "28fffed3-29f2-410a-b7b3-cca1e4953aee",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1600,
+        -20
+      ],
+      "id": "27d2f4ba-013f-48c2-8d26-db647b070b09",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-22T17:01:58.185Z",
+  "versionId": "f1be750a-e891-469b-8911-7d488d3a6731"
+}
