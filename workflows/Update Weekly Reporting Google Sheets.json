@@ -554,7 +554,7 @@
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FX4AAKmtYtCBQb4Z8yNj96qIwm2KtM2rZ7Bn1Rw6FpY/edit#gid=614782390"
         },
         "columns": {
-          "mappingMode": "defineBelow",
+          "mappingMode": "autoMapInputData",
           "value": {
             "property_id": "={{ $json.property_id }}",
             "property_name": "={{ $json.property_name }}",
@@ -597,16 +597,6 @@
             "property_id"
           ],
           "schema": [
-            {
-              "id": "id",
-              "displayName": "id",
-              "required": false,
-              "defaultMatch": true,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
             {
               "id": "property_id",
               "displayName": "property_id",
@@ -931,6 +921,16 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -961,6 +961,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-21T17:01:06.000Z",
-  "versionId": "7022b969-7844-43a8-bd4d-4ca6af0f347d"
+  "updatedAt": "2025-03-21T21:42:31.000Z",
+  "versionId": "dbbf767e-c751-43b7-8ed6-441211f0603d"
 }
