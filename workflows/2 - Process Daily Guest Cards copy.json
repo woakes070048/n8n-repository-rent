@@ -5,18 +5,7 @@
       "main": [
         [
           {
-            "node": "FTP",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "FTP": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
+            "node": "Google Drive3",
             "type": "main",
             "index": 0
           }
@@ -49,7 +38,73 @@
       "main": [
         [
           {
-            "node": "FTP",
+            "node": "Google Drive3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive3": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Google Drive3",
             "type": "main",
             "index": 0
           }
@@ -69,30 +124,11 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1560,
-        -280
+        -1820,
+        -300
       ],
       "id": "ea19d552-7bd3-4ce1-a892-be96b61f34dc",
       "name": "When clicking ‘Test workflow’"
-    },
-    {
-      "parameters": {
-        "path": "/public_html/data/apartment_guest_cards.csv"
-      },
-      "type": "n8n-nodes-base.ftp",
-      "typeVersion": 1,
-      "position": [
-        -1380,
-        -20
-      ],
-      "id": "d90cb70f-01ca-4f52-8130-e8a6ed72eb13",
-      "name": "FTP",
-      "credentials": {
-        "ftp": {
-          "id": "87ZwJT7N7b5rycj4",
-          "name": "n8n Data FTP account"
-        }
-      }
     },
     {
       "parameters": {
@@ -154,7 +190,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -700,
+        -800,
         -20
       ],
       "id": "28fffed3-29f2-410a-b7b3-cca1e4953aee",
@@ -171,7 +207,8 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 6
+              "triggerAtHour": 6,
+              "triggerAtMinute": 4
             }
           ]
         }
@@ -179,11 +216,179 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1600,
-        -20
+        -1840,
+        -60
       ],
       "id": "27d2f4ba-013f-48c2-8d26-db647b070b09",
       "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "fileName": "n8n Apartment Guest Cards Past 7 Days.csv"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1320,
+        -20
+      ],
+      "id": "e675f083-3d83-474a-8089-e75fd187e69f",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "1Z1r37be5jK4h2tlhDqOQHYe9ccDlP2Xc",
+          "mode": "list",
+          "cachedResultName": "n8n Apartment Guest Cards Past 7 Days.csv\n",
+          "cachedResultUrl": "https://drive.google.com/file/d/1Z1r37be5jK4h2tlhDqOQHYe9ccDlP2Xc/view?usp=drivesdk"
+        },
+        "driveId": {
+          "__rl": true,
+          "value": "0ANoqNkaxSRr-Uk9PVA",
+          "mode": "list",
+          "cachedResultName": "DataOnly",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANoqNkaxSRr-Uk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1kYAzmyEP1PYRgGRTirAMEsa6ce5-wKWR",
+          "mode": "list",
+          "cachedResultName": "archive 30",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1kYAzmyEP1PYRgGRTirAMEsa6ce5-wKWR"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -620,
+        -20
+      ],
+      "id": "e13e2f87-80b3-421c-ae04-66efebf82112",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "={{ \n  (() => {\n    const original = $json.name;\n    const date = new Date();\n    const yyyy = date.getFullYear();\n    const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based\n    const dd = String(date.getDate()).padStart(2, '0');\n    const formattedDate = `${yyyy}-${mm}-${dd}`;\n    return original.replace('.csv', ` ${formattedDate}.csv`);\n  })() \n}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -440,
+        -20
+      ],
+      "id": "7880a4fb-0c6a-425f-9e59-2042c3ca548f",
+      "name": "Google Drive2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "12YmAN21AqUablEdnlh-f3QsTTtiYKMHy",
+            "mode": "list",
+            "cachedResultName": "n8n reports active",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/12YmAN21AqUablEdnlh-f3QsTTtiYKMHy"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1660,
+        -20
+      ],
+      "id": "39de6f8a-ae28-4614-9dc1-46c88ec023a6",
+      "name": "Google Drive3",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5dfdf2db-7b49-47da-a48f-25425212010a",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Guest Card",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1480,
+        -20
+      ],
+      "id": "83b8af87-8a61-4cec-b0f7-9874acc37780",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1840,
+        200
+      ],
+      "id": "e85741a7-f867-4083-98cc-a11da5e510d6",
+      "name": "When Executed by Another Workflow"
     }
   ],
   "pinData": {},
@@ -198,6 +403,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-22T17:01:58.185Z",
-  "versionId": "f1be750a-e891-469b-8911-7d488d3a6731"
+  "updatedAt": "2025-03-22T17:45:12.000Z",
+  "versionId": "70ead6c7-32fb-4ee5-bae7-0f0866696831"
 }
