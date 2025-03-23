@@ -1,0 +1,258 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-23T12:12:49.930Z",
+  "id": "TpQ4yeNXWaIafHJg",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Past Tenant Load SQL",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        -120
+      ],
+      "id": "4467c9c7-7192-4d4b-8c84-5de3f77f051d",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "path": "/public_html/data/past_tenants1.csv"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        20
+      ],
+      "id": "23fe6896-ed08-4afe-a23c-9863e6281627",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        20
+      ],
+      "id": "deb56e3c-72dd-4308-b581-fca8acb53b34",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "function excelDateToJSDate(serial) {\n  if (!serial || isNaN(serial)) return null;\n  const utc_days = Math.floor(serial - 25569);\n  const utc_value = utc_days * 86400; \n  const date_info = new Date(utc_value * 1000);\n  const yyyy = date_info.getUTCFullYear();\n  const mm = String(date_info.getUTCMonth() + 1).padStart(2, '0');\n  const dd = String(date_info.getUTCDate()).padStart(2, '0');\n  return `${yyyy}-${mm}-${dd}`;\n}\n\nfunction extractPhoneNumbers(phoneString) {\n  const phones = (phoneString || \"\").split(',').map(p => p.replace(/\\D/g, '')).filter(p => p);\n  return {\n    phone_1: phones[0] || null,\n    phone_2: phones[1] || null,\n    phone_3: phones[2] || null\n  };\n}\n\nfunction extractEmails(emailString) {\n  const emails = (emailString || \"\").split(',').map(e => e.trim()).filter(e => e);\n  return {\n    email_1: emails[0] || null,\n    email_2: emails[1] || null,\n    email_3: emails[2] || null\n  };\n}\n\nfunction cleanTags(tagsInput) {\n  if (!tagsInput) return null;\n  const tagsString = String(tagsInput); // Convert to string safely\n  const tags = tagsString.split(',').map(t => t.trim()).filter(Boolean);\n  return tags.join(', ');\n}\n\nreturn items.map(item => {\n  const input = item.json;\n\n  const phones = extractPhoneNumbers(input[\"Phone Numbers\"]);\n  const emails = extractEmails(input[\"Emails\"]); // Optional if field exists\n  const tags = cleanTags(input[\"Tenant Tags\"]);\n\n  return {\n    json: {\n      property: input[\"Property\"],\n      unit: input[\"Unit\"],\n      tenant: input[\"Tenant\"],\n      status: input[\"Status\"],\n      tenant_type: input[\"Tenant Type\"],\n      phone_1: phones.phone_1,\n      phone_2: phones.phone_2,\n      phone_3: phones.phone_3,\n      email_1: emails.email_1,\n      email_2: emails.email_2,\n      email_3: emails.email_3,\n      move_in_date: excelDateToJSDate(input[\"Move-in\"]),\n      lease_to_date: excelDateToJSDate(input[\"Lease To\"]),\n      move_out_date: excelDateToJSDate(input[\"Move-out\"]),\n      rent: parseFloat(input[\"Rent\"]) || 0,\n      deposit: parseFloat(input[\"Deposit\"]) || 0,\n      balance: parseFloat(input[\"Amount Receivable\"]) || 0,\n      tenant_tags: tags,\n      evicted: null,\n      legal: null,\n      late_count: parseInt(input[\"Late Count\"]) || 0,\n      delinquency_notes: null,\n      in_collections: input[\"In Collections\"],\n      first_name: input[\"First Name\"],\n      last_name: input[\"Last Name\"],\n      occupancy_id: parseInt(input[\"Occupancy ID\"]) || null,\n      unit_id: parseInt(input[\"Unit ID\"]) || null,\n      tenant_id: parseInt(input[\"Tenant ID\"]) || null,\n      deposit_1: parseFloat(input[\"Deposit_1\"]) || 0,\n      nsf_count: parseInt(input[\"NSF Count\"]) || 0\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        20
+      ],
+      "id": "c9bf1fc7-de39-4a25-a311-87bf86627df9",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "past_tenants",
+          "mode": "list",
+          "cachedResultName": "past_tenants"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "tenant_id",
+        "valueToMatchOn": "={{ $json.tenant_id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property",
+              "value": "={{ $json.property }}"
+            },
+            {
+              "column": "unit",
+              "value": "={{ $json.unit }}"
+            },
+            {
+              "column": "tenant",
+              "value": "={{ $json.tenant }}"
+            },
+            {
+              "column": "status",
+              "value": "={{ $json.status }}"
+            },
+            {
+              "column": "tenant_type",
+              "value": "={{ $json.tenant_type }}"
+            },
+            {
+              "column": "phone_1",
+              "value": "={{ $json.phone_1 }}"
+            },
+            {
+              "column": "phone_2",
+              "value": "={{ $json.phone_2 }}"
+            },
+            {
+              "column": "phone_3",
+              "value": "={{ $json.phone_3 }}"
+            },
+            {
+              "column": "email_1",
+              "value": "={{ $json.email_1 }}"
+            },
+            {
+              "column": "email_2",
+              "value": "={{ $json.email_2 }}"
+            },
+            {
+              "column": "email_3",
+              "value": "={{ $json.email_3 }}"
+            },
+            {
+              "column": "move_in_date",
+              "value": "={{ $json.move_in_date }}"
+            },
+            {
+              "column": "move_out_date",
+              "value": "={{ $json.move_out_date }}"
+            },
+            {
+              "column": "least_to_date",
+              "value": "={{ $json.lease_to_date }}"
+            },
+            {
+              "column": "tenant_tags",
+              "value": "={{ $json.tenant_tags }}"
+            },
+            {
+              "column": "balance",
+              "value": "={{ $json.balance }}"
+            },
+            {
+              "column": "late_count",
+              "value": "={{ $json.late_count }}"
+            },
+            {
+              "column": "delinquency_notes",
+              "value": "={{ $json.delinquency_notes }}"
+            },
+            {
+              "column": "in_collections",
+              "value": "={{ $json.in_collections }}"
+            },
+            {
+              "column": "first_name",
+              "value": "={{ $json.first_name }}"
+            },
+            {
+              "column": "last_name",
+              "value": "={{ $json.last_name }}"
+            },
+            {
+              "column": "occupancy_id",
+              "value": "={{ $json.occupancy_id }}"
+            },
+            {
+              "column": "unit_id",
+              "value": "={{ $json.unit_id }}"
+            },
+            {
+              "column": "deposit",
+              "value": "={{ $json.deposit }}"
+            },
+            {
+              "column": "nsf_count",
+              "value": "={{ $json.nsf_count }}"
+            }
+          ]
+        },
+        "options": {
+          "detailedOutput": true
+        }
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -160,
+        20
+      ],
+      "id": "db5442a0-2a7e-4118-bdb9-5e99a6fe0cc3",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-23T14:00:12.000Z",
+  "versionId": "3710158e-a6e9-46dd-bc6c-3a8772bed375"
+}
