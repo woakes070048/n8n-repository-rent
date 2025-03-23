@@ -1,11 +1,11 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Gmail Trigger": {
       "main": [
         [
           {
-            "node": "Google Drive",
+            "node": "Google Drive1",
             "type": "main",
             "index": 0
           }
@@ -44,6 +44,22 @@
           }
         ]
       ]
+    },
+    "Gmail2": {
+      "main": [
+        []
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-03-22T15:53:55.095Z",
@@ -75,7 +91,7 @@
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1,
       "position": [
-        300,
+        180,
         -200
       ],
       "id": "b31cff7f-7b04-44ec-8985-77ea55c0cedb",
@@ -88,21 +104,11 @@
     },
     {
       "parameters": {
-        "inputDataFieldName": "attachment_0",
-        "name": "={{ $json.headers.subject.replace('Subject: ', '') }}.csv\n",
-        "driveId": {
+        "operation": "update",
+        "fileId": {
           "__rl": true,
-          "value": "0ANoqNkaxSRr-Uk9PVA",
-          "mode": "list",
-          "cachedResultName": "DataOnly",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANoqNkaxSRr-Uk9PVA"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "12YmAN21AqUablEdnlh-f3QsTTtiYKMHy",
-          "mode": "list",
-          "cachedResultName": "n8n reports active",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/12YmAN21AqUablEdnlh-f3QsTTtiYKMHy"
+          "value": "={{ $json.id }}",
+          "mode": "id"
         },
         "options": {}
       },
@@ -129,7 +135,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        720,
+        740,
         -200
       ],
       "id": "14bffc4f-e2d1-4f13-b68e-51903b5e1b6d",
@@ -153,7 +159,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        940,
+        880,
         -200
       ],
       "id": "fb43167c-0aab-4df0-aea2-26b4b1f86ead",
@@ -177,7 +183,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1160,
+        1040,
         -200
       ],
       "id": "138956c7-17d8-47cc-af04-a1428aebca7b",
@@ -207,7 +213,7 @@
     },
     {
       "parameters": {
-        "content": "Uploads to shared drive:\ndata only/n8n reports\n",
+        "content": "updates file to shared drive:\ndata only/n8n reports\n",
         "height": 340,
         "width": 220,
         "color": 4
@@ -235,19 +241,50 @@
       ],
       "id": "fe46a93e-1dd3-47b1-929a-251c3a2ab23b",
       "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.headers.subject.replace('Subject: ', '') }}.csv",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "12YmAN21AqUablEdnlh-f3QsTTtiYKMHy",
+            "mode": "list",
+            "cachedResultName": "n8n reports active",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/12YmAN21AqUablEdnlh-f3QsTTtiYKMHy"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        340,
+        -200
+      ],
+      "id": "5011c267-58dd-4663-9d11-274f4cbacb1e",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
     }
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Gmail Trigger": {
-      "lastTimeChecked": 1742661101
+      "lastTimeChecked": 1742706020
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-22T16:31:54.000Z",
-  "versionId": "65059c59-fffc-41de-a9db-0f5205a1ac85"
+  "updatedAt": "2025-03-23T05:00:20.088Z",
+  "versionId": "1f8a9fce-2a2a-4ee0-ac26-957d357ee814"
 }
