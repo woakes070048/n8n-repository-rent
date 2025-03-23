@@ -1,0 +1,480 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail2": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MySQL3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-22T20:01:34.062Z",
+  "id": "vW47APdLdrBcwDc9",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Lead Routing",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "Label_29"
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -880,
+        -160
+      ],
+      "id": "c945a3d2-b03a-4bb1-acd4-f22d8cd630bc",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "text": "=Extract the following information from this lead inquiry email:\n\n- Full Name\n- Email Address\n- Phone Number\n- Property Address (what the lead is interested in)\n- Lead Comments (what the lead wants or asked)\n- Move-In Date (if available)\n- Source (such as Rent.com, Apartments.com, etc.)\n- Date Received (if listed)\n\nReturn the extracted data in this exact JSON format using the values found in the email content — do not generate or make up example data.\n\n{\n  \"name\": \"\",\n  \"email\": \"\",\n  \"phone\": \"\",\n  \"address\": \"\",\n  \"comments\": \"\",\n  \"moveInDate\": \"\",\n  \"source\": \"\",\n  \"received\": \"\"\n}\n {{ $json.text }}",
+        "schemaType": "fromJson",
+        "jsonSchemaExample": "{\n  \"name\": \"Wesley Ritchardson\",\n  \"email\": \"writchardson@gmail.com\",\n  \"phone\": \"(806) 677-3434\",\n  \"address\": \"1019 Sugarloaf Dr\",\n  \"comments\": \"Wesley Ritchardson wants to tour the afternoon of MON 3/24 at 1019 Sugarloaf Dr. Please respond to finalize when they can tour.\",\n  \"moveInDate\": \"03/25/2025\",\n  \"source\": \"Rent.com\",\n  \"received\": \"03/22/2025 12:27 PM\"\n}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1,
+      "position": [
+        -660,
+        -20
+      ],
+      "id": "44ee225f-12d0-437a-837e-78e3b7343e16",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4-turbo",
+          "mode": "list",
+          "cachedResultName": "gpt-4-turbo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -640,
+        200
+      ],
+      "id": "3c69df04-eba1-4002-b828-a224e072bedf",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1CSmBcfwkK2_kFANreWp9vY8Yg_c5Saf7onP9j9ouTyw",
+          "mode": "list",
+          "cachedResultName": "Property List",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CSmBcfwkK2_kFANreWp9vY8Yg_c5Saf7onP9j9ouTyw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CSmBcfwkK2_kFANreWp9vY8Yg_c5Saf7onP9j9ouTyw/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Property Name",
+              "lookupValue": "={{ $json.output.address }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -420,
+        -280
+      ],
+      "id": "339cc6f5-13e3-448b-a49a-33496a93b3e6",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  pr.property_id,\n  pr.property_group_id_s_,\n  pr.property_type,\n  CONCAT(lr.First, ' ', lr.Last) AS manager_name,\n  lr.email,\n  lr.group_id\nFROM properties_raw pr\nJOIN lead_router lr\n  ON FIND_IN_SET(lr.group_id, pr.property_group_id_s_) > 0\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        240,
+        -140
+      ],
+      "id": "2bcb9557-b50b-4273-8c15-74cac47402ae",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  item.json.output.address = item.json.output.address\n    .replace(/(drive|dr|street|st|avenue|ave|road|rd|court|ct|lane|ln)\\.?/g, '')\n    .replace(/[\\r\\n]/g, '')\n    .trim();\n  return item;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        -20
+      ],
+      "id": "fa3a135d-a986-4021-a075-ed035e80e6be",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  CONCAT(First, ' ', Last) AS manager_name,\n  email\n  \nFROM lead_router\nWHERE FIND_IN_SET(group_id, '1,41,46,49,50,51,56');\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        480,
+        -140
+      ],
+      "id": "5f09f2bc-09e1-45b7-b2be-1c2daac338dc",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "brandon+leads@blazeproperty.com",
+        "subject": "={{ $json.manager_name }} You have a new lead for {{ $('Code').item.json.output.address }}",
+        "message": "=<!DOCTYPE html> <html lang=\"en\"> <head>   <meta charset=\"UTF-8\">   <style>     body {       font-family: Arial, sans-serif;       background-color: #f9f9f9;       color: #333333;       padding: 20px;     }     .container {       background-color: #ffffff;       border: 1px solid #dddddd;       border-radius: 6px;       max-width: 600px;       margin: auto;       padding: 30px;     }     h2 {       color: #d24545;     }     .section {       margin-bottom: 20px;     }     .label {       font-weight: bold;       color: #555555;     }     .button {       display: inline-block;       padding: 12px 20px;       margin-top: 10px;       font-size: 16px;       color: #ffffff;       background-color: #d24545;       border: none;       border-radius: 4px;       text-decoration: none;     }     .footer {       font-size: 12px;       color: #999999;       margin-top: 30px;       text-align: center;     }   </style> </head> <body>   <div class=\"container\">     <h2>🚨 New Lead Alert!</h2>      <div class=\"section\">       <p><span class=\"label\">Manager:</span> {{ $json.manager_name }}</p>     </div>      <div class=\"section\">       <p><span class=\"label\">Lead Name:</span> {{ $('Code').item.json.output.name }}</p>       <p><span class=\"label\">Email:</span> {{ $('Code').item.json.output.email }}</p>       <p><span class=\"label\">Phone:</span> {{ $('Code').item.json.output.phone }}</p>       <p><span class=\"label\">Interested Property:</span> {{ $('MySQL').item.json.Property_Address }}</p>       <p><span class=\"label\">Move-In Date:</span> {{ $('Code').item.json.output.moveInDate }}</p>       <p><span class=\"label\">Source:</span> {{ $('Code').item.json.output.source }}</p>       <p><span class=\"label\">Received On:</span> </p>     </div>      <div class=\"section\">       <p><span class=\"label\">Comments:</span></p>       <p>{{ $('Code').item.json.output.comments }}</p>     </div>      <div class=\"section\">       <a href=\"mailto:{{ $('Code').item.json.output.email }}\" class=\"button\">📩 Email Lead</a>       <a href=\"tel:{{ $('Code').item.json.output.phone }}\" class=\"button\" style=\"background-color:#4CAF50;\">📞 Call Lead</a>     </div>      <div class=\"footer\">       Blaze Real Estate Lead Router · Amarillo, TX     </div>   </div> </body> </html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        740,
+        360
+      ],
+      "id": "752eddca-0fe0-4eae-b2db-2da5bce3e023",
+      "name": "Gmail",
+      "webhookId": "df89be4b-279d-4557-8a55-a4f043ab9c9b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail2').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        360
+      ],
+      "id": "53015f41-5809-465c-a9bd-13c6738bb9b6",
+      "name": "Gmail1",
+      "webhookId": "40c94d38-be6b-4c5c-b57f-7a7119b7c765",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        40
+      ],
+      "id": "d01e5436-9c29-4580-adde-e202ae448ed2",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 2,
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "Label_29"
+          ],
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -880,
+        40
+      ],
+      "id": "2c02f328-7722-477f-9560-b1a117ff1b97",
+      "name": "Gmail2",
+      "webhookId": "49d6103c-3d15-48b9-a4c8-65d63b8ba176",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  property_id,\n  property_group_id_s_,\n  property_type\nFROM properties_raw\nWHERE property_name LIKE '%Sugarloaf%'\nLIMIT 1;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -160,
+        -20
+      ],
+      "id": "1b1bf11f-dd6d-44f2-9206-712a70516660",
+      "name": "MySQL2",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "31c1373e-d468-4587-b6af-c81bbff8fb03",
+              "leftValue": "={{ $json.property_type }}",
+              "rightValue": "Single-Family",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        -20
+      ],
+      "id": "b51d0c94-5f54-43e3-bfec-176e84a9a285",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  pr.property_id,\n  pr.property_group_id_s_,\n  pr.property_type,\n  CONCAT(lr.First, ' ', lr.Last) AS manager_name,\n  lr.email,\n  lr.`property id` AS lead_property_id\nFROM properties_raw pr\nJOIN lead_router lr\n  ON pr.property_id = lr.`property id`\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        240,
+        180
+      ],
+      "id": "4b77dcac-47d3-45b1-b5c6-afa23eb7b69d",
+      "name": "MySQL3",
+      "credentials": {
+        "mySql": {
+          "id": "VyLDgRP2Ip7Kfq1V",
+          "name": "n8nBlaze access to sellmyam_reporting"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-22T22:25:23.000Z",
+  "versionId": "0f41c957-e7f0-4498-a7eb-2dccd8c8bdca"
+}
