@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "Extract from File": {
       "main": [
@@ -301,6 +301,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-22T16:51:24.000Z",
+  "updatedAt": "2025-03-22T19:22:24.000Z",
   "versionId": "8de74107-9ec7-44aa-85e5-668297306087"
 }
