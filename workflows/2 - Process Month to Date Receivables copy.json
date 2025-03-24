@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Code": {
       "main": [
@@ -203,10 +203,8 @@
         "operation": "download",
         "fileId": {
           "__rl": true,
-          "value": "1M1DTQ7vYdnU0CYHn9baIHXEddJddk6nJ",
-          "mode": "list",
-          "cachedResultName": "n8n Apartment Receivables To Date.csv\n",
-          "cachedResultUrl": "https://drive.google.com/file/d/1M1DTQ7vYdnU0CYHn9baIHXEddJddk6nJ/view?usp=drivesdk"
+          "mode": "id",
+          "value": "1M1DTQ7vYdnU0CYHn9baIHXEddJddk6nJ"
         },
         "options": {}
       },
@@ -259,8 +257,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -1500,
+        -440
       ],
       "id": "47dd1210-6301-4be3-a619-c1fe45c27922",
       "name": "Sticky Note"
@@ -275,8 +273,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        360,
-        20
+        -1140,
+        -420
       ],
       "id": "5e0d8686-4973-498e-a2f8-7eec6808ff69",
       "name": "Sticky Note1"
@@ -290,8 +288,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        880,
-        20
+        -620,
+        -420
       ],
       "id": "bfbd1d0d-1514-4488-a104-ef9379591357",
       "name": "Sticky Note2"
@@ -305,8 +303,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -1500,
+        -440
       ],
       "id": "6af5afb8-1690-4fcd-bc8d-849f6ac4c3b0",
       "name": "Sticky Note3"
@@ -321,8 +319,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        360,
-        20
+        -1140,
+        -420
       ],
       "id": "3bd238d9-ef24-4c20-9956-3fd596a91453",
       "name": "Sticky Note4"
@@ -336,8 +334,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        880,
-        20
+        -620,
+        -420
       ],
       "id": "5df7dbf0-5fe2-4d5e-9b58-64227fa81e1e",
       "name": "Sticky Note5"
@@ -375,6 +373,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-22T19:22:22.000Z",
-  "versionId": "5ef91e4f-100b-4e79-8d9f-b94910df59dd"
+  "updatedAt": "2025-03-24T01:34:45.000Z",
+  "versionId": "0eb41858-2f36-430e-8622-7702ae1cf4c4"
 }
