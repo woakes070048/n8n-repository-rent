@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Extract from File": {
       "main": [
@@ -220,10 +220,8 @@
         "operation": "download",
         "fileId": {
           "__rl": true,
-          "value": "1o39yt-5TfhYTxcq-gcCmCGQwkWZDRyoB",
-          "mode": "list",
-          "cachedResultName": "n8n Apartment Receivables Yesterday.csv\n",
-          "cachedResultUrl": "https://drive.google.com/file/d/1o39yt-5TfhYTxcq-gcCmCGQwkWZDRyoB/view?usp=drivesdk"
+          "mode": "id",
+          "value": "1o39yt-5TfhYTxcq-gcCmCGQwkWZDRyoB"
         },
         "options": {}
       },
@@ -301,6 +299,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-22T19:22:24.000Z",
-  "versionId": "8de74107-9ec7-44aa-85e5-668297306087"
+  "updatedAt": "2025-03-24T01:30:05.000Z",
+  "versionId": "d5ccb16f-7c3c-4095-9ec3-27693803d37d"
 }
