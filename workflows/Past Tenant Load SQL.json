@@ -38,7 +38,35 @@
       "main": [
         [
           {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
             "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Code",
             "type": "main",
             "index": 0
           }
@@ -58,8 +86,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1040,
-        -120
+        -1160,
+        20
       ],
       "id": "4467c9c7-7192-4d4b-8c84-5de3f77f051d",
       "name": "When clicking ‘Test workflow’"
@@ -71,7 +99,7 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        -800,
+        -840,
         20
       ],
       "id": "23fe6896-ed08-4afe-a23c-9863e6281627",
@@ -91,7 +119,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -600,
+        -620,
         20
       ],
       "id": "deb56e3c-72dd-4308-b581-fca8acb53b34",
@@ -233,7 +261,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -160,
+        180,
         20
       ],
       "id": "db5442a0-2a7e-4118-bdb9-5e99a6fe0cc3",
@@ -244,6 +272,33 @@
           "name": "Blazedata Hostinger"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "const batchSize = 100;\nconst allItems = items;\nconst currentIndex = $runIndex || 0;\nconst batch = allItems.slice(currentIndex * batchSize, (currentIndex + 1) * batchSize);\n\nreturn batch;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        300
+      ],
+      "id": "bdf38ad6-726f-49e9-9fe9-dfe0091b83af",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -140,
+        20
+      ],
+      "id": "8fa9f057-f007-4fa9-8a7a-a4a1b0330b95",
+      "name": "Loop Over Items"
     }
   ],
   "pinData": {},
@@ -253,6 +308,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-23T14:00:12.000Z",
-  "versionId": "3710158e-a6e9-46dd-bc6c-3a8772bed375"
+  "updatedAt": "2025-03-23T20:04:50.000Z",
+  "versionId": "3a2f6ae5-88f6-4792-888f-7a0673abfa2f"
 }
