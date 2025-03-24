@@ -1,16 +1,11 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Gmail Trigger": {
       "main": [
         [
           {
             "node": "Information Extractor",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get Managers",
             "type": "main",
             "index": 0
           }
@@ -22,6 +17,11 @@
         [
           {
             "node": "Normalize",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Managers",
             "type": "main",
             "index": 0
           }
@@ -65,7 +65,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "If2",
             "type": "main",
             "index": 0
           }
@@ -119,9 +119,9 @@
       "main": [
         [
           {
-            "node": "Merge",
+            "node": "Code",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
@@ -153,7 +153,7 @@
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -164,7 +164,7 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "Record Check",
             "type": "main",
             "index": 0
           }
@@ -207,7 +207,7 @@
       "main": [
         [
           {
-            "node": "Record Check",
+            "node": "Merge1",
             "type": "main",
             "index": 0
           }
@@ -242,6 +242,29 @@
           }
         ]
       ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-03-22T20:01:34.062Z",
@@ -264,15 +287,16 @@
         "filters": {
           "labelIds": [
             "Label_29"
-          ]
+          ],
+          "readStatus": "unread"
         },
         "options": {}
       },
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1060,
-        40
+        -1020,
+        -300
       ],
       "id": "c945a3d2-b03a-4bb1-acd4-f22d8cd630bc",
       "name": "Gmail Trigger",
@@ -293,8 +317,8 @@
       "type": "@n8n/n8n-nodes-langchain.informationExtractor",
       "typeVersion": 1,
       "position": [
-        -720,
-        40
+        -680,
+        -300
       ],
       "id": "44ee225f-12d0-437a-837e-78e3b7343e16",
       "name": "Information Extractor"
@@ -312,8 +336,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        -560,
-        220
+        -680,
+        -80
       ],
       "id": "3c69df04-eba1-4002-b828-a224e072bedf",
       "name": "OpenAI Chat Model",
@@ -326,7 +350,7 @@
     },
     {
       "parameters": {
-        "sendTo": "brandon+leads@blazeproperty.com",
+        "sendTo": "={{ $('Manager Match').item.json.manager_email }}",
         "subject": "={{ $json.manager_name }} You have a new lead for {{ $json.Property_Street_Address_1 }}",
         "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body {\n      font-family: 'Georgia', serif;\n      background-color: #f5f5f5;\n      color: #333333;\n      padding: 30px;\n    }\n    .container {\n      background-color: #ffffff;\n      border: 1px solid #e0e0e0;\n      border-radius: 6px;\n      max-width: 640px;\n      margin: auto;\n      padding: 40px;\n      box-shadow: 0 2px 6px rgba(0,0,0,0.05);\n    }\n    h2 {\n      color: #444;\n      margin-bottom: 25px;\n      border-bottom: 1px solid #dddddd;\n      padding-bottom: 10px;\n    }\n    .section {\n      margin-bottom: 30px;\n    }\n    .label {\n      display: inline-block;\n      font-weight: bold;\n      color: #555555;\n      width: 160px;\n    }\n    .value {\n      display: inline-block;\n      color: #333333;\n    }\n    .button-container {\n      margin-top: 20px;\n    }\n    .button {\n      display: inline-block;\n      padding: 10px 18px;\n      margin-right: 10px;\n      font-size: 15px;\n      color: #fff;\n      background-color: #444;\n      border-radius: 4px;\n      text-decoration: none;\n    }\n    .button.green {\n      background-color: #2e7d32;\n    }\n    .footer {\n      font-size: 12px;\n      color: #999999;\n      text-align: center;\n      margin-top: 40px;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <h2>🔔 New Lead Notification</h2>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Manager:</span> <span class=\"value\">{{ $json.manager_name }}</span></p>\n      <p><span class=\"label\">Property:</span> <span class=\"value\">{{ $json.Property_Street_Address_1 }}</span></p>\n      <p><span class=\"label\">Source:</span> <span class=\"value\">{{ $json.source }}</span></p>\n      <p><span class=\"label\">Received:</span> <span class=\"value\">{{ $json.received }}</span></p>\n    </div>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Lead Name:</span> <span class=\"value\">{{ $json.name }}</span></p>\n      <p><span class=\"label\">Email:</span> <span class=\"value\">{{ $json.email }}</span></p>\n      <p><span class=\"label\">Phone:</span> <span class=\"value\">\n        {{ \"(\" + $json.phone.slice(0,3) + \") \" + $json.phone.slice(3,6) + \"-\" + $json.phone.slice(6) }}\n      </span></p>\n    </div>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Comments:</span></p>\n      <p class=\"value\">{{ $json.comments }}</p>\n    </div>\n\n    <div class=\"button-container\">\n      <a href=\"mailto:{{ $json.email }}\" class=\"button\">📧 Email</a>\n      <a href=\"tel:{{ $json.phone }}\" class=\"button green\">📞 Call</a>\n    </div>\n\n    <div class=\"footer\">\n      Blaze Real Estate Lead Routing · Amarillo, TX\n    </div>\n  </div>\n</body>\n</html>\n",
         "options": {}
@@ -335,7 +359,7 @@
       "typeVersion": 2.1,
       "position": [
         1160,
-        -240
+        -300
       ],
       "id": "752eddca-0fe0-4eae-b2db-2da5bce3e023",
       "name": "Gmail",
@@ -350,13 +374,13 @@
     {
       "parameters": {
         "operation": "markAsRead",
-        "messageId": "={{ $('Gmail2').item.json.id }}"
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1360,
-        -240
+        1380,
+        -300
       ],
       "id": "53015f41-5809-465c-a9bd-13c6738bb9b6",
       "name": "Gmail1",
@@ -378,8 +402,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.8,
       "position": [
-        980,
-        -740
+        1000,
+        -800
       ],
       "id": "c7aa93d6-324a-4646-897e-69245f8f54a9",
       "name": "AI Agent"
@@ -398,8 +422,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        940,
-        -500
+        960,
+        -560
       ],
       "id": "0641f46a-c440-4cee-8a7c-51efde4be04c",
       "name": "OpenAI Chat Model1",
@@ -499,8 +523,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1380,
-        -740
+        1560,
+        -700
       ],
       "id": "75d9f819-cc6e-44e2-839f-cbe7e74c64c8",
       "name": "Edit Fields"
@@ -512,24 +536,24 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
       "position": [
-        1160,
-        -500
+        1180,
+        -560
       ],
       "id": "77fb6b11-a9ac-410d-9e0f-59613fd92477",
       "name": "Structured Output Parser"
     },
     {
       "parameters": {
-        "sendTo": "brandon@blazeproperty.com",
-        "subject": "={{ $json.output[0].first_name }} Lead is Ineligible ",
+        "sendTo": "={{ $('Manager Match').item.json.manager_email }}",
+        "subject": "=Lead {{ $json.output[0].first_name }} {{ $json.output[0].last_name }} is Ineligible ",
         "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <title>⚠️ Ineligible Past Tenant Alert</title>\n</head>\n<body style=\"font-family: Arial, sans-serif; background-color: #fff3f3; color: #b00020; padding: 20px; border: 2px solid #b00020; max-width: 600px; margin: auto;\">\n\n  <h1 style=\"color: #b00020; font-size: 26px; text-align: center;\">🚫 Ineligible Past Tenant Detected</h1>\n\n  <hr style=\"border: none; border-top: 2px solid #b00020; margin: 20px 0;\">\n\n  <p><strong>Full Name:</strong> {{ $json.output[0].first_name }} {{ $json.output[0].last_name }}</p>\n  <p><strong>Property: {{ $json.output[0].property }}</strong> </p>\n  <p><strong>Unit:</strong> {{ $json.output[0].unit }}</p>\n\n  <p><strong>Move-In Date:</strong> {{ $json.output[0].move_in_date }}</p>\n  <p><strong>Lease-To Date:</strong> {{ $json.output[0].lease_to_date }}</p>\n  <p><strong>Move-Out Date:</strong> {{ $json.output[0].move_out_date }}</p>\n\n  <p><strong>Balance Owed:</strong> <span style=\"color: #b00020;\">${{ $json.output[0].balance }}</span></p>\n  <p><strong>In Collections:</strong> {{ $json.output[0].in_collections }}</p>\n  <p><strong>Late Payments:</strong> {{ $json.output[0].late_count }}</p>\n  <p><strong>Tenant Tags:</strong> {{ $json.tenant_tags || \"(none)\" }}</p>\n\n  <div style=\"background-color: #ffe6e6; padding: 15px; border-left: 6px solid #b00020; margin-top: 20px;\">\n    <strong>Summary:</strong><br>\n    {{ $json.output[0].summary }}\n  </div>\n\n  <p style=\"margin-top: 30px;\">\n    🔗 <strong>Tenant Record:</strong><br>\n    <a href=\"{{ $json.output[0].url }}\" style=\"color: #b00020; text-decoration: underline;\">\n      View in AppFolio\n    </a>\n  </p>\n\n  <hr style=\"border: none; border-top: 1px solid #ccc; margin: 30px 0;\">\n  <p style=\"color: #777; font-size: 12px; text-align: center;\">\n    This message was generated automatically by Blaze Real Estate's lead screening system.\n  </p>\n\n</body>\n</html>\n",
         "options": {}
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1600,
-        -740
+        1720,
+        -540
       ],
       "id": "9ac24ab7-9a70-438d-b0c6-23a3d49c8fb8",
       "name": "Gmail3",
@@ -543,15 +567,19 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT \n  Property_ID,\n  Property_Group_ID_s_,\n  Property_Type,\n  Property_Street_Address_1\nFROM properties_raw\nWHERE LOWER(Property_Street_Address_1) LIKE CONCAT('%', '{{ $json.Property_Street_Address_1 }}', '%');\n",
+        "table": {
+          "__rl": true,
+          "value": "routed_leads",
+          "mode": "list",
+          "cachedResultName": "routed_leads"
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        600,
-        120
+        860,
+        -100
       ],
       "id": "1b1bf11f-dd6d-44f2-9206-712a70516660",
       "name": "MySQL2",
@@ -571,8 +599,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -820,
-        -340
+        -780,
+        -680
       ],
       "id": "f1ef67ae-d225-41a6-abcd-31ea61aecb65",
       "name": "Get Managers",
@@ -588,13 +616,15 @@
       "parameters": {
         "mode": "combine",
         "combineBy": "combineByPosition",
-        "options": {}
+        "options": {
+          "includeUnpaired": true
+        }
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        -440,
-        -380
+        -400,
+        -520
       ],
       "id": "97556422-e879-458c-a4fe-6900570fe85b",
       "name": "Merge"
@@ -602,14 +632,14 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT \n  Property_ID,\n  Property_Group_ID_s_,\n  Property_Street_Address_1,\n  Property_Type\nFROM properties_raw\nWHERE LOWER(Property_Street_Address_1) LIKE CONCAT('%', '{{ $json.address }}', '%');\n",
+        "query": "SELECT \n  Property_ID,\n  Property_Group_ID_s_,\n  Property_Street_Address_1,\n  Property_Type\nFROM properties_raw\nWHERE \n  Address_Number = '{{ $json.address_number }}'",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        220,
-        60
+        160,
+        -260
       ],
       "id": "c4bafd0d-ca93-4227-9cd8-8332880f3aed",
       "name": "Property Lookup",
@@ -648,21 +678,21 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        620,
-        -320
+        640,
+        -400
       ],
       "id": "618073cd-01ba-4712-8d04-7e94fbb96230",
       "name": "If"
     },
     {
       "parameters": {
-        "jsCode": "const original = $input.all()[0][0]?.json || {};  // First item from input 0 (lead data)\nconst match = $input.all()[1]?.[0]?.json || {};   // First item from input 1 (MySQL match)\n\nconst recordExists = Object.keys(match).length > 0;\n\nreturn [{\n  json: {\n    ...original,\n    ...match,\n    record_found: recordExists\n  }\n}];\n"
+        "jsCode": "return items.map(item => {\n  const data = item.json;\n\n  const recordExists = !!data.tenant_id; // use any reliable field unique to the match\n\n  return {\n    json: {\n      ...data,\n      record_found: recordExists\n    }\n  };\n});\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        180,
-        -500
+        440,
+        -540
       ],
       "id": "eae6a1b1-65a0-4233-927d-44a11a3f2feb",
       "name": "Record Check"
@@ -676,34 +706,34 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        380,
-        -360
+        220,
+        -540
       ],
       "id": "19aeb1f1-a51f-4836-be26-ce10243f32f3",
       "name": "Merge1"
     },
     {
       "parameters": {
-        "jsCode": "return items.map(item => {\n  const output = item.json.output || {};\n\n  // Normalize address\n  const addr = output.address || '';\n  output.address = addr\n    .replace(/\\b(drive|dr|street|st|avenue|ave|road|rd|court|ct|lane|ln|trail|trl|boulevard|blvd|way|terrace|ter|place|pl|circle|cir|loop)\\b\\.?/gi, '')\n    .replace(/[^\\w\\s]/g, '')\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .toLowerCase();\n\n  // Normalize phone to digits only\n  if (output.phone) {\n    output.phone = output.phone.replace(/\\D/g, '');\n  }\n\n  // Split name into first and last\n  const fullName = output.name || '';\n  const nameParts = fullName.trim().split(/\\s+/);\n  const firstName = nameParts.slice(0, -1).join(' ');\n  const lastName = nameParts.slice(-1).join(' ');\n\n  return {\n    json: {\n      ...output,\n      first_name: firstName,\n      last_name: lastName\n    }\n  };\n});\n"
+        "jsCode": "return items.map(item => {\n  const output = item.json.output || {};\n  let address = output.address || '';\n  let phone = output.phone || '';\n\n  // Strip phone down to digits only\n  const phoneDigits = phone.replace(/\\D/g, '');\n\n  // Clean up address\n  address = address.toLowerCase().replace(/\\s+/g, ' ').trim();\n  address = address.replace(/\\b(unit|apt|apartment|#)\\b\\s*\\w*/gi, ''); // remove unit info\n  address = address\n    .replace(/\\b(street|st|avenue|ave|road|rd|drive|dr|court|ct|lane|ln|trail|trl|boulevard|blvd|place|pl|terrace|ter|circle|cir|way)\\b\\.?/gi, '')\n    .replace(/[^\\w\\s]/g, '') // remove punctuation\n    .replace(/\\s+/g, ' ') // collapse spaces\n    .trim();\n\n  const parts = address.split(' ');\n  const addressNumber = parts[0] || '';\n  const addressStreet = parts.slice(1).join(' ') || '';\n\n  const fullName = output.name || '';\n  const nameParts = fullName.trim().split(/\\s+/);\n  const firstName = nameParts.slice(0, -1).join(' ');\n  const lastName = nameParts.slice(-1).join(' ');\n\n  return {\n    json: {\n      ...output,\n      phone: phoneDigits,\n      first_name: firstName,\n      last_name: lastName,\n      address_number: addressNumber,\n      address_street: addressStreet,\n      address: address\n    }\n  };\n});\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -180,
-        60
+        -140,
+        -280
       ],
       "id": "48ed0f20-0ebc-4b1f-8511-facd0565193e",
       "name": "Normalize"
     },
     {
       "parameters": {
-        "jsCode": "const lead = $json;\nconst managers = $items(\"Get Managers\");\n\n// Extract relevant fields\nconst propertyId = String(lead.Property_ID).trim();\nconst groupIds = (lead.Property_Group_ID_s_ || \"\")\n  .split(',').map(id => id.trim());\nconst propertyType = (lead.Property_Type || \"\").toLowerCase();\n\nlet matchedManager = null;\n\nfor (const mgr of managers) {\n  const mgrJson = mgr.json;\n\n  const mgrPropertyIds = (mgrJson.property_id || \"\")\n    .split(',').map(id => id.trim());\n\n  const mgrGroupIds = (mgrJson.group_id || \"\")\n    .split(',').map(id => id.trim());\n\n  const isMultifamily = propertyType === \"multifamily\";\n\n  const match = isMultifamily\n    ? mgrPropertyIds.includes(propertyId)\n    : groupIds.some(id => mgrGroupIds.includes(id));\n\n  if (match) {\n    matchedManager = mgrJson;\n    break;\n  }\n}\n\n// Output\nreturn [{\n  json: {\n    ...lead,\n    manager_name: matchedManager\n      ? `${matchedManager.manager_first} ${matchedManager.manager_last}`\n      : \"Unknown\",\n    manager_email: matchedManager\n      ? matchedManager.manager_email\n      : \"brandon@blazeproperty.com\",\n    match_type: matchedManager\n      ? (propertyType === \"multifamily\" ? \"property_id\" : \"group_id\")\n      : \"none\"\n  }\n}];\n"
+        "jsCode": "const lead = $json;\nconst managers = $items(\"Get Managers\");\n\n// Extract fields from lead\nconst propertyId = String(lead.Property_ID).trim();\nconst groupIds = (lead.Property_Group_ID_s_ || \"\").split(',').map(id => id.trim());\nconst propertyType = (lead.Property_Type || \"\").toLowerCase().replace(/[^a-z]/g, \"\"); // normalize\n\nlet matchedManager = null;\nlet match_type = \"none\";\n\n// Try to match using group_id first (Single-Family style)\nfor (const mgr of managers) {\n  const mgrJson = mgr.json;\n  const mgrGroupIds = (mgrJson.group_id || \"\").split(',').map(id => id.trim());\n\n  if (groupIds.some(id => mgrGroupIds.includes(id))) {\n    matchedManager = mgrJson;\n    match_type = \"group_id\";\n    break;\n  }\n}\n\n// If no group match, try property_id (Multi-Family style)\nif (!matchedManager) {\n  for (const mgr of managers) {\n    const mgrJson = mgr.json;\n    const mgrPropertyIds = (mgrJson.property_id || \"\").split(',').map(id => id.trim());\n\n    if (mgrPropertyIds.includes(propertyId)) {\n      matchedManager = mgrJson;\n      match_type = \"property_id\";\n      break;\n    }\n  }\n}\n\n// Return updated lead data\nreturn [{\n  json: {\n    ...lead,\n    manager_name: matchedManager\n      ? `${matchedManager.manager_first} ${matchedManager.manager_last}`\n      : \"Unknown\",\n    manager_email: matchedManager\n      ? matchedManager.manager_email\n      : \"brandon@blazeproperty.com\",\n    match_type\n  }\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         -200,
-        -380
+        -520
       ],
       "id": "c31c2dda-30d6-4df7-9616-7573b8ca1573",
       "name": "Manager Match"
@@ -717,8 +747,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        0,
-        -500
+        20,
+        -740
       ],
       "id": "1102bfc9-3cd8-4cf1-b6a4-d76255f48583",
       "name": "Past Tenant Check",
@@ -758,24 +788,24 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        840,
-        -220
+        860,
+        -280
       ],
       "id": "d60e3646-440a-455f-bb48-1cd3d94b9427",
       "name": "If1"
     },
     {
       "parameters": {
-        "sendTo": "brandon+leads@blazeproperty.com",
+        "sendTo": "={{ $('Manager Match').item.json.manager_email }}",
         "subject": "={{ $json.manager_name }} You have a new lead for {{ $json.Property_Street_Address_1 }}",
-        "message": "=<!DOCTYPE html> <html lang=\"en\"> <head>   <meta charset=\"UTF-8\">   <style>     body {       font-family: Arial, sans-serif;       background-color: #f9f9f9;       color: #333333;       padding: 20px;     }     .container {       background-color: #ffffff;       border: 1px solid #dddddd;       border-radius: 6px;       max-width: 600px;       margin: auto;       padding: 30px;     }     h2 {       color: #d24545;     }     .section {       margin-bottom: 20px;     }     .label {       font-weight: bold;       color: #555555;     }     .button {       display: inline-block;       padding: 12px 20px;       margin-top: 10px;       font-size: 16px;       color: #ffffff;       background-color: #d24545;       border: none;       border-radius: 4px;       text-decoration: none;     }     .footer {       font-size: 12px;       color: #999999;       margin-top: 30px;       text-align: center;     }   </style> </head> <body>   <div class=\"container\">     <h2>🚨 New Lead Alert!</h2>      <div class=\"section\">       <p><span class=\"label\">Manager:</span> {{ $json.manager_name }}</p>     </div>      <div class=\"section\">       <p><span class=\"label\">Lead Name:</span> {{ $('Record Check').item.json.output.name }}</p>       <p><span class=\"label\">Email:</span> {{ $('Record Check').item.json.output.email }}</p>       <p><span class=\"label\">Phone:</span> {{ $('Record Check').item.json.output.phone }}</p>       <p><span class=\"label\">Interested Property:</span> {{ $('Get Managers').item.json.Property_Address }}</p>       <p><span class=\"label\">Move-In Date:</span> {{ $('Record Check').item.json.output.moveInDate }}</p>       <p><span class=\"label\">Source:</span> {{ $('Record Check').item.json.output.source }}</p>       <p><span class=\"label\">Received On:</span> </p>     </div>      <div class=\"section\">       <p><span class=\"label\">Comments:</span></p>       <p>{{ $('Record Check').item.json.output.comments }}</p>     </div>      <div class=\"section\">       <a href=\"mailto:{{ $('Record Check').item.json.output.email }}\" class=\"button\">📩 Email Lead</a>       <a href=\"tel:{{ $('Record Check').item.json.output.phone }}\" class=\"button\" style=\"background-color:#4CAF50;\">📞 Call Lead</a>     </div>      <div class=\"footer\">       Blaze Real Estate Lead Router · Amarillo, TX     </div>   </div> </body> </html>",
+        "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body {\n      font-family: 'Georgia', serif;\n      background-color: #f5f5f5;\n      color: #333333;\n      padding: 30px;\n    }\n    .container {\n      background-color: #ffffff;\n      border: 1px solid #e0e0e0;\n      border-radius: 6px;\n      max-width: 640px;\n      margin: auto;\n      padding: 40px;\n      box-shadow: 0 2px 6px rgba(0,0,0,0.05);\n    }\n    h2 {\n      color: #444;\n      margin-bottom: 25px;\n      border-bottom: 1px solid #dddddd;\n      padding-bottom: 10px;\n    }\n    .section {\n      margin-bottom: 30px;\n    }\n    .label {\n      display: inline-block;\n      font-weight: bold;\n      color: #555555;\n      width: 160px;\n    }\n    .value {\n      display: inline-block;\n      color: #333333;\n    }\n    .button-container {\n      margin-top: 20px;\n    }\n    .button {\n      display: inline-block;\n      padding: 10px 18px;\n      margin-right: 10px;\n      font-size: 15px;\n      color: #fff;\n      background-color: #444;\n      border-radius: 4px;\n      text-decoration: none;\n    }\n    .button.green {\n      background-color: #2e7d32;\n    }\n    .footer {\n      font-size: 12px;\n      color: #999999;\n      text-align: center;\n      margin-top: 40px;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <h2>🔔 New Lead Notification</h2>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Manager:</span> <span class=\"value\">{{ $json.manager_name }}</span></p>\n      <p><span class=\"label\">Property:</span> <span class=\"value\">{{ $json.Property_Street_Address_1 }}</span></p>\n      <p><span class=\"label\">Source:</span> <span class=\"value\">{{ $json.source }}</span></p>\n      <p><span class=\"label\">Received:</span> <span class=\"value\">{{ $json.received }}</span></p>\n    </div>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Lead Name:</span> <span class=\"value\">{{ $json.name }}</span></p>\n      <p><span class=\"label\">Email:</span> <span class=\"value\">{{ $json.email }}</span></p>\n      <p><span class=\"label\">Phone:</span> <span class=\"value\">\n        {{ \"(\" + $json.phone.slice(0,3) + \") \" + $json.phone.slice(3,6) + \"-\" + $json.phone.slice(6) }}\n      </span></p>\n    </div>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Comments:</span></p>\n      <p class=\"value\">{{ $json.comments }}</p>\n    </div>\n\n    <div class=\"button-container\">\n      <a href=\"mailto:{{ $json.email }}\" class=\"button\">📧 Email</a>\n      <a href=\"tel:{{ $json.phone }}\" class=\"button green\">📞 Call</a>\n    </div>\n\n    <div class=\"footer\">\n      Blaze Real Estate Lead Routing · Amarillo, TX\n    </div>\n  </div>\n</body>\n</html>\n",
         "options": {}
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1160,
-        -40
+        1180,
+        -100
       ],
       "id": "ae4aad06-0350-4bc8-a529-3eaa5852b5f6",
       "name": "Gmail4",
@@ -790,13 +820,13 @@
     {
       "parameters": {
         "operation": "markAsRead",
-        "messageId": "={{ $('Gmail2').item.json.id }}"
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1360,
-        -40
+        1380,
+        -100
       ],
       "id": "90fa8ffa-221a-41f4-8b67-83bf940f5416",
       "name": "Gmail5",
@@ -807,15 +837,72 @@
           "name": "Gmail account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json;\nconst possibleMatches = $items(\"Property Lookup\"); // Adjust if your node is named differently\n\nconst leadStreet = (input.address_street || \"\").toLowerCase().trim();\n\nlet bestMatch = null;\n\nfor (const match of possibleMatches) {\n  const propertyStreet = (match.json.Property_Street_Address_1 || \"\")\n    .toLowerCase()\n    .replace(/[^a-z\\s]/gi, '')\n    .trim();\n\n  // Break into words and compare\n  const streetWords = propertyStreet.split(' ').slice(1).join(' ');\n  if (leadStreet.startsWith(streetWords)) {\n    bestMatch = match.json;\n    break;\n  }\n}\n\n// Return best match or fallback to the first one (or none)\nif (bestMatch) {\n  return [{\n    json: {\n      ...input,\n      ...bestMatch,\n      match_level: \"exact\"\n    }\n  }];\n} else if (possibleMatches.length > 0) {\n  return [{\n    json: {\n      ...input,\n      ...possibleMatches[0].json,\n      match_level: \"fallback\"\n    }\n  }];\n} else {\n  return [{\n    json: {\n      ...input,\n      match_level: \"none\"\n    }\n  }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        -260
+      ],
+      "id": "7b23b226-7048-4acb-ad07-b7e8ed30cc33",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e56e79e5-7bb4-4552-9528-49221f03ca36",
+              "leftValue": "={{ $json.output[0].eligible }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        -800
+      ],
+      "id": "33ff326d-34ae-4a3f-b578-9fda9c01a239",
+      "name": "If2"
     }
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Gmail Trigger": {
+      "Gmail Trigger": {
+        "lastTimeChecked": 1742792419,
+        "possibleDuplicates": [
+          "195c674b2cbf9336"
+        ]
+      }
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-03-23T17:23:13.000Z",
-  "versionId": "129824c2-c0b0-4959-8a29-a12e1beb9426"
+  "triggerCount": 1,
+  "updatedAt": "2025-03-24T05:00:19.844Z",
+  "versionId": "35d90c00-1992-4be1-b604-dec67d35ff6d"
 }
