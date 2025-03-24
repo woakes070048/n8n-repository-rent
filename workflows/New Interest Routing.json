@@ -1,0 +1,906 @@
+{
+  "active": true,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Normalize",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Managers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Gmail3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL2": {
+      "main": [
+        []
+      ]
+    },
+    "Get Managers": {
+      "main": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Manager Match",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Property Lookup": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MySQL2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record Check": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Record Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize": {
+      "main": [
+        [
+          {
+            "node": "Property Lookup",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manager Match": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Past Tenant Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Past Tenant Check": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail4": {
+      "main": [
+        [
+          {
+            "node": "Gmail5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-23T21:28:25.099Z",
+  "id": "9f26vskSPTjpbnOi",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "New Interest Routing",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "Label_29"
+          ],
+          "q": "New Interest on an existing guest card",
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1020,
+        -300
+      ],
+      "id": "49ed8302-b33d-4074-af8f-448c3ff9b6bc",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "=Extract the following information from this lead inquiry email. Use only the information explicitly written in the content — do not make up or assume anything.\n\n- Full Name  \n- Email Address  \n- Phone Number  \n- Property Address (what the lead is interested in)  \n- Lead Comments (what the lead wants or asked)  \n- Source (such as Zillow, Rent.com, etc. - if mentioned)\n\nReturn the result in this exact JSON format:\n\n{\n  \"name\": \"\",\n  \"email\": \"\",\n  \"phone\": \"\",\n  \"address\": \"\",\n  \"comments\": \"\",\n  \"source\": \"\"\n}\n\n{{ $json.text }}\n",
+        "schemaType": "fromJson",
+        "jsonSchemaExample": "{\n  \"name\": \"Mckayla Kauffman\",\n  \"email\": \"dawnie83099@gmail.com\",\n  \"phone\": \"(806) 731-2558\",\n  \"address\": \"2003 N Spring\",\n  \"comments\": \"I would like to schedule a tour. Would any of these dates work for you? Saturday (2/22)\",\n  \"source\": \"Zillow Rental Network\"\n}\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        -300
+      ],
+      "id": "fbb894ee-4d16-45db-94be-7ab918ea626f",
+      "name": "Information Extractor"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4-turbo",
+          "mode": "list",
+          "cachedResultName": "gpt-4-turbo"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -680,
+        -80
+      ],
+      "id": "f826645a-563c-4d4d-9d06-9000d24a299a",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Manager Match').item.json.manager_email }}",
+        "subject": "={{ $json.manager_name }} You have a new lead for {{ $json.Property_Street_Address_1 }}",
+        "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body {\n      font-family: 'Georgia', serif;\n      background-color: #f5f5f5;\n      color: #333333;\n      padding: 30px;\n    }\n    .container {\n      background-color: #ffffff;\n      border: 1px solid #e0e0e0;\n      border-radius: 6px;\n      max-width: 640px;\n      margin: auto;\n      padding: 40px;\n      box-shadow: 0 2px 6px rgba(0,0,0,0.05);\n    }\n    h2 {\n      color: #444;\n      margin-bottom: 25px;\n      border-bottom: 1px solid #dddddd;\n      padding-bottom: 10px;\n    }\n    .section {\n      margin-bottom: 30px;\n    }\n    .label {\n      display: inline-block;\n      font-weight: bold;\n      color: #555555;\n      width: 160px;\n    }\n    .value {\n      display: inline-block;\n      color: #333333;\n    }\n    .button-container {\n      margin-top: 20px;\n    }\n    .button {\n      display: inline-block;\n      padding: 10px 18px;\n      margin-right: 10px;\n      font-size: 15px;\n      color: #fff;\n      background-color: #444;\n      border-radius: 4px;\n      text-decoration: none;\n    }\n    .button.green {\n      background-color: #2e7d32;\n    }\n    .footer {\n      font-size: 12px;\n      color: #999999;\n      text-align: center;\n      margin-top: 40px;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <h2>🔔 New Lead Notification</h2>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Manager:</span> <span class=\"value\">{{ $json.manager_name }}</span></p>\n      <p><span class=\"label\">Property:</span> <span class=\"value\">{{ $json.Property_Street_Address_1 }}</span></p>\n      <p><span class=\"label\">Source:</span> <span class=\"value\">{{ $json.source }}</span></p>\n      <p><span class=\"label\">Received:</span> <span class=\"value\">{{ $json.received }}</span></p>\n    </div>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Lead Name:</span> <span class=\"value\">{{ $json.name }}</span></p>\n      <p><span class=\"label\">Email:</span> <span class=\"value\">{{ $json.email }}</span></p>\n      <p><span class=\"label\">Phone:</span> <span class=\"value\">\n        {{ \"(\" + $json.phone.slice(0,3) + \") \" + $json.phone.slice(3,6) + \"-\" + $json.phone.slice(6) }}\n      </span></p>\n    </div>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Comments:</span></p>\n      <p class=\"value\">{{ $json.comments }}</p>\n    </div>\n\n    <div class=\"button-container\">\n      <a href=\"mailto:{{ $json.email }}\" class=\"button\">📧 Email</a>\n      <a href=\"tel:{{ $json.phone }}\" class=\"button green\">📞 Call</a>\n    </div>\n\n    <div class=\"footer\">\n      Blaze Real Estate Lead Routing · Amarillo, TX\n    </div>\n  </div>\n</body>\n</html>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1160,
+        -300
+      ],
+      "id": "e21b38e5-3f50-4186-897d-f342d44b5947",
+      "name": "Gmail",
+      "webhookId": "bba89ed8-dc5b-4a0a-94c4-c0b7b90ee1ca",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1380,
+        -300
+      ],
+      "id": "9a11a164-cd52-43a6-8427-ef162510cdb9",
+      "name": "Gmail1",
+      "webhookId": "2064291d-6bd6-4a44-96e8-607b8286929f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an assistant for a property management company. For each past tenant record, return a JSON object with:\n\n- first_name\n- last_name\n- property\n- unit\n- move_in_date\n- lease_to_date\n- move_out_date\n- balance (as a number)\n- in_collections (\"Yes\" or \"No\")\n- late_count (as a number)\n- tenant_tags\n- summary: a professional internal manager summary\n- eligible: true or false, depending on whether this tenant should be approved in the future\n- url: built using this format — https://blazepropertymanagement.appfolio.com/occupancies/{{ $json.occupancy_id }}/selected_tenant/{{ $json.tenant_id }}\n\nInstructions for summary and eligibility logic:\n- Lease Completion: If move_out_date is within 30 days of lease_to_date, assume lease fulfilled. If either is missing, mark \"unknown\".\n- A tenant is **ineligible** if they:\n  - Owe a balance at move-out\n  - Are in collections\n  - Have 5 or more late payments\n  - Have delinquency notes showing broken commitments\n- Otherwise, consider them eligible.\n- Interpret \"Financially Responsible\" as an obligated party on the lease.\n\nRespond ONLY with a JSON array of results in this format:\n```json\n[\n  {\n    \"first_name\": \"\",\n    \"last_name\": \"\",\n    \"property\": \"\",\n    \"unit\": \"\",\n    \"move_in_date\": \"\",\n    \"lease_to_date\": \"\",\n    \"move_out_date\": \"\",\n    \"balance\": 0,\n    \"in_collections\": \"\",\n    \"late_count\": 0,\n    \"tenant_tags\": \"\",\n    \"summary\": \"\",\n    \"eligible\": true,\n    \"url\": \"\"\n  }\n]\nproperty: {{ $json.property }}\nTenant: {{ $json.tenant }}\nPhone: {{ $json.phone_1 }}\nemail: {{ $json.email_1 }}\nMove-In Date: {{ $json.move_in_date }}\nMove-Out Date: {{ $json.move_out_date }}\nLease To Date: {{ $json.least_to_date }}\nTenant Tage: {{ $json.tenant_tags }}\nBalance Owed: {{ $json.balance }}\nLate Count: {{ $json.late_count }}\nDelinquency Notes: {{ $json.delinquency_notes }}\nIn Collections: {{ $json.in_collections }}\nFirst name: {{ $json.first_name }}\nLast Name: {{ $json.last_name }}\nOccupancy_ID: {{ $json.occupancy_id }}\nUnit ID: {{ $json.unit_id }}\nTenant ID: {{ $json.tenant_id }}\nDeposit: {{ $json.deposit }}\nNSF Count: {{ $json.nsf_count }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        1000,
+        -800
+      ],
+      "id": "320e0a39-c82b-4429-9d17-583520cf0bc3",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {
+          "responseFormat": "json_object"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        -560
+      ],
+      "id": "e62c06c0-fd5e-498f-a0a7-c3c9e2e5240e",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "536b18a3-d414-4933-9659-3da269d0d932",
+              "name": "output[0].first_name",
+              "value": "={{ $json.output[0].first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "f6ff907d-cfb5-4bd6-bef5-5e0619e13d44",
+              "name": "output[0].last_name",
+              "value": "={{ $json.output[0].last_name }}",
+              "type": "string"
+            },
+            {
+              "id": "40d7d4f3-8e59-4c6f-b89f-ef0925c7892f",
+              "name": "output[0].property",
+              "value": "={{ $json.output[0].property }}",
+              "type": "string"
+            },
+            {
+              "id": "adb3060d-7e89-4c20-acec-0a334f505f24",
+              "name": "output[0].unit",
+              "value": "={{ $json.output[0].unit }}",
+              "type": "string"
+            },
+            {
+              "id": "2a9a8feb-9c39-4c83-b154-17381f8c0e0c",
+              "name": "output[0].move_in_date",
+              "value": "={{ $json.output[0].move_in_date }}",
+              "type": "string"
+            },
+            {
+              "id": "2c4bd481-e2f2-442c-84be-63ba4e7afdcb",
+              "name": "output[0].lease_to_date",
+              "value": "={{ $json.output[0].lease_to_date }}",
+              "type": "string"
+            },
+            {
+              "id": "a87ed588-58da-4dd3-aae4-3b55d2012417",
+              "name": "output[0].move_out_date",
+              "value": "={{ $json.output[0].move_out_date }}",
+              "type": "string"
+            },
+            {
+              "id": "c8b58953-e533-4c31-8f11-e914a98a84cd",
+              "name": "output[0].balance",
+              "value": "={{ $json.output[0].balance }}",
+              "type": "number"
+            },
+            {
+              "id": "c8930de1-5c40-4a0e-bcf6-9f93e731c7a1",
+              "name": "output[0].in_collections",
+              "value": "={{ $json.output[0].in_collections }}",
+              "type": "string"
+            },
+            {
+              "id": "83c12150-d9d5-4b05-9e1d-2746a8a1309a",
+              "name": "output[0].late_count",
+              "value": "={{ $json.output[0].late_count }}",
+              "type": "number"
+            },
+            {
+              "id": "7e643fa5-4a0a-489c-938f-6867e8d19c85",
+              "name": "output[0].summary",
+              "value": "={{ $json.output[0].summary }}",
+              "type": "string"
+            },
+            {
+              "id": "89f4a118-75f6-4e89-8a12-e054047c4bd1",
+              "name": "output[0].eligible",
+              "value": "={{ $json.output[0].eligible }}",
+              "type": "boolean"
+            },
+            {
+              "id": "19250fac-4b3e-46dd-98f4-1ff7d712ec33",
+              "name": "output[0].url",
+              "value": "={{ $json.output[0].url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1560,
+        -700
+      ],
+      "id": "23d77e74-b0c2-4b59-aeb7-802b39dce12f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "[\n  {\n    \"first_name\": \"Maribel\",\n    \"last_name\": \"Cabrales\",\n    \"property\": \"Evergreen Apartments - 820 Evergreen Amarillo, TX 79107\",\n    \"unit\": \"1466846\",\n    \"move_in_date\": \"2022-03-01\",\n    \"lease_to_date\": \"2023-02-28\",\n    \"move_out_date\": \"2023-01-30\",\n    \"balance\": 2919.59,\n    \"in_collections\": \"Yes\",\n    \"late_count\": 8,\n    \"tenant_tags\": \"Texas Rent Relief\",\n    \"summary\": \"Tenant Maribel Cabrales was the obligated party on the lease at Evergreen Apartments, Unit 1466846. The lease began on 2022-03-01 and was scheduled to end on 2023-02-28. The tenant moved out on 2023-01-30, which is within 30 days of the lease end date, indicating likely lease fulfillment. However, the tenant left with an unpaid balance of $2,919.59, accrued 8 late payments, and the account was sent to collections. There were no documented delinquency notes, but the financial history indicates chronic payment issues.\",\n    \"eligible\": false,\n    \"url\": \"https://blazepropertymanagement.appfolio.com/occupancies/1144/selected_tenant/1561\"\n  }\n]\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1180,
+        -560
+      ],
+      "id": "aafae186-44c7-404b-81c0-7aab03d00247",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Manager Match').item.json.manager_email }}",
+        "subject": "=Lead {{ $json.output[0].first_name }} {{ $json.output[0].last_name }} is Ineligible ",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <title>⚠️ Ineligible Past Tenant Alert</title>\n</head>\n<body style=\"font-family: Arial, sans-serif; background-color: #fff3f3; color: #b00020; padding: 20px; border: 2px solid #b00020; max-width: 600px; margin: auto;\">\n\n  <h1 style=\"color: #b00020; font-size: 26px; text-align: center;\">🚫 Ineligible Past Tenant Detected</h1>\n\n  <hr style=\"border: none; border-top: 2px solid #b00020; margin: 20px 0;\">\n\n  <p><strong>Full Name:</strong> {{ $json.output[0].first_name }} {{ $json.output[0].last_name }}</p>\n  <p><strong>Property: {{ $json.output[0].property }}</strong> </p>\n  <p><strong>Unit:</strong> {{ $json.output[0].unit }}</p>\n\n  <p><strong>Move-In Date:</strong> {{ $json.output[0].move_in_date }}</p>\n  <p><strong>Lease-To Date:</strong> {{ $json.output[0].lease_to_date }}</p>\n  <p><strong>Move-Out Date:</strong> {{ $json.output[0].move_out_date }}</p>\n\n  <p><strong>Balance Owed:</strong> <span style=\"color: #b00020;\">${{ $json.output[0].balance }}</span></p>\n  <p><strong>In Collections:</strong> {{ $json.output[0].in_collections }}</p>\n  <p><strong>Late Payments:</strong> {{ $json.output[0].late_count }}</p>\n  <p><strong>Tenant Tags:</strong> {{ $json.tenant_tags || \"(none)\" }}</p>\n\n  <div style=\"background-color: #ffe6e6; padding: 15px; border-left: 6px solid #b00020; margin-top: 20px;\">\n    <strong>Summary:</strong><br>\n    {{ $json.output[0].summary }}\n  </div>\n\n  <p style=\"margin-top: 30px;\">\n    🔗 <strong>Tenant Record:</strong><br>\n    <a href=\"{{ $json.output[0].url }}\" style=\"color: #b00020; text-decoration: underline;\">\n      View in AppFolio\n    </a>\n  </p>\n\n  <hr style=\"border: none; border-top: 1px solid #ccc; margin: 30px 0;\">\n  <p style=\"color: #777; font-size: 12px; text-align: center;\">\n    This message was generated automatically by Blaze Real Estate's lead screening system.\n  </p>\n\n</body>\n</html>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1720,
+        -540
+      ],
+      "id": "d0efbd16-fb8f-48f3-9a4f-0b038eabbe7a",
+      "name": "Gmail3",
+      "webhookId": "9614eba2-1e9f-471b-a142-9d2b9616e0ec",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "value": "routed_leads",
+          "mode": "list",
+          "cachedResultName": "routed_leads"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        860,
+        -100
+      ],
+      "id": "0c54691d-ed37-4f17-a181-2e3eee60f592",
+      "name": "MySQL2",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  First AS manager_first,\n  Last AS manager_last,\n  email AS manager_email,\n  property_id,\n  group_id\nFROM lead_router;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -780,
+        -680
+      ],
+      "id": "417392fe-35e1-4d62-8e3b-df6cbdf2fe6e",
+      "name": "Get Managers",
+      "executeOnce": true,
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {
+          "includeUnpaired": true
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -400,
+        -520
+      ],
+      "id": "a5556191-2b32-4038-b70d-9ae22d3a30f2",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  Property_ID,\n  Property_Group_ID_s_,\n  Property_Street_Address_1,\n  Property_Type\nFROM properties_raw\nWHERE \n  Address_Number = '{{ $json.address_number }}'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        160,
+        -260
+      ],
+      "id": "9949182e-887e-4a20-9163-2202e67f0932",
+      "name": "Property Lookup",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18c1acb2-96b4-4679-80b6-6cb2760f9276",
+              "leftValue": "={{ $json.record_found }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        -400
+      ],
+      "id": "01949d8d-434e-47d6-b417-4dd4e751491f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const data = item.json;\n\n  const recordExists = !!data.tenant_id; // use any reliable field unique to the match\n\n  return {\n    json: {\n      ...data,\n      record_found: recordExists\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        -540
+      ],
+      "id": "ab2d0c08-dcb0-486a-a598-b6e6a0d61b25",
+      "name": "Record Check"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        220,
+        -540
+      ],
+      "id": "3fb14f2a-e1f1-4989-be3f-71e867c5f101",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const output = item.json.output || {};\n  let address = output.address || '';\n  let phone = output.phone || '';\n\n  // Strip phone down to digits only\n  const phoneDigits = phone.replace(/\\D/g, '');\n\n  // Clean up address\n  address = address.toLowerCase().replace(/\\s+/g, ' ').trim();\n  address = address.replace(/\\b(unit|apt|apartment|#)\\b\\s*\\w*/gi, ''); // remove unit info\n  address = address\n    .replace(/\\b(street|st|avenue|ave|road|rd|drive|dr|court|ct|lane|ln|trail|trl|boulevard|blvd|place|pl|terrace|ter|circle|cir|way)\\b\\.?/gi, '')\n    .replace(/[^\\w\\s]/g, '') // remove punctuation\n    .replace(/\\s+/g, ' ') // collapse spaces\n    .trim();\n\n  const parts = address.split(' ');\n  const addressNumber = parts[0] || '';\n  const addressStreet = parts.slice(1).join(' ') || '';\n\n  const fullName = output.name || '';\n  const nameParts = fullName.trim().split(/\\s+/);\n  const firstName = nameParts.slice(0, -1).join(' ');\n  const lastName = nameParts.slice(-1).join(' ');\n\n  return {\n    json: {\n      ...output,\n      phone: phoneDigits,\n      first_name: firstName,\n      last_name: lastName,\n      address_number: addressNumber,\n      address_street: addressStreet,\n      address: address\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -140,
+        -280
+      ],
+      "id": "e2eac594-77be-4ce6-9199-37d68bd5c637",
+      "name": "Normalize"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $json;\nconst managers = $items(\"Get Managers\");\n\n// Extract fields from lead\nconst propertyId = String(lead.Property_ID).trim();\nconst groupIds = (lead.Property_Group_ID_s_ || \"\").split(',').map(id => id.trim());\nconst propertyType = (lead.Property_Type || \"\").toLowerCase().replace(/[^a-z]/g, \"\"); // normalize\n\nlet matchedManager = null;\nlet match_type = \"none\";\n\n// Try to match using group_id first (Single-Family style)\nfor (const mgr of managers) {\n  const mgrJson = mgr.json;\n  const mgrGroupIds = (mgrJson.group_id || \"\").split(',').map(id => id.trim());\n\n  if (groupIds.some(id => mgrGroupIds.includes(id))) {\n    matchedManager = mgrJson;\n    match_type = \"group_id\";\n    break;\n  }\n}\n\n// If no group match, try property_id (Multi-Family style)\nif (!matchedManager) {\n  for (const mgr of managers) {\n    const mgrJson = mgr.json;\n    const mgrPropertyIds = (mgrJson.property_id || \"\").split(',').map(id => id.trim());\n\n    if (mgrPropertyIds.includes(propertyId)) {\n      matchedManager = mgrJson;\n      match_type = \"property_id\";\n      break;\n    }\n  }\n}\n\n// Return updated lead data\nreturn [{\n  json: {\n    ...lead,\n    manager_name: matchedManager\n      ? `${matchedManager.manager_first} ${matchedManager.manager_last}`\n      : \"Unknown\",\n    manager_email: matchedManager\n      ? matchedManager.manager_email\n      : \"brandon@blazeproperty.com\",\n    match_type\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        -520
+      ],
+      "id": "720f38f5-4cd7-486d-b990-b5de3d9ee2f6",
+      "name": "Manager Match"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM past_tenants\nWHERE \n  (\n    LOWER(first_name) = LOWER('{{ $json.first_name }}')\n    AND LOWER(last_name) = LOWER('{{ $json.last_name }}')\n  )\n  OR LOWER(email_1) = LOWER('{{ $json.email }}')\n  OR REPLACE(phone_1, '-', '') = REPLACE('{{ $json.phone }}', '-', '');\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        20,
+        -740
+      ],
+      "id": "f28affb4-3d16-4cd8-b728-898e937b6031",
+      "name": "Past Tenant Check",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cc64f631-c884-4b70-bfac-9af84b15e534",
+              "leftValue": "={{ $json.Property_Type }}",
+              "rightValue": "Single-Family",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        860,
+        -280
+      ],
+      "id": "25c43b23-b895-46d4-91b3-49c9b10b68d4",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Manager Match').item.json.manager_email }}",
+        "subject": "={{ $json.manager_name }} You have a new lead for {{ $json.Property_Street_Address_1 }}",
+        "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body {\n      font-family: 'Georgia', serif;\n      background-color: #f5f5f5;\n      color: #333333;\n      padding: 30px;\n    }\n    .container {\n      background-color: #ffffff;\n      border: 1px solid #e0e0e0;\n      border-radius: 6px;\n      max-width: 640px;\n      margin: auto;\n      padding: 40px;\n      box-shadow: 0 2px 6px rgba(0,0,0,0.05);\n    }\n    h2 {\n      color: #444;\n      margin-bottom: 25px;\n      border-bottom: 1px solid #dddddd;\n      padding-bottom: 10px;\n    }\n    .section {\n      margin-bottom: 30px;\n    }\n    .label {\n      display: inline-block;\n      font-weight: bold;\n      color: #555555;\n      width: 160px;\n    }\n    .value {\n      display: inline-block;\n      color: #333333;\n    }\n    .button-container {\n      margin-top: 20px;\n    }\n    .button {\n      display: inline-block;\n      padding: 10px 18px;\n      margin-right: 10px;\n      font-size: 15px;\n      color: #fff;\n      background-color: #444;\n      border-radius: 4px;\n      text-decoration: none;\n    }\n    .button.green {\n      background-color: #2e7d32;\n    }\n    .footer {\n      font-size: 12px;\n      color: #999999;\n      text-align: center;\n      margin-top: 40px;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <h2>🔔 New Lead Notification</h2>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Manager:</span> <span class=\"value\">{{ $json.manager_name }}</span></p>\n      <p><span class=\"label\">Property:</span> <span class=\"value\">{{ $json.Property_Street_Address_1 }}</span></p>\n      <p><span class=\"label\">Source:</span> <span class=\"value\">{{ $json.source }}</span></p>\n      <p><span class=\"label\">Received:</span> <span class=\"value\">{{ $json.received }}</span></p>\n    </div>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Lead Name:</span> <span class=\"value\">{{ $json.name }}</span></p>\n      <p><span class=\"label\">Email:</span> <span class=\"value\">{{ $json.email }}</span></p>\n      <p><span class=\"label\">Phone:</span> <span class=\"value\">\n        {{ \"(\" + $json.phone.slice(0,3) + \") \" + $json.phone.slice(3,6) + \"-\" + $json.phone.slice(6) }}\n      </span></p>\n    </div>\n\n    <div class=\"section\">\n      <p><span class=\"label\">Comments:</span></p>\n      <p class=\"value\">{{ $json.comments }}</p>\n    </div>\n\n    <div class=\"button-container\">\n      <a href=\"mailto:{{ $json.email }}\" class=\"button\">📧 Email</a>\n      <a href=\"tel:{{ $json.phone }}\" class=\"button green\">📞 Call</a>\n    </div>\n\n    <div class=\"footer\">\n      Blaze Real Estate Lead Routing · Amarillo, TX\n    </div>\n  </div>\n</body>\n</html>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1180,
+        -100
+      ],
+      "id": "2d8ded30-3b28-44e2-b4c5-d7d77ce353ba",
+      "name": "Gmail4",
+      "webhookId": "60ea05a1-eb04-4e03-a51b-c8b3f9ec4f2c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1380,
+        -100
+      ],
+      "id": "c5891436-c78d-43e6-8014-7add2b044416",
+      "name": "Gmail5",
+      "webhookId": "0c842b49-eedd-4559-9953-fc57e59707b1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $json;\nconst possibleMatches = $items(\"Property Lookup\"); // Adjust if your node is named differently\n\nconst leadStreet = (input.address_street || \"\").toLowerCase().trim();\n\nlet bestMatch = null;\n\nfor (const match of possibleMatches) {\n  const propertyStreet = (match.json.Property_Street_Address_1 || \"\")\n    .toLowerCase()\n    .replace(/[^a-z\\s]/gi, '')\n    .trim();\n\n  // Break into words and compare\n  const streetWords = propertyStreet.split(' ').slice(1).join(' ');\n  if (leadStreet.startsWith(streetWords)) {\n    bestMatch = match.json;\n    break;\n  }\n}\n\n// Return best match or fallback to the first one (or none)\nif (bestMatch) {\n  return [{\n    json: {\n      ...input,\n      ...bestMatch,\n      match_level: \"exact\"\n    }\n  }];\n} else if (possibleMatches.length > 0) {\n  return [{\n    json: {\n      ...input,\n      ...possibleMatches[0].json,\n      match_level: \"fallback\"\n    }\n  }];\n} else {\n  return [{\n    json: {\n      ...input,\n      match_level: \"none\"\n    }\n  }];\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        -260
+      ],
+      "id": "10779e8e-3214-495a-82f2-1666c68200bb",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e56e79e5-7bb4-4552-9528-49221f03ca36",
+              "leftValue": "={{ $json.output[0].eligible }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        -800
+      ],
+      "id": "9ba84d25-b299-403d-be3d-3e73bd8aeb79",
+      "name": "If2"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Gmail Trigger": {
+      "Gmail Trigger": {
+        "lastTimeChecked": 1742792419
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-24T05:00:19.840Z",
+  "versionId": "4bbf26cc-bd75-4f5c-9761-efb6ff89b6ca"
+}
