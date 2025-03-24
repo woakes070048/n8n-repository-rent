@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -207,10 +207,8 @@
         "operation": "download",
         "fileId": {
           "__rl": true,
-          "value": "1Xk2iAoo0iQyCh5fTktPWYN9etCRP1BX3",
-          "mode": "list",
-          "cachedResultName": "n8n Apartment Rent Totals.csv\n",
-          "cachedResultUrl": "https://drive.google.com/file/d/1Xk2iAoo0iQyCh5fTktPWYN9etCRP1BX3/view?usp=drivesdk"
+          "mode": "id",
+          "value": "1Xk2iAoo0iQyCh5fTktPWYN9etCRP1BX3"
         },
         "options": {}
       },
@@ -401,6 +399,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-22T19:22:23.000Z",
-  "versionId": "7d2004c2-3fb3-4d3c-826b-9bc9432d1591"
+  "updatedAt": "2025-03-24T01:32:16.000Z",
+  "versionId": "4d3b6a0a-0867-44d2-bf3f-e3a13b517963"
 }
