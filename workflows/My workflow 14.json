@@ -1,128 +1,59 @@
 {
   "active": false,
   "connections": {
-    "MySQL - Query Properties": {
-      "main": [
-        [
-          {
-            "node": "Google Sheets",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When clicking ‘Test workflow’": {
       "main": [
-        [
-          {
-            "node": "MySQL - Query Properties",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
-  "createdAt": "2025-03-18T10:13:26.842Z",
-  "id": "14PzP2sHGUxSRR6x",
-  "meta": null,
+  "createdAt": "2025-03-24T16:18:27.853Z",
+  "id": "asKGrWWvVa3lgdPP",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "My workflow 14",
   "nodes": [
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT\n  property_id,\n  property_name,\n  total_units,\n  occupied_units,\n  occupancy_rate,\n  projected_occupied_units,\n  projected_occupancy_rate,\n  total_delinquent_rent,\n  total_rent,\n  delinquency_percent,\n  total_guest_cards,\n  active_guest_cards,\n  applications,\n  showings, \n  monthly_received\n  daily_received\nFROM daily_data\nWHERE property_id IN (579, 580);\n",
-        "options": {}
-      },
-      "id": "25dbfc02-dfa7-49d2-903f-c4ca42d5ef8d",
-      "name": "MySQL - Query Properties",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2,
-      "position": [
-        280,
-        0
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "OUIfR0k9k0YXHa0V",
-          "name": "Blazedata Hostinger"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "1_b7ux8fStn6oEE450GF4YHxYdOwkii7_M4nc77TfsKI",
-          "mode": "list",
-          "cachedResultName": "Sample Blaze Reporting",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_b7ux8fStn6oEE450GF4YHxYdOwkii7_M4nc77TfsKI/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 1661946687,
-          "mode": "list",
-          "cachedResultName": "Raw Data",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_b7ux8fStn6oEE450GF4YHxYdOwkii7_M4nc77TfsKI/edit#gid=1661946687"
-        },
-        "columns": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "Raw",
-              "displayName": "Raw",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "row_number",
-              "displayName": "row_number",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "readOnly": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        500,
-        0
-      ],
-      "id": "d5d91b9f-3866-4a82-b22d-e5f2e32eb770",
-      "name": "Google Sheets",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "OPTs28HKagi0JBEs",
-          "name": "Google Sheets account"
-        }
-      }
-    },
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -20,
-        -20
+        -480,
+        0
       ],
-      "id": "386b44e2-2ed4-4b36-a3ba-c2d224dace84",
+      "id": "20a3bdb2-e718-4368-a7e7-bbb7870603f1",
       "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "from:no-reply@fathom.video Recap of your meeting with"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -260,
+        0
+      ],
+      "id": "16c623e2-1b24-4b44-b33e-f3bb2d8107fc",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -132,6 +63,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-18T10:13:26.842Z",
-  "versionId": "b8a0f837-60f8-49aa-abb4-4bc54ab7283b"
+  "updatedAt": "2025-03-24T16:18:27.853Z",
+  "versionId": "674f709d-e0f6-4a89-8649-6cca274b3876"
 }
