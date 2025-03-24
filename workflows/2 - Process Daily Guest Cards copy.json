@@ -58,24 +58,7 @@
     },
     "MySQL1": {
       "main": [
-        [
-          {
-            "node": "Google Drive1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Google Drive1": {
-      "main": [
-        [
-          {
-            "node": "Google Drive2",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Google Drive3": {
@@ -251,72 +234,6 @@
     },
     {
       "parameters": {
-        "operation": "move",
-        "fileId": {
-          "__rl": true,
-          "value": "1Z1r37be5jK4h2tlhDqOQHYe9ccDlP2Xc",
-          "mode": "list",
-          "cachedResultName": "n8n Apartment Guest Cards Past 7 Days.csv\n",
-          "cachedResultUrl": "https://drive.google.com/file/d/1Z1r37be5jK4h2tlhDqOQHYe9ccDlP2Xc/view?usp=drivesdk"
-        },
-        "driveId": {
-          "__rl": true,
-          "value": "0ANoqNkaxSRr-Uk9PVA",
-          "mode": "list",
-          "cachedResultName": "DataOnly",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANoqNkaxSRr-Uk9PVA"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "1kYAzmyEP1PYRgGRTirAMEsa6ce5-wKWR",
-          "mode": "list",
-          "cachedResultName": "archive 30",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1kYAzmyEP1PYRgGRTirAMEsa6ce5-wKWR"
-        }
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        -620,
-        -20
-      ],
-      "id": "e13e2f87-80b3-421c-ae04-66efebf82112",
-      "name": "Google Drive1",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $json.id }}",
-          "mode": "id"
-        },
-        "newUpdatedFileName": "={{ \n  (() => {\n    const original = $json.name;\n    const date = new Date();\n    const yyyy = date.getFullYear();\n    const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based\n    const dd = String(date.getDate()).padStart(2, '0');\n    const formattedDate = `${yyyy}-${mm}-${dd}`;\n    return original.replace('.csv', ` ${formattedDate}.csv`);\n  })() \n}}\n",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        -440,
-        -20
-      ],
-      "id": "7880a4fb-0c6a-425f-9e59-2042c3ca548f",
-      "name": "Google Drive2",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "resource": "fileFolder",
         "filter": {
           "folderId": {
@@ -403,6 +320,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-22T17:45:12.000Z",
-  "versionId": "70ead6c7-32fb-4ee5-bae7-0f0866696831"
+  "updatedAt": "2025-03-24T01:35:52.000Z",
+  "versionId": "969dcd1e-bbd3-4cbc-87cc-30134488a3e4"
 }
