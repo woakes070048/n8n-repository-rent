@@ -149,8 +149,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -800,
-        20
+        -820,
+        -120
       ],
       "id": "43b46893-b710-42ac-9ab7-46f4ed92e7e5",
       "name": "Extract from File"
@@ -162,8 +162,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -620,
-        20
+        -600,
+        -120
       ],
       "id": "4369d787-27c4-4186-bc13-92efa1269de0",
       "name": "Code"
@@ -177,8 +177,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -440,
-        20
+        -380,
+        -120
       ],
       "id": "d1258eee-9632-450b-aaca-8c1e7a3dfb9d",
       "name": "MySQL",
@@ -224,8 +224,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -260,
-        20
+        -160,
+        -120
       ],
       "id": "27b551b3-def8-476d-ab87-59a926d6e1a0",
       "name": "Edit Fields"
@@ -255,8 +255,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -60,
-        20
+        60,
+        -120
       ],
       "id": "96e25a09-03c3-45a6-b738-8b110564e8ac",
       "name": "MySQL1",
@@ -280,8 +280,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -980,
-        20
+        -1040,
+        -120
       ],
       "id": "8bd76ada-4f89-43c9-8933-aa4f260950c6",
       "name": "Google Drive",
@@ -309,8 +309,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -1740,
-        20
+        -1700,
+        -120
       ],
       "id": "f1a06313-800e-4543-b148-e1a40414542e",
       "name": "Google Drive3",
@@ -348,8 +348,8 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.2,
       "position": [
-        -1560,
-        20
+        -1480,
+        -120
       ],
       "id": "a9d10809-9be3-4714-aba9-9169a4e26881",
       "name": "Filter"
@@ -369,7 +369,7 @@
       "typeVersion": 1.2,
       "position": [
         -1920,
-        20
+        -20
       ],
       "id": "0568054c-8159-49c9-8985-65bd9f56cb81",
       "name": "Schedule Trigger1"
@@ -379,7 +379,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1900,
+        -1920,
         -220
       ],
       "id": "8d2da635-89f7-4c26-a6ed-3c27ee253486",
@@ -411,8 +411,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -420,
-        240
+        280,
+        -120
       ],
       "id": "e66037c8-afdc-412d-9a6c-e0a68f937bf3",
       "name": "Google Drive1",
@@ -437,8 +437,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -240,
-        240
+        500,
+        -120
       ],
       "id": "c01f1957-727e-47b4-ba20-798f6305f834",
       "name": "Google Drive2",
@@ -466,8 +466,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1340,
-        20
+        -1260,
+        -120
       ],
       "id": "eb731b3b-5aa7-4acb-82d2-14c131d7ca2b",
       "name": "Edit Fields1"
@@ -485,6 +485,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-22T17:55:17.000Z",
-  "versionId": "b5dff31c-cc7b-4d83-98b4-ef949df3f091"
+  "updatedAt": "2025-03-25T10:29:40.000Z",
+  "versionId": "a18c0c6c-1b1c-4f98-a672-44dc36c5c8f8"
 }
