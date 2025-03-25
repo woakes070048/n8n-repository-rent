@@ -107,8 +107,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -420,
-        0
+        -400,
+        -20
       ],
       "id": "42fe97d5-ea7e-41b6-9663-7f12de6a88b0",
       "name": "Extract from File"
@@ -190,8 +190,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        340,
-        0
+        480,
+        -20
       ],
       "id": "481122dc-0843-4c13-8cf8-dfd0a993b5df",
       "name": "MySQL",
@@ -216,7 +216,7 @@
       "typeVersion": 3,
       "position": [
         -620,
-        0
+        -20
       ],
       "id": "2c34dcdb-86ff-4419-9b95-092a6c926214",
       "name": "Google Drive",
@@ -234,8 +234,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -220,
-        0
+        -180,
+        -20
       ],
       "id": "48d5282f-900a-4ab6-b394-77ecc71e74a6",
       "name": "Summarize Property Status"
@@ -247,8 +247,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -40,
-        0
+        40,
+        -20
       ],
       "id": "280a689c-3487-44ef-a9ba-1177468b2916",
       "name": "Property Summary for Output"
@@ -360,8 +360,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        160,
-        0
+        260,
+        -20
       ],
       "id": "c0e07e64-599b-4b57-8a84-3e201f808b04",
       "name": "Set Data Fields Final"
@@ -380,8 +380,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -820,
-        160
+        -840,
+        80
       ],
       "id": "b85e7a7d-0ae2-464b-9fda-ae21c592f975",
       "name": "Schedule Trigger"
@@ -399,6 +399,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-24T01:32:16.000Z",
-  "versionId": "4d3b6a0a-0867-44d2-bf3f-e3a13b517963"
+  "updatedAt": "2025-03-25T10:29:20.000Z",
+  "versionId": "a09236b2-0545-4933-9a73-a2a647f412a5"
 }
