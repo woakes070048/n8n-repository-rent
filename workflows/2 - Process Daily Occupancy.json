@@ -91,7 +91,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1560,
+        -1600,
         -280
       ],
       "id": "844a5c89-4f9a-4ddc-aa7e-b3ac8764f4c8",
@@ -105,7 +105,7 @@
       "typeVersion": 1,
       "position": [
         -1380,
-        -20
+        -180
       ],
       "id": "a6601ac7-199d-4105-9da7-c1a82b2f1e84",
       "name": "FTP",
@@ -125,7 +125,7 @@
       "typeVersion": 1,
       "position": [
         -1160,
-        -20
+        -180
       ],
       "id": "660169d7-b91b-4065-9fcb-ee69d3c24062",
       "name": "Extract from File"
@@ -137,8 +137,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -980,
-        -20
+        -940,
+        -180
       ],
       "id": "3b27d026-0e0c-4769-94c8-f96e9cd1e138",
       "name": "Code"
@@ -152,8 +152,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -800,
-        -20
+        -720,
+        -180
       ],
       "id": "5144c09b-f393-41f4-a35b-ae2f6dcc69e5",
       "name": "MySQL",
@@ -223,8 +223,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -620,
-        -20
+        -500,
+        -180
       ],
       "id": "474db683-deba-4414-9d68-f5df4effa2ac",
       "name": "Edit Fields"
@@ -278,8 +278,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -400,
-        -20
+        -280,
+        -180
       ],
       "id": "c8931750-8da1-4ff0-8a26-640efd463985",
       "name": "MySQL1",
@@ -304,7 +304,7 @@
       "typeVersion": 1.2,
       "position": [
         -1600,
-        -20
+        -80
       ],
       "id": "350b6133-4cfe-4988-a3c9-32ab55bd4d43",
       "name": "Schedule Trigger"
@@ -322,6 +322,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-21T20:45:59.000Z",
-  "versionId": "6b9adc2b-2338-43fe-b8b4-9559fad3d96d"
+  "updatedAt": "2025-03-25T10:30:45.000Z",
+  "versionId": "3d395846-0ba3-47c9-892c-09ebe9eb1a63"
 }
