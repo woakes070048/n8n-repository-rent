@@ -93,8 +93,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1120,
-        -280
+        -1020,
+        -340
       ],
       "id": "b339a2b3-8a86-4dc0-927d-1a01217d53b1",
       "name": "Code"
@@ -108,8 +108,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -960,
-        -280
+        -800,
+        -340
       ],
       "id": "c5e02343-a93a-4e86-b738-18939ecb71d0",
       "name": "MySQL",
@@ -155,8 +155,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -760,
-        -280
+        -580,
+        -340
       ],
       "id": "d0f60974-d701-489c-a291-3cb016db39e8",
       "name": "Edit Fields"
@@ -186,8 +186,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -540,
-        -280
+        -360,
+        -340
       ],
       "id": "d706a33e-0e22-4e5a-acb6-3547e9ac29da",
       "name": "MySQL1",
@@ -212,7 +212,7 @@
       "typeVersion": 3,
       "position": [
         -1460,
-        -280
+        -340
       ],
       "id": "6a87761a-2ae2-4baa-b4ca-215f878306f5",
       "name": "Google Drive1",
@@ -231,8 +231,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -1300,
-        -280
+        -1240,
+        -340
       ],
       "id": "7671fa54-07a0-4cc3-8977-d9a3c8e10ff4",
       "name": "Extract from File1"
@@ -257,8 +257,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1500,
-        -440
+        -1450,
+        -540
       ],
       "id": "47dd1210-6301-4be3-a619-c1fe45c27922",
       "name": "Sticky Note"
@@ -273,8 +273,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1140,
-        -420
+        -1090,
+        -520
       ],
       "id": "5e0d8686-4973-498e-a2f8-7eec6808ff69",
       "name": "Sticky Note1"
@@ -288,8 +288,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -620,
-        -420
+        -430,
+        -520
       ],
       "id": "bfbd1d0d-1514-4488-a104-ef9379591357",
       "name": "Sticky Note2"
@@ -303,8 +303,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1500,
-        -440
+        -1450,
+        -540
       ],
       "id": "6af5afb8-1690-4fcd-bc8d-849f6ac4c3b0",
       "name": "Sticky Note3"
@@ -319,8 +319,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1140,
-        -420
+        -1090,
+        -520
       ],
       "id": "3bd238d9-ef24-4c20-9956-3fd596a91453",
       "name": "Sticky Note4"
@@ -334,8 +334,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -620,
-        -420
+        -430,
+        -520
       ],
       "id": "5df7dbf0-5fe2-4d5e-9b58-64227fa81e1e",
       "name": "Sticky Note5"
@@ -354,8 +354,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -1660,
-        -160
+        -1680,
+        -240
       ],
       "id": "e9d3da8f-2f05-424d-9f70-1d2f04a4c5bb",
       "name": "Schedule Trigger"
@@ -373,6 +373,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-24T01:34:45.000Z",
-  "versionId": "0eb41858-2f36-430e-8622-7702ae1cf4c4"
+  "updatedAt": "2025-03-25T10:29:11.000Z",
+  "versionId": "e8ad085c-8377-4bdb-86fe-76e2a1969bcd"
 }
