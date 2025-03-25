@@ -82,17 +82,6 @@
           }
         ]
       ]
-    },
-    "When Executed by Another Workflow": {
-      "main": [
-        [
-          {
-            "node": "Google Drive3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "createdAt": "2025-03-22T17:01:58.185Z",
@@ -135,7 +124,7 @@
       "typeVersion": 2,
       "position": [
         -980,
-        -40
+        -20
       ],
       "id": "fd988322-0685-459f-8c7e-f6fd21ce7066",
       "name": "Code"
@@ -200,7 +189,7 @@
       "typeVersion": 1.2,
       "position": [
         -1840,
-        -60
+        -20
       ],
       "id": "27d2f4ba-013f-48c2-8d26-db647b070b09",
       "name": "Schedule Trigger"
@@ -293,19 +282,6 @@
       ],
       "id": "83b8af87-8a61-4cec-b0f7-9874acc37780",
       "name": "Filter"
-    },
-    {
-      "parameters": {
-        "inputSource": "passthrough"
-      },
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1.1,
-      "position": [
-        -1840,
-        200
-      ],
-      "id": "e85741a7-f867-4083-98cc-a11da5e510d6",
-      "name": "When Executed by Another Workflow"
     }
   ],
   "pinData": {},
@@ -320,6 +296,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-25T10:28:59.000Z",
-  "versionId": "9a70f747-2240-456d-882e-f84a0293b86b"
+  "updatedAt": "2025-03-25T10:42:39.000Z",
+  "versionId": "6f79ced7-f717-4270-95b1-257b5f60ff13"
 }
