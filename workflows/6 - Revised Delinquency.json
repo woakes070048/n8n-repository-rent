@@ -250,8 +250,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -100,
+        300
       ],
       "name": "Fetch Delinquency Report",
       "id": "4468eca3-f665-4cda-baa4-8ea9bc45bfeb",
@@ -270,8 +270,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        0,
-        180
+        -100,
+        500
       ],
       "name": "Fetch Rent Totals",
       "id": "eb1d1b4e-6f22-4741-b2b8-32d802b73c2e",
@@ -289,8 +289,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        900,
-        0
+        780,
+        300
       ],
       "id": "9a2788e6-2413-4aef-b6a2-77672f0b7ff9",
       "name": "Code (Aggregate Delinquency)"
@@ -303,8 +303,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        220,
-        0
+        120,
+        300
       ],
       "id": "99612faa-e6f1-41bb-a9fc-8c58a5f35e2f",
       "name": "Extract from File"
@@ -318,8 +318,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        220,
-        180
+        120,
+        500
       ],
       "id": "9abb4c70-5da3-4f8f-8b65-092ede810e54",
       "name": "Extract from File1"
@@ -331,8 +331,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        900,
-        180
+        780,
+        500
       ],
       "id": "dd6150eb-9cfd-4714-9faa-0c0d58953366",
       "name": "Code (Aggregate Rent)"
@@ -344,8 +344,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        680,
-        0
+        560,
+        300
       ],
       "id": "2f8f7f15-fb5a-4559-ae79-ba17cf81b995",
       "name": "Code (Filter Delinquency Rows)"
@@ -357,8 +357,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        680,
-        180
+        560,
+        500
       ],
       "id": "dbd53195-9241-4cfd-aed4-12cfaa72d127",
       "name": "Code (Filter Rent Rows)"
@@ -370,8 +370,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        620,
-        620
+        1440,
+        400
       ],
       "name": "Process Reports",
       "id": "19b56798-3789-4012-a3ce-7b2497ff057b"
@@ -383,8 +383,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1520,
-        600
+        1660,
+        400
       ],
       "id": "b6fc2243-d125-4c38-bd38-482f40255e2a",
       "name": "Code2"
@@ -400,8 +400,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1740,
-        600
+        1880,
+        400
       ],
       "id": "b6bdc6f0-f797-419b-a0f5-2dec3402a76f",
       "name": "Read/Write Files from Disk"
@@ -414,8 +414,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        1960,
-        600
+        2100,
+        400
       ],
       "id": "d1df3764-99c4-469c-8a7a-b42c5b0e0df5",
       "name": "FTP2",
@@ -433,8 +433,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1520,
-        800
+        1660,
+        600
       ],
       "id": "d5ec199b-0034-4246-bb1a-1b06e0099148",
       "name": "Code3"
@@ -446,8 +446,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1740,
-        800
+        1880,
+        600
       ],
       "id": "57780e2c-a431-4af8-8b34-326f1a17005d",
       "name": "Code4"
@@ -463,8 +463,8 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        1960,
-        800
+        2100,
+        600
       ],
       "id": "9324d689-71ff-42bf-8908-7f0be9f44b38",
       "name": "Send Email",
@@ -483,8 +483,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1520,
-        1000
+        1660,
+        800
       ],
       "id": "1fc0d0ed-678c-406f-95be-529ac6afd676",
       "name": "Code6"
@@ -502,8 +502,8 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        1960,
-        1000
+        1880,
+        800
       ],
       "id": "b5246bb4-4a2f-4997-ab42-85816ea0b69e",
       "name": "Send Email1",
@@ -521,7 +521,7 @@
       "typeVersion": 1,
       "position": [
         -320,
-        120
+        400
       ],
       "id": "f4d12732-c932-4051-88c2-8a91be735b26",
       "name": "When clicking ‘Test workflow’"
@@ -621,8 +621,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        440,
-        0
+        340,
+        300
       ],
       "id": "62b354a5-505f-4196-b8fe-f5611d107345",
       "name": "Edit Fields"
@@ -674,8 +674,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        440,
-        180
+        340,
+        500
       ],
       "id": "9f5c97c5-3988-4345-8dc9-95bba5927595",
       "name": "Edit Fields1"
@@ -757,8 +757,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        420,
-        620
+        1220,
+        400
       ],
       "name": "Edit Fields2",
       "id": "1b9decb0-9d96-4b10-b1c3-61716470081b"
@@ -772,8 +772,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        1100,
-        180
+        1000,
+        400
       ],
       "id": "5afaa4d2-8205-4d55-a23b-288da4a8ae20",
       "name": "Merge"
@@ -831,8 +831,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1520,
-        440
+        1660,
+        200
       ],
       "id": "787db55c-168c-4bb8-b473-308861cd541a",
       "name": "Update daily_data table",
@@ -872,8 +872,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1520,
-        260
+        1660,
+        0
       ],
       "id": "d5686e63-a8fa-47bf-b265-dc620c986c02",
       "name": "MySQL",
@@ -893,6 +893,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-22T16:32:06.000Z",
-  "versionId": "5a44d65c-ce4a-4b74-9fa2-3692267dcb51"
+  "updatedAt": "2025-03-25T10:30:01.000Z",
+  "versionId": "51cfaaeb-ec6e-4765-a743-8882b72e5959"
 }
