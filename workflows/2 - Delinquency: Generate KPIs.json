@@ -1,0 +1,934 @@
+{
+  "active": false,
+  "connections": {
+    "Fetch Delinquency Report": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Rent Totals": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code (Aggregate Delinquency)": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code (Aggregate Rent)": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code (Filter Delinquency Rows)": {
+      "main": [
+        [
+          {
+            "node": "Code (Aggregate Delinquency)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code (Filter Rent Rows)": {
+      "main": [
+        [
+          {
+            "node": "Code (Aggregate Rent)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Reports": {
+      "main": [
+        [
+          {
+            "node": "Update daily_data table",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "FTP2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Code4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code4": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code6": {
+      "main": [
+        [
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Fetch Rent Totals",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Delinquency Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code (Filter Delinquency Rows)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code (Filter Rent Rows)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Process Reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Delinquency Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Rent Totals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-18T11:51:28.387Z",
+  "id": "52lTNvMpHZbz10gh",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "2 - Delinquency: Generate KPIs",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "/public_html/data/delinquency.csv"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        300
+      ],
+      "name": "Fetch Delinquency Report",
+      "id": "4468eca3-f665-4cda-baa4-8ea9bc45bfeb",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "/public_html/data/rent_totals.csv",
+        "binaryPropertyName": "data1"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        500
+      ],
+      "name": "Fetch Rent Totals",
+      "id": "eb1d1b4e-6f22-4741-b2b8-32d802b73c2e",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Get data from input\nlet allItems = $input.all();\nlet rows = allItems.map(item => item.json);\n\n// 2) Initialize an object to accumulate totals by property_id\nconst propertyMap = {};\n\n// 3) Loop through each row\nrows.forEach(row => {\n    // Convert property_id to integer if possible\n    if (row[\"property_id\"] !== undefined) {\n        const parsedPropId = parseInt(row[\"property_id\"], 10);\n        if (!isNaN(parsedPropId)) {\n            row[\"property_id\"] = parsedPropId;\n        }\n    }\n\n    // Parse numeric fields\n    if (row[\"total_receivable\"] !== undefined && row[\"total_receivable\"] !== null) {\n        row[\"total_receivable\"] = parseFloat(\n            row[\"total_receivable\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"total_receivable\"] = 0;\n    }\n\n    if (row[\"delinquent_rent\"] !== undefined && row[\"delinquent_rent\"] !== null) {\n        row[\"delinquent_rent\"] = parseFloat(\n            row[\"delinquent_rent\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"delinquent_rent\"] = 0;\n    }\n\n    if (row[\"delinquent_subsidy\"] !== undefined && row[\"delinquent_subsidy\"] !== null) {\n        row[\"delinquent_subsidy\"] = parseFloat(\n            row[\"delinquent_subsidy\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"delinquent_subsidy\"] = 0;\n    }\n\n    if (row[\"monthly_charges\"] !== undefined && row[\"monthly_charges\"] !== null) {\n        row[\"monthly_charges\"] = parseFloat(\n            row[\"monthly_charges\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"monthly_charges\"] = 0;\n    }\n\n    if (row[\"last_payment_amount\"] !== undefined && row[\"last_payment_amount\"] !== null) {\n        row[\"last_payment_amount\"] = parseFloat(\n            row[\"last_payment_amount\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"last_payment_amount\"] = 0;\n    }\n\n    if (row[\"monthly_rent\"] !== undefined && row[\"monthly_rent\"] !== null) {\n        row[\"monthly_rent\"] = parseFloat(\n            row[\"monthly_rent\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"monthly_rent\"] = 0;\n    }\n\n    if (row[\"delinquent_fees\"] !== undefined && row[\"delinquent_fees\"] !== null) {\n        row[\"delinquent_fees\"] = parseFloat(\n            row[\"delinquent_fees\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"delinquent_fees\"] = 0;\n    }\n\n    // Now accumulate into propertyMap\n    const propId = row[\"property_id\"];\n    if (propId === undefined || isNaN(propId)) {\n        // Skip rows that don't have a valid numeric property ID\n        return;\n    }\n\n    // Initialize if we haven't seen this property yet\n    if (!propertyMap[propId]) {\n        propertyMap[propId] = {\n            property_id: propId,\n            total_receivable: 0,\n            delinquent_rent: 0,\n            delinquent_subsidy: 0,\n            monthly_charges: 0,\n            last_payment_amount: 0,\n            monthly_rent: 0,\n            delinquent_fees: 0\n        };\n    }\n\n    // Sum up numeric fields\n    propertyMap[propId].total_receivable += row.total_receivable;\n    propertyMap[propId].delinquent_rent += row.delinquent_rent;\n    propertyMap[propId].delinquent_subsidy += row.delinquent_subsidy;\n    propertyMap[propId].monthly_charges += row.monthly_charges;\n    propertyMap[propId].last_payment_amount += row.last_payment_amount;\n    propertyMap[propId].monthly_rent += row.monthly_rent;\n    propertyMap[propId].delinquent_fees += row.delinquent_fees;\n});\n\n// 4) Convert propertyMap back into an array, rounding to two decimals\nconst output = Object.values(propertyMap).map(item => {\n    // Round each numeric field to nearest hundredth (dollar format)\n    item.total_receivable = parseFloat(item.total_receivable.toFixed(2));\n    item.delinquent_rent = parseFloat(item.delinquent_rent.toFixed(2));\n    item.delinquent_subsidy = parseFloat(item.delinquent_subsidy.toFixed(2));\n    item.monthly_charges = parseFloat(item.monthly_charges.toFixed(2));\n    item.last_payment_amount = parseFloat(item.last_payment_amount.toFixed(2));\n    item.monthly_rent = parseFloat(item.monthly_rent.toFixed(2));\n    item.delinquent_fees = parseFloat(item.delinquent_fees.toFixed(2));\n\n    return { json: item };\n});\n\n// 5) Return final aggregated data (one item per property)\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        300
+      ],
+      "id": "9a2788e6-2413-4aef-b6a2-77672f0b7ff9",
+      "name": "Code (Aggregate Delinquency)"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        120,
+        300
+      ],
+      "id": "99612faa-e6f1-41bb-a9fc-8c58a5f35e2f",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "data1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        120,
+        500
+      ],
+      "id": "9abb4c70-5da3-4f8f-8b65-092ede810e54",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ensure input is an array\nif (!Array.isArray(items)) {\n    throw new Error(\"Input is not an array. Ensure the previous node outputs a JSON array.\");\n}\n\nlet rentTotals = {};\nlet propertyDetails = {}; // Store property details\n\n// Process each row\nitems.forEach(item => {\n    const row = item.json;\n\n    // property_id as integer\n    const numericPropertyId = parseInt(row[\"property_id\"], 10);\n\n    // rent as float\n    const parsedRent = parseFloat(row[\"rent\"] || 0);\n\n    // Accumulate\n    if (!isNaN(numericPropertyId) && !isNaN(parsedRent)) {\n        rentTotals[numericPropertyId] = (rentTotals[numericPropertyId] || 0) + parsedRent;\n    }\n\n    // Store property details (only if not already stored)\n    if (!propertyDetails[numericPropertyId]) {\n        propertyDetails[numericPropertyId] = {\n            property_name: row[\"property_name\"],\n            property_group_ids: row[\"property_group_ids\"]\n        };\n    }\n});\n\n// Build final array\nconst reportData = Object.keys(rentTotals).map(propIdString => {\n    const propIdNum = parseInt(propIdString, 10);\n    return {\n        property_id: propIdNum,\n        total_rent: parseFloat(rentTotals[propIdNum].toFixed(2)),\n        property_name: propertyDetails[propIdNum].property_name,\n        property_group_ids: propertyDetails[propIdNum].property_group_ids\n    };\n});\n\nreturn reportData.map(entry => ({ json: entry }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        500
+      ],
+      "id": "dd6150eb-9cfd-4714-9faa-0c0d58953366",
+      "name": "Code (Aggregate Rent)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Get all input items from the previous node\nconst allItems = $input.all();\n\n// 2) Flatten items into an array of row objects\nlet rows = allItems.map(item => item.json);\n\n// 3) Filter out rows where \"Property ID\" is blank or \"Total\" (original CSV logic)\n//    but now we renamed the field to property_id, so we filter on that.\n\nlet filtered = rows.filter(row => {\n  const rawId = row[\"property_id\"];\n  if (!rawId) {\n    // If property_id is undefined, null, or empty => remove\n    return false;\n  }\n\n  // Normalize to string & trim\n  const propId = String(rawId).trim().toLowerCase();\n\n  // Exclude if 'total' or empty\n  if (propId === \"total\" || propId === \"\") {\n    return false;\n  }\n\n  return true;\n});\n\n// 4) Return final\nreturn filtered.map(r => ({ json: r }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        300
+      ],
+      "id": "2f8f7f15-fb5a-4559-ae79-ba17cf81b995",
+      "name": "Code (Filter Delinquency Rows)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Get all input items\nconst allItems = $input.all();\n\n// 2) Flatten into array\nlet rows = allItems.map(item => item.json);\n\n// 3) Filter out rows with property_id = 'total' or blank\nlet filtered = rows.filter(row => {\n  const rawId = row[\"property_id\"];\n  if (!rawId) {\n    return false;\n  }\n  const propId = String(rawId).trim().toLowerCase();\n  if (propId === \"total\" || propId === \"\") {\n    return false;\n  }\n  return true;\n});\n\n// Return final\nreturn filtered.map(r => ({ json: r }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        500
+      ],
+      "id": "dbd53195-9241-4cfd-aed4-12cfaa72d127",
+      "name": "Code (Filter Rent Rows)"
+    },
+    {
+      "parameters": {
+        "jsCode": "if (!Array.isArray($input.all())) {\n    throw new Error(\"Input is not an array. Ensure the previous node outputs a JSON array.\");\n}\n\nconst items = $input.all();\n\nconst output = items.map(item => {\n    const row = { ...item.json };\n\n    // Parse and default to 0\n    const totalRent = parseFloat(row[\"total_rent\"] || 0);\n    const delinquentRent = parseFloat(row[\"delinquent_rent\"] || 0);\n    const delinquentSubsidy = parseFloat(row[\"delinquent_subsidy\"] || 0);\n    const delinquentFees = parseFloat(row[\"delinquent_fees\"] || 0);\n\n    // Calculate totals\n    const totalDelinquent = delinquentRent + delinquentSubsidy + delinquentFees;\n    const totalReceivable = totalDelinquent;\n\n    // 1. Delinquency as a percentage of total_receivable\n    let percentOfReceivable = 0;\n    if (totalReceivable > 0 && totalRent > 0) {\n        percentOfReceivable = (totalReceivable / totalRent) * 100;\n    }\n    row[\"delinquency_percent_receivable\"] = parseFloat(percentOfReceivable.toFixed(2));\n\n    // 2. Delinquency as a percentage of total_rent only\n    let percentOfRentOnly = 0;\n    if (totalRent > 0) {\n        percentOfRentOnly = ((delinquentSubsidy + delinquentRent) / totalRent) * 100;\n    }\n    row[\"delinquency_percent_rent_only\"] = parseFloat(percentOfRentOnly.toFixed(2));\n\n    // 3. Delinquency as a percentage of total_rent without subsidies\n    const delinquentWithoutSubsidy = delinquentRent + delinquentFees;\n    let percentWithoutSubsidies = 0;\n    if (totalRent > 0) {\n        percentWithoutSubsidies = (delinquentWithoutSubsidy / totalRent) * 100;\n    }\n    row[\"delinquency_percent_no_subsidies\"] = parseFloat(percentWithoutSubsidies.toFixed(2));\n\n    return { json: row };\n});\n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        400
+      ],
+      "name": "Process Reports",
+      "id": "19b56798-3789-4012-a3ce-7b2497ff057b"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = JSON.stringify($input.all().map(item => item.json), null, 2);\n\nreturn [\n  {\n    json: {},\n    binary: {\n      data: {\n        data: Buffer.from(data).toString('base64'),\n        mimeType: 'application/json',\n        fileName: 'delinquency.json'\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        400
+      ],
+      "id": "b6fc2243-d125-4c38-bd38-482f40255e2a",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "delinquency_performace.json",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1880,
+        400
+      ],
+      "id": "b6bdc6f0-f797-419b-a0f5-2dec3402a76f",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/data/delinquency.json"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        2100,
+        400
+      ],
+      "id": "d1df3764-99c4-469c-8a7a-b42c5b0e0df5",
+      "name": "FTP2",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// If you only want certain property_ids to pass through, update the array.\n\nconst propertyIdsToSend = [\"689\", \"329\", \"690\", \"693\", \"330\", \"694\", \"695\", \"690\", \"691\"];\n\n// Keep items whose property_id matches\nconst filteredData = items.filter(item => {\n    return propertyIdsToSend.includes(String(item.json[\"property_id\"]));\n});\n\nreturn filteredData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        600
+      ],
+      "id": "d5ec199b-0034-4246-bb1a-1b06e0099148",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "jsCode": "let emailBody = `\n    <h2>Delinquency Report</h2>\n    <p>This report details delinquency for the properties to date as a percentage of occupied units.</p>\n    <p>If a property is not represented, it either has no delinquency or no data available.</p>\n    <table border='1' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>\n        <tr>\n            <th>Property Name</th>\n            <th>Total Rent</th>\n            <th>Total Delinquent</th>\n            <th>Delinquency % (Receivable)</th>\n            <th>Delinquency % (Rent Only)</th>\n            <th>Delinquency % (No Subsidies)</th>\n        </tr>`;\n\nitems.forEach(item => {\n    let row = item.json;\n\n    const propName = row.property_name || \"Unknown\";\n\n    let totalRent = parseFloat(row.total_rent || 0);\n    let totalDelinquent = parseFloat(row.delinquent_rent || 0) + parseFloat(row.delinquent_subsidy || 0) + parseFloat(row.delinquent_fees || 0);\n\n    let dpReceivable = row.delinquency_percent_receivable || \"0%\";\n    let dpRentOnly = row.delinquency_percent_rent_only || \"0%\";\n    let dpNoSubsidy = row.delinquency_percent_no_subsidies || \"0%\"; // Added this line\n\n    emailBody += `<tr>\n        <td>${propName}</td>\n        <td>$${totalRent.toLocaleString()}</td>\n        <td>$${totalDelinquent.toLocaleString()}</td>\n        <td>${dpReceivable}</td>\n        <td>${dpRentOnly}</td>\n        <td>${dpNoSubsidy}</td>\n    </tr>`;\n});\n\nemailBody += `</table>`;\n\nreturn [{ json: { emailBody } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        600
+      ],
+      "id": "57780e2c-a431-4af8-8b34-326f1a17005d",
+      "name": "Code4"
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Wally Daily Delinquency",
+        "html": "={{ $json.emailBody }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2100,
+        600
+      ],
+      "id": "9324d689-71ff-42bf-8908-7f0be9f44b38",
+      "name": "Send Email",
+      "webhookId": "0a150469-7e8d-47cd-adc5-6f0be6ad5ce0",
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let emailBody = `\n    <h2>Delinquency Report</h2>\n    <p>This report details delinquency for the properties to date as a percentage of occupied units.</p>\n    <p>If a property is not represented, it either has no delinquency or no data available.</p>\n    <table border='1' cellpadding='5' cellspacing='0' style='border-collapse: collapse;'>\n        <tr>\n            <th>Property</th>\n            <th>Total Rent</th>\n            <th>Total Delinquent</th>\n            <th>Delinquency % (Receivable)</th>\n            <th>Delinquency % (Rent Only)</th>\n        </tr>`;\n\nitems.forEach(item => {\n    let row = item.json;\n\n    let totalRent = parseFloat(row.total_rent || 0);\n    let totalDelinquent = parseFloat(row.delinquent_rent || 0) + parseFloat(row.delinquent_fees || 0);\n\n    let dpReceivable = parseFloat(row.delinquency_percent_receivable || 0);\n    let dpRentOnly = parseFloat(row.delinquency_percent_rent_only || 0);\n\n    let delinquencyColor = \"black\";\n    if (dpReceivable > 10) {\n        delinquencyColor = \"red\";\n    } else if (dpReceivable >= 5) {\n        delinquencyColor = \"orange\";\n    } else {\n        delinquencyColor = \"green\";\n    }\n\n    let delinquentRentColor = (totalDelinquent > 5000) ? \"orange\" : \"black\";\n\n    // Add gold stars\n    let dpReceivableDisplay = dpReceivable.toFixed(2) + \"%\";\n    if (dpReceivable < 1) {\n        dpReceivableDisplay += \" ⭐\";\n    }\n\n    let dpRentOnlyDisplay = dpRentOnly.toFixed(2) + \"%\";\n    if (dpRentOnly < 1) {\n        dpRentOnlyDisplay += \" ⭐\";\n    }\n\n    emailBody += `<tr>\n        <td>${row.property_name || \"Unknown\"}</td>\n        <td>$${totalRent.toLocaleString()}</td>\n        <td style=\"color: ${delinquentRentColor};\">$${totalDelinquent.toLocaleString()}</td>\n        <td style=\"color: ${delinquencyColor};\">${dpReceivableDisplay}</td>\n        <td style=\"color: ${delinquencyColor};\">${dpRentOnlyDisplay}</td>\n    </tr>`;\n});\n\nemailBody += `</table>`;\n\nreturn [{ json: { emailBody } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        800
+      ],
+      "id": "1fc0d0ed-678c-406f-95be-529ac6afd676",
+      "name": "Code6"
+    },
+    {
+      "parameters": {
+        "fromEmail": "reports@blzres.com",
+        "toEmail": "brandon@blazeproperty.com",
+        "subject": "Daily Delinquency Percentages",
+        "html": "={{ $json.emailBody }}",
+        "options": {
+          "ccEmail": "brandon@blazeproperty.com"
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1880,
+        800
+      ],
+      "id": "b5246bb4-4a2f-4997-ab42-85816ea0b69e",
+      "name": "Send Email1",
+      "webhookId": "e024fe9b-8fb3-4d08-91b7-5c055a7a1a8c",
+      "credentials": {
+        "smtp": {
+          "id": "CT7TQcD1DuyTHPFu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        300
+      ],
+      "id": "f4d12732-c932-4051-88c2-8a91be735b26",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6b0ccc25-bcfc-45b3-8307-bbab4123577f",
+              "name": "property_name",
+              "value": "={{ $json['Property Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "590d33ae-e411-4fd1-8c7c-736ba25191f6",
+              "name": "property_id",
+              "value": "={{ $json['Property ID'] }}",
+              "type": "number"
+            },
+            {
+              "id": "7b7c50f8-0176-4b20-a7c6-877aa2e0d48e",
+              "name": "tenant_name",
+              "value": "={{ $json.Name }}",
+              "type": "string"
+            },
+            {
+              "id": "29c101c1-be29-4cb2-9b07-2fef2f95c383",
+              "name": "total_receivable",
+              "value": "={{ $json['Amount Receivable'] }}",
+              "type": "number"
+            },
+            {
+              "id": "f1fe084c-6797-4f29-8899-b755aaad5b74",
+              "name": "delinquent_rent",
+              "value": "={{ $json['Delinquent Rent'] }}",
+              "type": "number"
+            },
+            {
+              "id": "8971f5cb-c69c-46aa-beb3-7568c8ccea9b",
+              "name": "delinquent_subsidy",
+              "value": "={{ $json['Delinquent Subsidy Amount'] }}",
+              "type": "number"
+            },
+            {
+              "id": "8af9f118-97ce-438c-a0d6-c8bf04a0d480",
+              "name": "nsf_count",
+              "value": "={{ $json['NSF Count'] }}",
+              "type": "number"
+            },
+            {
+              "id": "7d7baeb7-fda5-4a73-bd43-06f09ac183f4",
+              "name": "late_count",
+              "value": "={{ $json['Late Count'] }}",
+              "type": "number"
+            },
+            {
+              "id": "48b3021a-8ebc-46fc-92ff-d28a129c7ed9",
+              "name": "certified_funds_Only",
+              "value": "={{ $json['Certified Funds Only'] }}",
+              "type": "string"
+            },
+            {
+              "id": "24aaf3dd-5503-4fd2-b213-b978b9212b51",
+              "name": "monthly_charges",
+              "value": "={{ $json['Monthly Charges'] }}",
+              "type": "number"
+            },
+            {
+              "id": "3a332067-b853-4e75-9424-5b0eb33c310d",
+              "name": "last_payment_date",
+              "value": "={{ $json['Last Payment'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e67f1f98-1990-44bd-9ffa-0928eb9ec9f7",
+              "name": "last_payment_amount",
+              "value": "={{ $json['Payment Amount'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9c810c01-9c09-4ad8-9987-b1c28e60dc87",
+              "name": "monthly_rent",
+              "value": "={{ $json.Rent }}",
+              "type": "number"
+            },
+            {
+              "id": "bda6e1d8-4d83-4b33-8c9d-7dbe3943599f",
+              "name": "delinquent_fees",
+              "value": "={{ $json['Amount Receivable'] - $json['Delinquent Rent'] - $json['Delinquent Subsidy Amount'] }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        340,
+        300
+      ],
+      "id": "62b354a5-505f-4196-b8fe-f5611d107345",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e4198c16-6507-4013-9d94-ce69fd5f9543",
+              "name": "unit",
+              "value": "={{ $json.Unit }}",
+              "type": "string"
+            },
+            {
+              "id": "ff8f304a-0e68-467f-bf20-e44b2e0d5d50",
+              "name": "status",
+              "value": "={{ $json.Status }}",
+              "type": "string"
+            },
+            {
+              "id": "f472f51c-aed4-45fa-9cda-54370a3135af",
+              "name": "rent",
+              "value": "={{ $json.Rent }}",
+              "type": "number"
+            },
+            {
+              "id": "45180fa2-5719-45c7-88e4-33541ac68e0a",
+              "name": "property_name",
+              "value": "={{ $json['Property Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "98c4536e-4859-4c2e-ac8d-f77e5a35987a",
+              "name": "property_id",
+              "value": "={{ $json['Property ID'] }}",
+              "type": "number"
+            },
+            {
+              "id": "19a25703-56b6-4801-95f2-8a435f88d2f2",
+              "name": "property_group_ids",
+              "value": "={{ $json['Property Group ID(s)'].split(',').map(item => parseInt(item.trim())) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        340,
+        500
+      ],
+      "id": "9f5c97c5-3988-4345-8dc9-95bba5927595",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a997f22e-ca2e-425d-9c74-104bd4e09317",
+              "name": "property_id",
+              "value": "={{ $json.property_id }}",
+              "type": "number"
+            },
+            {
+              "id": "89f6b8f3-0634-45ff-bbda-a232c930cfc7",
+              "name": "total_receivable",
+              "value": "={{ $json.total_receivable }}",
+              "type": "number"
+            },
+            {
+              "id": "d679fa71-c937-47d5-a778-453b32073296",
+              "name": "delinquent_rent",
+              "value": "={{ $json.delinquent_rent }}",
+              "type": "number"
+            },
+            {
+              "id": "9e6bd959-88c3-40a8-92b0-f8bf95e832ad",
+              "name": "delinquent_subsidy",
+              "value": "={{ $json.delinquent_subsidy }}",
+              "type": "number"
+            },
+            {
+              "id": "197b8592-1733-443a-a4f4-ad814ce2f0c4",
+              "name": "monthly_charges",
+              "value": "={{ $json.monthly_charges }}",
+              "type": "number"
+            },
+            {
+              "id": "2349272d-b2e3-490f-b732-f0d659e4ade7",
+              "name": "last_payment_amount",
+              "value": "={{ $json.last_payment_amount }}",
+              "type": "number"
+            },
+            {
+              "id": "adabe1f1-3f43-4568-9c48-cc5e365bcf0b",
+              "name": "monthly_rent",
+              "value": "={{ $json.monthly_rent }}",
+              "type": "number"
+            },
+            {
+              "id": "ae49b017-d2a3-4311-94b3-6fbd01b0376d",
+              "name": "delinquent_fees",
+              "value": "={{ $json.delinquent_fees }}",
+              "type": "number"
+            },
+            {
+              "id": "fc02fb19-126d-460e-9815-4df927d355a9",
+              "name": "total_rent",
+              "value": "={{ $json.total_rent }}",
+              "type": "number"
+            },
+            {
+              "id": "d27f5408-8d3d-416e-a3ab-0b8b395fade3",
+              "name": "property_name",
+              "value": "={{ $json.property_name }}",
+              "type": "string"
+            },
+            {
+              "id": "55349db1-a46f-4390-995e-cad7427cf1d2",
+              "name": "property_group_ids",
+              "value": "={{ $json.property_group_ids }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1220,
+        400
+      ],
+      "name": "Edit Fields2",
+      "id": "1b9decb0-9d96-4b10-b1c3-61716470081b"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "property_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1000,
+        400
+      ],
+      "id": "5afaa4d2-8205-4d55-a23b-288da4a8ae20",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "daily_data",
+          "mode": "list",
+          "cachedResultName": "daily_data"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_id",
+        "valueToMatchOn": "={{ $json[\"property_id\"] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "id",
+              "value": "={{ $json.property_id }}"
+            },
+            {
+              "column": "total_receivable",
+              "value": "={{ $json.total_receivable }}"
+            },
+            {
+              "column": "total_delinquent_rent",
+              "value": "={{ $json.delinquent_rent }}"
+            },
+            {
+              "column": "delinquent_subsidy",
+              "value": "={{ $json.delinquent_subsidy }}"
+            },
+            {
+              "column": "total_rent",
+              "value": "={{ $json.total_rent }}"
+            },
+            {
+              "column": "delinquency_percent_receivable",
+              "value": "={{ $json.delinquency_percent_receivable }}"
+            },
+            {
+              "column": "delinquency_percent_rent_only",
+              "value": "={{ $json.delinquency_percent_rent_only }}"
+            },
+            {
+              "column": "delinquency_percent_no_subsidies",
+              "value": "={{ $json.delinquency_percent_no_subsidies }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1660,
+        200
+      ],
+      "id": "787db55c-168c-4bb8-b473-308861cd541a",
+      "name": "Update daily_data table",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": {
+          "__rl": true,
+          "value": "property_directory",
+          "mode": "list",
+          "cachedResultName": "property_directory"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_id",
+        "valueToMatchOn": "={{ $json.property_id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "property_name",
+              "value": "={{ $json.property_name }}"
+            },
+            {
+              "column": "property_group_ids",
+              "value": "={{ $json.property_group_ids }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1660,
+        0
+      ],
+      "id": "d5686e63-a8fa-47bf-b265-dc620c986c02",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6,
+              "triggerAtMinute": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -360,
+        520
+      ],
+      "id": "a7ec039e-a7f2-4df5-9d1d-9679677d002a",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-25T11:15:10.000Z",
+  "versionId": "70167912-e016-45f5-814a-7371071cb1a9"
+}
