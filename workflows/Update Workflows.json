@@ -1,0 +1,175 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Workflows1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Workflows1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Workflows1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Workflows1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Get Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        []
+      ]
+    },
+    "Get Workflow": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-24T20:08:07.902Z",
+  "id": "AiFJtoAJaY5k7WJU",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Workflows",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        -120
+      ],
+      "id": "fa3a5f3e-baa2-4956-b5d8-80894d94382e",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        -780,
+        -120
+      ],
+      "id": "f7d16eab-da35-4533-983b-f66a729dbfdb",
+      "name": "Get Workflows1",
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -560,
+        -120
+      ],
+      "id": "495c3449-90c0-4641-a880-40e48896634d",
+      "name": "Loop Over Workflows1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4-turbo-preview",
+          "mode": "list",
+          "cachedResultName": "GPT-4-TURBO-PREVIEW"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Suggest a clear, short name for a workflow. Current name: \"{{$json.name}}\". It uses these node types: {{$json.nodes.join(', ')}}. Return only the new name. provide a list of tags that will help further define and enable filtering base this on communication method (email, chat, etc), file transfer types (email, ftp, etc), reporting, appfolio, backup, ai, google, sql, webhook or dependencies. "
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -140,
+        -260
+      ],
+      "id": "24b0770b-ee52-4233-8ad7-4003c4cfd1de",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "workflowId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -100
+      ],
+      "id": "838d806c-6759-450d-a9a1-3c7c8cc77c1b",
+      "name": "Get Workflow",
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-24T22:13:04.000Z",
+  "versionId": "b707a150-8ef9-40a4-b578-484bb874f5f4"
+}
