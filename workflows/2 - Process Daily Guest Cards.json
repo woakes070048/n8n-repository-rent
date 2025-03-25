@@ -69,7 +69,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1560,
+        -1600,
         -280
       ],
       "id": "68f533b8-c513-4996-beca-3a488c0b9b3e",
@@ -83,7 +83,7 @@
       "typeVersion": 1,
       "position": [
         -1380,
-        -20
+        -180
       ],
       "id": "f07f805f-f6e3-4a72-9d39-bf23bb15877b",
       "name": "FTP",
@@ -103,7 +103,7 @@
       "typeVersion": 1,
       "position": [
         -1160,
-        -20
+        -180
       ],
       "id": "67870e61-fd0d-4180-b663-abdf472cb951",
       "name": "Extract from File"
@@ -115,8 +115,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -980,
-        -20
+        -940,
+        -180
       ],
       "id": "e5363a7b-c01a-4eac-ace4-fc2905a43192",
       "name": "Code"
@@ -154,8 +154,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -700,
-        -20
+        -720,
+        -180
       ],
       "id": "62469748-a621-4cc4-baa4-c87dbeb24251",
       "name": "MySQL1",
@@ -180,7 +180,7 @@
       "typeVersion": 1.2,
       "position": [
         -1600,
-        -20
+        -80
       ],
       "id": "8c3ff476-c755-48cf-a7f7-927749c8b6ea",
       "name": "Schedule Trigger"
@@ -198,6 +198,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-22T11:19:20.000Z",
-  "versionId": "6d5e5e26-cf0d-409c-8dde-c8a160a33e80"
+  "updatedAt": "2025-03-25T10:30:31.000Z",
+  "versionId": "1dae1570-abde-49ac-b499-9b865a49af7d"
 }
