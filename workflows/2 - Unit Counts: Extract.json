@@ -1,0 +1,404 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Summarize Property Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize Property Status": {
+      "main": [
+        [
+          {
+            "node": "Property Summary for Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Property Summary for Output": {
+      "main": [
+        [
+          {
+            "node": "Set Data Fields Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Data Fields Final": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-20T10:22:17.696Z",
+  "id": "klF6Q8mqIHH0jjUn",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "2 - Unit Counts: Extract",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -840,
+        -120
+      ],
+      "id": "0bde9549-aeaf-4669-8242-616fef360d7f",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "rawData": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -20
+      ],
+      "id": "42fe97d5-ea7e-41b6-9663-7f12de6a88b0",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "daily_data",
+          "mode": "list",
+          "cachedResultName": "daily_data"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_id",
+        "valueToMatchOn": "={{ $json.property_id }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "vacant_rented_count",
+              "value": "={{ $json.vacant_rented_count }}"
+            },
+            {
+              "column": "vacant_unrented_count",
+              "value": "={{ $json.vacant_unrented_count }}"
+            },
+            {
+              "column": "notice_rented_count",
+              "value": "={{ $json.notice_rented_count }}"
+            },
+            {
+              "column": "notice_unrented_count",
+              "value": "={{ $json.notice_unrented_count }}"
+            },
+            {
+              "column": "vacant_unrented_json",
+              "value": "={{ $json.vacant_unrented_json }}"
+            },
+            {
+              "column": "notice_unrented_json",
+              "value": "={{ $json.notice_unrented_json }}"
+            },
+            {
+              "column": "vacant_rented_json",
+              "value": "={{ $json.vacant_rented_json }}"
+            },
+            {
+              "column": "notice_eviction_count",
+              "value": "={{ $json[\"Notice-Eviction Count\"] }}"
+            },
+            {
+              "column": "vacant_unrented_json",
+              "value": "={{ $json[\"Vacant-Unrented\"] }}"
+            },
+            {
+              "column": "notice_eviction",
+              "value": "={{ $json[\"Notice-Eviction\"] }}"
+            },
+            {
+              "column": "lease_30",
+              "value": "={{ $json.lease_30 }}"
+            },
+            {
+              "column": "lease_60",
+              "value": "={{ $json.lease_60 }}"
+            },
+            {
+              "column": "lease_90",
+              "value": "={{ $json.lease_90 }}"
+            },
+            {
+              "column": "lease_m2m",
+              "value": "={{ $json.lease_m2m }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        480,
+        -20
+      ],
+      "id": "481122dc-0843-4c13-8cf8-dfd0a993b5df",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1Xk2iAoo0iQyCh5fTktPWYN9etCRP1BX3"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -620,
+        -20
+      ],
+      "id": "2c34dcdb-86ff-4419-9b95-092a6c926214",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ensure input data is available\nif (!items || items.length === 0) {\n    throw new Error(\"No input data found.\");\n}\n\n// Define statuses to count\nconst trackStatuses = [\"Current\", \"Vacant-Rented\", \"Vacant-Unrented\", \"Evict\"];\nconst today = new Date();\nconst currentMonth = today.getMonth(); // 0 = Jan\nconst currentYear = today.getFullYear();\nconst nextMonth = (currentMonth + 1) % 12;\nconst nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;\nconst followingMonth = (currentMonth + 2) % 12;\nconst followingYear = currentMonth >= 10 ? currentYear + 1 : currentYear;\n\nconst propertyData = {};\n\nfunction parseDate(str) {\n    const parts = str.split(\"/\");\n    if (parts.length !== 3) return null;\n    const [month, day, year] = parts.map(p => parseInt(p, 10));\n    return new Date(year, month - 1, day); // Month is 0-based\n}\n\nitems.forEach(item => {\n    const json = item.json;\n\n    const propertyID = json[\"Property ID\"];\n    const propertyName = json[\"Property Name\"];\n    const unit = json[\"Unit\"];\n    const status = json[\"Status\"];\n    const leaseTo = json[\"Lease To\"];\n    const leaseExpiresMonth = json[\"Lease Expires Month\"];\n\n    if (!propertyID || !unit) return;\n\n    if (!propertyData[propertyID]) {\n        propertyData[propertyID] = {\n            \"Property Name\": propertyName,\n            \"Status Counts\": {},\n            \"Units By Status\": {},\n            \"Lease Expirations\": {\n                \"30 Days\": 0,\n                \"60 Days\": 0,\n                \"90 Days\": 0,\n                \"Month-To-Month\": 0\n            }\n        };\n    }\n\n    const prop = propertyData[propertyID];\n\n    // Count status\n    if (trackStatuses.includes(status)) {\n        if (!prop[\"Status Counts\"][status]) {\n            prop[\"Status Counts\"][status] = 0;\n            prop[\"Units By Status\"][status] = [];\n        }\n        prop[\"Status Counts\"][status]++;\n        prop[\"Units By Status\"][status].push(unit);\n    }\n\n    // Month-to-month\n    if (\n        leaseExpiresMonth &&\n        leaseExpiresMonth.toLowerCase().includes(\"month-to-month\")\n    ) {\n        prop[\"Lease Expirations\"][\"Month-To-Month\"]++;\n    }\n\n    // Lease expirations - compare by month and year\n    if (leaseTo && leaseTo.includes(\"/\")) {\n        const leaseDate = parseDate(leaseTo);\n        if (leaseDate) {\n            const leaseMonth = leaseDate.getMonth();\n            const leaseYear = leaseDate.getFullYear();\n\n            if (leaseMonth === currentMonth && leaseYear === currentYear) {\n                prop[\"Lease Expirations\"][\"30 Days\"]++;\n            } else if (leaseMonth === nextMonth && leaseYear === nextYear) {\n                prop[\"Lease Expirations\"][\"60 Days\"]++;\n            } else if (leaseMonth === followingMonth && leaseYear === followingYear) {\n                prop[\"Lease Expirations\"][\"90 Days\"]++;\n            }\n        }\n    }\n});\n\n// Format final output\nconst formatted = Object.entries(propertyData).map(([propertyID, data]) => ({\n    \"Property ID\": propertyID,\n    \"Property Name\": data[\"Property Name\"],\n    \"Status Counts\": data[\"Status Counts\"],\n    \"Units By Status\": data[\"Units By Status\"],\n    \"Lease Expirations\": data[\"Lease Expirations\"]\n}));\n\nreturn [{ json: { propertyData: formatted } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -180,
+        -20
+      ],
+      "id": "48d5282f-900a-4ab6-b394-77ecc71e74a6",
+      "name": "Summarize Property Status"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ensure input data is available\nif (!items || items.length === 0 || !items[0].json.propertyData) {\n    throw new Error(\"No property data found.\");\n}\n\n// Extract the propertyData array\nconst properties = items[0].json.propertyData;\n\n// Convert each property object into an individual item\nconst output = properties.map(property => {\n    const currentUnits = property[\"Units By Status\"][\"Current\"] || [];\n    const vacantUnrentedUnits = property[\"Units By Status\"][\"Vacant-Unrented\"] || [];\n    const vacantRentedUnits = property[\"Units By Status\"][\"Vacant-Rented\"] || [];\n    const evictUnits = property[\"Units By Status\"][\"Evict\"] || [];\n    const noticeRentedUnits = property[\"Units By Status\"][\"Notice Rented\"] || [];\n    const noticeUnrentedUnits = property[\"Units By Status\"][\"Notice-Unrented\"] || [];\n\n    const statusCounts = property[\"Status Counts\"] || {};\n    const leaseExpirations = property[\"Lease Expirations\"] || {};\n\n    return {\n        json: {\n            \"Property ID\": property[\"Property ID\"],\n            \"Property Name\": property[\"Property Name\"],\n\n            // Status Counts\n            \"Current Count\": statusCounts[\"Current\"] || 0,\n            \"Vacant-Rented Count\": statusCounts[\"Vacant-Rented\"] || 0,\n            \"Vacant-Unrented Count\": statusCounts[\"Vacant-Unrented\"] || 0,\n            \"Notice-Rented Count\": statusCounts[\"Notice Rented\"] || 0,\n            \"Notice-Unrented Count\": statusCounts[\"Notice-Unrented\"] || 0,\n            \"Notice-Eviction Count\": statusCounts[\"Evict\"] || 0,\n\n            // Unit Lists\n            \"Current\": currentUnits.join(\", \"),\n            \"Vacant-Rented\": vacantRentedUnits.join(\", \"),\n            \"Vacant-Unrented\": vacantUnrentedUnits.join(\", \"),\n            \"Notice-Rented\": noticeRentedUnits.join(\", \"),\n            \"Notice-Unrented\": noticeUnrentedUnits.join(\", \"),\n            \"Notice-Eviction\": evictUnits.join(\", \"),\n\n            // Lease Expiration Counts\n            \"Lease Expiring in 30 Days\": leaseExpirations[\"30 Days\"] || 0,\n            \"Lease Expiring in 60 Days\": leaseExpirations[\"60 Days\"] || 0,\n            \"Lease Expiring in 90 Days\": leaseExpirations[\"90 Days\"] || 0,\n            \"Lease Month-To-Month\": leaseExpirations[\"Month-To-Month\"] || 0\n        }\n    };\n});\n\n// Return the processed data for n8n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        -20
+      ],
+      "id": "280a689c-3487-44ef-a9ba-1177468b2916",
+      "name": "Property Summary for Output"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "81445d00-913c-4ce9-b8e4-4e54a44f5fa5",
+              "name": "property_id",
+              "value": "={{ $json[\"Property ID\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "8b16bfd3-d496-41d1-88e1-c96ff238bfbd",
+              "name": "vacant_rented_count",
+              "value": "={{ $json[\"Vacant-Rented Count\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "97c2ce4f-6cde-4103-92fd-02bf6183734e",
+              "name": "vacant_unrented_count",
+              "value": "={{ $json[\"Vacant-Unrented Count\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "6475385c-c953-47cd-9c52-946019a464dd",
+              "name": "notice_rented_count",
+              "value": "={{ $json[\"Notice-Rented Count\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "3439a863-8084-4429-8cbd-dcd7e611895f",
+              "name": "notice_unrented_count",
+              "value": "={{ $json[\"Notice-Unrented Count\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "e9cb9167-a8a8-47f2-ae95-734536820b22",
+              "name": "vacant_unrented_json",
+              "value": "={{ $json['Vacant-Unrented'] || \"None\"}}",
+              "type": "string"
+            },
+            {
+              "id": "dc040be4-8e04-4914-9b0d-c459c614a8be",
+              "name": "vacant_rented_json",
+              "value": "={{ $json[\"Vacant-Rented\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "13c21479-e63a-41fe-8daf-94d9cd570012",
+              "name": "notice_unrented_json",
+              "value": "={{ $json[\"Notice-Unrented\"] || \"None\"}} ",
+              "type": "string"
+            },
+            {
+              "id": "a5e03d3c-06df-428a-aacd-3855cd698b7e",
+              "name": "notice_rented_json",
+              "value": "={{ $json[\"Notice-Rented\"] || 0}}",
+              "type": "string"
+            },
+            {
+              "id": "991771e6-43ef-4c17-aa70-863f54c9812c",
+              "name": "Notice-Eviction Count",
+              "value": "={{ $json['Notice-Eviction Count'] }}",
+              "type": "number"
+            },
+            {
+              "id": "31a18c46-b814-483c-a091-a8d05dbf9781",
+              "name": "Vacant-Unrented",
+              "value": "={{ $json['Vacant-Unrented'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4dcc177e-c469-434e-b54c-32918c65257e",
+              "name": "Notice-Eviction",
+              "value": "={{ $json[\"Notice-Eviction\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "37d7f7de-4d47-49f4-a410-dae0b41e1f2b",
+              "name": "lease_30",
+              "value": "={{ $json[\"Lease Expiring in 30 Days\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "7de3dc47-8d53-41d6-bf0e-40512e6a7e95",
+              "name": "lease_60",
+              "value": "={{ $json[\"Lease Expiring in 60 Days\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "9ce3eaea-e105-41bd-ae20-bfc58fc28bb0",
+              "name": "lease_90",
+              "value": "={{ $json[\"Lease Expiring in 90 Days\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "bd2fff89-2b36-43c4-b92a-bb020ccc1d2f",
+              "name": "lease_m2m",
+              "value": "={{ $json[\"Lease Month-To-Month\"] }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        260,
+        -20
+      ],
+      "id": "c0e07e64-599b-4b57-8a84-3e201f808b04",
+      "name": "Set Data Fields Final"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 5,
+              "triggerAtMinute": 54
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -840,
+        80
+      ],
+      "id": "b85e7a7d-0ae2-464b-9fda-ae21c592f975",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-25T11:12:24.000Z",
+  "versionId": "8ca0bd9f-7b42-42f7-8389-f41cdc7fb1d1"
+}
