@@ -1,0 +1,378 @@
+{
+  "active": true,
+  "connections": {
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-22T16:32:40.596Z",
+  "id": "p4o1KpN0Ysdelxsh",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "2 - MTD Receivables: Extract",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// 1) Get data from input\nlet allItems = $input.all();\n\n// Try the most common scenario: allItems[0].json is already an array\nlet rows = allItems[0].json;\n\nif (!Array.isArray(rows)) {\n  // Maybe it's in allItems[0].json.data?\n  if (allItems[0].json.data && Array.isArray(allItems[0].json.data)) {\n    rows = allItems[0].json.data;\n  } else {\n    // Maybe each item is a single row:\n    rows = allItems.map(item => item.json).flat();\n  }\n}\n\n// If it's still not an array, throw an error\nif (!Array.isArray(rows)) {\n  throw new Error(\"We couldn’t find an array in the expected paths. Please check the output of the previous node.\");\n}\n\n// 2) Initialize receipts map\nconst receiptsMap = {};\n\n// 3) Loop through each row to sum receipts\nrows.forEach(row => {\n  if (!row.hasOwnProperty(\"Property ID\")) return;\n\n  // Normalize the property ID\n  const propertyId = String(row[\"Property ID\"]).trim();\n  if (!propertyId) return;\n\n  // **Skip if property ID is 'Total'** (case-insensitive)\n  if (propertyId.toLowerCase() === \"total\") return;\n\n  // Parse the receipt amount\n  const amount = parseFloat(row[\"Receipt Amount\"] || 0);\n\n  // Initialize if needed\n  if (!receiptsMap[propertyId]) {\n    receiptsMap[propertyId] = 0;\n  }\n\n  // Add to the property's total\n  receiptsMap[propertyId] += amount;\n});\n\n// 4) Build the output array\nconst output = Object.keys(receiptsMap).map(propertyId => {\n  return {\n    \"Property ID\": propertyId,\n    \"Total Receipts\": receiptsMap[propertyId],\n  };\n});\n\n// 5) Return final receipts results\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1020,
+        -340
+      ],
+      "id": "b339a2b3-8a86-4dc0-927d-1a01217d53b1",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT `property_id`, `Property`\nFROM `property_directory`\nWHERE `property_id` IN ({{ $json['Property ID'] }});\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -800,
+        -340
+      ],
+      "id": "c5e02343-a93a-4e86-b738-18939ecb71d0",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "24d0196e-6f74-4a98-8c5e-c8a3d124a940",
+              "name": "Property ID",
+              "value": "={{ $json['property_id'] }}",
+              "type": "string"
+            },
+            {
+              "id": "76184067-9033-4b2d-a872-7e3b5cd381f2",
+              "name": "Property",
+              "value": "={{ $json.Property }}",
+              "type": "string"
+            },
+            {
+              "id": "f4d58e0e-9c41-46be-997c-ebd4a7b38b6b",
+              "name": "Property ID",
+              "value": "={{ $('Code').item.json['Property ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "cbfb43e5-f823-41ac-8d18-f865f54a9dc7",
+              "name": "Total Receipts",
+              "value": "={{ $('Code').item.json['Total Receipts'] }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -580,
+        -340
+      ],
+      "id": "d0f60974-d701-489c-a291-3cb016db39e8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "daily_data",
+          "mode": "list",
+          "cachedResultName": "daily_data"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_id",
+        "valueToMatchOn": "={{ $json['Property ID'] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "monthly_received",
+              "value": "={{ $json['Total Receipts'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -360,
+        -340
+      ],
+      "id": "d706a33e-0e22-4e5a-acb6-3547e9ac29da",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1M1DTQ7vYdnU0CYHn9baIHXEddJddk6nJ"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1460,
+        -340
+      ],
+      "id": "6a87761a-2ae2-4baa-b4ca-215f878306f5",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1240,
+        -340
+      ],
+      "id": "7671fa54-07a0-4cc3-8977-d9a3c8e10ff4",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1680,
+        -440
+      ],
+      "id": "9a8cdd05-e77f-459c-9c37-b42fd4ff50b3",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "content": "## Receivables Daily\n\nGet file from drive and extract. ",
+        "height": 360,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1450,
+        -540
+      ],
+      "id": "47dd1210-6301-4be3-a619-c1fe45c27922",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Process Data and Calculate \nthis matches all data and calculates per property preparing data for sql insertion\n",
+        "height": 340,
+        "width": 460,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1090,
+        -520
+      ],
+      "id": "5e0d8686-4973-498e-a2f8-7eec6808ff69",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Update SQL Records\nupdate table daily_data with new information\n",
+        "height": 340,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -430,
+        -520
+      ],
+      "id": "bfbd1d0d-1514-4488-a104-ef9379591357",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Receivables Daily\n\nGet file from drive and extract. ",
+        "height": 360,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1450,
+        -540
+      ],
+      "id": "6af5afb8-1690-4fcd-bc8d-849f6ac4c3b0",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Process Data and Calculate \nthis matches all data and calculates per property preparing data for sql insertion\n",
+        "height": 340,
+        "width": 460,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1090,
+        -520
+      ],
+      "id": "3bd238d9-ef24-4c20-9956-3fd596a91453",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Update SQL Records\nupdate table daily_data with new information\n",
+        "height": 340,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -430,
+        -520
+      ],
+      "id": "5df7dbf0-5fe2-4d5e-9b58-64227fa81e1e",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 5,
+              "triggerAtMinute": 51
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1680,
+        -240
+      ],
+      "id": "e9d3da8f-2f05-424d-9f70-1d2f04a4c5bb",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-25T11:09:52.000Z",
+  "versionId": "c3d365be-fa36-4ea8-a1d1-ca4bebdfff1e"
+}
