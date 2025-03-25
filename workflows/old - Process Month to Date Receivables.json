@@ -1,0 +1,490 @@
+{
+  "active": false,
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive3": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Drive3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-18T03:11:15.513Z",
+  "id": "82u5fp3IjDa713il",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "old - Process Month to Date Receivables",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -820,
+        -120
+      ],
+      "id": "43b46893-b710-42ac-9ab7-46f4ed92e7e5",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Get data from input\nlet allItems = $input.all();\n\n// Try the most common scenario: allItems[0].json is already an array\nlet rows = allItems[0].json;\n\nif (!Array.isArray(rows)) {\n  // Maybe it's in allItems[0].json.data?\n  if (allItems[0].json.data && Array.isArray(allItems[0].json.data)) {\n    rows = allItems[0].json.data;\n  } else {\n    // Maybe each item is a single row:\n    rows = allItems.map(item => item.json).flat();\n  }\n}\n\n// If it's still not an array, throw an error\nif (!Array.isArray(rows)) {\n  throw new Error(\"We couldn’t find an array in the expected paths. Please check the output of the previous node.\");\n}\n\n// 2) Initialize receipts map\nconst receiptsMap = {};\n\n// 3) Loop through each row to sum receipts\nrows.forEach(row => {\n  if (!row.hasOwnProperty(\"Property ID\")) return;\n\n  // Normalize the property ID\n  const propertyId = String(row[\"Property ID\"]).trim();\n  if (!propertyId) return;\n\n  // **Skip if property ID is 'Total'** (case-insensitive)\n  if (propertyId.toLowerCase() === \"total\") return;\n\n  // Parse the receipt amount\n  const amount = parseFloat(row[\"Receipt Amount\"] || 0);\n\n  // Initialize if needed\n  if (!receiptsMap[propertyId]) {\n    receiptsMap[propertyId] = 0;\n  }\n\n  // Add to the property's total\n  receiptsMap[propertyId] += amount;\n});\n\n// 4) Build the output array\nconst output = Object.keys(receiptsMap).map(propertyId => {\n  return {\n    \"Property ID\": propertyId,\n    \"Total Receipts\": receiptsMap[propertyId],\n  };\n});\n\n// 5) Return final receipts results\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        -120
+      ],
+      "id": "4369d787-27c4-4186-bc13-92efa1269de0",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=SELECT `property_id`, `Property`\nFROM `property_directory`\nWHERE `property_id` IN ({{ $json['Property ID'] }});\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -380,
+        -120
+      ],
+      "id": "d1258eee-9632-450b-aaca-8c1e7a3dfb9d",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "24d0196e-6f74-4a98-8c5e-c8a3d124a940",
+              "name": "Property ID",
+              "value": "={{ $json['property_id'] }}",
+              "type": "string"
+            },
+            {
+              "id": "76184067-9033-4b2d-a872-7e3b5cd381f2",
+              "name": "Property",
+              "value": "={{ $json.Property }}",
+              "type": "string"
+            },
+            {
+              "id": "f4d58e0e-9c41-46be-997c-ebd4a7b38b6b",
+              "name": "Property ID",
+              "value": "={{ $('Code').item.json['Property ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "cbfb43e5-f823-41ac-8d18-f865f54a9dc7",
+              "name": "Total Receipts",
+              "value": "={{ $('Code').item.json['Total Receipts'] }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -120
+      ],
+      "id": "27b551b3-def8-476d-ab87-59a926d6e1a0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "daily_data",
+          "mode": "list",
+          "cachedResultName": "daily_data"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "property_id",
+        "valueToMatchOn": "={{ $json['Property ID'] }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "monthly_received",
+              "value": "={{ $json['Total Receipts'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        60,
+        -120
+      ],
+      "id": "96e25a09-03c3-45a6-b738-8b110564e8ac",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.google_file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1040,
+        -120
+      ],
+      "id": "8bd76ada-4f89-43c9-8933-aa4f260950c6",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "12YmAN21AqUablEdnlh-f3QsTTtiYKMHy",
+            "mode": "list",
+            "cachedResultName": "n8n reports active",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/12YmAN21AqUablEdnlh-f3QsTTtiYKMHy"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1700,
+        -120
+      ],
+      "id": "f1a06313-800e-4543-b148-e1a40414542e",
+      "name": "Google Drive3",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5dfdf2db-7b49-47da-a48f-25425212010a",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Receivables To Date",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1480,
+        -120
+      ],
+      "id": "a9d10809-9be3-4714-aba9-9169a4e26881",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6,
+              "triggerAtMinute": 4
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1920,
+        -20
+      ],
+      "id": "0568054c-8159-49c9-8985-65bd9f56cb81",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1920,
+        -220
+      ],
+      "id": "8d2da635-89f7-4c26-a6ed-3c27ee253486",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Edit Fields1').item.json.google_file_id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "value": "0ANoqNkaxSRr-Uk9PVA",
+          "mode": "list",
+          "cachedResultName": "DataOnly",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0ANoqNkaxSRr-Uk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1kYAzmyEP1PYRgGRTirAMEsa6ce5-wKWR",
+          "mode": "list",
+          "cachedResultName": "archive 30",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1kYAzmyEP1PYRgGRTirAMEsa6ce5-wKWR"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        280,
+        -120
+      ],
+      "id": "e66037c8-afdc-412d-9a6c-e0a68f937bf3",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "={{ \n  (() => {\n    const original = $json.name;\n    const date = new Date();\n    const yyyy = date.getFullYear();\n    const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based\n    const dd = String(date.getDate()).padStart(2, '0');\n    const formattedDate = `${yyyy}-${mm}-${dd}`;\n    return original.replace('.csv', ` ${formattedDate}.csv`);\n  })() \n}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        500,
+        -120
+      ],
+      "id": "c01f1957-727e-47b4-ba20-798f6305f834",
+      "name": "Google Drive2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c4836054-940b-4312-a5f3-cd16f8af0fc3",
+              "name": "google_file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1260,
+        -120
+      ],
+      "id": "eb731b3b-5aa7-4acb-82d2-14c131d7ca2b",
+      "name": "Edit Fields1"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-25T10:44:23.000Z",
+  "versionId": "7f8c4a7c-23e4-49a5-9226-b9517cf389ad"
+}
