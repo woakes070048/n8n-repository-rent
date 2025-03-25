@@ -115,7 +115,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        500,
+        620,
         -200
       ],
       "id": "a4f8fcd6-b13c-48aa-868d-0f11545c3978",
@@ -135,7 +135,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        740,
+        840,
         -200
       ],
       "id": "14bffc4f-e2d1-4f13-b68e-51903b5e1b6d",
@@ -159,7 +159,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        880,
+        1060,
         -200
       ],
       "id": "fb43167c-0aab-4df0-aea2-26b4b1f86ead",
@@ -183,7 +183,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1040,
+        1280,
         -200
       ],
       "id": "138956c7-17d8-47cc-af04-a1428aebca7b",
@@ -205,7 +205,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        160,
+        200,
         -380
       ],
       "id": "45c9215e-d90a-4ba0-bab2-cd7716cbe669",
@@ -221,7 +221,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        440,
+        560,
         -380
       ],
       "id": "ceb6d821-f829-4888-bb5d-9d0633387530",
@@ -236,7 +236,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        680,
+        790,
         -380
       ],
       "id": "fe46a93e-1dd3-47b1-929a-251c3a2ab23b",
@@ -260,7 +260,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        340,
+        400,
         -200
       ],
       "id": "5011c267-58dd-4663-9d11-274f4cbacb1e",
@@ -289,6 +289,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-25T11:06:48.000Z",
-  "versionId": "2723e4f4-e5ea-47a1-a6fc-749bc870f765"
+  "updatedAt": "2025-03-25T11:34:02.000Z",
+  "versionId": "125acb61-15b6-4cb6-a7d0-5eeb75a31047"
 }
