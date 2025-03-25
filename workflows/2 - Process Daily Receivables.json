@@ -96,8 +96,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -700,
-        -200
+        -740,
+        -400
       ],
       "id": "4c39f25f-8363-49fd-b11d-e4c5dd396c17",
       "name": "Code"
@@ -111,8 +111,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -540,
-        -200
+        -520,
+        -400
       ],
       "id": "862a8dd9-14d2-4a63-8955-15005a42dd09",
       "name": "MySQL",
@@ -152,8 +152,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -380,
-        -200
+        -300,
+        -400
       ],
       "id": "42420f52-7f83-47f8-9fa7-98466d93d769",
       "name": "Edit Fields"
@@ -183,8 +183,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -140,
-        -200
+        -80,
+        -400
       ],
       "id": "18c34c60-5e3d-4d66-9df7-aa6d00c81d81",
       "name": "MySQL1",
@@ -209,7 +209,7 @@
       "typeVersion": 1.2,
       "position": [
         -1400,
-        -220
+        -400
       ],
       "id": "146ed95d-06df-4e96-9f81-e511e1e083c3",
       "name": "Schedule Trigger",
@@ -228,7 +228,7 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -1120,
+        -1180,
         -400
       ],
       "id": "04d19bd7-39ba-425a-a4b2-4a3ceea7fb1d",
@@ -249,8 +249,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1140,
-        -540
+        -1170,
+        -600
       ],
       "id": "41fa2c28-ae5d-4ca1-af5e-6abdb7c8bef1",
       "name": "Sticky Note"
@@ -265,8 +265,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -720,
-        -340
+        -700,
+        -580
       ],
       "id": "97477c33-a7a3-4399-a08b-1e9a3290ab6b",
       "name": "Sticky Note1"
@@ -280,8 +280,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -180,
-        -340
+        -150,
+        -580
       ],
       "id": "13b82f9c-88b6-40f1-be56-3362d8cdb2be",
       "name": "Sticky Note2"
@@ -299,6 +299,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-24T01:30:05.000Z",
-  "versionId": "d5ccb16f-7c3c-4095-9ec3-27693803d37d"
+  "updatedAt": "2025-03-25T10:29:30.000Z",
+  "versionId": "16738d69-d14e-442b-902c-b104368d3e68"
 }
