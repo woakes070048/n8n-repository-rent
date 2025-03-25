@@ -152,7 +152,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        780,
+        840,
         -20
       ],
       "id": "d5d91b9f-3866-4a82-b22d-e5f2e32eb770",
@@ -182,7 +182,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        380,
+        400,
         -20
       ],
       "id": "99e06295-6ae2-4940-b72e-95c1f649e4dd",
@@ -258,7 +258,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        600,
+        620,
         -20
       ],
       "id": "4bc2f7e1-4a2b-4fe1-885f-fe055c008cee",
@@ -272,6 +272,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-20T12:36:49.000Z",
-  "versionId": "11887dac-d0ae-4e57-af54-355e3e8e1634"
+  "updatedAt": "2025-03-25T10:31:22.000Z",
+  "versionId": "d1ec78a0-faa7-49d5-b496-a2b4c915e495"
 }
