@@ -82,7 +82,7 @@
       "type": "n8n-nodes-base.errorTrigger",
       "position": [
         760,
-        934.1688633602625
+        820
       ],
       "typeVersion": 1
     },
@@ -95,8 +95,8 @@
       "name": "n8n",
       "type": "n8n-nodes-base.n8n",
       "position": [
-        1220,
-        594.1688633602625
+        1200,
+        560
       ],
       "typeVersion": 1,
       "credentials": {
@@ -117,8 +117,8 @@
       "name": "Gmail",
       "type": "n8n-nodes-base.gmail",
       "position": [
-        1020,
-        920
+        980,
+        820
       ],
       "typeVersion": 2.1,
       "webhookId": "7c0fd49c-7832-4329-bb48-561a54244bc2",
@@ -144,7 +144,7 @@
       "type": "n8n-nodes-base.n8n",
       "position": [
         980,
-        594.1688633602625
+        560
       ],
       "typeVersion": 1,
       "credentials": {
@@ -169,8 +169,8 @@
       "name": "n8n | update",
       "type": "n8n-nodes-base.n8n",
       "position": [
-        1820,
-        594.1688633602625
+        1860,
+        560
       ],
       "typeVersion": 1,
       "credentials": {
@@ -204,8 +204,8 @@
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        700,
-        814.1688633602625
+        680,
+        720
       ],
       "typeVersion": 1
     },
@@ -219,8 +219,8 @@
       "name": "Sticky Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        925.0603083429507,
-        541.0120616685901
+        913.5,
+        503
       ],
       "typeVersion": 1
     },
@@ -237,7 +237,7 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "position": [
         760,
-        594.1688633602625
+        560
       ],
       "typeVersion": 1.2
     },
@@ -251,8 +251,8 @@
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        700,
-        540
+        702.5,
+        500
       ],
       "typeVersion": 1
     },
@@ -314,7 +314,7 @@
       "type": "n8n-nodes-base.if",
       "position": [
         1420,
-        600
+        560
       ],
       "typeVersion": 2
     }
@@ -330,6 +330,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-01-28T16:42:48.000Z",
-  "versionId": "443ebde3-affd-47a8-8869-88a498c58dcc"
+  "updatedAt": "2025-03-26T10:44:37.000Z",
+  "versionId": "2a8680af-ea94-4281-ad63-5becdd44c898"
 }
