@@ -1,0 +1,368 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Active Workflows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Active Workflows": {
+      "main": [
+        [
+          {
+            "node": "Wrap n8n Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wrap n8n Workflows": {
+      "main": [
+        [
+          {
+            "node": "Merge Inputs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wrap GitHub Files": {
+      "main": [
+        [
+          {
+            "node": "Merge Inputs",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Inputs": {
+      "main": [
+        [
+          {
+            "node": "Filter Stale Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Wrap GitHub Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Workflow JSON": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Stale Workflows": {
+      "main": [
+        [
+          {
+            "node": "Download Workflow JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Save to Legacy Branch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Legacy Branch2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-25T12:40:49.732Z",
+  "id": "OAZGLpwtXyxnRgwC",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Legacy Git Flow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "2c784efe-6135-48cc-830f-f36807c6ed31",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -140,
+        -100
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "id": "d80774a1-eed3-44f6-8008-5a3c99783f37",
+      "name": "Get Active Workflows",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        80,
+        -200
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ json: { n8n: items } }];\n"
+      },
+      "id": "40f6577b-2b25-482f-9a03-e65402a82b91",
+      "name": "Wrap n8n Workflows",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        300,
+        -200
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ json: { github: items } }];\n"
+      },
+      "id": "8b180337-302b-412e-b408-78f52d1e8a39",
+      "name": "Wrap GitHub Files",
+      "type": "n8n-nodes-base.function",
+      "position": [
+        300,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "id": "12e1593e-2a6a-403f-ae0f-b3e1bfdf97a3",
+      "name": "Merge Inputs",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        520,
+        -100
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "url": "https://api.github.com/repos/brandonblaze1/n8n-repository/contents/workflows?ref=main",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        0
+      ],
+      "id": "a922c8b0-10e4-4f50-aae1-5eb827524572",
+      "name": "HTTP Request",
+      "credentials": {
+        "githubApi": {
+          "id": "tc844L9IUnwi1x61",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.download_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        -100
+      ],
+      "id": "c9d863a3-16e7-4acb-a384-45e0a19702e3",
+      "name": "Download Workflow JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map((item, index) => {\n  const workflow = item.json;\n  const meta = $items(\"Filter Stale Workflows\", 0)[index].json;\n\n  const content = Buffer.from(JSON.stringify(workflow, null, 2)).toString('base64');\n\n  return {\n    json: {\n      name: meta.name,\n      path: `legacy/${meta.name}`, // Send to legacy folder\n      content,\n      branch: 'legacy',\n      message: `[Archive] Move ${meta.name} to legacy branch`\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1220,
+        -100
+      ],
+      "id": "d41267ec-b7c7-4ab1-95c3-eba4198f11c9",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const merged = items[0].json;\n\nconst n8nInput = merged.n8n || [];\nconst githubInput = merged.github || [];\n\nconst activeNames = n8nInput\n  .filter(item => item.json.active)\n  .map(item => `${item.json.name}.json`);\n\nconst stale = githubInput\n  .filter(file =>\n    !activeNames.includes(file.json.name) &&\n    file.json.download_url &&\n    file.json.download_url.startsWith('http')\n  );\n\nreturn stale.map(file => ({\n  json: {\n    name: file.json.name,\n    path: file.json.path,\n    download_url: file.json.download_url,\n    sha: file.json.sha\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -100
+      ],
+      "id": "8b0c8012-40fe-4987-9f84-c0c221a977c3",
+      "name": "Filter Stale Workflows"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/brandonblaze1/n8n-repository/contents/{{ $json.path }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{ $json.message }}\",\n  \"content\": \"{{ $json.content }}\",\n  \"branch\": \"{{ $json.branch }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1700,
+        -80
+      ],
+      "id": "5309e1a6-44d9-442e-b1bb-1b07f0c9c9c6",
+      "name": "Save to Legacy Branch2",
+      "credentials": {
+        "githubApi": {
+          "id": "tc844L9IUnwi1x61",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        2000,
+        -220
+      ],
+      "id": "7c3529d5-7f03-4ff0-a2d9-5780f6c32580",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1440,
+        -100
+      ],
+      "id": "f907596f-59d8-43f2-b89c-473c0ff6a5bc",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        -80
+      ],
+      "id": "af6bcbc9-97a8-4e70-8727-c1e8dc48641d",
+      "name": "Wait",
+      "webhookId": "860d123c-0818-4c12-a821-935403056b06"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-03-25T19:21:01.000Z",
+  "versionId": "7d2750d5-8e43-457d-a60a-1dd07cd66584"
+}
