@@ -1,60 +1,76 @@
 {
   "active": true,
   "connections": {
-    "Gmail Trigger": {
+    "Get Report Email": {
       "main": [
         [
           {
-            "node": "Google Drive1",
+            "node": "Locate File ID By Name",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Drive": {
+    "Update File by ID": {
       "main": [
         [
           {
-            "node": "Gmail",
+            "node": "Generate Status",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Gmail": {
+    "Locate File ID By Name": {
       "main": [
         [
           {
-            "node": "Gmail1",
+            "node": "Update File by ID",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Gmail1": {
+    "Mark As Read": {
       "main": [
         [
           {
-            "node": "Gmail2",
+            "node": "Label as Report",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Gmail2": {
+    "Label as Report": {
+      "main": [
+        [
+          {
+            "node": "Remove Inbox Label",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Inbox Label": {
       "main": [
         []
       ]
     },
-    "Google Drive1": {
+    "Generate Status": {
       "main": [
         [
           {
-            "node": "Google Drive",
+            "node": "Legacy Sheet Status",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Blaze Sheet Status",
             "type": "main",
             "index": 0
           }
@@ -69,133 +85,6 @@
   },
   "name": "1 - Get Reports From Gmail",
   "nodes": [
-    {
-      "parameters": {
-        "pollTimes": {
-          "item": [
-            {
-              "mode": "everyMinute"
-            }
-          ]
-        },
-        "simple": false,
-        "filters": {
-          "q": "has:attachment to:brandon+reports@blazeproperty.com n8n",
-          "readStatus": "unread"
-        },
-        "options": {
-          "downloadAttachments": true
-        }
-      },
-      "name": "Gmail Trigger",
-      "type": "n8n-nodes-base.gmailTrigger",
-      "typeVersion": 1,
-      "position": [
-        180,
-        -200
-      ],
-      "id": "b31cff7f-7b04-44ec-8985-77ea55c0cedb",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $json.id }}",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        620,
-        -200
-      ],
-      "id": "a4f8fcd6-b13c-48aa-868d-0f11545c3978",
-      "name": "Google Drive",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "markAsRead",
-        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        840,
-        -200
-      ],
-      "id": "14bffc4f-e2d1-4f13-b68e-51903b5e1b6d",
-      "name": "Gmail",
-      "webhookId": "9cc28317-e6aa-498b-8d03-14075b77a15c",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "addLabels",
-        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
-        "labelIds": [
-          "Label_6005462562915862491"
-        ]
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        1060,
-        -200
-      ],
-      "id": "fb43167c-0aab-4df0-aea2-26b4b1f86ead",
-      "name": "Gmail1",
-      "webhookId": "9ccdee91-2352-458d-a323-9f8488c3ccd1",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "removeLabels",
-        "messageId": "={{ $json.id }}",
-        "labelIds": [
-          "INBOX"
-        ]
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        1280,
-        -200
-      ],
-      "id": "138956c7-17d8-47cc-af04-a1428aebca7b",
-      "name": "Gmail2",
-      "webhookId": "06af0bc6-2f7f-464b-a84e-bf45651f5b80",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
     {
       "parameters": {
         "content": "Gets emails with the following criteria:\ncontains n8n in subject\nto: brandon+reports@blazeproperty.com \nUnread\nhas:attachment\n",
@@ -244,6 +133,841 @@
     },
     {
       "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1FX4AAKmtYtCBQb4Z8yNj96qIwm2KtM2rZ7Bn1Rw6FpY",
+          "mode": "list",
+          "cachedResultName": "Blaze Reporting",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FX4AAKmtYtCBQb4Z8yNj96qIwm2KtM2rZ7Bn1Rw6FpY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 614782390,
+          "mode": "list",
+          "cachedResultName": "Raw Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1FX4AAKmtYtCBQb4Z8yNj96qIwm2KtM2rZ7Bn1Rw6FpY/edit#gid=614782390"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "delinquent_fees": "={{ $json.file_name }}",
+            "total_rent": "={{ $json.status }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "property_id",
+              "displayName": "property_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "property_name",
+              "displayName": "property_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_units",
+              "displayName": "total_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "occupied_units",
+              "displayName": "occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "occupancy_rate",
+              "displayName": "occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "projected_occupied_units",
+              "displayName": "projected_occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "projected_occupancy_rate",
+              "displayName": "projected_occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_receivable",
+              "displayName": "total_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_delinquent_rent",
+              "displayName": "total_delinquent_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquent_subsidy",
+              "displayName": "delinquent_subsidy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquent_fees",
+              "displayName": "delinquent_fees",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_rent",
+              "displayName": "total_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent",
+              "displayName": "delinquency_percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_guest_cards",
+              "displayName": "total_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "active_guest_cards",
+              "displayName": "active_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "applications",
+              "displayName": "applications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "showings",
+              "displayName": "showings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "monthly_received",
+              "displayName": "monthly_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "daily_received",
+              "displayName": "daily_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent_receivable",
+              "displayName": "delinquency_percent_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent_rent_only",
+              "displayName": "delinquency_percent_rent_only",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent_no_subsidies",
+              "displayName": "delinquency_percent_no_subsidies",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_rented_count",
+              "displayName": "vacant_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_unrented_count",
+              "displayName": "vacant_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_rented_count",
+              "displayName": "notice_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_unrented_count",
+              "displayName": "notice_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_rented_json",
+              "displayName": "vacant_rented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_eviction_count",
+              "displayName": "notice_eviction_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_eviction",
+              "displayName": "notice_eviction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lease_30",
+              "displayName": "lease_30",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lease_60",
+              "displayName": "lease_60",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lease_90",
+              "displayName": "lease_90",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lease_m2m",
+              "displayName": "lease_m2m",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_unrented_json",
+              "displayName": "vacant_unrented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_unrented_json",
+              "displayName": "notice_unrented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_rented_json",
+              "displayName": "notice_rented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1060,
+        -560
+      ],
+      "id": "0055ec17-4b34-4b11-88cb-963fed3db245",
+      "name": "Blaze Sheet Status",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1dcGHUcQ0KIygyWvY8kqp4JZJcQ7ceZhy2oiBFUqvp3s",
+          "mode": "list",
+          "cachedResultName": "Legacy Reporting ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dcGHUcQ0KIygyWvY8kqp4JZJcQ7ceZhy2oiBFUqvp3s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 614782390,
+          "mode": "list",
+          "cachedResultName": "Raw Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dcGHUcQ0KIygyWvY8kqp4JZJcQ7ceZhy2oiBFUqvp3s/edit#gid=614782390"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "total_rent": "={{ $json.status }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "property_id",
+              "displayName": "property_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "property_name",
+              "displayName": "property_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_units",
+              "displayName": "total_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "occupied_units",
+              "displayName": "occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "occupancy_rate",
+              "displayName": "occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "projected_occupied_units",
+              "displayName": "projected_occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "projected_occupancy_rate",
+              "displayName": "projected_occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_receivable",
+              "displayName": "total_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_delinquent_rent",
+              "displayName": "total_delinquent_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquent_subsidy",
+              "displayName": "delinquent_subsidy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquent_fees",
+              "displayName": "delinquent_fees",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_rent",
+              "displayName": "total_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent",
+              "displayName": "delinquency_percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "total_guest_cards",
+              "displayName": "total_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "active_guest_cards",
+              "displayName": "active_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "applications",
+              "displayName": "applications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "showings",
+              "displayName": "showings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "monthly_received",
+              "displayName": "monthly_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "daily_received",
+              "displayName": "daily_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent_receivable",
+              "displayName": "delinquency_percent_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent_rent_only",
+              "displayName": "delinquency_percent_rent_only",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquency_percent_no_subsidies",
+              "displayName": "delinquency_percent_no_subsidies",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_rented_count",
+              "displayName": "vacant_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_unrented_count",
+              "displayName": "vacant_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_rented_count",
+              "displayName": "notice_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_unrented_count",
+              "displayName": "notice_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_rented_json",
+              "displayName": "vacant_rented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_eviction_count",
+              "displayName": "notice_eviction_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_eviction",
+              "displayName": "notice_eviction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lease_30",
+              "displayName": "lease_30",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lease_60",
+              "displayName": "lease_60",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lease_90",
+              "displayName": "lease_90",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "lease_m2m",
+              "displayName": "lease_m2m",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vacant_unrented_json",
+              "displayName": "vacant_unrented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_unrented_json",
+              "displayName": "notice_unrented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notice_rented_json",
+              "displayName": "notice_rented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1060,
+        -720
+      ],
+      "id": "67fcc2a3-86ff-478a-be49-dcf73071413f",
+      "name": "Legacy Sheet Status",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "has:attachment to:brandon+reports@blazeproperty.com n8n",
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "name": "Get Report Email",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
+      "position": [
+        180,
+        -200
+      ],
+      "id": "b31cff7f-7b04-44ec-8985-77ea55c0cedb",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        620,
+        -200
+      ],
+      "id": "a4f8fcd6-b13c-48aa-868d-0f11545c3978",
+      "name": "Update File by ID",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
         "resource": "fileFolder",
         "queryString": "={{ $json.headers.subject.replace('Subject: ', '') }}.csv",
         "filter": {
@@ -264,13 +988,111 @@
         -200
       ],
       "id": "5011c267-58dd-4663-9d11-274f4cbacb1e",
-      "name": "Google Drive1",
+      "name": "Locate File ID By Name",
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "cer2DAVMEta9v7Fb",
           "name": "Google Drive account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Get Report Email').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        840,
+        -200
+      ],
+      "id": "14bffc4f-e2d1-4f13-b68e-51903b5e1b6d",
+      "name": "Mark As Read",
+      "webhookId": "9cc28317-e6aa-498b-8d03-14075b77a15c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Report Email').item.json.id }}",
+        "labelIds": [
+          "Label_6005462562915862491"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1060,
+        -200
+      ],
+      "id": "fb43167c-0aab-4df0-aea2-26b4b1f86ead",
+      "name": "Label as Report",
+      "webhookId": "9ccdee91-2352-458d-a323-9f8488c3ccd1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1280,
+        -200
+      ],
+      "id": "138956c7-17d8-47cc-af04-a1428aebca7b",
+      "name": "Remove Inbox Label",
+      "webhookId": "06af0bc6-2f7f-464b-a84e-bf45651f5b80",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rawFileName = $json.name || \"Unknown File\";\nconst fileName = rawFileName.trim();\nconst workflowName = $workflow.name || \"Unknown Workflow\";\n\n// Map: file name → corresponding row number in sheet\nconst rowMap = {\n  \"n8n Apartment Delinquency Daily.csv\": 22,\n  \"n8n Apartment Guest Cards Past 7 Days.csv\": 23,\n  \"n8n Apartment Receivables To Date.csv\": 24,\n  \"n8n Apartment Receivables Yesterday.csv\": 25,\n  \"n8n Apartment Rent Totals.csv\": 26,\n  \"n8n Apartment Rental Applications.csv\": 27,\n  \"n8n Apartment Showings.csv\": 28,\n};\n\nconst row = rowMap[fileName];\n\nif (!row) {\n  throw new Error(`Unknown or unmapped file: ${fileName}`);\n}\n\nreturn [\n  {\n    json: {\n      row_number: row,\n      status: \"Success\",\n      workflow: workflowName,\n      file_name: fileName,\n      error_message: \"\"\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        -620
+      ],
+      "id": "436f6de2-1928-4d28-b659-2a826ecb26a6",
+      "name": "Generate Status"
+    },
+    {
+      "parameters": {
+        "content": "Gmail-based Report Updater\nWatches for unread emails with attachments sent to brandon+reports@blazeproperty.com containing \"n8n\" in the subject. Matches file to shared Google Drive folder, updates the file, logs success to Blaze & Legacy Google Sheets, then archives and labels the email.\n\nFull Description\nhttps://drive.google.com/drive/u/0/home\n",
+        "height": 220,
+        "width": 340,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        200,
+        -740
+      ],
+      "id": "521ba53a-9a70-4351-bfa3-a8073ce0f9d7",
+      "name": "Sticky Note3"
     }
   ],
   "pinData": {},
@@ -280,15 +1102,22 @@
   },
   "staticData": {
     "node:Gmail Trigger": {
-      "lastTimeChecked": 1742899249,
+      "lastTimeChecked": 1743002006,
       "possibleDuplicates": [
-        "195cce409af2566c",
-        "195cce402fb277f7"
+        "195d303f705d0a37"
+      ]
+    },
+    "node:Get Report Email": {
+      "lastTimeChecked": 1743006316,
+      "possibleDuplicates": [
+        "195d345c1b15e56b",
+        "195d3212dfb604b6",
+        "195d3212d3f604b6"
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-25T11:34:02.000Z",
-  "versionId": "125acb61-15b6-4cb6-a7d0-5eeb75a31047"
+  "updatedAt": "2025-03-26T15:45:07.000Z",
+  "versionId": "afff84ea-3c13-4af7-82ae-ec1825e14860"
 }
