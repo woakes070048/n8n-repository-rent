@@ -1,0 +1,357 @@
+{
+  "active": true,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Name": {
+      "main": [
+        [
+          {
+            "node": "Get Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedupe": {
+      "main": [
+        [
+          {
+            "node": "Map Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monday Json": {
+      "main": [
+        [
+          {
+            "node": "Create ToDo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monday Update": {
+      "main": [
+        [
+          {
+            "node": "Update Monday Item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Data": {
+      "main": [
+        [
+          {
+            "node": "Monday Json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create ToDo": {
+      "main": [
+        [
+          {
+            "node": "Monday Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Record": {
+      "main": [
+        [
+          {
+            "node": "Dedupe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-25T19:21:54.746Z",
+  "id": "dVxTYH9ve4nRHX8D",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Hunter Warfield",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "Hunter Warfield – Verification Needed",
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1120,
+        -300
+      ],
+      "id": "9cbeb38b-5b4d-4a64-8d95-4fa18fb2c42b",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailText = $input.first().json.text;\n\n// Match the table section\nconst matchTable = emailText.match(/HW\\s+#\\s+Consumer\\s+Name[\\s\\S]+?(?:Client Services|$)/i);\nif (!matchTable) {\n  return [{ json: { error: \"No table found\" } }];\n}\n\n// Extract rows that contain consumer name entries\nconst rows = matchTable[0].match(/\\d{6,}\\s+[A-Z\\s]+/g) || [];\n\n// Normalize and split names\nconst names = rows.map(row => {\n  const parts = row.trim().split(/\\s+/);\n  parts.shift(); // remove HW #\n  const fullName = parts.join(' ').toLowerCase()\n    .replace(/[^a-z\\s]/g, '')\n    .replace(/\\s+/g, ' ')\n    .split(' ')\n    .map(w => w.charAt(0).toUpperCase() + w.slice(1));\n  return {\n    first_name: fullName[0] || null,\n    last_name: fullName.slice(1).join(' ') || null\n  };\n});\n\n// Output each name as separate item\nreturn names.map(n => ({ json: n }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -940,
+        -300
+      ],
+      "id": "893831a4-be18-4361-9162-0c12068e81bd",
+      "name": "Get Name"
+    },
+    {
+      "parameters": {
+        "jsCode": "const seen = new Set();\nconst uniqueItems = [];\n\n$input.all().forEach(item => {\n  const key = item.json.tenant_id; // 👈 change this to the field you want to de-duplicate by\n  if (!seen.has(key)) {\n    seen.add(key);\n    uniqueItems.push(item);\n  }\n});\n\nreturn uniqueItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -620,
+        -300
+      ],
+      "id": "177bbd2a-b24a-4e45-b7c9-2768f95a3d93",
+      "name": "Dedupe"
+    },
+    {
+      "parameters": {
+        "jsCode": "const info = $json;\nconst formatted = `\n### 🏷️ Tenant Info\n\n**Tenant:** ${info.tenant}  \n**Unit:** ${info.unit}  \n**Property:** ${info.property}  \n**Status:** ${info.status}  \n**Phone:** ${info.phone_1}  \n**Balance:** $${info.balance}\n\n### 🔗 Links\n[Open in AppFolio](${info.web_url})\n\n### 📅 Dates\n**Date Added:** ${info.today}  \n**Due Date:** ${info.duedate}\n`.trim();\n\nreturn [{\n  json: {\n    item_name: `Hunter Warfield - ${info.tenant}`,\n    columnValues: JSON.stringify({\n      person: {\n        personsAndTeams: [{ id: 36641322, kind: 'person' }]\n      },\n      status: { label: 'New' },\n      color_mknsc6mv: { label: 'Critical' },\n      date4: { date: info.today },\n      text_mknr1dym: 'Blaze',\n      date_mknr4541: { date: info.duedate },\n      \n    })\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        -300
+      ],
+      "id": "bc0fe80b-7e32-4d93-a1d0-1c1c79d6d042",
+      "name": "Monday Json"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge full tenant info with item ID from Create ToDo\nconst item = $input.first().json;\nconst tenant = $node[\"Map Data\"].json;\n\nconst updateBody = `\n### 🏷️ Tenant Info\n\n**Tenant:** ${tenant.tenant}  \n**Unit:** ${tenant.unit}  \n**Property:** ${tenant.property}  \n**Status:** ${tenant.status}  \n**Phone:** ${tenant.phone_1}  \n**Balance:** $${tenant.balance}\n\n### 🔗 Links  \n[🔗 Open in AppFolio](${tenant.web_url})\n\n### 📅 Dates  \n**Date Added:** ${tenant.today}  \n**Due Date:** ${tenant.duedate}\n`.trim();\n\nreturn [{\n  json: {\n    update_body: updateBody,\n    item_id: item.id\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        -300
+      ],
+      "id": "8431f1a6-4e8c-4108-a0eb-257a563ee301",
+      "name": "Monday Update"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "483a515d-8a19-47e1-b463-848bc2831c16",
+              "name": "property",
+              "value": "={{ $json.property }}",
+              "type": "string"
+            },
+            {
+              "id": "31621c92-1b65-4fee-8094-2fea80a4c80a",
+              "name": "unit",
+              "value": "={{ $json.unit }}",
+              "type": "string"
+            },
+            {
+              "id": "9ca00a8c-9725-4068-a09a-1831d0231e6e",
+              "name": "tenant",
+              "value": "={{ $json.tenant }}",
+              "type": "string"
+            },
+            {
+              "id": "acced7bd-df9a-494e-afff-a2b97a5ffb3b",
+              "name": "status",
+              "value": "={{ $json.status }}",
+              "type": "string"
+            },
+            {
+              "id": "ae4a3271-08b8-4c1d-aa93-163b5d08b77c",
+              "name": "phone_1",
+              "value": "={{ $json.phone_1 }}",
+              "type": "string"
+            },
+            {
+              "id": "2400ddf5-2aff-421c-918b-ba12120d5acc",
+              "name": "balance",
+              "value": "={{ $json.balance }}",
+              "type": "string"
+            },
+            {
+              "id": "d0317261-6862-4332-9da9-fd4d1a1570d9",
+              "name": "occupancy_id",
+              "value": "={{ $json.occupancy_id }}",
+              "type": "number"
+            },
+            {
+              "id": "3d3679b4-ec89-4221-a3a0-b540fdc6ce34",
+              "name": "tenant_id",
+              "value": "={{ $json.tenant_id }}",
+              "type": "number"
+            },
+            {
+              "id": "13f1f018-f951-428e-9c79-1fddb07be480",
+              "name": "web_url",
+              "value": "=https://blazepropertymanagement.appfolio.com/occupancies/{{ $json.occupancy_id }}/selected_tenant/{{ $json.tenant_id }}",
+              "type": "string"
+            },
+            {
+              "id": "5653f280-8fbd-4467-b65d-aa81d9ff37b4",
+              "name": "today",
+              "value": "={{ new Date().toISOString().split('T')[0]}}",
+              "type": "string"
+            },
+            {
+              "id": "f246ff1c-c8f6-4c51-a802-73912b119d78",
+              "name": "duedate",
+              "value": "={{ new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "299ef849-3d34-42c7-8e98-6b2040c6d3d0",
+              "name": "columns",
+              "value": "=return [{\n  json: {\n    item_name: `Hunter Warfield - ${$json.tenant}`,\n    columnValues: JSON.stringify({\n      person: {\n        personsAndTeams: [{ id: 36641322, kind: 'person' }]\n      },\n      status: { label: 'New' },\n      priority: { label: 'Critical' },\n      date4: { date: $json.today },\n      text_mknr1dym: 'Blaze',\n      date_mknr4541: { date: $json.duedate },\n      long_text_mknsqw85: JSON.stringify($json)\n    })\n  }\n}];\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -460,
+        -300
+      ],
+      "id": "a297a11b-209f-426a-860b-6a773c3007ad",
+      "name": "Map Data"
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8578853242",
+        "groupId": "group_mknszw1d",
+        "name": "={{ $json.item_name }}",
+        "additionalFields": {
+          "columnValues": "={{ $json.columnValues }}"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        -300
+      ],
+      "id": "f3c44436-95a6-4183-8a8b-f492f69ef5dc",
+      "name": "Create ToDo",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "operation": "addUpdate",
+        "itemId": "={{ $('Create ToDo').item.json.id }}",
+        "value": "={{ $json.update_body }}"
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -300
+      ],
+      "id": "aa4cbe6d-149d-48ae-a4fd-32209c9b045a",
+      "name": "Update Monday Item",
+      "credentials": {
+        "mondayComApi": {
+          "id": "3npySVgJSrX7b9Wu",
+          "name": "Monday.com account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM past_tenants\nWHERE first_name = '{{ $json.first_name }}'\n  AND last_name = '{{ $json.last_name }}';\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -780,
+        -300
+      ],
+      "id": "2f4efabb-73d1-4470-9bd3-500fe2dc72a9",
+      "name": "Get Record",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Gmail Trigger": {
+      "Gmail Trigger": {
+        "lastTimeChecked": 1742965227
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-26T05:00:27.601Z",
+  "versionId": "9f88df31-291e-405f-bf47-b7d653e6246f"
+}
