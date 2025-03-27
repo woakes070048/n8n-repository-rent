@@ -1,0 +1,174 @@
+{
+  "active": true,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Backup Blaze Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Backup Blaze Report1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Backup Blaze Report": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Backup Blaze Report1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-03-26T19:40:38.057Z",
+  "id": "E2TDjKXy0mRgTMRq",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Archive Daily Blaze and Legacy Reports",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 58
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        120
+      ],
+      "id": "d4711ec6-88f1-4c2a-8dec-7ddd7e70aaa7",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1dcGHUcQ0KIygyWvY8kqp4JZJcQ7ceZhy2oiBFUqvp3s",
+          "mode": "id"
+        },
+        "name": "=legacy_report_{{ $now.toFormat(\"yyyy-MM-dd\") }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "value": "0AP4oc65g036KUk9PVA",
+          "mode": "list",
+          "cachedResultName": "BLAZE",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0AP4oc65g036KUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/u/0/folders/1kYAzmyEP1PYRgGRTirAMEsa6ce5-wKWR",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -280,
+        20
+      ],
+      "id": "5616597d-7bba-4b01-8805-6166e7b11acb",
+      "name": "Backup Blaze Report",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1FX4AAKmtYtCBQb4Z8yNj96qIwm2KtM2rZ7Bn1Rw6FpY",
+          "mode": "id"
+        },
+        "name": "=blaze_report_{{ $now.toFormat(\"yyyy-MM-dd\") }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "value": "0AP4oc65g036KUk9PVA",
+          "mode": "list",
+          "cachedResultName": "BLAZE",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/0AP4oc65g036KUk9PVA"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "https://drive.google.com/drive/u/0/folders/1kYAzmyEP1PYRgGRTirAMEsa6ce5-wKWR",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -280,
+        180
+      ],
+      "id": "92997405-c77b-4826-bdc6-dc3e7d463735",
+      "name": "Backup Blaze Report1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        120
+      ],
+      "id": "0e66d84b-00a6-4c94-b0f8-4a526b66dfe7",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-03-27T05:00:07.172Z",
+  "versionId": "a8acc987-15be-4ccd-9584-51e8398b3b04"
+}
