@@ -1050,13 +1050,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const fileData = $items(\"Code\")[0].json;\n\nconst rawFileName = fileData.name || \"Unknown File\";\nconst fileName = rawFileName.trim().toLowerCase();\nconst workflowName = $workflow.name || \"Unknown Workflow\";\nconst modifiedTime = fileData.modifiedTime || \"\"; // Might also be 'modifiedDate' in some cases\n\n// Map: lowercased sheet name → row number\nconst rowMap = {\n  \"n8n apartment delinquency daily\": 22,\n  \"n8n apartment guest cards past 7 days\": 23,\n  \"n8n apartment receivables to date\": 24,\n  \"n8n apartment receivables yesterday\": 25,\n  \"n8n apartment rent totals\": 26,\n  \"n8n apartment rental applications\": 27,\n  \"n8n apartment showings\": 28\n};\n\nconst row = rowMap[fileName];\n\nif (!row) {\n  throw new Error(`Unknown or unmapped file: ${fileName}`);\n}\n\nreturn [\n  {\n    json: {\n      row_number: row,\n      status: \"Success\",\n      workflow: workflowName,\n      file_name: fileName,\n      modified_time: modifiedTime,\n      error_message: \"\"\n    }\n  }\n];\n"
+        "jsCode": "const fileData = $input.first().json;\n\nconst rawFileName = (fileData.name || \"Unknown File\").trim().toLowerCase();\nconst workflowName = $workflow.name || \"Unknown Workflow\";\nconst modifiedTime = fileData.modifiedTime || \"\";\n\n// Normalize input\nconst normalized = rawFileName\n  .replace(/[^a-z0-9 ]/gi, \"\")\n  .replace(/\\s+/g, \" \")\n  .trim();\n\n// Mapping normalized keys to row numbers\nconst rowMap = {\n  \"delinquency daily\": 22,\n  \"guest cards past 7 days\": 23,\n  \"receivables to date\": 24,\n  \"receivables yesterday\": 25,\n  \"rent totals\": 26,\n  \"rental applications\": 27,\n  \"showings\": 28,\n  \"receivables monthly\": 24 // NEW alias fallback\n};\n\nconst key = Object.keys(rowMap).find(k => normalized.includes(k));\n\nif (!key) {\n  const available = Object.keys(rowMap).join(\", \");\n  throw new Error(`Unknown or unmapped file: \"${rawFileName}\"\\nMatched as: \"${normalized}\"\\nExpected one of: ${available}`);\n}\n\nreturn [{\n  json: {\n    row_number: rowMap[key],\n    status: \"Success\",\n    workflow: workflowName,\n    file_name: rawFileName,\n    modified_time: modifiedTime,\n    error_message: \"\"\n  }\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1700,
-        -320
+        1640,
+        -340
       ],
       "id": "436f6de2-1928-4d28-b659-2a826ecb26a6",
       "name": "Generate Status"
@@ -1105,7 +1105,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        560,
+        520,
         -40
       ],
       "id": "f945caf3-3f77-4123-b475-80f12a94b8e1",
@@ -1330,14 +1330,14 @@
       ]
     },
     "node:Get Report Email": {
-      "lastTimeChecked": 1743039839,
+      "lastTimeChecked": 1743094842,
       "possibleDuplicates": [
-        "195d52d616dd0dd5"
+        "195d88c8978e8565"
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-27T01:43:59.000Z",
-  "versionId": "1fb43a6e-5a07-4342-9efe-674d3a77e8a7"
+  "updatedAt": "2025-03-27T11:31:47.000Z",
+  "versionId": "53ccbcba-cd0f-444a-a6bb-40ace2df7103"
 }
