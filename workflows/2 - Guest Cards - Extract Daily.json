@@ -145,7 +145,7 @@
     },
     {
       "parameters": {
-        "jsCode": "//\n// 1) Get the data from the previous node\n//\nlet allItems = $input.all();\n\n// Try the typical scenario: allItems[0].json is the array of rows\nlet rows = allItems[0].json;\n\n// If that didn’t work, your data might be in allItems[0].json.data\n// or each row might be in a separate item. Adjust as needed.\nif (!Array.isArray(rows)) {\n  // Maybe it's in allItems[0].json.data?\n  if (allItems[0].json.data && Array.isArray(allItems[0].json.data)) {\n    rows = allItems[0].json.data;\n  } else {\n    // Possibly each item is a row\n    rows = allItems.map(item => item.json).flat();\n  }\n}\n\n// If it's still not an array, throw an error\nif (!Array.isArray(rows)) {\n  throw new Error(\n    \"We couldn’t find an array in the expected paths. Please check the Extract from File node output.\"\n  );\n}\n\n//\n// 2) Initialize a data map to track guest card counts\n//\nconst guestCardMap = {};\n\n//\n// 3) Loop over each row\n//\nrows.forEach(row => {\n  // Make sure the row has a Property ID\n  if (!row.hasOwnProperty(\"Property ID\")) return;\n\n  const propertyId = String(row[\"Property ID\"]).trim();\n  if (!propertyId) return;\n\n  // Read & normalize the status\n  const status = String(row[\"Status\"] || \"\").toLowerCase().trim();\n\n  // If the status is \"inactive,\" we skip it entirely\n  if (status === \"inactive\") {\n    return;\n  }\n\n  // Initialize map if needed\n  if (!guestCardMap[propertyId]) {\n    guestCardMap[propertyId] = {\n      total: 0,\n      active: 0,\n      applicationCompleted: 0,\n    };\n  }\n\n  // If the status is either \"active\" or \"application completed,\" count it\n  if (status === \"active\") {\n    guestCardMap[propertyId].active += 1;\n    guestCardMap[propertyId].total += 1;\n  } else if (status === \"application completed\") {\n    guestCardMap[propertyId].applicationCompleted += 1;\n    guestCardMap[propertyId].total += 1;\n  }\n});\n\n//\n// 4) Create the output array for each property\n//\nconst output = Object.keys(guestCardMap).map(propertyId => {\n  const data = guestCardMap[propertyId];\n  return {\n    \"Property ID\": propertyId,\n    \"Total Guest Cards (Active + Completed)\": data.total,\n    \"Active\": data.active,\n    \"Application Completed\": data.applicationCompleted\n  };\n});\n\n//\n// 5) Return the final results\n//\nreturn output;\n"
+        "jsCode": "// Helper function to parse Excel date codes and custom formats\nfunction parseFlexibleDate(value) {\n  if (!value) return null;\n\n  // Excel numeric date\n  if (typeof value === 'number') {\n    const base = new Date(Date.UTC(1899, 11, 30));\n    return new Date(base.getTime() + value * 86400000);\n  }\n\n  // Format: MM/DD/YYYY at HH:MM AM/PM\n  if (typeof value === 'string') {\n    const match = value.match(/^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})\\s+at\\s+(\\d{1,2}):(\\d{2})\\s+(AM|PM)$/i);\n    if (match) {\n      let [, month, day, year, hour, minute, ampm] = match;\n      month = parseInt(month, 10) - 1;\n      day = parseInt(day, 10);\n      year = parseInt(year, 10);\n      hour = parseInt(hour, 10);\n      minute = parseInt(minute, 10);\n\n      if (ampm.toUpperCase() === 'PM' && hour < 12) hour += 12;\n      if (ampm.toUpperCase() === 'AM' && hour === 12) hour = 0;\n\n      return new Date(year, month, day, hour, minute);\n    }\n\n    const fallback = Date.parse(value);\n    if (!isNaN(fallback)) return new Date(fallback);\n  }\n\n  return null;\n}\n\n// Process the input\nlet allItems = $input.all();\nlet rows = Array.isArray(allItems[0].json) ? allItems[0].json : allItems.map(i => i.json);\nconst guestCardMap = {};\n\nrows.forEach(row => {\n  const propertyId = String(row[\"Property ID\"]).trim();\n  if (!propertyId || String(row[\"Status\"] || \"\").toLowerCase() === \"inactive\") return;\n\n  if (!guestCardMap[propertyId]) {\n    guestCardMap[propertyId] = {\n      total: 0,\n      active: 0,\n      applicationCompleted: 0,\n      latestDate: null\n    };\n  }\n\n  const status = String(row[\"Status\"] || \"\").toLowerCase();\n  if ([\"active\", \"application completed\"].includes(status)) {\n    guestCardMap[propertyId][status === \"active\" ? \"active\" : \"applicationCompleted\"] += 1;\n    guestCardMap[propertyId].total += 1;\n  }\n\n  const interestRaw = row[\"Interest Received\"];\n  const parsed = parseFlexibleDate(interestRaw);\n  if (parsed && (!guestCardMap[propertyId].latestDate || parsed > guestCardMap[propertyId].latestDate)) {\n    guestCardMap[propertyId].latestDate = parsed;\n  }\n});\n\n// Return properly formatted output\nreturn Object.keys(guestCardMap).map(propertyId => {\n  const data = guestCardMap[propertyId];\n  return {\n    json: {\n      \"Property ID\": propertyId,\n      \"Total Guest Cards (Active + Completed)\": data.total,\n      \"Active\": data.active,\n      \"Application Completed\": data.applicationCompleted,\n      \"Latest Interest Received\": data.latestDate ? data.latestDate.toISOString() : null\n    }\n  };\n});\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -229,9 +229,7 @@
           "value": "={{ $json.id }}",
           "mode": "id"
         },
-        "options": {
-          "fileName": "n8n Apartment Guest Cards Past 7 Days.csv"
-        }
+        "options": {}
       },
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
@@ -290,7 +288,7 @@
             {
               "id": "5dfdf2db-7b49-47da-a48f-25425212010a",
               "leftValue": "={{ $json.name }}",
-              "rightValue": "Guest Card",
+              "rightValue": "guest cards",
               "operator": {
                 "type": "string",
                 "operation": "contains"
@@ -1918,6 +1916,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-26T16:21:44.000Z",
-  "versionId": "364ae710-943a-451c-aff6-6b28b613e1de"
+  "updatedAt": "2025-03-27T02:20:09.000Z",
+  "versionId": "b4449740-7a6d-4128-afbb-fa11ebc259e6"
 }
