@@ -5,29 +5,7 @@
       "main": [
         [
           {
-            "node": "Locate File ID By Name",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Update File by ID": {
-      "main": [
-        [
-          {
-            "node": "Generate Status",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Locate File ID By Name": {
-      "main": [
-        [
-          {
-            "node": "Update File by ID",
+            "node": "Google Drive",
             "type": "main",
             "index": 0
           }
@@ -76,6 +54,109 @@
           }
         ]
       ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Mark As Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Generate Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-03-22T15:53:55.095Z",
@@ -85,52 +166,6 @@
   },
   "name": "1 - Get Reports From Gmail",
   "nodes": [
-    {
-      "parameters": {
-        "content": "Gets emails with the following criteria:\ncontains n8n in subject\nto: brandon+reports@blazeproperty.com \nUnread\nhas:attachment\n",
-        "height": 340,
-        "width": 280
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        200,
-        -380
-      ],
-      "id": "45c9215e-d90a-4ba0-bab2-cd7716cbe669",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "updates file to shared drive:\ndata only/n8n reports\n",
-        "height": 340,
-        "width": 220,
-        "color": 4
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        560,
-        -380
-      ],
-      "id": "ceb6d821-f829-4888-bb5d-9d0633387530",
-      "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "content": "archives the message and moves to a label reports\\n8n reports for archiving\n",
-        "height": 340,
-        "width": 640
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        790,
-        -380
-      ],
-      "id": "fe46a93e-1dd3-47b1-929a-251c3a2ab23b",
-      "name": "Sticky Note2"
-    },
     {
       "parameters": {
         "operation": "update",
@@ -153,7 +188,8 @@
           "value": {
             "row_number": "={{ $json.row_number }}",
             "delinquent_fees": "={{ $json.file_name }}",
-            "total_rent": "={{ $json.status }}"
+            "total_rent": "={{ $json.status }}",
+            "delinquency_percent": "={{ new Date($json.modified_time).toLocaleString(\"en-US\", { month: \"2-digit\", day: \"2-digit\", year: \"2-digit\", hour: \"2-digit\", minute: \"2-digit\", hour12: false }) }}"
           },
           "matchingColumns": [
             "row_number"
@@ -513,8 +549,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1060,
-        -560
+        1900,
+        -220
       ],
       "id": "0055ec17-4b34-4b11-88cb-963fed3db245",
       "name": "Blaze Sheet Status",
@@ -546,7 +582,8 @@
           "mappingMode": "defineBelow",
           "value": {
             "row_number": "={{ $json.row_number }}",
-            "total_rent": "={{ $json.status }}"
+            "total_rent": "={{ $json.status }}",
+            "delinquency_percent": "={{ new Date($json.modified_time).toLocaleString(\"en-US\", { month: \"2-digit\", day: \"2-digit\", year: \"2-digit\", hour: \"2-digit\", minute: \"2-digit\", hour12: false }) }}\n"
           },
           "matchingColumns": [
             "row_number"
@@ -896,8 +933,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1060,
-        -720
+        1900,
+        -420
       ],
       "id": "67fcc2a3-86ff-478a-be49-dcf73071413f",
       "name": "Legacy Sheet Status",
@@ -930,8 +967,8 @@
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1,
       "position": [
-        180,
-        -200
+        120,
+        -40
       ],
       "id": "b31cff7f-7b04-44ec-8985-77ea55c0cedb",
       "credentials": {
@@ -943,73 +980,19 @@
     },
     {
       "parameters": {
-        "operation": "update",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $json.id }}",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        620,
-        -200
-      ],
-      "id": "a4f8fcd6-b13c-48aa-868d-0f11545c3978",
-      "name": "Update File by ID",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "fileFolder",
-        "queryString": "={{ $json.headers.subject.replace('Subject: ', '') }}.csv",
-        "filter": {
-          "folderId": {
-            "__rl": true,
-            "value": "12YmAN21AqUablEdnlh-f3QsTTtiYKMHy",
-            "mode": "list",
-            "cachedResultName": "n8n reports active",
-            "cachedResultUrl": "https://drive.google.com/drive/folders/12YmAN21AqUablEdnlh-f3QsTTtiYKMHy"
-          }
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        400,
-        -200
-      ],
-      "id": "5011c267-58dd-4663-9d11-274f4cbacb1e",
-      "name": "Locate File ID By Name",
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "cer2DAVMEta9v7Fb",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "markAsRead",
-        "messageId": "={{ $('Get Report Email').item.json.id }}"
+        "messageId": "={{ $('Code').item.json.messageId }}"
       },
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        840,
-        -200
+        1520,
+        -40
       ],
       "id": "14bffc4f-e2d1-4f13-b68e-51903b5e1b6d",
       "name": "Mark As Read",
       "webhookId": "9cc28317-e6aa-498b-8d03-14075b77a15c",
+      "executeOnce": true,
       "credentials": {
         "gmailOAuth2": {
           "id": "LD5x69eYRRI6cdrn",
@@ -1020,7 +1003,7 @@
     {
       "parameters": {
         "operation": "addLabels",
-        "messageId": "={{ $('Get Report Email').item.json.id }}",
+        "messageId": "={{ $json.id }}",
         "labelIds": [
           "Label_6005462562915862491"
         ]
@@ -1028,8 +1011,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1060,
-        -200
+        1720,
+        -40
       ],
       "id": "fb43167c-0aab-4df0-aea2-26b4b1f86ead",
       "name": "Label as Report",
@@ -1052,8 +1035,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1280,
-        -200
+        1880,
+        -40
       ],
       "id": "138956c7-17d8-47cc-af04-a1428aebca7b",
       "name": "Remove Inbox Label",
@@ -1067,32 +1050,271 @@
     },
     {
       "parameters": {
-        "jsCode": "const rawFileName = $json.name || \"Unknown File\";\nconst fileName = rawFileName.trim();\nconst workflowName = $workflow.name || \"Unknown Workflow\";\n\n// Map: file name → corresponding row number in sheet\nconst rowMap = {\n  \"n8n Apartment Delinquency Daily.csv\": 22,\n  \"n8n Apartment Guest Cards Past 7 Days.csv\": 23,\n  \"n8n Apartment Receivables To Date.csv\": 24,\n  \"n8n Apartment Receivables Yesterday.csv\": 25,\n  \"n8n Apartment Rent Totals.csv\": 26,\n  \"n8n Apartment Rental Applications.csv\": 27,\n  \"n8n Apartment Showings.csv\": 28,\n};\n\nconst row = rowMap[fileName];\n\nif (!row) {\n  throw new Error(`Unknown or unmapped file: ${fileName}`);\n}\n\nreturn [\n  {\n    json: {\n      row_number: row,\n      status: \"Success\",\n      workflow: workflowName,\n      file_name: fileName,\n      error_message: \"\"\n    }\n  }\n];\n"
+        "jsCode": "const fileData = $items(\"Code\")[0].json;\n\nconst rawFileName = fileData.name || \"Unknown File\";\nconst fileName = rawFileName.trim().toLowerCase();\nconst workflowName = $workflow.name || \"Unknown Workflow\";\nconst modifiedTime = fileData.modifiedTime || \"\"; // Might also be 'modifiedDate' in some cases\n\n// Map: lowercased sheet name → row number\nconst rowMap = {\n  \"n8n apartment delinquency daily\": 22,\n  \"n8n apartment guest cards past 7 days\": 23,\n  \"n8n apartment receivables to date\": 24,\n  \"n8n apartment receivables yesterday\": 25,\n  \"n8n apartment rent totals\": 26,\n  \"n8n apartment rental applications\": 27,\n  \"n8n apartment showings\": 28\n};\n\nconst row = rowMap[fileName];\n\nif (!row) {\n  throw new Error(`Unknown or unmapped file: ${fileName}`);\n}\n\nreturn [\n  {\n    json: {\n      row_number: row,\n      status: \"Success\",\n      workflow: workflowName,\n      file_name: fileName,\n      modified_time: modifiedTime,\n      error_message: \"\"\n    }\n  }\n];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        780,
-        -620
+        1700,
+        -320
       ],
       "id": "436f6de2-1928-4d28-b659-2a826ecb26a6",
       "name": "Generate Status"
     },
     {
       "parameters": {
-        "content": "Gmail-based Report Updater\nWatches for unread emails with attachments sent to brandon+reports@blazeproperty.com containing \"n8n\" in the subject. Matches file to shared Google Drive folder, updates the file, logs success to Blaze & Legacy Google Sheets, then archives and labels the email.\n\nFull Description\nhttps://drive.google.com/drive/u/0/home\n",
-        "height": 220,
-        "width": 340,
-        "color": 4
+        "resource": "fileFolder",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "12YmAN21AqUablEdnlh-f3QsTTtiYKMHy",
+            "mode": "list",
+            "cachedResultName": "n8n reports active",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/12YmAN21AqUablEdnlh-f3QsTTtiYKMHy"
+          }
+        },
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "mimeType",
+            "*"
+          ]
+        }
       },
-      "type": "n8n-nodes-base.stickyNote",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        320,
+        -40
+      ],
+      "id": "263894a6-f102-43f7-9769-f465c5684090",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailData = $items(\"Get Report Email\")[0];\nconst messageId = emailData.json.id;\nconst binary = emailData.binary; // ⬅️ grab the binary\nconst emailSubject = emailData.json.subject.trim().toLowerCase();\n\nconst driveFiles = $input.all().map(item => item.json);\n\n// Optional debug\nconst debugList = driveFiles.map(f => `${f.name} [${f.mimeType || \"undefined\"}]`).join(\"\\n\");\n\nconst driveSheets = driveFiles.filter(file => {\n  const name = (file.name || \"\").trim().toLowerCase();\n  const mime = file.mimeType || \"\";\n\n  return mime.includes(\"spreadsheet\") && (\n    name === emailSubject ||\n    name.replace(/\\.csv$/, \"\") === emailSubject ||\n    name.startsWith(emailSubject) ||\n    name.includes(emailSubject)\n  );\n});\n\nif (driveSheets.length === 0) {\n  throw new Error(`No matching Google Sheet found for subject: \"${emailSubject}\"\\nAvailable:\\n${debugList}`);\n}\n\nconst matchedSheet = driveSheets[0];\n\nreturn [{\n  json: {\n    ...matchedSheet,\n    messageId\n  },\n  binary // ⬅️ attach original binary again\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        -40
+      ],
+      "id": "f945caf3-3f77-4123-b475-80f12a94b8e1",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Code').item.json.id }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "sheet1",
+          "mode": "name"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        720,
+        -120
+      ],
+      "id": "9474a539-8cd0-40a1-86a2-be59cd9fd68b",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Code').item.json.id }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "sheet1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Amount Receivable",
+              "displayName": "Amount Receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Delinquent Rent",
+              "displayName": "Delinquent Rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Delinquent Subsidy Amount",
+              "displayName": "Delinquent Subsidy Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Property",
+              "displayName": "Property",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Property ID",
+              "displayName": "Property ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1180,
+        -40
+      ],
+      "id": "2d6341ed-ee05-42df-a9b8-c7eb0d518254",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        200,
-        -740
+        720,
+        40
       ],
-      "id": "521ba53a-9a70-4351-bfa3-a8073ce0f9d7",
-      "name": "Sticky Note3"
+      "id": "9698ccad-267e-448a-a473-18e9d2b48304",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        920,
+        -40
+      ],
+      "id": "fb59c853-d7e6-412e-9e28-7bd224d19bca",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a263dd49-ae9c-448f-b127-4211f98fedd5",
+              "name": "id",
+              "value": "={{ $('Get Report Email').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "54d528a6-69d3-43f6-bc9e-eacb7f5f5c08",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "aef18aae-2035-4c8d-81d8-e9a9d0922739",
+              "name": "modifiedTime",
+              "value": "={{ $json.modifiedTime }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        700,
+        -420
+      ],
+      "id": "3498775a-e74e-48b9-bf14-e852ccd74344",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1420,
+        -340
+      ],
+      "id": "26a32839-ed79-49eb-bad6-15ed91f16644",
+      "name": "Merge1"
     }
   ],
   "pinData": {},
@@ -1108,16 +1330,14 @@
       ]
     },
     "node:Get Report Email": {
-      "lastTimeChecked": 1743006316,
+      "lastTimeChecked": 1743039839,
       "possibleDuplicates": [
-        "195d345c1b15e56b",
-        "195d3212dfb604b6",
-        "195d3212d3f604b6"
+        "195d52d616dd0dd5"
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-26T15:45:07.000Z",
-  "versionId": "afff84ea-3c13-4af7-82ae-ec1825e14860"
+  "updatedAt": "2025-03-27T01:43:59.000Z",
+  "versionId": "1fb43a6e-5a07-4342-9efe-674d3a77e8a7"
 }
