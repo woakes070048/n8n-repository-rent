@@ -1,28 +1,6 @@
 {
   "active": true,
   "connections": {
-    "Fetch Delinquency Report": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Fetch Rent Totals": {
-      "main": [
-        [
-          {
-            "node": "Extract from File1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Code (Aggregate Delinquency)": {
       "main": [
         [
@@ -179,12 +157,12 @@
       "main": [
         [
           {
-            "node": "Fetch Rent Totals",
+            "node": "Google Drive",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Fetch Delinquency Report",
+            "node": "Google Drive1",
             "type": "main",
             "index": 0
           }
@@ -239,12 +217,12 @@
       "main": [
         [
           {
-            "node": "Fetch Delinquency Report",
+            "node": "Google Drive",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Fetch Rent Totals",
+            "node": "Google Drive1",
             "type": "main",
             "index": 0
           }
@@ -282,6 +260,44 @@
           }
         ]
       ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive2": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-03-18T11:51:28.387Z",
@@ -291,45 +307,6 @@
   },
   "name": "2 - Delinquency - Generate KPIs, Email, and FTP Report",
   "nodes": [
-    {
-      "parameters": {
-        "path": "/public_html/data/delinquency.csv"
-      },
-      "type": "n8n-nodes-base.ftp",
-      "typeVersion": 1,
-      "position": [
-        -100,
-        300
-      ],
-      "name": "Fetch Delinquency Report",
-      "id": "4468eca3-f665-4cda-baa4-8ea9bc45bfeb",
-      "credentials": {
-        "ftp": {
-          "id": "87ZwJT7N7b5rycj4",
-          "name": "n8n Data FTP account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "path": "/public_html/data/rent_totals.csv",
-        "binaryPropertyName": "data1"
-      },
-      "type": "n8n-nodes-base.ftp",
-      "typeVersion": 1,
-      "position": [
-        -100,
-        500
-      ],
-      "name": "Fetch Rent Totals",
-      "id": "eb1d1b4e-6f22-4741-b2b8-32d802b73c2e",
-      "credentials": {
-        "ftp": {
-          "id": "87ZwJT7N7b5rycj4",
-          "name": "n8n Data FTP account"
-        }
-      }
-    },
     {
       "parameters": {
         "jsCode": "// 1) Get data from input\nlet allItems = $input.all();\nlet rows = allItems.map(item => item.json);\n\n// 2) Initialize an object to accumulate totals by property_id\nconst propertyMap = {};\n\n// 3) Loop through each row\nrows.forEach(row => {\n    // Convert property_id to integer if possible\n    if (row[\"property_id\"] !== undefined) {\n        const parsedPropId = parseInt(row[\"property_id\"], 10);\n        if (!isNaN(parsedPropId)) {\n            row[\"property_id\"] = parsedPropId;\n        }\n    }\n\n    // Parse numeric fields\n    if (row[\"total_receivable\"] !== undefined && row[\"total_receivable\"] !== null) {\n        row[\"total_receivable\"] = parseFloat(\n            row[\"total_receivable\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"total_receivable\"] = 0;\n    }\n\n    if (row[\"delinquent_rent\"] !== undefined && row[\"delinquent_rent\"] !== null) {\n        row[\"delinquent_rent\"] = parseFloat(\n            row[\"delinquent_rent\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"delinquent_rent\"] = 0;\n    }\n\n    if (row[\"delinquent_subsidy\"] !== undefined && row[\"delinquent_subsidy\"] !== null) {\n        row[\"delinquent_subsidy\"] = parseFloat(\n            row[\"delinquent_subsidy\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"delinquent_subsidy\"] = 0;\n    }\n\n    if (row[\"monthly_charges\"] !== undefined && row[\"monthly_charges\"] !== null) {\n        row[\"monthly_charges\"] = parseFloat(\n            row[\"monthly_charges\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"monthly_charges\"] = 0;\n    }\n\n    if (row[\"last_payment_amount\"] !== undefined && row[\"last_payment_amount\"] !== null) {\n        row[\"last_payment_amount\"] = parseFloat(\n            row[\"last_payment_amount\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"last_payment_amount\"] = 0;\n    }\n\n    if (row[\"monthly_rent\"] !== undefined && row[\"monthly_rent\"] !== null) {\n        row[\"monthly_rent\"] = parseFloat(\n            row[\"monthly_rent\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"monthly_rent\"] = 0;\n    }\n\n    if (row[\"delinquent_fees\"] !== undefined && row[\"delinquent_fees\"] !== null) {\n        row[\"delinquent_fees\"] = parseFloat(\n            row[\"delinquent_fees\"].toString().replace(/,/g, \"\")\n        ) || 0;\n    } else {\n        row[\"delinquent_fees\"] = 0;\n    }\n\n    // Now accumulate into propertyMap\n    const propId = row[\"property_id\"];\n    if (propId === undefined || isNaN(propId)) {\n        // Skip rows that don't have a valid numeric property ID\n        return;\n    }\n\n    // Initialize if we haven't seen this property yet\n    if (!propertyMap[propId]) {\n        propertyMap[propId] = {\n            property_id: propId,\n            total_receivable: 0,\n            delinquent_rent: 0,\n            delinquent_subsidy: 0,\n            monthly_charges: 0,\n            last_payment_amount: 0,\n            monthly_rent: 0,\n            delinquent_fees: 0\n        };\n    }\n\n    // Sum up numeric fields\n    propertyMap[propId].total_receivable += row.total_receivable;\n    propertyMap[propId].delinquent_rent += row.delinquent_rent;\n    propertyMap[propId].delinquent_subsidy += row.delinquent_subsidy;\n    propertyMap[propId].monthly_charges += row.monthly_charges;\n    propertyMap[propId].last_payment_amount += row.last_payment_amount;\n    propertyMap[propId].monthly_rent += row.monthly_rent;\n    propertyMap[propId].delinquent_fees += row.delinquent_fees;\n});\n\n// 4) Convert propertyMap back into an array, rounding to two decimals\nconst output = Object.values(propertyMap).map(item => {\n    // Round each numeric field to nearest hundredth (dollar format)\n    item.total_receivable = parseFloat(item.total_receivable.toFixed(2));\n    item.delinquent_rent = parseFloat(item.delinquent_rent.toFixed(2));\n    item.delinquent_subsidy = parseFloat(item.delinquent_subsidy.toFixed(2));\n    item.monthly_charges = parseFloat(item.monthly_charges.toFixed(2));\n    item.last_payment_amount = parseFloat(item.last_payment_amount.toFixed(2));\n    item.monthly_rent = parseFloat(item.monthly_rent.toFixed(2));\n    item.delinquent_fees = parseFloat(item.delinquent_fees.toFixed(2));\n\n    return { json: item };\n});\n\n// 5) Return final aggregated data (one item per property)\nreturn output;"
@@ -360,7 +337,6 @@
     {
       "parameters": {
         "operation": "xlsx",
-        "binaryPropertyName": "data1",
         "options": {}
       },
       "type": "n8n-nodes-base.extractFromFile",
@@ -568,7 +544,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -320,
+        -380,
         300
       ],
       "id": "f4d12732-c932-4051-88c2-8a91be735b26",
@@ -578,12 +554,6 @@
       "parameters": {
         "assignments": {
           "assignments": [
-            {
-              "id": "6b0ccc25-bcfc-45b3-8307-bbab4123577f",
-              "name": "property_name",
-              "value": "={{ $json['Property Name'] }}",
-              "type": "string"
-            },
             {
               "id": "590d33ae-e411-4fd1-8c7c-736ba25191f6",
               "name": "property_id",
@@ -612,48 +582,6 @@
               "id": "8971f5cb-c69c-46aa-beb3-7568c8ccea9b",
               "name": "delinquent_subsidy",
               "value": "={{ $json['Delinquent Subsidy Amount'] }}",
-              "type": "number"
-            },
-            {
-              "id": "8af9f118-97ce-438c-a0d6-c8bf04a0d480",
-              "name": "nsf_count",
-              "value": "={{ $json['NSF Count'] }}",
-              "type": "number"
-            },
-            {
-              "id": "7d7baeb7-fda5-4a73-bd43-06f09ac183f4",
-              "name": "late_count",
-              "value": "={{ $json['Late Count'] }}",
-              "type": "number"
-            },
-            {
-              "id": "48b3021a-8ebc-46fc-92ff-d28a129c7ed9",
-              "name": "certified_funds_Only",
-              "value": "={{ $json['Certified Funds Only'] }}",
-              "type": "string"
-            },
-            {
-              "id": "24aaf3dd-5503-4fd2-b213-b978b9212b51",
-              "name": "monthly_charges",
-              "value": "={{ $json['Monthly Charges'] }}",
-              "type": "number"
-            },
-            {
-              "id": "3a332067-b853-4e75-9424-5b0eb33c310d",
-              "name": "last_payment_date",
-              "value": "={{ $json['Last Payment'] }}",
-              "type": "string"
-            },
-            {
-              "id": "e67f1f98-1990-44bd-9ffa-0928eb9ec9f7",
-              "name": "last_payment_amount",
-              "value": "={{ $json['Payment Amount'] }}",
-              "type": "string"
-            },
-            {
-              "id": "9c810c01-9c09-4ad8-9987-b1c28e60dc87",
-              "name": "monthly_rent",
-              "value": "={{ $json.Rent }}",
               "type": "number"
             },
             {
@@ -2546,6 +2474,500 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1DaWOGCu6ImunGqnNBFkAY8MN6totkoZ8Mix97kNCzVo",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -120,
+        300
+      ],
+      "id": "65fdc89f-8b05-4b65-a60d-fed34a4214cf",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1uMUENs69-ey2GGZoy555-b3ppPtEfEMa0ypIb6KLCUo",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -120,
+        500
+      ],
+      "id": "f2bb022d-dc3d-4a6f-927e-dec9247c272a",
+      "name": "Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "n8n apartment delinquency daily.csv",
+        "filter": {},
+        "options": {
+          "fields": [
+            "*"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        100,
+        80
+      ],
+      "id": "0912f416-c189-4f6f-a356-580e9fd97de7",
+      "name": "Google Drive2",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "cer2DAVMEta9v7Fb",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1dcGHUcQ0KIygyWvY8kqp4JZJcQ7ceZhy2oiBFUqvp3s",
+          "mode": "list",
+          "cachedResultName": "Legacy Reporting ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dcGHUcQ0KIygyWvY8kqp4JZJcQ7ceZhy2oiBFUqvp3s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 614782390,
+          "mode": "list",
+          "cachedResultName": "Raw Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1dcGHUcQ0KIygyWvY8kqp4JZJcQ7ceZhy2oiBFUqvp3s/edit#gid=614782390"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "22",
+            "delinquent_subsidy": "={{ new Date($json.modifiedTime).toLocaleString(\"en-US\", {\n  timeZone: \"America/Chicago\",\n  year: \"numeric\",\n  month: \"2-digit\",\n  day: \"2-digit\",\n  hour: \"2-digit\",\n  minute: \"2-digit\",\n  hour12: true\n}) }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "property_id",
+              "displayName": "property_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "property_name",
+              "displayName": "property_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total_units",
+              "displayName": "total_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "occupied_units",
+              "displayName": "occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "occupancy_rate",
+              "displayName": "occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "projected_occupied_units",
+              "displayName": "projected_occupied_units",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "projected_occupancy_rate",
+              "displayName": "projected_occupancy_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total_receivable",
+              "displayName": "total_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total_delinquent_rent",
+              "displayName": "total_delinquent_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "delinquent_subsidy",
+              "displayName": "delinquent_subsidy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "delinquent_fees",
+              "displayName": "delinquent_fees",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total_rent",
+              "displayName": "total_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "delinquency_percent",
+              "displayName": "delinquency_percent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "total_guest_cards",
+              "displayName": "total_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "active_guest_cards",
+              "displayName": "active_guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "applications",
+              "displayName": "applications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "showings",
+              "displayName": "showings",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "monthly_received",
+              "displayName": "monthly_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "daily_received",
+              "displayName": "daily_received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "delinquency_percent_receivable",
+              "displayName": "delinquency_percent_receivable",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "delinquency_percent_rent_only",
+              "displayName": "delinquency_percent_rent_only",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "delinquency_percent_no_subsidies",
+              "displayName": "delinquency_percent_no_subsidies",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "vacant_rented_count",
+              "displayName": "vacant_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "vacant_unrented_count",
+              "displayName": "vacant_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "notice_rented_count",
+              "displayName": "notice_rented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "notice_unrented_count",
+              "displayName": "notice_unrented_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "vacant_rented_json",
+              "displayName": "vacant_rented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "notice_eviction_count",
+              "displayName": "notice_eviction_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "notice_eviction",
+              "displayName": "notice_eviction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lease_30",
+              "displayName": "lease_30",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lease_60",
+              "displayName": "lease_60",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lease_90",
+              "displayName": "lease_90",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "lease_m2m",
+              "displayName": "lease_m2m",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "vacant_unrented_json",
+              "displayName": "vacant_unrented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "notice_unrented_json",
+              "displayName": "notice_unrented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "notice_rented_json",
+              "displayName": "notice_rented_json",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        320,
+        80
+      ],
+      "id": "e299cc34-6a34-407f-b46c-c9537fd08888",
+      "name": "Google Sheets4",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -2560,6 +2982,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-26T16:19:05.000Z",
-  "versionId": "8b8d9eeb-08d8-4efb-bf4b-122141853599"
+  "updatedAt": "2025-03-27T02:25:59.000Z",
+  "versionId": "451b9d9d-4a48-4c2d-89b6-f379e9f376b8"
 }
