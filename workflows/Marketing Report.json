@@ -1,11 +1,800 @@
 {
   "active": false,
-  "connections": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Extract Guest Cards",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Load Owners",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Append Guest Cards": {
+      "main": [
+        [
+          {
+            "node": "Update Records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Records": {
+      "main": [
+        [
+          {
+            "node": "Append Weekly Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Weekly Log": {
+      "main": [
+        [
+          {
+            "node": "Load Weekly Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Weekly Log": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Guest Cards": {
+      "main": [
+        [
+          {
+            "node": "Append Guest Cards",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Owners": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "createdAt": "2025-03-27T16:58:48.780Z",
   "id": "u8mf7EGXElPZZjwV",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "Marketing Report",
-  "nodes": [],
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "has:attachment \"a7d9x3bq\" to:brandon+reports@blazeproperty.com",
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -680,
+        -60
+      ],
+      "id": "21ce7b31-183f-4714-a2e8-9a0bf39836b6",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6b9944c1-91bc-46f2-ba31-4310809d9658",
+              "leftValue": "={{ $json.headers.subject }}",
+              "rightValue": "Guest",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -460,
+        -60
+      ],
+      "id": "b9394343-3da2-4dc5-a80f-1a6df3dbdb3e",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1R_9Ztk9NUt8VdYROlMkaDkKzWkzm7lfk-k63ZASEVzs",
+          "mode": "list",
+          "cachedResultName": "guest_cards_raw",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1R_9Ztk9NUt8VdYROlMkaDkKzWkzm7lfk-k63ZASEVzs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1R_9Ztk9NUt8VdYROlMkaDkKzWkzm7lfk-k63ZASEVzs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "Interest Received",
+              "displayName": "Interest Received",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Last Activity Date",
+              "displayName": "Last Activity Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lead Type",
+              "displayName": "Lead Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property ID",
+              "displayName": "Property ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Unit ID",
+              "displayName": "Unit ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "labelIds",
+              "displayName": "labelIds",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sizeEstimate",
+              "displayName": "sizeEstimate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "headers",
+              "displayName": "headers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "html",
+              "displayName": "html",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "text",
+              "displayName": "text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "textAsHtml",
+              "displayName": "textAsHtml",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "to",
+              "displayName": "to",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "messageId",
+              "displayName": "messageId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "replyTo",
+              "displayName": "replyTo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -20,
+        -160
+      ],
+      "id": "733a01d5-4b44-4427-b0f5-c9984070ce72",
+      "name": "Append Guest Cards",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get start of ISO week (Monday)\nconst today = new Date();\nconst day = today.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6\nconst offset = (day === 0 ? -6 : 1) - day;\nconst monday = new Date(today);\nmonday.setDate(today.getDate() + offset);\nconst weekStart = monday.toISOString().split('T')[0];\n\nconst summary = {};\n\nfor (const item of $input.all()) {\n  const data = item.json;\n\n  // Convert Excel date to JS date\n  const excelSerial = data['Last Activity Date'];\n  if (!excelSerial || typeof excelSerial !== 'number') continue;\n\n  const lastActivity = new Date((excelSerial - 25569) * 86400 * 1000);\n  if (isNaN(lastActivity.getTime()) || lastActivity < monday) continue;\n\n  const unitId = data['Unit ID'];\n  const propertyId = data['Property ID'];\n  const source = (data['Source'] || '').toLowerCase();\n  const status = data['Status'] || '';\n\n  const key = `${unitId}__${propertyId}`;\n  if (!summary[key]) {\n    summary[key] = {\n      week_start: weekStart,\n      unit_id: unitId,\n      property_id: propertyId,\n      guest_cards: 0,\n      applications_completed: 0,\n      source_website: 0,\n      source_rent: 0,\n      source_internal: 0\n    };\n  }\n\n  summary[key].guest_cards += 1;\n  if (status === 'Application Completed') {\n    summary[key].applications_completed += 1;\n  }\n\n  if (source.includes('rent')) {\n    summary[key].source_rent += 1;\n  } else if (source.includes('web')) {\n    summary[key].source_website += 1;\n  } else {\n    summary[key].source_internal += 1;\n  }\n}\n\n// Output array of summary entries\nreturn Object.values(summary).map(entry => ({ json: entry }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        -160
+      ],
+      "id": "41bdd921-0dda-4f44-ada1-1a3f3602756e",
+      "name": "Update Records"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1bYQRxZ_P-veQM-j6gm5Ks1t_xrti0O7S9S98qi5XD1Q",
+          "mode": "list",
+          "cachedResultName": "guest_card_weekly_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bYQRxZ_P-veQM-j6gm5Ks1t_xrti0O7S9S98qi5XD1Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 831493738,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bYQRxZ_P-veQM-j6gm5Ks1t_xrti0O7S9S98qi5XD1Q/edit#gid=831493738"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "week_start": "={{ $json.week_start }}",
+            "unit_id": "={{ $json.unit_id }}",
+            "property_id": "={{ $json.property_id }}",
+            "guest_cards": "={{ $json.guest_cards }}",
+            "applications_completed": "={{ $json.applications_completed }}",
+            "source_website": "={{ $json.source_website }}",
+            "source_rent": "={{ $json.source_rent }}",
+            "source_walkin": "={{ $json.source_internal }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "week_start",
+              "displayName": "week_start",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "unit_id",
+              "displayName": "unit_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "property_id",
+              "displayName": "property_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "guest_cards",
+              "displayName": "guest_cards",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "applications_completed",
+              "displayName": "applications_completed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source_rent",
+              "displayName": "source_rent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source_website",
+              "displayName": "source_website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source_walkin",
+              "displayName": "source_walkin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        420,
+        -160
+      ],
+      "id": "275bf310-0642-4946-afe9-3b0319aa593f",
+      "name": "Append Weekly Log",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1bYQRxZ_P-veQM-j6gm5Ks1t_xrti0O7S9S98qi5XD1Q",
+          "mode": "list",
+          "cachedResultName": "guest_card_weekly_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bYQRxZ_P-veQM-j6gm5Ks1t_xrti0O7S9S98qi5XD1Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 831493738,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bYQRxZ_P-veQM-j6gm5Ks1t_xrti0O7S9S98qi5XD1Q/edit#gid=831493738"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        640,
+        -160
+      ],
+      "id": "de8bc5fe-bcab-4a8b-9118-6e917c765ebd",
+      "name": "Load Weekly Log",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1GhSRWSn84PXq0Z2ROfgJOwweXNoQIPexbedF79cxyXU",
+          "mode": "list",
+          "cachedResultName": "Owner Directory Marketing",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GhSRWSn84PXq0Z2ROfgJOwweXNoQIPexbedF79cxyXU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 803595566,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GhSRWSn84PXq0Z2ROfgJOwweXNoQIPexbedF79cxyXU/edit#gid=803595566"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        820,
+        300
+      ],
+      "id": "28715eac-8c07-4a2c-88dd-7a1e50bb2179",
+      "name": "Load Owners",
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -160
+      ],
+      "id": "c1be7547-45d4-451f-b8f0-0b385020d45f",
+      "name": "Extract Guest Cards"
+    },
+    {
+      "parameters": {
+        "jsCode": "const all = $input.all();\n\n// Separate streams\nconst summaries = all.filter(i => i.json.week_start);\nconst units = all.filter(i => i.json['Unit ID']);\nconst owners = all.filter(i => i.json.property_ids);\n\n// Build lookup maps\nconst unitMap = {};\nfor (const unit of units) {\n  unitMap[unit['Unit ID']] = unit;\n}\n\nconst ownerMap = {};\nfor (const owner of owners) {\n  const props = (owner.property_ids || '').split(',').map(p => p.trim());\n  for (const pid of props) {\n    ownerMap[pid] = owner.email;\n  }\n}\n\n// Group summaries by property\nconst grouped = {};\nfor (const row of summaries) {\n  const propertyId = row.property_id;\n  if (!grouped[propertyId]) grouped[propertyId] = [];\n  grouped[propertyId].push(row);\n}\n\n// Generate HTML emails\nconst results = [];\n\nfor (const propertyId in grouped) {\n  const email = ownerMap[propertyId] || 'unassigned@blazeproperty.com';\n  const rows = grouped[propertyId];\n\n  let html = `<h2 style=\"font-family:sans-serif;\">Weekly Marketing Summary for Property ID: ${propertyId}</h2>`;\n  html += `<table border=\"1\" cellpadding=\"6\" cellspacing=\"0\" style=\"font-family:sans-serif;border-collapse:collapse;\">\n  <tr><th>Unit</th><th>Rent</th><th>Guest Cards</th><th>Applications</th><th>GC Trend</th><th>App Trend</th><th>Posted</th></tr>`;\n\n  for (const r of rows) {\n    const u = unitMap[r.unit_id] || {};\n    html += `<tr>\n      <td>${u['Unit Name'] || r.unit_id}</td>\n      <td>$${u['Advertised Rent'] || ''}</td>\n      <td>${r.guest_cards}</td>\n      <td>${r.applications_completed}</td>\n      <td>${r.guest_cards_trend || '–'}</td>\n      <td>${r.applications_trend || '–'}</td>\n      <td>${(u['Posted To Website'] === 'Yes' || u['Posted To Internet'] === 'Yes') ? 'Yes' : 'No'}</td>\n    </tr>`;\n  }\n\n  html += `</table><p style=\"font-family:sans-serif;font-size:0.9em;\">Report generated automatically by Blaze Property Management.</p>`;\n\n  results.push({\n    json: {\n      property_id: propertyId,\n      email: email,\n      html_body: html,\n      subject: `Weekly Market Summary for Property ${propertyId}`\n    }\n  });\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        60
+      ],
+      "id": "a521a7ec-a8ea-4d89-822f-840d8214692f",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "unit_id",
+              "field2": "Unit ID"
+            }
+          ]
+        },
+        "joinMode": "enrichInput2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        840,
+        -60
+      ],
+      "id": "c09456c1-54b6-46aa-8119-9c16bbd8f91f",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1mBu84qN-pDGL6o46hcTXHRzUNQ2F88aS-jZjoV5DW1g",
+          "mode": "list",
+          "cachedResultName": "unit list",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mBu84qN-pDGL6o46hcTXHRzUNQ2F88aS-jZjoV5DW1g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 274416106,
+          "mode": "list",
+          "cachedResultName": "unit_directory-20250327 (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1mBu84qN-pDGL6o46hcTXHRzUNQ2F88aS-jZjoV5DW1g/edit#gid=274416106"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        160,
+        40
+      ],
+      "id": "6a7abfb3-2067-45d7-a64e-896812df78d6",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "message": "={{ $json.html_body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1420,
+        -20
+      ],
+      "id": "d850a388-c0b9-400a-adbd-f3d759204e41",
+      "name": "Gmail",
+      "webhookId": "c060474d-1f29-45d2-a06b-f5d7a58bd066",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        1020,
+        40
+      ],
+      "id": "9880c13f-944c-4d61-ae30-3e2881d44774",
+      "name": "Merge1"
+    }
+  ],
   "pinData": {},
   "settings": {
     "executionOrder": "v1"
@@ -13,6 +802,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-27T16:58:48.780Z",
-  "versionId": "d2586110-e60e-497b-b987-8b29b08a9886"
+  "updatedAt": "2025-03-27T19:28:48.000Z",
+  "versionId": "6002e86b-9e44-458e-9351-fe032aadea9a"
 }
