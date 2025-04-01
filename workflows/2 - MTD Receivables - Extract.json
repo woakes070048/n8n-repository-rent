@@ -60,7 +60,7 @@
       "main": [
         [
           {
-            "node": "Code",
+            "node": "All Property IDs",
             "type": "main",
             "index": 0
           }
@@ -109,6 +109,17 @@
           }
         ]
       ]
+    },
+    "All Property IDs": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-03-22T16:32:40.596Z",
@@ -120,12 +131,12 @@
   "nodes": [
     {
       "parameters": {
-        "jsCode": "// 1) Get data from input\nlet allItems = $input.all();\n\n// Try the most common scenario: allItems[0].json is already an array\nlet rows = allItems[0].json;\n\nif (!Array.isArray(rows)) {\n  // Maybe it's in allItems[0].json.data?\n  if (allItems[0].json.data && Array.isArray(allItems[0].json.data)) {\n    rows = allItems[0].json.data;\n  } else {\n    // Maybe each item is a single row:\n    rows = allItems.map(item => item.json).flat();\n  }\n}\n\n// If it's still not an array, throw an error\nif (!Array.isArray(rows)) {\n  throw new Error(\"We couldn’t find an array in the expected paths. Please check the output of the previous node.\");\n}\n\n// 2) Initialize receipts map\nconst receiptsMap = {};\n\n// 3) Loop through each row to sum receipts\nrows.forEach(row => {\n  if (!row.hasOwnProperty(\"Property ID\")) return;\n\n  // Normalize the property ID\n  const propertyId = String(row[\"Property ID\"]).trim();\n  if (!propertyId) return;\n\n  // **Skip if property ID is 'Total'** (case-insensitive)\n  if (propertyId.toLowerCase() === \"total\") return;\n\n  // Parse the receipt amount\n  const amount = parseFloat(row[\"Receipt Amount\"] || 0);\n\n  // Initialize if needed\n  if (!receiptsMap[propertyId]) {\n    receiptsMap[propertyId] = 0;\n  }\n\n  // Add to the property's total\n  receiptsMap[propertyId] += amount;\n});\n\n// 4) Build the output array\nconst output = Object.keys(receiptsMap).map(propertyId => {\n  return {\n    \"Property ID\": propertyId,\n    \"Total Receipts\": receiptsMap[propertyId],\n  };\n});\n\n// 5) Return final receipts results\nreturn output;\n"
+        "jsCode": "// All properties from DB\nconst allProperties = $items('All Property IDs').map(item => ({\n  propertyId: String(item.json.property_id).trim(),\n  propertyName: item.json.Property\n}));\n\n// Data from the uploaded file\nlet rows = $items('Extract from File1')[0].json;\nif (!Array.isArray(rows)) {\n  rows = rows.data || $items('Extract from File1').map(i => i.json);\n}\n\n// Build receipts map\nconst receiptsMap = {};\nrows.forEach(row => {\n  const propId = String(row[\"Property ID\"] || \"\").trim();\n  if (!propId || propId.toLowerCase() === \"total\") return;\n\n  receiptsMap[propId] = (receiptsMap[propId] || 0) + parseFloat(row[\"Receipt Amount\"] || 0);\n});\n\n// Merge all properties with receipts\nreturn allProperties.map(p => ({\n  json: {\n    \"Property ID\": p.propertyId,\n    \"Property\": p.propertyName,\n    \"Total Receipts\": receiptsMap[p.propertyId] || 0\n  }\n}));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1020,
+        -800,
         -340
       ],
       "id": "b339a2b3-8a86-4dc0-927d-1a01217d53b1",
@@ -140,7 +151,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -800,
+        -580,
         -340
       ],
       "id": "c5e02343-a93a-4e86-b738-18939ecb71d0",
@@ -187,7 +198,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -580,
+        -360,
         -340
       ],
       "id": "d0f60974-d701-489c-a291-3cb016db39e8",
@@ -218,7 +229,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -360,
+        -140,
         -340
       ],
       "id": "d706a33e-0e22-4e5a-acb6-3547e9ac29da",
@@ -1183,7 +1194,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -140,
+        80,
         -420
       ],
       "id": "2f12d0c2-06a7-4cec-9103-a6dcbd4b181a",
@@ -1577,7 +1588,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -140,
+        80,
         -260
       ],
       "id": "4abb3fcb-0ac3-4bfb-83b5-79c2a44509df",
@@ -1985,6 +1996,27 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT property_id, Property FROM property_directory;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -1020,
+        -340
+      ],
+      "id": "80342177-6c54-4b84-b83e-1dd16d26cde6",
+      "name": "All Property IDs",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1999,6 +2031,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-27T02:31:17.000Z",
-  "versionId": "e827b427-8312-4e70-b18b-8f48242c7bb6"
+  "updatedAt": "2025-04-01T11:23:41.000Z",
+  "versionId": "c1738177-7428-41dd-a879-efbfa4d6b901"
 }
