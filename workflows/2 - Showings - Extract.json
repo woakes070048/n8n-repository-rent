@@ -111,7 +111,7 @@
       "typeVersion": 1,
       "position": [
         -260,
-        20
+        0
       ],
       "id": "8ed5bd42-e223-4a13-8863-7ce323c11bec",
       "name": "Extract from File"
@@ -141,8 +141,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        580,
-        20
+        400,
+        0
       ],
       "id": "98b47404-8aa1-4fc1-b090-bb7e0aea174c",
       "name": "MySQL",
@@ -167,7 +167,7 @@
       "typeVersion": 3,
       "position": [
         -480,
-        20
+        0
       ],
       "id": "cf1e327e-9850-4789-aead-86106367c79c",
       "name": "Google Drive",
@@ -186,7 +186,7 @@
       "typeVersion": 2,
       "position": [
         -40,
-        20
+        0
       ],
       "id": "c4d78118-92ab-4c94-8e4d-73439e1b69a9",
       "name": "Summarize Property Status"
@@ -214,8 +214,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        400,
-        20
+        180,
+        0
       ],
       "id": "bc66be92-a0ed-452c-8359-868ba1ff7b0c",
       "name": "Set Data Fields Final"
@@ -234,7 +234,7 @@
       "typeVersion": 1.2,
       "position": [
         -700,
-        120
+        100
       ],
       "id": "c2bd3a2d-392a-495d-9250-f901c1983cdd",
       "name": "Schedule Trigger"
@@ -623,7 +623,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        740,
+        620,
         -100
       ],
       "id": "ace119e1-ae61-4a5e-a6cb-2e846e34aa83",
@@ -1017,8 +1017,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        740,
-        160
+        620,
+        100
       ],
       "id": "fa10b45d-4216-4f86-ad77-fa77e508f296",
       "name": "Google Sheets2",
@@ -1042,6 +1042,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-29T11:29:30.000Z",
-  "versionId": "75dc7f5a-0dff-4705-8a40-fde9410e2797"
+  "updatedAt": "2025-04-01T10:51:16.000Z",
+  "versionId": "71b2456e-f790-4248-bba0-9c58767e5afd"
 }
