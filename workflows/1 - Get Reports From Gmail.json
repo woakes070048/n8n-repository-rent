@@ -12,33 +12,6 @@
         ]
       ]
     },
-    "Mark As Read": {
-      "main": [
-        [
-          {
-            "node": "Label as Report",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Label as Report": {
-      "main": [
-        [
-          {
-            "node": "Remove Inbox Label",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Remove Inbox Label": {
-      "main": [
-        []
-      ]
-    },
     "Generate Status": {
       "main": [
         [
@@ -112,11 +85,6 @@
     "Google Sheets1": {
       "main": [
         [
-          {
-            "node": "Mark As Read",
-            "type": "main",
-            "index": 0
-          },
           {
             "node": "Merge1",
             "type": "main",
@@ -980,77 +948,7 @@
     },
     {
       "parameters": {
-        "operation": "markAsRead",
-        "messageId": "={{ $('Code').item.json.messageId }}"
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        1520,
-        -40
-      ],
-      "id": "14bffc4f-e2d1-4f13-b68e-51903b5e1b6d",
-      "name": "Mark As Read",
-      "webhookId": "9cc28317-e6aa-498b-8d03-14075b77a15c",
-      "executeOnce": true,
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "addLabels",
-        "messageId": "={{ $json.id }}",
-        "labelIds": [
-          "Label_6005462562915862491"
-        ]
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        1720,
-        -40
-      ],
-      "id": "fb43167c-0aab-4df0-aea2-26b4b1f86ead",
-      "name": "Label as Report",
-      "webhookId": "9ccdee91-2352-458d-a323-9f8488c3ccd1",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "removeLabels",
-        "messageId": "={{ $json.id }}",
-        "labelIds": [
-          "INBOX"
-        ]
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        1880,
-        -40
-      ],
-      "id": "138956c7-17d8-47cc-af04-a1428aebca7b",
-      "name": "Remove Inbox Label",
-      "webhookId": "06af0bc6-2f7f-464b-a84e-bf45651f5b80",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const fileData = $input.first().json;\n\nconst rawFileName = (fileData.name || \"Unknown File\").trim().toLowerCase();\nconst workflowName = $workflow.name || \"Unknown Workflow\";\nconst modifiedTime = fileData.modifiedTime || \"\";\n\n// Normalize input\nconst normalized = rawFileName\n  .replace(/[^a-z0-9 ]/gi, \"\")\n  .replace(/\\s+/g, \" \")\n  .trim();\n\n// Mapping normalized keys to row numbers\nconst rowMap = {\n  \"delinquency daily\": 22,\n  \"guest cards past 7 days\": 23,\n  \"receivables to date\": 24,\n  \"receivables yesterday\": 25,\n  \"rent totals\": 26,\n  \"rental applications\": 27,\n  \"showings\": 28,\n  \"receivables monthly\": 24 // NEW alias fallback\n};\n\nconst key = Object.keys(rowMap).find(k => normalized.includes(k));\n\nif (!key) {\n  const available = Object.keys(rowMap).join(\", \");\n  throw new Error(`Unknown or unmapped file: \"${rawFileName}\"\\nMatched as: \"${normalized}\"\\nExpected one of: ${available}`);\n}\n\nreturn [{\n  json: {\n    row_number: rowMap[key],\n    status: \"Success\",\n    workflow: workflowName,\n    file_name: rawFileName,\n    modified_time: modifiedTime,\n    error_message: \"\"\n  }\n}];\n"
+        "jsCode": "const fileData = $input.first().json;\n\nconst rawFileName = (fileData.name || \"Unknown File\").trim().toLowerCase();\nconst workflowName = $workflow.name || \"Unknown Workflow\";\nconst modifiedTime = fileData.modifiedTime || \"\";\n\n// Normalize input\nconst normalized = rawFileName\n  .replace(/[^a-z0-9 ]/gi, \"\")\n  .replace(/\\s+/g, \" \")\n  .trim();\n\n// Mapping normalized keys to row numbers\nconst rowMap = {\n  \"delinquency daily\": 22,\n  \"guest cards past 7 days\": 23,\n  \"receivables to date\": 24,\n  \"receivables yesterday\": 25,\n  \"rent totals\": 26,\n  \"apartment applications\": 27,\n  \"n8n apartment applications\": 27,\n  \"showings\": 28,\n  \"receivables monthly\": 24 // NEW alias fallback\n};\n\nconst key = Object.keys(rowMap).find(k => normalized.includes(k));\n\nif (!key) {\n  const available = Object.keys(rowMap).join(\", \");\n  throw new Error(`Unknown or unmapped file: \"${rawFileName}\"\\nMatched as: \"${normalized}\"\\nExpected one of: ${available}`);\n}\n\nreturn [{\n  json: {\n    row_number: rowMap[key],\n    status: \"Success\",\n    workflow: workflowName,\n    file_name: rawFileName,\n    modified_time: modifiedTime,\n    error_message: \"\"\n  }\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1330,26 +1228,19 @@
       ]
     },
     "node:Get Report Email": {
-      "lastTimeChecked": 1743417649,
+      "lastTimeChecked": 1743505837,
       "possibleDuplicates": [
-        "195ebca303b904b2",
-        "195ebca300c58959",
-        "195ebca2f59e8de6",
-        "195ebca2e5f973cf",
-        "195ebca2dd7309b9",
-        "195ebca2901dba81",
-        "195ebca261fc46f9",
-        "195e6a3bd3c972fb",
-        "195e6a3bd079ffa8",
-        "195e6a3bc1ba680b",
-        "195e6a3bb1fd74de",
-        "195e6a3ba5d360b4",
-        "195e6a3b55ee777e"
+        "195f0f086cb33f4a",
+        "195f0f086a66b132",
+        "195f0f0859e0c25f",
+        "195f0f08595a8550",
+        "195f0f0824f13feb",
+        "195f0f0818da6339"
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-27T11:31:47.000Z",
-  "versionId": "53ccbcba-cd0f-444a-a6bb-40ace2df7103"
+  "updatedAt": "2025-04-01T11:10:37.000Z",
+  "versionId": "80be2559-c370-4402-9ca0-59eb340889bd"
 }
