@@ -8,6 +8,11 @@
             "node": "Google Drive",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -120,6 +125,17 @@
         [
           {
             "node": "Generate Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
             "type": "main",
             "index": 0
           }
@@ -1213,6 +1229,41 @@
       ],
       "id": "26a32839-ed79-49eb-bad6-15ed91f16644",
       "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        200
+      ],
+      "id": "66bcc895-e717-42a1-a09a-835b430e4beb",
+      "name": "Wait",
+      "webhookId": "39851e5a-e6cd-492c-bffa-6a1b4d436624"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        620,
+        200
+      ],
+      "id": "6b773480-6f25-40c2-90b9-9d37828ed28d",
+      "name": "Gmail",
+      "webhookId": "e05e3889-2423-4229-8174-37bb332454bc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1228,19 +1279,20 @@
       ]
     },
     "node:Get Report Email": {
-      "lastTimeChecked": 1743505837,
+      "lastTimeChecked": 1743590436,
       "possibleDuplicates": [
-        "195f0f086cb33f4a",
-        "195f0f086a66b132",
-        "195f0f0859e0c25f",
-        "195f0f08595a8550",
-        "195f0f0824f13feb",
-        "195f0f0818da6339"
+        "195f616aed33afb3",
+        "195f616ae9cc800e",
+        "195f616ad559a319",
+        "195f616ad3c93ff7",
+        "195f616ac0d60281",
+        "195f616ab93e4c4b",
+        "195f616aab81147a"
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-01T11:10:37.000Z",
-  "versionId": "80be2559-c370-4402-9ca0-59eb340889bd"
+  "updatedAt": "2025-04-02T10:18:06.000Z",
+  "versionId": "ebef7e25-0c46-4313-adfa-21d2f63c1a37"
 }
