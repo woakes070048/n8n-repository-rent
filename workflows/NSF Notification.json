@@ -1,0 +1,158 @@
+{
+  "active": true,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-03T15:27:53.445Z",
+  "id": "vpfQw7kY5iK7SiVU",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "NSF Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "subject:Payment Rejected from:donotreply@appfolio.com",
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9eeb7c09-b93e-4940-a9d4-8ee32e90f396",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailText = items[0].json[\"text\"];\n\n// Regular expressions to extract specific information\nconst payerNameRegex = /Name:\\s(.*)\\n/;\nconst propertyRegex = /Property:\\s(.*)\\n/;\nconst unitRegex = /Unit:\\s(.*)\\n/;\nconst emailRegex = /Email:\\s(.*)\\n/;\nconst phoneRegex = /Phone:\\s(.*)\\n/;\nconst methodRegex = /Method:\\s(.*)\\n/;\nconst confirmationRegex = /Confirmation:\\s(.*)\\n/;\nconst amountRegex = /Amount:\\s\\$(.*)\\n/;\nconst dateRegex = /Date:\\s(.*)\\n/;\nconst rejectReasonRegex = /Reject Reason:\\s(.*)\\n/;\nconst failureMessageRegex = /Failure Message\\n---------------\\n\\n(.*)\\n\\nSuggested Action/;\n\n// Function to extract data using regex\nconst extractData = (regex, text) => {\n    const match = regex.exec(text);\n    return match ? match[1].trim() : null;\n};\n\n// Extracting data\nconst data = {\n    payerName: extractData(payerNameRegex, emailText),\n    property: extractData(propertyRegex, emailText),\n    unit: extractData(unitRegex, emailText),\n    email: extractData(emailRegex, emailText),\n    phone: extractData(phoneRegex, emailText),\n    method: extractData(methodRegex, emailText),\n    confirmation: extractData(confirmationRegex, emailText),\n    amount: extractData(amountRegex, emailText),\n    date: extractData(dateRegex, emailText),\n    rejectReason: extractData(rejectReasonRegex, emailText),\n    failureMessage: extractData(failureMessageRegex, emailText)\n};\n\nreturn [{ json: data }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "c7966db8-6188-4d53-8ec9-c31b237c40a6",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const extractedData = {\n  payerName: items[0].json[\"payerName\"],\n  property: items[0].json[\"property\"],\n  unit: items[0].json[\"unit\"],\n  email: items[0].json[\"email\"],\n  phone: items[0].json[\"phone\"],\n  amount: items[0].json[\"amount\"],\n  date: items[0].json[\"date\"]\n};\n\nconst emailBody = `\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; }\n    .header { color: #202020; font-size: 18px; font-weight: bold; margin-bottom: 20px; }\n    .important { color: #d93025; }\n    .info { margin-bottom: 10px; }\n    .footer { margin-top: 20px; font-size: 12px; color: #666; }\n  </style>\n</head>\n<body>\n  <div class=\"header\">Payment Declined Notification</div>\n  <p class=\"info\">\n    Dear <strong>${extractedData.payerName}</strong>,\n  </p>\n  <p class=\"info\">\n    We regret to inform you that your recent payment of <strong>$${extractedData.amount}</strong> for the property at <strong>${extractedData.property}</strong>, Unit <strong>${extractedData.unit}</strong>, scheduled on <strong>${extractedData.date}</strong>, has been declined due to insufficient funds.\n  </p>\n  <p class=\"info important\">\n    You are welcome to attempt the payment again by visiting our online payment portal. Please be aware that if a payment fails again, <strong>you will be blocked from making future online payments</strong>. All subsequent payments will need to be made in certified funds and submitted directly to our office during business hours. We will also still accept payments through the eCash payment slip, enabling you to pay cash at CVS, Walgreens, Walmart and Ace Cash Express locations where available. You can request this payment slip from your property manager. \n  </p>\n  <p class=\"info\">\n    Please note that eCheck payments are subject to the same fees, legal regulations as paper checks, including the potential for them to be sent to the district attorney for actions related to theft by check.\n  </p>\n  <p class=\"footer\">\n    We appreciate your immediate attention to this matter. \n  </p>\n  <p class=\"footer\">\n    Thank you,<br>\n    Blaze Property Management\n  </p>\n</body>\n</html>\n`;\n\nreturn [\n  {\n    json: {\n      to: extractedData.email,\n      subject: \"Notification of Declined Payment and Further Instructions\",\n      body: emailBody\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "fe6846c4-ae5d-4203-b601-081321b42f00",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.body }}",
+        "options": {
+          "replyTo": "info@blazeproperty.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        0
+      ],
+      "id": "bf3618ed-e7eb-4126-bb78-0d7c37aae71d",
+      "name": "Gmail",
+      "webhookId": "e484964a-de02-4bde-b11f-e1548dc75daf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### Payment Rejection Notification Workflow\n\nThis n8n workflow automates the handling of payment rejection emails from AppFolio, extracting relevant information and sending a formatted response to tenants. It triggers on receiving specific emails, parses necessary details from the email content, formats a polite and informative HTML email, and sends this response directly to the tenant advising on next steps if a payment fails.\n\n### Usage\n\nIdeal for property management teams at Blaze Property Management, this workflow ensures timely and clear communication with tenants regarding payment issues, enhancing efficiency and maintaining professional standards in tenant interactions.\n",
+        "height": 520,
+        "width": 380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        -340
+      ],
+      "id": "41b8155e-1ed9-4555-9b17-796d05c3c5b5",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Gmail Trigger": {
+      "Gmail Trigger": {
+        "lastTimeChecked": 1743697811
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-04-03T16:30:11.000Z",
+  "versionId": "d210f77a-88a9-4155-b7f8-f3f6295ccdf2"
+}
