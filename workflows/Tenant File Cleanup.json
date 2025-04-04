@@ -1,0 +1,65 @@
+{
+  "active": false,
+  "connections": {},
+  "createdAt": "2025-04-04T12:39:10.091Z",
+  "id": "xTWLWd9uEPy0Xu6n",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Tenant File Cleanup",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        -20
+      ],
+      "id": "0f6fdf98-8d58-46ac-86c3-7a630dcb66ba",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "Tenant Directory",
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -460,
+        140
+      ],
+      "id": "6fe33135-99ef-40fc-95ac-6073cdb3c437",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-04T12:41:30.000Z",
+  "versionId": "926561b2-1943-4669-9182-a237b36a5ce4"
+}
