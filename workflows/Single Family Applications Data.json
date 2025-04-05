@@ -1,0 +1,140 @@
+{
+  "active": false,
+  "connections": {
+    "Applications": {
+      "main": [
+        [
+          {
+            "node": "Extract Applications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Applications": {
+      "main": [
+        [
+          {
+            "node": "Parse Applications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Applications": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-05T15:48:43.067Z",
+  "id": "aJTHPX2xqSYgotZr",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Single Family Applications Data",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "rep-applications",
+          "readStatus": "unread"
+        },
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "applications_",
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        0
+      ],
+      "id": "07792c93-ba37-4b62-929c-a24c746c54f0",
+      "name": "Applications",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.item.json.data;\nif (!raw) throw new Error(\"No application data found.\");\n\nconst lines = raw.split('\\n').filter(l => l.trim());\nconst headers = lines[0].split(',').map(h => h.trim());\nconst data = lines.slice(1);\n\nconst results = {};\n\nfor (const line of data) {\n  const fields = line.split(/,(?=(?:(?:[^\\\"]*\\\"){2})*[^\\\"]*$)/).map(v => v.replace(/^\\\"|\\\"$/g, '').trim());\n  const entry = Object.fromEntries(headers.map((h, i) => [h, fields[i]]));\n\n  const propId = parseInt(entry[\"Property ID\"]);\n  const status = entry[\"Status\"] || \"Unknown\";\n\n  if (!isNaN(propId)) {\n    if (!results[propId]) {\n      results[propId] = {\n        property_id: propId,\n        application_count: 0,\n        application_statuses: {}\n      };\n    }\n\n    results[propId].application_count++;\n    results[propId].application_statuses[status] = (results[propId].application_statuses[status] || 0) + 1;\n  }\n}\n\nreturn Object.values(results).map(item => ({\n  json: {\n    property_id: item.property_id,\n    application_count: item.application_count,\n    application_statuses: JSON.stringify(item.application_statuses)\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "c562765c-e5b6-4c08-9cf6-57a9b25df710",
+      "name": "Parse Applications"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "applications_0",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        0
+      ],
+      "id": "356442e0-e9e2-4ce8-9345-0bcb20689b1a",
+      "name": "Extract Applications"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO owner_marketing_summary (\n  property_id, week_ending, applications, application_statuses\n) VALUES (\n  {{ $json.property_id }},\n  DATE_SUB(CURDATE(), INTERVAL 1 DAY),\n  {{ $json.application_count }},\n  '{{ $json.application_statuses }}'\n)\nON DUPLICATE KEY UPDATE\n  applications = VALUES(applications),\n  application_statuses = VALUES(application_statuses),\n  updated_at = NOW();\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        60,
+        0
+      ],
+      "id": "9edfaa12-2858-4abc-a89e-35e6062557e4",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-05T16:02:07.000Z",
+  "versionId": "0499e7a8-1ec1-4369-9565-d6453e635032"
+}
