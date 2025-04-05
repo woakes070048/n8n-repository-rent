@@ -1,0 +1,146 @@
+{
+  "active": true,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-05T13:01:42.034Z",
+  "id": "tK4nZzisbjctlqeR",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Owners Update SQL",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyWeek",
+              "hour": 8,
+              "weekday": "0"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "n8n-owners-report",
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        20
+      ],
+      "id": "edb44ea0-f217-4b5e-aba2-fff52727390e",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "attachment_0",
+        "destinationKey": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        180,
+        20
+      ],
+      "id": "fe259397-978a-4b61-9125-df145117d886",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Grab CSV from 'text' field\nconst csvText = $input.item.json.text;\nif (!csvText) throw new Error('CSV text not found in \"text\" field.');\n\n// 2. Robust CSV Parser\nfunction parseCSV(text) {\n  const rows = [];\n  const lines = text.split('\\n');\n  let headers = [];\n\n  const parseLine = (line) => {\n    let row = [], current = '', inQuotes = false;\n    for (let i = 0; i < line.length; i++) {\n      const char = line[i], nextChar = line[i + 1];\n      if (char === '\"' && inQuotes && nextChar === '\"') {\n        current += '\"'; i++;\n      } else if (char === '\"') {\n        inQuotes = !inQuotes;\n      } else if (char === ',' && !inQuotes) {\n        row.push(current); current = '';\n      } else {\n        current += char;\n      }\n    }\n    row.push(current);\n    return row;\n  };\n\n  for (let i = 0; i < lines.length; i++) {\n    const line = lines[i].trim();\n    if (!line) continue;\n    const parsed = parseLine(line);\n    if (i === 0) {\n      headers = parsed;\n    } else {\n      const obj = {};\n      headers.forEach((key, idx) => {\n        obj[key.trim()] = parsed[idx] || '';\n      });\n      rows.push(obj);\n    }\n  }\n  return rows;\n}\n\n// 3. Clean helpers\nfunction extractPhone(raw) {\n  if (!raw) return '';\n  const firstNumber = raw.split(',')[0]; // Only take the first segment\n  const match = firstNumber.match(/\\d+/g);\n  return match ? match.join('') : '';\n}\n\nfunction extractEmail(emailStr) {\n  return (emailStr || '').split(',')[0].trim();\n}\n\n// 4. Transform\nconst rawRows = parseCSV(csvText);\nconst output = [];\n\nfor (const row of rawRows) {\n  const ownerId = parseInt(row['Owner ID']);\n  const name = row['Name']?.trim() || '';\n  const email = extractEmail(row['Email']);\n  const phone = extractPhone(row['Phone Numbers']);\n  const propertyIds = (row['Properties Owned IDs'] || '').split(',').map(p => p.trim()).filter(Boolean);\n\n  for (const propertyId of propertyIds) {\n    output.push({\n      json: {\n        owner_id: ownerId,\n        owner_name: name,\n        email,\n        phone,\n        property_id: parseInt(propertyId)\n      }\n    });\n  }\n}\n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        340,
+        20
+      ],
+      "id": "64c17a8b-0a61-4ed5-a04b-f8dbebcc8f7e",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO owners (owner_id, property_id, owner_name, email, phone)\nVALUES (\n  {{ $json.owner_id }},\n  {{ $json.property_id }},\n  '{{ $json.owner_name }}',\n  '{{ $json.email }}',\n  '{{ $json.phone }}'\n)\nON DUPLICATE KEY UPDATE\n  owner_name = VALUES(owner_name),\n  email = VALUES(email),\n  phone = VALUES(phone);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        560,
+        20
+      ],
+      "id": "c137d470-497f-499a-8c94-034c1880a6c8",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Gmail Trigger": {
+      "Gmail Trigger": {
+        "lastTimeChecked": 1743858815
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-04-05T13:13:35.000Z",
+  "versionId": "ff216d91-c95d-4f56-ad66-7505bc17786d"
+}
