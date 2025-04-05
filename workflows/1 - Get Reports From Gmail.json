@@ -1071,42 +1071,12 @@
           "mappingMode": "autoMapInputData",
           "value": {},
           "matchingColumns": [
-            "id"
+            "Property ID"
           ],
           "schema": [
             {
-              "id": "Name",
-              "displayName": "Name",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "Amount Receivable",
-              "displayName": "Amount Receivable",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "Delinquent Rent",
-              "displayName": "Delinquent Rent",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "Delinquent Subsidy Amount",
-              "displayName": "Delinquent Subsidy Amount",
+              "id": "Property ID",
+              "displayName": "Property ID",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1125,8 +1095,18 @@
               "removed": false
             },
             {
-              "id": "Property ID",
-              "displayName": "Property ID",
+              "id": "Receipt Amount",
+              "displayName": "Receipt Amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Payment Type",
+              "displayName": "Payment Type",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1220,12 +1200,16 @@
       "name": "Edit Fields"
     },
     {
-      "parameters": {},
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        1420,
-        -340
+        1360,
+        -260
       ],
       "id": "26a32839-ed79-49eb-bad6-15ed91f16644",
       "name": "Merge1"
@@ -1279,7 +1263,7 @@
       ]
     },
     "node:Get Report Email": {
-      "lastTimeChecked": 1743763234,
+      "lastTimeChecked": 1743804463,
       "possibleDuplicates": [
         "196006365c5927d3",
         "196006364124e70e",
@@ -1293,6 +1277,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-02T10:18:06.000Z",
-  "versionId": "ebef7e25-0c46-4313-adfa-21d2f63c1a37"
+  "updatedAt": "2025-04-04T22:07:42.000Z",
+  "versionId": "469a3b41-e6e2-43f4-b036-1489cecaf92b"
 }
