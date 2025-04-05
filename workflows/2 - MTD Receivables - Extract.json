@@ -60,9 +60,9 @@
       "main": [
         [
           {
-            "node": "All Property IDs",
+            "node": "Merge",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -114,6 +114,17 @@
       "main": [
         [
           {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
             "node": "Code",
             "type": "main",
             "index": 0
@@ -131,12 +142,12 @@
   "nodes": [
     {
       "parameters": {
-        "jsCode": "// All properties from DB\nconst allProperties = $items('All Property IDs').map(item => ({\n  propertyId: String(item.json.property_id).trim(),\n  propertyName: item.json.Property\n}));\n\n// Data from the uploaded file\nlet rows = $items('Extract from File1')[0].json;\nif (!Array.isArray(rows)) {\n  rows = rows.data || $items('Extract from File1').map(i => i.json);\n}\n\n// Build receipts map\nconst receiptsMap = {};\nrows.forEach(row => {\n  const propId = String(row[\"Property ID\"] || \"\").trim();\n  if (!propId || propId.toLowerCase() === \"total\") return;\n\n  receiptsMap[propId] = (receiptsMap[propId] || 0) + parseFloat(row[\"Receipt Amount\"] || 0);\n});\n\n// Merge all properties with receipts\nreturn allProperties.map(p => ({\n  json: {\n    \"Property ID\": p.propertyId,\n    \"Property\": p.propertyName,\n    \"Total Receipts\": receiptsMap[p.propertyId] || 0\n  }\n}));\n"
+        "jsCode": "// All properties from DB\nconst allProperties = $items('All Property IDs').map(item => ({\n  propertyId: String(item.json.property_id).trim(),\n  propertyName: item.json.Property || ''\n}));\n\n// Data from the uploaded file\nlet rows = $items('Extract from File1')[0].json;\nif (!Array.isArray(rows)) {\n  rows = rows.data || $items('Extract from File1').map(i => i.json);\n}\n\n// Build receipts map\nconst receiptsMap = {};\nrows.forEach(row => {\n  const propId = String(row[\"Property ID\"] || \"\").trim();\n  if (!propId || propId.toLowerCase() === \"total\") return;\n\n  receiptsMap[propId] = (receiptsMap[propId] || 0) + parseFloat(row[\"Receipt Amount\"] || 0);\n});\n\n// Merge all properties with receipts\nreturn allProperties.map(p => ({\n  json: {\n    \"Property ID\": p.propertyId,\n    \"Property\": p.propertyName,\n    \"Total Receipts\": receiptsMap[p.propertyId] || 0\n  }\n}));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -800,
+        -580,
         -340
       ],
       "id": "b339a2b3-8a86-4dc0-927d-1a01217d53b1",
@@ -151,7 +162,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -580,
+        -360,
         -340
       ],
       "id": "c5e02343-a93a-4e86-b738-18939ecb71d0",
@@ -198,7 +209,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -360,
+        -140,
         -340
       ],
       "id": "d0f60974-d701-489c-a291-3cb016db39e8",
@@ -229,7 +240,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -140,
+        80,
         -340
       ],
       "id": "d706a33e-0e22-4e5a-acb6-3547e9ac29da",
@@ -1194,7 +1205,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        80,
+        300,
         -420
       ],
       "id": "2f12d0c2-06a7-4cec-9103-a6dcbd4b181a",
@@ -1588,7 +1599,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        80,
+        300,
         -260
       ],
       "id": "4abb3fcb-0ac3-4bfb-83b5-79c2a44509df",
@@ -2000,14 +2011,14 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT property_id, Property FROM property_directory;\n",
+        "query": "SELECT DISTINCT property_id\nFROM property_directory\nWHERE property_id IS NOT NULL\n",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -1020,
-        -340
+        -1160,
+        -580
       ],
       "id": "80342177-6c54-4b84-b83e-1dd16d26cde6",
       "name": "All Property IDs",
@@ -2017,6 +2028,30 @@
           "name": "Blazedata Hostinger"
         }
       }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "={{ $json.property_id }}",
+              "field2": "={{ $json['Property ID'] }}"
+            }
+          ]
+        },
+        "joinMode": "enrichInput1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -820,
+        -340
+      ],
+      "id": "f6f92457-8eb7-4ae1-bda4-a9c6218f92e3",
+      "name": "Merge"
     }
   ],
   "pinData": {},
@@ -2031,6 +2066,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-01T11:23:41.000Z",
-  "versionId": "c1738177-7428-41dd-a879-efbfa4d6b901"
+  "updatedAt": "2025-04-04T22:34:04.000Z",
+  "versionId": "a51737e5-4af0-46f1-8ca5-333dbe70c7c3"
 }
