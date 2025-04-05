@@ -60,7 +60,7 @@
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "Code",
             "type": "main",
             "index": 0
           }
@@ -104,6 +104,17 @@
           },
           {
             "node": "Google Sheets2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
             "type": "main",
             "index": 0
           }
@@ -214,6 +225,10 @@
             {
               "column": "lease_m2m",
               "value": "={{ $json.lease_m2m }}"
+            },
+            {
+              "column": "occupied_units",
+              "value": "={{ $json[\"Current Count\"] }}"
             }
           ]
         },
@@ -222,7 +237,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        480,
+        700,
         -20
       ],
       "id": "481122dc-0843-4c13-8cf8-dfd0a993b5df",
@@ -261,7 +276,7 @@
     },
     {
       "parameters": {
-        "jsCode": "if (!items || items.length === 0) {\n    throw new Error(\"No input data found.\");\n}\n\nconst trackStatuses = [\"Current\", \"Vacant-Rented\", \"Vacant-Unrented\", \"Evict\"];\nconst today = new Date();\nconst currentMonth = today.getMonth(); \nconst currentYear = today.getFullYear();\nconst nextMonth = (currentMonth + 1) % 12;\nconst nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;\nconst followingMonth = (currentMonth + 2) % 12;\nconst followingYear = currentMonth >= 10 ? currentYear + 1 : currentYear;\n\nconst propertyData = {};\n\n// Converts Excel serial numbers to JS Date\nfunction excelDateToJSDate(excelDate) {\n    const base = new Date(Date.UTC(1899, 11, 30));\n    return new Date(base.getTime() + excelDate * 86400000);\n}\n\n// Tries to parse a lease date, whether ISO string, MM/DD/YYYY, or Excel number\nfunction parseLeaseDate(value) {\n    if (!value) return null;\n\n    if (typeof value === 'number') {\n        return excelDateToJSDate(value);\n    }\n\n    if (typeof value === 'string') {\n        if (!isNaN(Date.parse(value))) {\n            return new Date(value);\n        }\n\n        const parts = value.split(\"/\");\n        if (parts.length === 3) {\n            const [month, day, year] = parts.map(p => parseInt(p, 10));\n            if (!isNaN(month) && !isNaN(day) && !isNaN(year)) {\n                return new Date(year, month - 1, day);\n            }\n        }\n    }\n\n    return null;\n}\n\nitems.forEach(item => {\n    const json = item.json;\n\n    const propertyID = json[\"Property ID\"];\n    const propertyName = json[\"Property Name\"];\n    const unit = json[\"Unit\"];\n    const status = json[\"Status\"];\n    const leaseToRaw = json[\"Lease To\"];\n    const leaseExpiresMonth = json[\"Lease Expires Month\"];\n\n    if (!propertyID || !unit) return;\n\n    if (!propertyData[propertyID]) {\n        propertyData[propertyID] = {\n            \"Property Name\": propertyName,\n            \"Status Counts\": {},\n            \"Units By Status\": {},\n            \"Lease Expirations\": {\n                \"30 Days\": 0,\n                \"60 Days\": 0,\n                \"90 Days\": 0,\n                \"Month-To-Month\": 0\n            }\n        };\n    }\n\n    const prop = propertyData[propertyID];\n\n    if (trackStatuses.includes(status)) {\n        if (!prop[\"Status Counts\"][status]) {\n            prop[\"Status Counts\"][status] = 0;\n            prop[\"Units By Status\"][status] = [];\n        }\n        prop[\"Status Counts\"][status]++;\n        prop[\"Units By Status\"][status].push(unit);\n    }\n\n    if (\n        leaseExpiresMonth &&\n        leaseExpiresMonth.toLowerCase().includes(\"month-to-month\")\n    ) {\n        prop[\"Lease Expirations\"][\"Month-To-Month\"]++;\n    }\n\n    const leaseDate = parseLeaseDate(leaseToRaw);\n    if (leaseDate instanceof Date && !isNaN(leaseDate)) {\n        const leaseMonth = leaseDate.getMonth();\n        const leaseYear = leaseDate.getFullYear();\n\n        if (leaseMonth === currentMonth && leaseYear === currentYear) {\n            prop[\"Lease Expirations\"][\"30 Days\"]++;\n        } else if (leaseMonth === nextMonth && leaseYear === nextYear) {\n            prop[\"Lease Expirations\"][\"60 Days\"]++;\n        } else if (leaseMonth === followingMonth && leaseYear === followingYear) {\n            prop[\"Lease Expirations\"][\"90 Days\"]++;\n        }\n    }\n});\n\nconst formatted = Object.entries(propertyData).map(([propertyID, data]) => ({\n    \"Property ID\": propertyID,\n    \"Property Name\": data[\"Property Name\"],\n    \"Status Counts\": data[\"Status Counts\"],\n    \"Units By Status\": data[\"Units By Status\"],\n    \"Lease Expirations\": data[\"Lease Expirations\"]\n}));\n\nreturn [{ json: { propertyData: formatted } }];\n"
+        "jsCode": "if (!items || items.length === 0) {\n    throw new Error(\"No input data found.\");\n}\n\nconst trackStatuses = [\"Current\", \"Vacant-Rented\", \"Vacant-Unrented\", \"Evict\", \"Notice Rented\", \"Notice-Unrented\"];\n\nconst today = new Date();\nconst currentMonth = today.getMonth(); \nconst currentYear = today.getFullYear();\nconst nextMonth = (currentMonth + 1) % 12;\nconst nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;\nconst followingMonth = (currentMonth + 2) % 12;\nconst followingYear = currentMonth >= 10 ? currentYear + 1 : currentYear;\n\nconst propertyData = {};\n\n// Converts Excel serial numbers to JS Date\nfunction excelDateToJSDate(excelDate) {\n    const base = new Date(Date.UTC(1899, 11, 30));\n    return new Date(base.getTime() + excelDate * 86400000);\n}\n\n// Tries to parse a lease date, whether ISO string, MM/DD/YYYY, or Excel number\nfunction parseLeaseDate(value) {\n    if (!value) return null;\n\n    if (typeof value === 'number') {\n        return excelDateToJSDate(value);\n    }\n\n    if (typeof value === 'string') {\n        if (!isNaN(Date.parse(value))) {\n            return new Date(value);\n        }\n\n        const parts = value.split(\"/\");\n        if (parts.length === 3) {\n            const [month, day, year] = parts.map(p => parseInt(p, 10));\n            if (!isNaN(month) && !isNaN(day) && !isNaN(year)) {\n                return new Date(year, month - 1, day);\n            }\n        }\n    }\n\n    return null;\n}\n\nitems.forEach(item => {\n    const json = item.json;\n\n    const propertyID = json[\"Property ID\"];\n    const propertyName = json[\"Property Name\"];\n    const unit = json[\"Unit\"];\n    const rawStatus = json[\"Status\"];\n    const status = (rawStatus || \"\").trim();\n    const leaseToRaw = json[\"Lease To\"];\n    const leaseExpiresMonth = json[\"Lease Expires Month\"];\n\n    if (!propertyID || !unit) return;\n\n    if (!propertyData[propertyID]) {\n        propertyData[propertyID] = {\n            \"Property Name\": propertyName,\n            \"Status Counts\": {},\n            \"Units By Status\": {},\n            \"Lease Expirations\": {\n                \"30 Days\": 0,\n                \"60 Days\": 0,\n                \"90 Days\": 0,\n                \"Month-To-Month\": 0\n            }\n        };\n    }\n\n    const prop = propertyData[propertyID];\n\n    if (trackStatuses.includes(status)) {\n        if (!prop[\"Status Counts\"][status]) {\n            prop[\"Status Counts\"][status] = 0;\n            prop[\"Units By Status\"][status] = [];\n        }\n        prop[\"Status Counts\"][status]++;\n        prop[\"Units By Status\"][status].push(unit);\n    } else if (status) {\n        console.log(`Untracked status: \"${status}\" in unit ${unit}`);\n    }\n\n    if (\n        leaseExpiresMonth &&\n        leaseExpiresMonth.toLowerCase().includes(\"month-to-month\")\n    ) {\n        prop[\"Lease Expirations\"][\"Month-To-Month\"]++;\n    }\n\n    const leaseDate = parseLeaseDate(leaseToRaw);\n    if (leaseDate instanceof Date && !isNaN(leaseDate)) {\n        const leaseMonth = leaseDate.getMonth();\n        const leaseYear = leaseDate.getFullYear();\n\n        if (leaseMonth === currentMonth && leaseYear === currentYear) {\n            prop[\"Lease Expirations\"][\"30 Days\"]++;\n        } else if (leaseMonth === nextMonth && leaseYear === nextYear) {\n            prop[\"Lease Expirations\"][\"60 Days\"]++;\n        } else if (leaseMonth === followingMonth && leaseYear === followingYear) {\n            prop[\"Lease Expirations\"][\"90 Days\"]++;\n        }\n    }\n});\n\nconst formatted = Object.entries(propertyData).map(([propertyID, data]) => ({\n    \"Property ID\": propertyID,\n    \"Property Name\": data[\"Property Name\"],\n    \"Status Counts\": data[\"Status Counts\"],\n    \"Units By Status\": data[\"Units By Status\"],\n    \"Lease Expirations\": data[\"Lease Expirations\"]\n}));\n\nreturn [{ json: { propertyData: formatted } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -274,7 +289,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Ensure input data is available\nif (!items || items.length === 0 || !items[0].json.propertyData) {\n    throw new Error(\"No property data found.\");\n}\n\n// Extract the propertyData array\nconst properties = items[0].json.propertyData;\n\n// Convert each property object into an individual item\nconst output = properties.map(property => {\n    const currentUnits = property[\"Units By Status\"][\"Current\"] || [];\n    const vacantUnrentedUnits = property[\"Units By Status\"][\"Vacant-Unrented\"] || [];\n    const vacantRentedUnits = property[\"Units By Status\"][\"Vacant-Rented\"] || [];\n    const evictUnits = property[\"Units By Status\"][\"Evict\"] || [];\n    const noticeRentedUnits = property[\"Units By Status\"][\"Notice Rented\"] || [];\n    const noticeUnrentedUnits = property[\"Units By Status\"][\"Notice-Unrented\"] || [];\n\n    const statusCounts = property[\"Status Counts\"] || {};\n    const leaseExpirations = property[\"Lease Expirations\"] || {};\n\n    return {\n        json: {\n            \"Property ID\": property[\"Property ID\"],\n            \"Property Name\": property[\"Property Name\"],\n\n            // Status Counts\n            \"Current Count\": statusCounts[\"Current\"] || 0,\n            \"Vacant-Rented Count\": statusCounts[\"Vacant-Rented\"] || 0,\n            \"Vacant-Unrented Count\": statusCounts[\"Vacant-Unrented\"] || 0,\n            \"Notice-Rented Count\": statusCounts[\"Notice Rented\"] || 0,\n            \"Notice-Unrented Count\": statusCounts[\"Notice-Unrented\"] || 0,\n            \"Notice-Eviction Count\": statusCounts[\"Evict\"] || 0,\n\n            // Unit Lists\n            \"Current\": currentUnits.join(\", \"),\n            \"Vacant-Rented\": vacantRentedUnits.join(\", \"),\n            \"Vacant-Unrented\": vacantUnrentedUnits.join(\", \"),\n            \"Notice-Rented\": noticeRentedUnits.join(\", \"),\n            \"Notice-Unrented\": noticeUnrentedUnits.join(\", \"),\n            \"Notice-Eviction\": evictUnits.join(\", \"),\n\n            // Lease Expiration Counts\n            \"Lease Expiring in 30 Days\": leaseExpirations[\"30 Days\"] || 0,\n            \"Lease Expiring in 60 Days\": leaseExpirations[\"60 Days\"] || 0,\n            \"Lease Expiring in 90 Days\": leaseExpirations[\"90 Days\"] || 0,\n            \"Lease Month-To-Month\": leaseExpirations[\"Month-To-Month\"] || 0\n        }\n    };\n});\n\n// Return the processed data for n8n\nreturn output;"
+        "jsCode": "if (!items || items.length === 0 || !items[0].json.propertyData) {\n    throw new Error(\"No property data found.\");\n}\n\nconst properties = items[0].json.propertyData;\n\nconst output = properties.map(property => {\n    const statusMap = property[\"Units By Status\"] || {};\n    const leaseExpirations = property[\"Lease Expirations\"] || {};\n\n    const vacantUnrented = statusMap[\"Vacant-Unrented\"] || [];\n    const vacantRented = statusMap[\"Vacant-Rented\"] || [];\n\n    // Combine Vacant-X\n    const allVacant = new Set([...vacantUnrented, ...vacantRented]);\n\n    // Flatten all units from all statuses\n    const allUnits = Object.values(statusMap).flat();\n    const uniqueUnits = Array.from(new Set(allUnits));\n    const currentUnits = uniqueUnits.filter(unit => !allVacant.has(unit));\n\n    const occupiedCount = currentUnits.length;\n\n    const evictUnits = statusMap[\"Evict\"] || [];\n    const noticeRentedUnits = statusMap[\"Notice Rented\"] || [];\n    const noticeUnrentedUnits = statusMap[\"Notice-Unrented\"] || [];\n\n    return {\n        json: {\n            \"Property ID\": property[\"Property ID\"],\n            \"Property Name\": property[\"Property Name\"],\n\n            // Counts\n            \"Current Count\": occupiedCount,\n            \"Vacant-Rented Count\": vacantRented.length,\n            \"Vacant-Unrented Count\": vacantUnrented.length,\n            \"Notice-Rented Count\": noticeRentedUnits.length,\n            \"Notice-Unrented Count\": noticeUnrentedUnits.length,\n            \"Notice-Eviction Count\": evictUnits.length,\n\n            // Unit Lists\n            \"Current Units\": currentUnits.join(\", \"),\n            \"Vacant-Rented Units\": [...vacantRented].join(\", \"),\n            \"Vacant-Unrented Units\": [...vacantUnrented].join(\", \"),\n            \"Notice-Rented Units\": noticeRentedUnits.join(\", \"),\n            \"Notice-Unrented Units\": noticeUnrentedUnits.join(\", \"),\n            \"Eviction Units\": evictUnits.join(\", \"),\n\n            // Lease Expiration\n            \"Lease Expiring in 30 Days\": leaseExpirations[\"30 Days\"] || 0,\n            \"Lease Expiring in 60 Days\": leaseExpirations[\"60 Days\"] || 0,\n            \"Lease Expiring in 90 Days\": leaseExpirations[\"90 Days\"] || 0,\n            \"Lease Month-To-Month\": leaseExpirations[\"Month-To-Month\"] || 0\n        }\n    };\n});\n\nreturn output;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -328,7 +343,7 @@
             {
               "id": "dc040be4-8e04-4914-9b0d-c459c614a8be",
               "name": "vacant_rented_json",
-              "value": "={{ $json[\"Vacant-Rented\"] }}",
+              "value": "={{ $json[\"Vacant-Rented Units\"] }}",
               "type": "string"
             },
             {
@@ -352,13 +367,13 @@
             {
               "id": "31a18c46-b814-483c-a091-a8d05dbf9781",
               "name": "Vacant-Unrented",
-              "value": "={{ $json['Vacant-Unrented'] }}",
+              "value": "={{ $json[\"Vacant-Unrented Units\"] }}",
               "type": "string"
             },
             {
               "id": "4dcc177e-c469-434e-b54c-32918c65257e",
               "name": "Notice-Eviction",
-              "value": "={{ $json[\"Notice-Eviction\"] }}",
+              "value": "={{ $json[\"Eviction Units\"] }}",
               "type": "string"
             },
             {
@@ -383,6 +398,12 @@
               "id": "bd2fff89-2b36-43c4-b92a-bb020ccc1d2f",
               "name": "lease_m2m",
               "value": "={{ $json[\"Lease Month-To-Month\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "fc9ea0b3-f603-4b2a-a2f7-1e25dd37c118",
+              "name": "Current Count",
+              "value": "={{ $json[\"Current Count\"] }}",
               "type": "number"
             }
           ]
@@ -1209,7 +1230,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        640,
+        860,
         -140
       ],
       "id": "b72f3954-c19a-494b-8cdd-576bcde871f7",
@@ -1603,7 +1624,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        640,
+        860,
         120
       ],
       "id": "d54e9b87-587f-40db-a856-c2ecb45b5d15",
@@ -2011,6 +2032,19 @@
           "name": "Google Sheets account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "console.log(\"Updating property_id:\", $json.property_id);\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -20
+      ],
+      "id": "87173859-cf84-4008-ae52-423cb93fcd91",
+      "name": "Code"
     }
   ],
   "pinData": {},
@@ -2025,6 +2059,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-03-27T02:09:38.000Z",
-  "versionId": "15e6c471-fcce-408f-8c14-d491175bdddc"
+  "updatedAt": "2025-04-04T21:49:27.000Z",
+  "versionId": "3dece5c3-9e1a-484a-8405-b790fc618df5"
 }
