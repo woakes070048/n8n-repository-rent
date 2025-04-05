@@ -1,0 +1,234 @@
+{
+  "active": false,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-05T16:07:09.980Z",
+  "id": "2onG2wWXHUpCfysW",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Weekly Property Performance Email",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        40
+      ],
+      "id": "94f990f4-4181-4fab-906b-811ebc0b01a0",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  oms.property_id,\n  oms.owner_id,\n  COALESCE(o.owner_name, 'Unknown') AS owner_name,\n  COALESCE(o.email, 'no-reply@example.com') AS email,\n  pda.property_name,\n  oms.guest_cards,\n  oms.applications,\n  oms.showings,\n  oms.showings_cancelled,\n  oms.lead_sources,\n  oms.application_statuses\nFROM owner_marketing_summary oms\nLEFT JOIN property_directory_all pda ON oms.property_id = pda.property_id\nLEFT JOIN owners o ON oms.owner_id = o.owner_id\nWHERE oms.week_ending = CURDATE();\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "e8ec7267-72a0-4bf9-8b7a-a9bc64c3b500",
+      "name": "MySQL",
+      "executeOnce": true,
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -140
+      ],
+      "id": "160112d2-dd2f-4449-9401-f3cd2e495ba2",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0b626de4-fce8-4ce9-8628-d485e72cc556",
+              "name": "simulate",
+              "value": "true",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -560,
+        -140
+      ],
+      "id": "97f0824d-0822-4310-90bf-a27e0e2f425f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const simulate = $json.simulate === 'true';\n\nconst today = new Date();\nconst offset = simulate ? 0 : (today.getDay() === 0 ? 1 : today.getDay() + 1);\nconst targetDate = new Date(today - (offset * 86400000));\nconst weekEnding = targetDate.toISOString().split('T')[0];\n\nreturn [{ json: { week_ending: weekEnding } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -20
+      ],
+      "id": "ac9b6946-479c-4ebe-af10-5b88290f9525",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM `property_directory_all` WHERE 1;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -80,
+        -200
+      ],
+      "id": "44515970-6ff7-462c-8b93-1dd6d7bfaa96",
+      "name": "MySQL1",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        120,
+        0
+      ],
+      "id": "bf81ea92-5b7e-41f1-9a89-9aefc648a9fa",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "options": {
+          "fileName": "property_directory_all.csv"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        120,
+        -200
+      ],
+      "id": "7ae222c6-7289-4f02-a437-236e3c8b23a5",
+      "name": "Convert to File1"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-05T17:38:33.000Z",
+  "versionId": "45e810e9-1484-4e2a-a76a-2d70ea015806"
+}
