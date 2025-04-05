@@ -1,0 +1,140 @@
+{
+  "active": false,
+  "connections": {
+    "Guest Cards": {
+      "main": [
+        [
+          {
+            "node": "Extract Guest Cards",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Guest Cards": {
+      "main": [
+        [
+          {
+            "node": "Parse Guests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Guests": {
+      "main": [
+        [
+          {
+            "node": "Update owner_marketing_summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-05T15:29:03.430Z",
+  "id": "PnSbFRIBLjbPSfeH",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Single Family Guest Card Data",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "rep-guest-owners",
+          "readStatus": "unread"
+        },
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "report_",
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -420,
+        -160
+      ],
+      "id": "c99558c1-7c68-4c0d-a1c9-21a6b4dd36d9",
+      "name": "Guest Cards",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.item.json.data || $input.item.json.text;\nif (!raw) throw new Error(\"No guest card data found.\");\n\nconst lines = raw.split('\\n').filter(l => l.trim());\nconst headers = lines[0].split(',').map(h => h.trim());\nconst data = lines.slice(1);\n\nconst summary = {};\n\nfor (const line of data) {\n  const fields = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(f => f.replace(/^\"|\"$/g, '').trim());\n  const entry = Object.fromEntries(headers.map((h, i) => [h, fields[i]]));\n\n  const propId = parseInt(entry[\"Property ID\"]);\n  const propName = (entry[\"Property\"] || '').split('-')[0]?.trim() || 'Unknown';\n  const source = entry[\"Source\"]?.trim() || \"Unattributed\";\n\n  if (!propId || isNaN(propId)) continue;\n\n  if (!summary[propId]) {\n    summary[propId] = {\n      property_id: propId,\n      property_name: propName,\n      guest_cards: 0,\n      lead_sources: {}\n    };\n  }\n\n  summary[propId].guest_cards += 1;\n  summary[propId].lead_sources[source] = (summary[propId].lead_sources[source] || 0) + 1;\n}\n\nreturn Object.values(summary).map(item => ({\n  json: {\n    ...item,\n    lead_sources: JSON.stringify(item.lead_sources) // Serialize for SQL or merging\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        -160
+      ],
+      "id": "b1101e7c-06ec-4acf-97a8-19dc03230d6a",
+      "name": "Parse Guests"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "report_0",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -160
+      ],
+      "id": "4e412b9d-9e1c-4b83-97ff-3396faa4749d",
+      "name": "Extract Guest Cards"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO owner_marketing_summary (property_id, week_ending, guest_cards, lead_sources)\nVALUES ({{ $json.property_id }}, DATE_SUB(CURDATE(), INTERVAL 1 DAY), {{ $json.guest_cards }}, '{{ $json.lead_sources }}')\nON DUPLICATE KEY UPDATE\n  guest_cards = VALUES(guest_cards),\n  lead_sources = VALUES(lead_sources);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        260,
+        -160
+      ],
+      "id": "45e6ec45-0ef5-419c-8e0f-cb495f4b2ce1",
+      "name": "Update owner_marketing_summary",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-05T16:05:12.000Z",
+  "versionId": "40087a49-8301-461a-816e-092321dc975a"
+}
