@@ -1,0 +1,548 @@
+{
+  "active": false,
+  "connections": {
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guest Cards": {
+      "main": [
+        [
+          {
+            "node": "Extract Guest Cards",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Showings": {
+      "main": [
+        [
+          {
+            "node": "Extract Showings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Applications": {
+      "main": [
+        [
+          {
+            "node": "Extract Applications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Guests": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Guest Cards": {
+      "main": [
+        [
+          {
+            "node": "Parse Guests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Showings": {
+      "main": [
+        [
+          {
+            "node": "Parse Showings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Applications": {
+      "main": [
+        [
+          {
+            "node": "Parse Applications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Showings": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Applications": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Guests Showings": {
+      "main": [
+        []
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Merge Guests Showings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Merge Guests Showings",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Merge Applications",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-05T12:23:31.666Z",
+  "id": "dCBen2LCaQRLA0HL",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "On Market Property Tracking",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const summary = {};\n\nfor (const item of $input.all()) {\n  const row = item.json;\n\n  const propertyId = String(row['Property ID'] || '').trim();\n  const status = String(row['Status'] || '').toLowerCase();\n  const showings = parseInt(row['Showings'] || '0', 10);\n  const isApp = row['Rental Application ID'] ? true : false;\n\n  if (!propertyId || status === 'inactive') continue;\n\n  if (!summary[propertyId]) {\n    summary[propertyId] = {\n      property_id: propertyId,\n      guest_cards: 0,\n      applications: 0,\n      showings: 0\n    };\n  }\n\n  summary[propertyId].guest_cards += 1;\n\n  if (isApp) summary[propertyId].applications += 1;\n  if (showings > 0) summary[propertyId].showings += showings;\n}\n\nreturn Object.values(summary).map(data => ({ json: data }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        380,
+        -400
+      ],
+      "id": "769e994b-daa1-4655-aa02-9d5fd4a61746",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  {{ $json.guest_cards }} AS guest_cards,\n  {{ $json.applications }} AS applications,\n  {{ $json.showings }} AS showings,\n  p.property_id,\n  p.property_name,\n  p.owner_id_s AS owner_id,\n  o.owner_name,\n  o.email,\n  o.phone\nFROM property_directory_all p\nJOIN owners o ON p.owner_id_s = o.owner_id\nWHERE p.property_id = {{ $json.property_id }};\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        720,
+        -180
+      ],
+      "id": "c2257ba1-fe14-436a-a74f-5bb8fd68ecb5",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const grouped = {};\nconst seenKeys = new Set();\n\nfor (const item of $input.all()) {\n  const {\n    owner_id,\n    owner_name,\n    email,\n    phone,\n    property_id,\n    property_name,\n    guest_cards,\n    applications,\n    showings\n  } = item.json;\n\n  if (!grouped[owner_id]) {\n    grouped[owner_id] = {\n      owner_id,\n      owner_name,\n      email,\n      phone,\n      rows: []\n    };\n  }\n\n  const key = `${owner_id}-${property_id}`;\n  if (!seenKeys.has(key)) {\n    grouped[owner_id].rows.push({\n      property_name,\n      guest_cards,\n      applications,\n      showings\n    });\n    seenKeys.add(key);\n  }\n}\n\nconst output = [];\n\nfor (const owner of Object.values(grouped)) {\n  const { owner_name, email, phone, rows } = owner;\n\n  let html = `\n    <p>Hello ${owner_name},</p>\n    <p>Here's your guest card activity summary for the week:</p>\n    <table border=\"1\" cellpadding=\"6\" cellspacing=\"0\">\n      <thead>\n        <tr><th>Property</th><th>Guest Cards</th><th>Applications</th><th>Showings</th></tr>\n      </thead>\n      <tbody>\n  `;\n\n  for (const row of rows) {\n    html += `<tr>\n      <td>${row.property_name}</td>\n      <td>${row.guest_cards}</td>\n      <td>${row.applications}</td>\n      <td>${row.showings}</td>\n    </tr>`;\n  }\n\n  html += `</tbody></table><p>– Blaze Real Estate</p>`;\n\n  output.push({\n    json: {\n      to: email,\n      subject: `Weekly Guest Card Summary`,\n      body: html\n    }\n  });\n}\n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        940,
+        -180
+      ],
+      "id": "469213a7-23d8-4245-978f-facdbededb38",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $json.subject }}",
+        "emailType": "html",
+        "message": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        940,
+        20
+      ],
+      "id": "ae169b9f-2a38-44a5-ae56-526764ac5377",
+      "name": "Gmail",
+      "webhookId": "bd0b909a-d319-43af-b0fa-4db0ec71b15f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const countsByProperty = {};\nfor (const item of $input.all()) {\n  const { property_id, guest_cards, applications, showings } = item.json;\n  countsByProperty[property_id] = { guest_cards, applications, showings };\n}\n\n// Attach counts to each property_id\nreturn Object.entries(countsByProperty).map(([property_id, counts]) => ({\n  json: {\n    property_id: parseInt(property_id),\n    ...counts\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        -180
+      ],
+      "id": "834f2486-15c7-47a3-9c88-f72acd2f0aea",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "rep-guest-owners",
+          "readStatus": "unread"
+        },
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "report_",
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        -180
+      ],
+      "id": "399118e5-100f-41fa-a939-d10a024cf4aa",
+      "name": "Guest Cards",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "rep-showings",
+          "readStatus": "unread"
+        },
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "showings_",
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        20
+      ],
+      "id": "0cd5fb74-5f13-4b3c-ad01-803a12142176",
+      "name": "Showings",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "rep-applications",
+          "readStatus": "unread"
+        },
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "applications_",
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        220
+      ],
+      "id": "52c723e5-8e11-4385-9f0b-e46f8fae0be6",
+      "name": "Applications",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.item.json.text || $input.item.json['report_0'];\nif (!raw) throw new Error(\"No guest card data found.\");\n\nconst lines = raw.split('\\n').filter(l => l.trim());\nconst headers = lines[0].split(',');\nconst data = lines.slice(1);\n\nconst byProperty = {};\n\nfor (const line of data) {\n  const fields = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(v => v.replace(/^\"|\"$/g, '').trim());\n  const entry = Object.fromEntries(headers.map((h, i) => [h.trim(), fields[i]]));\n\n  const propId = parseInt(entry[\"Property ID\"]);\n  const source = entry[\"Source\"] || \"Unknown\";\n\n  if (!byProperty[propId]) {\n    byProperty[propId] = {\n      property_id: propId,\n      property_name: entry[\"Property\"]?.split('-')[0]?.trim() || '',\n      guest_cards: 0,\n      lead_sources: {}\n    };\n  }\n\n  byProperty[propId].guest_cards++;\n  byProperty[propId].lead_sources[source] = (byProperty[propId].lead_sources[source] || 0) + 1;\n}\n\nreturn Object.values(byProperty).map(item => ({ json: item }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -180
+      ],
+      "id": "7b1c1c57-d2be-4d99-88ae-0b6cf39b8aeb",
+      "name": "Parse Guests"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.item.json.data;\nif (!raw) throw new Error(\"No application data found.\");\n\nconst lines = raw.split('\\n').filter(l => l.trim());\nconst headers = lines[0].split(',');\nconst data = lines.slice(1);\n\nconst counts = {};\n\nfor (const line of data) {\n  const fields = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(v => v.replace(/^\"|\"$/g, '').trim());\n  const entry = Object.fromEntries(headers.map((h, i) => [h.trim(), fields[i]]));\n\n  const propId = parseInt(entry[\"Property ID\"]);\n  if (!isNaN(propId)) {\n    counts[propId] = (counts[propId] || 0) + 1;\n  }\n}\n\nreturn Object.entries(counts).map(([property_id, application_count]) => ({\n  json: {\n    property_id: parseInt(property_id),\n    application_count\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        220
+      ],
+      "id": "e72ea015-32fd-4a1f-b745-984f0b1f2a30",
+      "name": "Parse Applications"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.item.json.data;\nif (!raw) throw new Error(\"No showings data found.\");\n\nconst lines = raw.split('\\n').filter(l => l.trim());\nconst headers = lines[0].split(',').map(h => h.trim());\nconst data = lines.slice(1);\n\nconst counts = {};\n\nfor (const line of data) {\n  const fields = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(v => v.replace(/^\"|\"$/g, '').trim());\n  const entry = Object.fromEntries(headers.map((h, i) => [h, fields[i]]));\n\n  const status = entry[\"Status\"];\n  const propId = parseInt(entry[\"Property ID\"]);\n  if ([\"Completed\", \"Prospect Canceled\"].includes(status) && !isNaN(propId)) {\n    counts[propId] = (counts[propId] || 0) + 1;\n  }\n}\n\nreturn Object.entries(counts).map(([property_id, showing_count]) => ({\n  json: {\n    property_id: parseInt(property_id),\n    showing_count\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        20
+      ],
+      "id": "c8e451b2-9c59-4250-b8f6-048bff06a19e",
+      "name": "Parse Showings"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "report_0",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -180
+      ],
+      "id": "a7a8ff2f-fa6a-4f9f-b40d-dbf5c8f5aab6",
+      "name": "Extract Guest Cards"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "showings_0",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        20
+      ],
+      "id": "117828ed-93a7-4f26-b272-5b0e33d26962",
+      "name": "Extract Showings"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "applications_0",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        220
+      ],
+      "id": "d48d8144-b166-4ddc-984c-f6dda4a01e79",
+      "name": "Extract Applications"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "property_id",
+        "joinMode": "enrichInput2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        500,
+        -80
+      ],
+      "id": "d5a7ccb5-f362-4058-acd0-d738ff50045d",
+      "name": "Merge Guests Showings"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        460,
+        80
+      ],
+      "id": "c04a8fd2-7e02-4f07-964a-f3c478371358",
+      "name": "Merge Applications"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        60,
+        -180
+      ],
+      "id": "4b5406a5-755b-4008-98bc-07f91ab94566",
+      "name": "Wait",
+      "webhookId": "ce261619-7fc8-4828-88a2-5aebff8c4690"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        60,
+        20
+      ],
+      "id": "67a78fc3-3307-4aa6-9511-a85e6eac869c",
+      "name": "Wait1",
+      "webhookId": "aee70696-4fa1-47ab-a3b0-6098ad75dead"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        60,
+        220
+      ],
+      "id": "d9683309-41f8-4d70-b118-fb71054148b1",
+      "name": "Wait2",
+      "webhookId": "ed3adc03-f374-45db-a81c-f1d6181aec35"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-05T14:27:25.000Z",
+  "versionId": "5fb36cd0-e757-40d0-a507-6f26b70dae9b"
+}
