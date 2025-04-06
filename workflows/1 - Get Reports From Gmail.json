@@ -141,6 +141,17 @@
           }
         ]
       ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-03-22T15:53:55.095Z",
@@ -533,8 +544,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1900,
-        -220
+        1880,
+        -145
       ],
       "id": "0055ec17-4b34-4b11-88cb-963fed3db245",
       "name": "Blaze Sheet Status",
@@ -917,8 +928,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1900,
-        -420
+        1880,
+        -345
       ],
       "id": "67fcc2a3-86ff-478a-be49-dcf73071413f",
       "name": "Legacy Sheet Status",
@@ -940,7 +951,7 @@
         },
         "simple": false,
         "filters": {
-          "q": "has:attachment to:brandon+reports@blazeproperty.com n8n",
+          "q": "has:attachment to:brandon+reports@blazeproperty.com rep-apt-auto",
           "readStatus": "unread"
         },
         "options": {
@@ -952,7 +963,7 @@
       "typeVersion": 1,
       "position": [
         120,
-        -40
+        -145
       ],
       "id": "b31cff7f-7b04-44ec-8985-77ea55c0cedb",
       "credentials": {
@@ -969,8 +980,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1640,
-        -340
+        1660,
+        -245
       ],
       "id": "436f6de2-1928-4d28-b659-2a826ecb26a6",
       "name": "Generate Status"
@@ -1000,8 +1011,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        320,
-        -40
+        340,
+        -245
       ],
       "id": "263894a6-f102-43f7-9769-f465c5684090",
       "name": "Google Drive",
@@ -1019,8 +1030,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        520,
-        -40
+        560,
+        -145
       ],
       "id": "f945caf3-3f77-4123-b475-80f12a94b8e1",
       "name": "Code"
@@ -1042,8 +1053,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        720,
-        -120
+        780,
+        -245
       ],
       "id": "9474a539-8cd0-40a1-86a2-be59cd9fd68b",
       "name": "Google Sheets",
@@ -1123,8 +1134,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1180,
-        -40
+        1220,
+        -145
       ],
       "id": "2d6341ed-ee05-42df-a9b8-c7eb0d518254",
       "name": "Google Sheets1",
@@ -1144,8 +1155,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        720,
-        40
+        780,
+        -45
       ],
       "id": "9698ccad-267e-448a-a473-18e9d2b48304",
       "name": "Extract from File"
@@ -1158,8 +1169,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        920,
-        -40
+        1000,
+        -145
       ],
       "id": "fb59c853-d7e6-412e-9e28-7bd224d19bca",
       "name": "Merge"
@@ -1193,7 +1204,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        700,
+        1220,
         -420
       ],
       "id": "3498775a-e74e-48b9-bf14-e852ccd74344",
@@ -1208,8 +1219,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        1360,
-        -260
+        1440,
+        -245
       ],
       "id": "26a32839-ed79-49eb-bad6-15ed91f16644",
       "name": "Merge1"
@@ -1221,8 +1232,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        400,
-        200
+        340,
+        55
       ],
       "id": "66bcc895-e717-42a1-a09a-835b430e4beb",
       "name": "Wait",
@@ -1236,12 +1247,34 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        620,
-        200
+        560,
+        60
       ],
       "id": "6b773480-6f25-40c2-90b9-9d37828ed28d",
       "name": "Gmail",
       "webhookId": "e05e3889-2423-4229-8174-37bb332454bc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "trash",
+        "threadId": "={{ $json.threadId }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        780,
+        60
+      ],
+      "id": "b91c7c18-6ba5-468f-a798-4b778aac608d",
+      "name": "Gmail1",
+      "webhookId": "5b2ad9fe-2eda-4b35-ab57-a7d10f1c2c13",
       "credentials": {
         "gmailOAuth2": {
           "id": "LD5x69eYRRI6cdrn",
@@ -1263,15 +1296,14 @@
       ]
     },
     "node:Get Report Email": {
-      "lastTimeChecked": 1743886120,
+      "lastTimeChecked": 1743941791,
       "possibleDuplicates": [
-        "19607b67a5046e46",
-        "19607b53e88974fa"
+        "1960ab0170367c77"
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-04T22:07:42.000Z",
-  "versionId": "469a3b41-e6e2-43f4-b036-1489cecaf92b"
+  "updatedAt": "2025-04-06T12:16:31.000Z",
+  "versionId": "cbb28f2b-b734-4dc8-bed0-fdb4db13dc8a"
 }
