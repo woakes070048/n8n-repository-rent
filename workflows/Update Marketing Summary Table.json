@@ -1,0 +1,104 @@
+{
+  "active": false,
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-06T00:47:04.461Z",
+  "id": "TE8BPSUM26yF59XY",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Marketing Summary Table",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -200,
+        0
+      ],
+      "id": "fdfebfc1-a43a-40e5-9010-5879eab358ce",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE owner_marketing_summary oms\nJOIN property_directory_all pda ON oms.property_id = pda.property_id\nJOIN owners o ON pda.owner_ids = o.owner_id AND pda.property_id = o.property_id\nSET\n  oms.property_name = pda.property_name,\n  oms.owner_email = o.email\nWHERE\n  (oms.property_name IS NULL OR oms.property_name = '')\n  OR (oms.owner_email IS NULL OR oms.owner_email = '');\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        20,
+        0
+      ],
+      "id": "a78c519e-49ff-4fb7-b34e-2318e5d6783b",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-03-08T13:24:58.615Z",
+      "updatedAt": "2025-03-08T13:24:58.615Z",
+      "id": "9NBFp5smMq2uf5oA",
+      "name": "Email Processing"
+    },
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    },
+    {
+      "createdAt": "2025-04-06T12:19:17.588Z",
+      "updatedAt": "2025-04-06T12:19:17.588Z",
+      "id": "W05IJGKJx5hczKHB",
+      "name": "rep-email-owner"
+    },
+    {
+      "createdAt": "2025-04-06T12:17:13.094Z",
+      "updatedAt": "2025-04-06T12:17:13.094Z",
+      "id": "YeEleillKvhm73X6",
+      "name": "Reports"
+    },
+    {
+      "createdAt": "2025-04-06T12:17:17.452Z",
+      "updatedAt": "2025-04-06T12:17:17.452Z",
+      "id": "iMY7dbCfswxr2yQJ",
+      "name": "Owner"
+    },
+    {
+      "createdAt": "2025-04-06T12:23:45.248Z",
+      "updatedAt": "2025-04-06T12:23:45.248Z",
+      "id": "tM6QQRMgUY1pjB5S",
+      "name": "Sub-workflow"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-06T12:23:46.000Z",
+  "versionId": "32c974f4-3407-48e3-a09e-f61d94fdc641"
+}
