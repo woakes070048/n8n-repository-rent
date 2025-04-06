@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Guest Cards": {
       "main": [
@@ -19,6 +19,11 @@
             "node": "Parse Guests",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -28,6 +33,28 @@
         [
           {
             "node": "Update owner_marketing_summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
             "type": "main",
             "index": 0
           }
@@ -47,7 +74,9 @@
         "pollTimes": {
           "item": [
             {
-              "mode": "everyMinute"
+              "mode": "everyWeek",
+              "hour": 7,
+              "weekday": "0"
             }
           ]
         },
@@ -64,7 +93,7 @@
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1.2,
       "position": [
-        -420,
+        -540,
         -160
       ],
       "id": "c99558c1-7c68-4c0d-a1c9-21a6b4dd36d9",
@@ -78,12 +107,12 @@
     },
     {
       "parameters": {
-        "jsCode": "const raw = $input.item.json.data || $input.item.json.text;\nif (!raw) throw new Error(\"No guest card data found.\");\n\nconst lines = raw.split('\\n').filter(l => l.trim());\nconst headers = lines[0].split(',').map(h => h.trim());\nconst data = lines.slice(1);\n\nconst summary = {};\n\nfor (const line of data) {\n  const fields = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(f => f.replace(/^\"|\"$/g, '').trim());\n  const entry = Object.fromEntries(headers.map((h, i) => [h, fields[i]]));\n\n  const propId = parseInt(entry[\"Property ID\"]);\n  const propName = (entry[\"Property\"] || '').split('-')[0]?.trim() || 'Unknown';\n  const source = entry[\"Source\"]?.trim() || \"Unattributed\";\n\n  if (!propId || isNaN(propId)) continue;\n\n  if (!summary[propId]) {\n    summary[propId] = {\n      property_id: propId,\n      property_name: propName,\n      guest_cards: 0,\n      lead_sources: {}\n    };\n  }\n\n  summary[propId].guest_cards += 1;\n  summary[propId].lead_sources[source] = (summary[propId].lead_sources[source] || 0) + 1;\n}\n\nreturn Object.values(summary).map(item => ({\n  json: {\n    ...item,\n    lead_sources: JSON.stringify(item.lead_sources) // Serialize for SQL or merging\n  }\n}));\n"
+        "jsCode": "const items = $input.all();\nconst summary = {};\n\nfor (const item of items) {\n  const raw = item.json.data || item.json.text;\n  if (!raw) continue;\n\n  const lines = raw.split('\\n').filter(l => l.trim());\n  const headers = lines[0].split(',').map(h => h.trim());\n  const data = lines.slice(1);\n\n  for (const line of data) {\n    const fields = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(f => f.replace(/^\"|\"$/g, '').trim());\n    const entry = Object.fromEntries(headers.map((h, i) => [h, fields[i]]));\n\n    const propId = parseInt(entry[\"Property ID\"]);\n    const source = entry[\"Source\"]?.trim() || \"Unattributed\";\n\n    if (!propId || isNaN(propId)) continue;\n\n    if (!summary[propId]) {\n      summary[propId] = {\n        property_id: propId,\n        guest_cards: 0,\n        lead_sources: {}\n      };\n    }\n\n    summary[propId].guest_cards += 1;\n    summary[propId].lead_sources[source] = (summary[propId].lead_sources[source] || 0) + 1;\n  }\n}\n\nreturn Object.values(summary).map(item => ({\n  json: {\n    ...item,\n    lead_sources: JSON.stringify(item.lead_sources).replace(/'/g, \"\\\\'\")\n  }\n}));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        40,
+        140,
         -160
       ],
       "id": "b1101e7c-06ec-4acf-97a8-19dc03230d6a",
@@ -100,7 +129,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -200,
+        -300,
         -160
       ],
       "id": "4e412b9d-9e1c-4b83-97ff-3396faa4749d",
@@ -109,13 +138,13 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO owner_marketing_summary (property_id, week_ending, guest_cards, lead_sources)\nVALUES ({{ $json.property_id }}, DATE_SUB(CURDATE(), INTERVAL 1 DAY), {{ $json.guest_cards }}, '{{ $json.lead_sources }}')\nON DUPLICATE KEY UPDATE\n  guest_cards = VALUES(guest_cards),\n  lead_sources = VALUES(lead_sources);\n",
+        "query": "=INSERT INTO owner_marketing_summary (\n  property_id,\n  week_ending,\n  guest_cards,\n  lead_sources\n)\nVALUES (\n  {{ $json.property_id }},\n  CURDATE(),\n  {{ $json.guest_cards }},\n  '{{ $json.lead_sources }}'\n)\nON DUPLICATE KEY UPDATE\n  guest_cards = VALUES(guest_cards),\n  lead_sources = VALUES(lead_sources),\n  updated_at = NOW();\n",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        260,
+        380,
         -160
       ],
       "id": "45e6ec45-0ef5-419c-8e0f-cb495f4b2ce1",
@@ -126,15 +155,92 @@
           "name": "Blazedata Hostinger"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Guest Cards').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -80,
+        40
+      ],
+      "id": "03a26cb8-8e17-4196-9986-5a8ff5e8f1da",
+      "name": "Gmail",
+      "webhookId": "2004bb0a-02e0-462c-a157-06a11b19fb5d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        40
+      ],
+      "id": "559dae6e-bfc4-4727-9cad-9e00a0a51e0d",
+      "name": "Gmail1",
+      "webhookId": "117633eb-c394-4d70-a22c-6515c4e3931d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "trash",
+        "threadId": "={{ $json.threadId }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        40
+      ],
+      "id": "6a2e7bb0-81c6-42fc-a7c5-85f650be8948",
+      "name": "Gmail2",
+      "webhookId": "f85c3a2a-2711-492b-8092-3cd14990a98d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     }
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Guest Cards": {
+      "Guest Cards": {
+        "lastTimeChecked": 1743915607,
+        "possibleDuplicates": [
+          "19607b1fc63659e4"
+        ]
+      }
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-04-05T16:05:12.000Z",
-  "versionId": "40087a49-8301-461a-816e-092321dc975a"
+  "triggerCount": 1,
+  "updatedAt": "2025-04-06T05:00:07.243Z",
+  "versionId": "619220eb-ddea-4caa-b12a-3a08e1687dd0"
 }
