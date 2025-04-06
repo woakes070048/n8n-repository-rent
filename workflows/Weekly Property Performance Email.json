@@ -247,8 +247,39 @@
       "recurrenceRules": []
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2025-03-08T13:24:58.615Z",
+      "updatedAt": "2025-03-08T13:24:58.615Z",
+      "id": "9NBFp5smMq2uf5oA",
+      "name": "Email Processing"
+    },
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    },
+    {
+      "createdAt": "2025-04-06T12:19:17.588Z",
+      "updatedAt": "2025-04-06T12:19:17.588Z",
+      "id": "W05IJGKJx5hczKHB",
+      "name": "rep-email-owner"
+    },
+    {
+      "createdAt": "2025-04-06T12:17:13.094Z",
+      "updatedAt": "2025-04-06T12:17:13.094Z",
+      "id": "YeEleillKvhm73X6",
+      "name": "Reports"
+    },
+    {
+      "createdAt": "2025-04-06T12:17:17.452Z",
+      "updatedAt": "2025-04-06T12:17:17.452Z",
+      "id": "iMY7dbCfswxr2yQJ",
+      "name": "Owner"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-06T05:00:07.236Z",
-  "versionId": "1a16256d-f4c9-4832-a8a6-f8c97c568631"
+  "updatedAt": "2025-04-06T12:22:51.000Z",
+  "versionId": "c832fd8f-6c2d-45d9-a217-2d691824fa1a"
 }
