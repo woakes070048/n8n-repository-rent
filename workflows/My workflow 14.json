@@ -1,93 +1,11 @@
 {
   "active": false,
   "connections": {
-    "Manual Trigger": {
+    "When Executed by Another Workflow": {
       "main": [
         [
           {
-            "node": "Get Active Workflows",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "List GitHub Files",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get Active Workflows": {
-      "main": [
-        [
-          {
-            "node": "Wrap n8n Workflows",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "List GitHub Files": {
-      "main": [
-        [
-          {
-            "node": "Wrap GitHub Files",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wrap n8n Workflows": {
-      "main": [
-        [
-          {
-            "node": "Merge Inputs",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wrap GitHub Files": {
-      "main": [
-        [
-          {
-            "node": "Merge Inputs",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Fetch File from Main": {
-      "main": [
-        [
-          {
-            "node": "Save to Legacy Branch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Save to Legacy Branch": {
-      "main": [
-        [
-          {
-            "node": "Delete from Main",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge Inputs": {
-      "main": [
-        [
-          {
-            "node": "Code",
+            "node": "MySQL",
             "type": "main",
             "index": 0
           }
@@ -95,173 +13,46 @@
       ]
     }
   },
-  "createdAt": "2025-03-25T12:40:49.732Z",
-  "id": "OAZGLpwtXyxnRgwC",
+  "createdAt": "2025-04-06T00:47:04.461Z",
+  "id": "TE8BPSUM26yF59XY",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 14",
   "nodes": [
     {
-      "parameters": {},
-      "id": "2c784efe-6135-48cc-830f-f36807c6ed31",
-      "name": "Manual Trigger",
-      "type": "n8n-nodes-base.manualTrigger",
-      "position": [
-        -140,
-        -20
-      ],
-      "typeVersion": 1
-    },
-    {
       "parameters": {
-        "filters": {},
-        "requestOptions": {}
+        "inputSource": "passthrough"
       },
-      "id": "d80774a1-eed3-44f6-8008-5a3c99783f37",
-      "name": "Get Active Workflows",
-      "type": "n8n-nodes-base.n8n",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
       "position": [
-        60,
-        -120
+        -200,
+        0
       ],
-      "typeVersion": 1,
-      "credentials": {
-        "n8nApi": {
-          "id": "UjH1vFHaVrXZkoWc",
-          "name": "n8n account"
-        }
-      }
+      "id": "fdfebfc1-a43a-40e5-9010-5879eab358ce",
+      "name": "When Executed by Another Workflow"
     },
     {
       "parameters": {
-        "resource": "repository",
-        "operation": "get",
-        "owner": "brandonblaze1",
-        "repository": "n8n-repository"
-      },
-      "id": "5ae2da1e-b938-4fbc-b7c0-43c84d878dda",
-      "name": "List GitHub Files",
-      "type": "n8n-nodes-base.github",
-      "position": [
-        60,
-        80
-      ],
-      "typeVersion": 1,
-      "credentials": {
-        "githubApi": {
-          "id": "tc844L9IUnwi1x61",
-          "name": "GitHub account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "functionCode": "return [{ json: { n8n: items } }];\n"
-      },
-      "id": "40f6577b-2b25-482f-9a03-e65402a82b91",
-      "name": "Wrap n8n Workflows",
-      "type": "n8n-nodes-base.function",
-      "position": [
-        260,
-        -120
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "functionCode": "return [{ json: { github: items } }];\n"
-      },
-      "id": "8b180337-302b-412e-b408-78f52d1e8a39",
-      "name": "Wrap GitHub Files",
-      "type": "n8n-nodes-base.function",
-      "position": [
-        260,
-        80
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
+        "operation": "executeQuery",
+        "query": "UPDATE owner_marketing_summary oms\nJOIN property_directory_all pda ON oms.property_id = pda.property_id\nJOIN owners o ON pda.owner_ids = o.owner_id AND pda.property_id = o.property_id\nSET\n  oms.property_name = pda.property_name,\n  oms.owner_email = o.email\nWHERE\n  (oms.property_name IS NULL OR oms.property_name = '')\n  OR (oms.owner_email IS NULL OR oms.owner_email = '');\n",
         "options": {}
       },
-      "id": "12e1593e-2a6a-403f-ae0f-b3e1bfdf97a3",
-      "name": "Merge Inputs",
-      "type": "n8n-nodes-base.merge",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
       "position": [
-        460,
-        -20
+        20,
+        0
       ],
-      "typeVersion": 3
-    },
-    {
-      "parameters": {
-        "resource": "file",
-        "operation": "get",
-        "owner": "brandonblaze1",
-        "repository": "n8n-repository",
-        "filePath": "={{$json.path}}",
-        "additionalParameters": {}
-      },
-      "id": "b9c71206-97a3-4243-875c-9095be65726e",
-      "name": "Fetch File from Main",
-      "type": "n8n-nodes-base.github",
-      "position": [
-        860,
-        -20
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "resource": "file",
-        "owner": "brandonblaze1",
-        "repository": "n8n-repository",
-        "filePath": "=legacy/{{$json.name}}",
-        "fileContent": "={{$json.fileContent}}",
-        "commitMessage": "[Archive] Move stale workflow {{$json.name}} to legacy branch"
-      },
-      "id": "ba7c5489-6866-42f1-9f8c-917f2657fbf9",
-      "name": "Save to Legacy Branch",
-      "type": "n8n-nodes-base.github",
-      "position": [
-        1060,
-        -20
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "resource": "file",
-        "operation": "delete",
-        "owner": "brandonblaze1",
-        "repository": "n8n-repository",
-        "filePath": "={{$json.path}}",
-        "commitMessage": "[Cleanup] Remove stale workflow {{$json.name}} from main"
-      },
-      "id": "085f168c-dfbf-4da0-99c5-ca851086841b",
-      "name": "Delete from Main",
-      "type": "n8n-nodes-base.github",
-      "position": [
-        1260,
-        -20
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "jsCode": "const merged = items[0].json;\n\nconst n8nInput = merged.n8n || [];\nconst githubInput = merged.github || [];\n\nconst activeNames = n8nInput\n  .filter(item => item.json.active)\n  .map(item => `${item.json.name}.json`);\n\nconst stale = githubInput.filter(file => !activeNames.includes(file.json.name));\n\nreturn stale.map(file => ({\n  json: {\n    name: file.json.name,\n    path: file.json.path\n  }\n}));\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        680,
-        -20
-      ],
-      "id": "8b0c8012-40fe-4987-9f84-c0c221a977c3",
-      "name": "Code"
+      "id": "a78c519e-49ff-4fb7-b34e-2318e5d6783b",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -271,6 +62,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-25T14:23:51.000Z",
-  "versionId": "fe441dea-a0fc-4407-827d-47388a93cfe1"
+  "updatedAt": "2025-04-06T02:10:32.000Z",
+  "versionId": "86f13468-012d-4376-b72b-875f5a30b49e"
 }
