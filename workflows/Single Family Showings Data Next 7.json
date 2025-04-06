@@ -1,0 +1,245 @@
+{
+  "active": true,
+  "connections": {
+    "Showings Upcoming": {
+      "main": [
+        [
+          {
+            "node": "Extract Showings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Upcoming Showings": {
+      "main": [
+        [
+          {
+            "node": "Update Upcoming Showings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Showings": {
+      "main": [
+        [
+          {
+            "node": "Parse Upcoming Showings",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-05T20:17:16.988Z",
+  "id": "YnHz0M4x8rGNR3vC",
+  "meta": null,
+  "name": "Single Family Showings Data Next 7",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyWeek",
+              "hour": 7,
+              "minute": 1,
+              "weekday": "0"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "rep-future-showings",
+          "readStatus": "unread"
+        },
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "showings_",
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fa3d0640-a4a4-4694-9525-03b69622aabe",
+      "name": "Showings Upcoming",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.item.json.data || $input.item.json.text;\nif (!raw) throw new Error(\"No showings data found.\");\n\nconst lines = raw.split('\\n').filter(l => l.trim());\nconst headers = lines[0].split(',').map(h => h.trim());\nconst data = lines.slice(1);\n\nconst summary = {};\n\nfor (const line of data) {\n  const fields = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(f => f.replace(/^\"|\"$/g, '').trim());\n  const entry = Object.fromEntries(headers.map((h, i) => [h, fields[i]]));\n\n  const propId = parseInt(entry[\"Property ID\"]);\n  if (!isNaN(propId)) {\n    summary[propId] = summary[propId] || { property_id: propId, showings_upcoming: 0 };\n    summary[propId].showings_upcoming++;\n  }\n}\n\nreturn Object.values(summary).map(item => ({ json: item }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        0
+      ],
+      "id": "41f5dac5-c04f-40e6-a8da-bdcd500e94fd",
+      "name": "Parse Upcoming Showings"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "showings_0",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "856faba6-a9ab-4665-8973-f39ca849aa94",
+      "name": "Extract Showings"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO owner_marketing_summary (\n  property_id,\n  week_ending,\n  showings_upcoming,\n  updated_at\n)\nVALUES (\n  {{ $json.property_id }},\n  DATE_SUB(CURDATE(), INTERVAL 1 DAY),\n  {{ $json.showings_upcoming }},\n  NOW()\n)\nON DUPLICATE KEY UPDATE\n  showings_upcoming = VALUES(showings_upcoming),\n  updated_at = NOW();",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        680,
+        0
+      ],
+      "id": "0783b3b1-9f6a-40e3-bb32-7eee63426603",
+      "name": "Update Upcoming Showings",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Showings Upcoming').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        420,
+        200
+      ],
+      "id": "ef2e3bd7-712a-45dd-a31a-ba3b93ca9fac",
+      "name": "Gmail",
+      "webhookId": "2004bb0a-02e0-462c-a157-06a11b19fb5d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        580,
+        200
+      ],
+      "id": "42a9fa6c-e2a8-403e-b314-9d10c379f1b8",
+      "name": "Gmail1",
+      "webhookId": "117633eb-c394-4d70-a22c-6515c4e3931d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "trash",
+        "threadId": "={{ $json.threadId }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        740,
+        200
+      ],
+      "id": "de3605ae-41b4-4fc5-ae3b-37d80cb71fae",
+      "name": "Gmail2",
+      "webhookId": "f85c3a2a-2711-492b-8092-3cd14990a98d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Showings Upcoming": {
+      "Showings Upcoming": {
+        "lastTimeChecked": 1743915607,
+        "possibleDuplicates": [
+          "19607b67a5046e46"
+        ]
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-04-06T05:00:07.257Z",
+  "versionId": "9fecaed9-02a1-49b2-9dde-756e07d2545a"
+}
