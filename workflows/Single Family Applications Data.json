@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Applications": {
       "main": [
@@ -19,6 +19,11 @@
             "node": "Parse Applications",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -27,7 +32,29 @@
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "Update MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
             "type": "main",
             "index": 0
           }
@@ -47,7 +74,9 @@
         "pollTimes": {
           "item": [
             {
-              "mode": "everyMinute"
+              "mode": "everyWeek",
+              "hour": 6,
+              "weekday": "0"
             }
           ]
         },
@@ -109,7 +138,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO owner_marketing_summary (\n  property_id, week_ending, applications, application_statuses\n) VALUES (\n  {{ $json.property_id }},\n  DATE_SUB(CURDATE(), INTERVAL 1 DAY),\n  {{ $json.application_count }},\n  '{{ $json.application_statuses }}'\n)\nON DUPLICATE KEY UPDATE\n  applications = VALUES(applications),\n  application_statuses = VALUES(application_statuses),\n  updated_at = NOW();\n",
+        "query": "INSERT INTO owner_marketing_summary (\n  property_id,\n  week_ending,\n  applications,\n  application_statuses,\n  created_at,\n  updated_at\n)\nVALUES (\n  {{ $json.property_id }},\n  DATE_SUB(CURDATE(), INTERVAL 1 DAY),\n  {{ $json.application_count }},\n  '{{ $json.application_statuses }}',\n  NOW(),\n  NOW()\n)\nON DUPLICATE KEY UPDATE\n  applications = VALUES(applications),\n  application_statuses = VALUES(application_statuses),\n  updated_at = NOW();\n",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -119,22 +148,99 @@
         0
       ],
       "id": "9edfaa12-2858-4abc-a89e-35e6062557e4",
-      "name": "MySQL",
+      "name": "Update MySQL",
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
           "name": "Blazedata Hostinger"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Applications').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -160,
+        180
+      ],
+      "id": "9d109cdf-a42b-4ae8-9cdd-5cf53df72b22",
+      "name": "Gmail",
+      "webhookId": "2004bb0a-02e0-462c-a157-06a11b19fb5d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        60,
+        180
+      ],
+      "id": "a5819838-8fd9-48b3-99a2-471b49f7ffac",
+      "name": "Gmail1",
+      "webhookId": "117633eb-c394-4d70-a22c-6515c4e3931d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "trash",
+        "threadId": "={{ $json.threadId }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        280,
+        180
+      ],
+      "id": "dfb70574-3e78-4bf1-b4a0-b108b78c2d6f",
+      "name": "Gmail2",
+      "webhookId": "f85c3a2a-2711-492b-8092-3cd14990a98d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     }
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Applications": {
+      "Applications": {
+        "lastTimeChecked": 1743915608,
+        "possibleDuplicates": [
+          "19607b3d92871d54"
+        ]
+      }
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-04-05T16:02:07.000Z",
-  "versionId": "0499e7a8-1ec1-4369-9565-d6453e635032"
+  "triggerCount": 1,
+  "updatedAt": "2025-04-06T05:00:07.281Z",
+  "versionId": "e7da12b3-0c6f-4c99-937b-9141780ad541"
 }
