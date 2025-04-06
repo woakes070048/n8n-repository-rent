@@ -1,52 +1,103 @@
 {
   "active": false,
-  "connections": {},
-  "createdAt": "2025-03-19T16:34:29.850Z",
-  "id": "sr7MTMR3di92xyxy",
-  "meta": {
-    "templateCredsSetupCompleted": true
+  "connections": {
+    "Get Workspace ID": {
+      "main": [
+        [
+          {
+            "node": "Create Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Database": {
+      "main": [
+        [
+          {
+            "node": "Create Tables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Workspace ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
+  "createdAt": "2025-04-06T14:46:00.560Z",
+  "id": "7rnwITphn3KYBkA1",
+  "meta": null,
   "name": "My workflow 15",
   "nodes": [
     {
       "parameters": {
-        "pollTimes": {
-          "item": [
-            {
-              "hour": 7
-            }
-          ]
-        },
-        "documentId": {
-          "__rl": true,
-          "value": "17UiOkhLAtUhqR9ifUu7rYVpQhyGE8Yz6iYa41jbsNtc",
-          "mode": "list",
-          "cachedResultName": "Tenant Directory",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17UiOkhLAtUhqR9ifUu7rYVpQhyGE8Yz6iYa41jbsNtc/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "tenants",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/17UiOkhLAtUhqR9ifUu7rYVpQhyGE8Yz6iYa41jbsNtc/edit#gid=0"
-        },
+        "url": "https://crm.blazeproperty.com/api/groups/",
         "options": {}
       },
-      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "id": "983a64f9-d7b8-458c-86c7-3eb6c227c6b2",
+      "name": "Get Workspace ID",
+      "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -180,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://crm.blazeproperty.com/api/database/databases/",
+        "jsonParameters": true,
+        "options": {},
+        "headerParametersJson": "{\"Authorization\":\"Token qVHLWTy9WRNJDQ9TaYo8wGtDfj7fOkJI\", \"Content-Type\":\"application/json\"}"
+      },
+      "id": "efb6e50e-79fa-4e83-94a7-dca20fb130ad",
+      "name": "Create Database",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -200
       ],
-      "id": "2548ccb8-263c-4cd8-a23e-08e5ef248eba",
-      "name": "Google Sheets Trigger",
-      "credentials": {
-        "googleSheetsTriggerOAuth2Api": {
-          "id": "aYaRtHDs8MaRwdP0",
-          "name": "Google Sheets Trigger account"
-        }
+      "connections": {
+        "main": [
+          [
+            "createTables"
+          ]
+        ]
       }
+    },
+    {
+      "parameters": {},
+      "id": "028d3b7f-a6b8-40e9-8eab-a992354933cb",
+      "name": "Create Tables",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        420,
+        -200
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        -200
+      ],
+      "id": "1606e0af-2c63-427f-97f0-bf510f07d6d9",
+      "name": "When clicking ‘Test workflow’"
     }
   ],
   "pinData": {},
@@ -56,6 +107,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-03-19T16:34:29.850Z",
-  "versionId": "b5f835d6-f183-4e23-9ae8-9b5ed38e0af4"
+  "updatedAt": "2025-04-06T14:46:00.560Z",
+  "versionId": "ccf0a6c9-0417-452a-88c5-1f2140ef5eee"
 }
