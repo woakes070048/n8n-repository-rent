@@ -60,6 +60,11 @@
           }
         ]
       ]
+    },
+    "Gmail2": {
+      "main": [
+        []
+      ]
     }
   },
   "createdAt": "2025-04-05T15:29:03.430Z",
@@ -93,7 +98,7 @@
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1.2,
       "position": [
-        -540,
+        -600,
         -160
       ],
       "id": "c99558c1-7c68-4c0d-a1c9-21a6b4dd36d9",
@@ -232,15 +237,46 @@
   "staticData": {
     "node:Guest Cards": {
       "Guest Cards": {
-        "lastTimeChecked": 1743915607,
+        "lastTimeChecked": 1743941959,
         "possibleDuplicates": [
           "19607b1fc63659e4"
         ]
       }
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2025-03-08T13:24:58.615Z",
+      "updatedAt": "2025-03-08T13:24:58.615Z",
+      "id": "9NBFp5smMq2uf5oA",
+      "name": "Email Processing"
+    },
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    },
+    {
+      "createdAt": "2025-04-06T12:19:17.588Z",
+      "updatedAt": "2025-04-06T12:19:17.588Z",
+      "id": "W05IJGKJx5hczKHB",
+      "name": "rep-email-owner"
+    },
+    {
+      "createdAt": "2025-04-06T12:17:13.094Z",
+      "updatedAt": "2025-04-06T12:17:13.094Z",
+      "id": "YeEleillKvhm73X6",
+      "name": "Reports"
+    },
+    {
+      "createdAt": "2025-04-06T12:17:17.452Z",
+      "updatedAt": "2025-04-06T12:17:17.452Z",
+      "id": "iMY7dbCfswxr2yQJ",
+      "name": "Owner"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-06T05:00:07.243Z",
-  "versionId": "619220eb-ddea-4caa-b12a-3a08e1687dd0"
+  "updatedAt": "2025-04-06T12:19:19.000Z",
+  "versionId": "36e85507-502f-4deb-a3aa-45c41d046f56"
 }
