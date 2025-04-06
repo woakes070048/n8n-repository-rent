@@ -1,11 +1,11 @@
 {
   "active": false,
   "connections": {
-    "When Executed by Another Workflow": {
+    "When clicking ‘Test workflow’": {
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "n8n",
             "type": "main",
             "index": 0
           }
@@ -13,44 +13,43 @@
       ]
     }
   },
-  "createdAt": "2025-04-06T00:47:04.461Z",
-  "id": "TE8BPSUM26yF59XY",
+  "createdAt": "2025-04-06T12:25:22.085Z",
+  "id": "NDlMCqa4aVSZ2zWP",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 14",
   "nodes": [
     {
-      "parameters": {
-        "inputSource": "passthrough"
-      },
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1.1,
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
       "position": [
-        -200,
+        -500,
         0
       ],
-      "id": "fdfebfc1-a43a-40e5-9010-5879eab358ce",
-      "name": "When Executed by Another Workflow"
+      "id": "65e3b5e7-72e7-434f-8fff-368f42e27493",
+      "name": "When clicking ‘Test workflow’"
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE owner_marketing_summary oms\nJOIN property_directory_all pda ON oms.property_id = pda.property_id\nJOIN owners o ON pda.owner_ids = o.owner_id AND pda.property_id = o.property_id\nSET\n  oms.property_name = pda.property_name,\n  oms.owner_email = o.email\nWHERE\n  (oms.property_name IS NULL OR oms.property_name = '')\n  OR (oms.owner_email IS NULL OR oms.owner_email = '');\n",
-        "options": {}
+        "filters": {
+          "tags": "rep-email-owner"
+        },
+        "requestOptions": {}
       },
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
       "position": [
-        20,
+        -280,
         0
       ],
-      "id": "a78c519e-49ff-4fb7-b34e-2318e5d6783b",
-      "name": "MySQL",
+      "id": "310c6f6a-4b4c-48ae-9104-dce84ef6df36",
+      "name": "n8n",
       "credentials": {
-        "mySql": {
-          "id": "OUIfR0k9k0YXHa0V",
-          "name": "Blazedata Hostinger"
+        "n8nApi": {
+          "id": "UjH1vFHaVrXZkoWc",
+          "name": "n8n account"
         }
       }
     }
@@ -62,6 +61,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-06T02:10:32.000Z",
-  "versionId": "86f13468-012d-4376-b72b-875f5a30b49e"
+  "updatedAt": "2025-04-06T12:25:22.085Z",
+  "versionId": "1570889e-a354-483c-b32d-8e6775d15265"
 }
