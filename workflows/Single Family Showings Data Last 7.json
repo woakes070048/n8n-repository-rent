@@ -1,0 +1,246 @@
+{
+  "active": true,
+  "connections": {
+    "Showings": {
+      "main": [
+        [
+          {
+            "node": "Extract Showings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Showings": {
+      "main": [
+        [
+          {
+            "node": "Parse Showings",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Showings": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-05T15:43:39.671Z",
+  "id": "VqgVoU9FK4SJfWUT",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Single Family Showings Data Last 7",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyWeek",
+              "hour": 7,
+              "weekday": "0"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "rep-showings",
+          "readStatus": "unread"
+        },
+        "options": {
+          "dataPropertyAttachmentsPrefixName": "showings_",
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -380,
+        -80
+      ],
+      "id": "ceae25e0-1220-4eed-ae45-7a37d4b6a95d",
+      "name": "Showings",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.item.json.data;\nif (!raw) throw new Error(\"No showings data found.\");\n\nconst lines = raw.split('\\n').filter(l => l.trim());\nconst headers = lines[0].split(',').map(h => h.trim());\nconst data = lines.slice(1);\n\nconst counts = {};\n\nfor (const line of data) {\n  const fields = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(v => v.replace(/^\"|\"$/g, '').trim());\n  const entry = Object.fromEntries(headers.map((h, i) => [h, fields[i]]));\n\n  const status = entry[\"Status\"];\n  const propId = parseInt(entry[\"Property ID\"]);\n  if (isNaN(propId)) continue;\n\n  if (!counts[propId]) {\n    counts[propId] = { showings_completed: 0, showings_canceled: 0 };\n  }\n\n  if (status === \"Completed\") {\n    counts[propId].showings_completed++;\n  } else if (status === \"Prospect Canceled\") {\n    counts[propId].showings_canceled++;\n  }\n}\n\nreturn Object.entries(counts).map(([property_id, { showings_completed, showings_canceled }]) => ({\n  json: {\n    property_id: parseInt(property_id),\n    showings_completed,\n    showings_canceled\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -80
+      ],
+      "id": "224fd07e-5036-41d0-9f83-bb0b5213e1b2",
+      "name": "Parse Showings"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "showings_0",
+        "options": {
+          "keepSource": "both"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -80
+      ],
+      "id": "b597e909-78de-4be8-a2df-50c21af05fb3",
+      "name": "Extract Showings"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO owner_marketing_summary (\n  property_id,\n  week_ending,\n  showings,\n  showings_canceled,\n  created_at,\n  updated_at\n)\nVALUES (\n  {{ $json.property_id }},\n  DATE_SUB(CURDATE(), INTERVAL 1 DAY),\n  {{ $json.showings_completed }},\n  {{ $json.showings_canceled }},\n  NOW(),\n  NOW()\n)\nON DUPLICATE KEY UPDATE\n  showings = VALUES(showings),\n  showings_canceled = VALUES(showings_canceled),\n  updated_at = NOW();\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        300,
+        -80
+      ],
+      "id": "40776163-02d2-48fd-aab8-133341404c6b",
+      "name": "MySQL",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Showings').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        60,
+        100
+      ],
+      "id": "b1dadb85-fd42-47be-8d49-337131efd584",
+      "name": "Gmail",
+      "webhookId": "2004bb0a-02e0-462c-a157-06a11b19fb5d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "INBOX"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        100
+      ],
+      "id": "8ee9d2ce-a008-4aad-998f-c3df7776fa6e",
+      "name": "Gmail1",
+      "webhookId": "117633eb-c394-4d70-a22c-6515c4e3931d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "trash",
+        "threadId": "={{ $json.threadId }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        380,
+        100
+      ],
+      "id": "d3395283-a652-44c3-a2a0-998681831ac9",
+      "name": "Gmail2",
+      "webhookId": "f85c3a2a-2711-492b-8092-3cd14990a98d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Showings": {
+      "Showings": {
+        "lastTimeChecked": 1743915614,
+        "possibleDuplicates": [
+          "19607b53e88974fa"
+        ]
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-04-06T05:00:07.326Z",
+  "versionId": "2aa10327-3a9e-46a5-b549-0c8b5a027cec"
+}
