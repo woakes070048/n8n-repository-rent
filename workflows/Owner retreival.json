@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Schedule Trigger": {
       "main": [
@@ -10,22 +10,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "MySQL": {
-      "main": [
-        [
-          {
-            "node": "MySQL1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "MySQL1": {
-      "main": [
-        []
       ]
     }
   },
@@ -62,70 +46,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT property_id FROM owner_marketing_summary WHERE owner_id = 0;\n",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        -200,
-        -320
-      ],
-      "id": "c1c1d08b-2724-4f2a-b4e4-2a85c1a669b8",
-      "name": "MySQL",
-      "credentials": {
-        "mySql": {
-          "id": "OUIfR0k9k0YXHa0V",
-          "name": "Blazedata Hostinger"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE owner_marketing_summary\nSET owner_id = {{ $json.owner_id }}\nWHERE property_id = {{ $json.property_id }};\n",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        60,
-        -320
-      ],
-      "id": "1c925a6f-f841-46d4-9158-9d54ab478011",
-      "name": "MySQL1",
-      "credentials": {
-        "mySql": {
-          "id": "OUIfR0k9k0YXHa0V",
-          "name": "Blazedata Hostinger"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "=UPDATE owner_marketing_summary\nSET owner_id = {{ $json.owner_id }}\nWHERE property_id = {{ $('MySQL').item.json.property_id }};\n",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        240,
-        -220
-      ],
-      "id": "7c7f6de9-c2d5-4d86-b65c-77903d602705",
-      "name": "MySQL2",
-      "credentials": {
-        "mySql": {
-          "id": "OUIfR0k9k0YXHa0V",
-          "name": "Blazedata Hostinger"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE owner_marketing_summary oms\nJOIN property_directory_all pda ON oms.property_id = pda.property_id\nJOIN owners o ON pda.owner_id_s = o.owner_id\nSET\n  oms.owner_id = pda.owner_id_s,\n  oms.owner_email = o.email\nWHERE oms.owner_id = 0\n   OR oms.owner_email IS NULL\n   OR oms.owner_email = '';\n",
+        "query": "UPDATE owner_marketing_summary oms\nJOIN property_directory_all pda ON oms.property_id = pda.property_id\nJOIN owners o ON pda.owner_id_s = o.owner_id\nSET\n  oms.owner_id = pda.owner_id_s,\n  oms.owner_email = o.email,\n  oms.property_name = pda.property_name\nWHERE oms.owner_id = 0\n   OR oms.owner_email IS NULL\n   OR oms.owner_email = ''\n   OR oms.property_name IS NULL\n   OR oms.property_name = '';\n",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -146,11 +67,16 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-04-05T17:43:08.000Z",
-  "versionId": "e0da87a4-7ea8-4410-af77-4effab0d9ae4"
+  "triggerCount": 1,
+  "updatedAt": "2025-04-06T05:00:07.282Z",
+  "versionId": "3d67a5ef-d5cc-401a-b28e-11c6cecbfe37"
 }
