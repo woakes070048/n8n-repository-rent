@@ -232,15 +232,46 @@
   "staticData": {
     "node:Showings": {
       "Showings": {
-        "lastTimeChecked": 1743915614,
+        "lastTimeChecked": 1743942243,
         "possibleDuplicates": [
           "19607b53e88974fa"
         ]
       }
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2025-03-08T13:24:58.615Z",
+      "updatedAt": "2025-03-08T13:24:58.615Z",
+      "id": "9NBFp5smMq2uf5oA",
+      "name": "Email Processing"
+    },
+    {
+      "createdAt": "2024-07-29T13:51:51.785Z",
+      "updatedAt": "2024-07-29T13:51:51.785Z",
+      "id": "JYvoNb6Xp7LdO4GE",
+      "name": "MySQL"
+    },
+    {
+      "createdAt": "2025-04-06T12:19:17.588Z",
+      "updatedAt": "2025-04-06T12:19:17.588Z",
+      "id": "W05IJGKJx5hczKHB",
+      "name": "rep-email-owner"
+    },
+    {
+      "createdAt": "2025-04-06T12:17:13.094Z",
+      "updatedAt": "2025-04-06T12:17:13.094Z",
+      "id": "YeEleillKvhm73X6",
+      "name": "Reports"
+    },
+    {
+      "createdAt": "2025-04-06T12:17:17.452Z",
+      "updatedAt": "2025-04-06T12:17:17.452Z",
+      "id": "iMY7dbCfswxr2yQJ",
+      "name": "Owner"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-06T05:00:07.326Z",
-  "versionId": "2aa10327-3a9e-46a5-b549-0c8b5a027cec"
+  "updatedAt": "2025-04-06T12:24:02.000Z",
+  "versionId": "d97f24d2-b0a1-4068-b753-04230517f298"
 }
