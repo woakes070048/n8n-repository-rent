@@ -545,7 +545,7 @@
       "typeVersion": 4.5,
       "position": [
         1880,
-        -145
+        -140
       ],
       "id": "0055ec17-4b34-4b11-88cb-963fed3db245",
       "name": "Blaze Sheet Status",
@@ -975,7 +975,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const fileData = $input.first().json;\n\nconst rawFileName = (fileData.name || \"Unknown File\").trim().toLowerCase();\nconst workflowName = $workflow.name || \"Unknown Workflow\";\nconst modifiedTime = fileData.modifiedTime || \"\";\n\n// Normalize input\nconst normalized = rawFileName\n  .replace(/[^a-z0-9 ]/gi, \"\")\n  .replace(/\\s+/g, \" \")\n  .trim();\n\n// Mapping normalized keys to row numbers\nconst rowMap = {\n  \"delinquency daily\": 22,\n  \"guest cards past 7 days\": 23,\n  \"receivables to date\": 24,\n  \"receivables yesterday\": 25,\n  \"rent totals\": 26,\n  \"apartment applications\": 27,\n  \"n8n apartment applications\": 27,\n  \"showings\": 28,\n  \"receivables monthly\": 24 // NEW alias fallback\n};\n\nconst key = Object.keys(rowMap).find(k => normalized.includes(k));\n\nif (!key) {\n  const available = Object.keys(rowMap).join(\", \");\n  throw new Error(`Unknown or unmapped file: \"${rawFileName}\"\\nMatched as: \"${normalized}\"\\nExpected one of: ${available}`);\n}\n\nreturn [{\n  json: {\n    row_number: rowMap[key],\n    status: \"Success\",\n    workflow: workflowName,\n    file_name: rawFileName,\n    modified_time: modifiedTime,\n    error_message: \"\"\n  }\n}];\n"
+        "jsCode": "const fileData = $input.first().json;\nconst rawFileName = (fileData.name || \"Unknown File\").trim().toLowerCase();\nconst workflowName = $workflow.name || \"Unknown Workflow\";\nconst modifiedTime = fileData.modifiedTime || \"\";\n\n// Normalize the filename\nconst normalized = rawFileName\n  .replace(/[^a-z0-9 ]/gi, \"\") // strip non-alphanumerics\n  .replace(/\\s+/g, \" \")        // normalize spaces\n  .trim();\n\n// Expanded keyword match list\nconst rowMap = {\n  \"delinquency daily\": 22,\n  \"guest cards\": 23,\n  \"receivables to date\": 24,\n  \"receivables yesterday\": 25,\n  \"rent totals\": 26,\n  \"apartment applications\": 27,\n  \"showings\": 28\n};\n\n// Find the best match based on inclusion\nconst key = Object.keys(rowMap).find(k => normalized.includes(k));\n\nif (!key) {\n  const available = Object.keys(rowMap).join(\", \");\n  throw new Error(`Unknown or unmapped file: \"${rawFileName}\"\\nMatched as: \"${normalized}\"\\nExpected one of: ${available}`);\n}\n\nreturn [{\n  json: {\n    row_number: rowMap[key],\n    status: \"Success\",\n    workflow: workflowName,\n    file_name: rawFileName,\n    modified_time: modifiedTime,\n    error_message: \"\"\n  }\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1025,7 +1025,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const emailData = $items(\"Get Report Email\")[0];\nconst messageId = emailData.json.id;\nconst binary = emailData.binary; // ⬅️ grab the binary\nconst emailSubject = emailData.json.subject.trim().toLowerCase();\n\nconst driveFiles = $input.all().map(item => item.json);\n\n// Optional debug\nconst debugList = driveFiles.map(f => `${f.name} [${f.mimeType || \"undefined\"}]`).join(\"\\n\");\n\nconst driveSheets = driveFiles.filter(file => {\n  const name = (file.name || \"\").trim().toLowerCase();\n  const mime = file.mimeType || \"\";\n\n  return mime.includes(\"spreadsheet\") && (\n    name === emailSubject ||\n    name.replace(/\\.csv$/, \"\") === emailSubject ||\n    name.startsWith(emailSubject) ||\n    name.includes(emailSubject)\n  );\n});\n\nif (driveSheets.length === 0) {\n  throw new Error(`No matching Google Sheet found for subject: \"${emailSubject}\"\\nAvailable:\\n${debugList}`);\n}\n\nconst matchedSheet = driveSheets[0];\n\nreturn [{\n  json: {\n    ...matchedSheet,\n    messageId\n  },\n  binary // ⬅️ attach original binary again\n}];\n"
+        "jsCode": "const emailData = $items(\"Get Report Email\")[0];\nconst messageId = emailData.json.id;\nconst binary = emailData.binary;\nconst emailSubject = emailData.json.subject.trim().toLowerCase();\n\nconst driveFiles = $input.all().map(item => item.json);\n\n// Debug\nconst debugList = driveFiles.map(f => `${f.name} [${f.mimeType || \"undefined\"}]`).join(\"\\n\");\n\n// Clean up and lowercase names\nconst driveSheets = driveFiles.filter(file => {\n  const name = (file.name || \"\").trim().toLowerCase();\n  const mime = file.mimeType || \"\";\n\n  return mime.includes(\"spreadsheet\") && (\n    name === emailSubject ||\n    name.replace(/\\.csv$/, \"\") === emailSubject ||\n    name.replace(/\\.xlsx$/, \"\") === emailSubject ||\n    name.startsWith(emailSubject) ||\n    name.includes(emailSubject)\n  );\n});\n\n// Log mismatches for debugging\nif (driveSheets.length === 0) {\n  throw new Error(\n    `❌ No matching Google Sheet found for subject: \"${emailSubject}\"\\nAvailable files:\\n${debugList}`\n  );\n}\n\nconst matchedSheet = driveSheets[0];\n\nreturn [{\n  json: {\n    ...matchedSheet,\n    messageId\n  },\n  binary\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1233,7 +1233,7 @@
       "typeVersion": 1.1,
       "position": [
         340,
-        55
+        60
       ],
       "id": "66bcc895-e717-42a1-a09a-835b430e4beb",
       "name": "Wait",
@@ -1296,14 +1296,20 @@
       ]
     },
     "node:Get Report Email": {
-      "lastTimeChecked": 1743941791,
+      "lastTimeChecked": 1744023894,
       "possibleDuplicates": [
-        "1960ab0170367c77"
+        "1960fd67a2d0aa57",
+        "1960fd679b59a04f",
+        "1960fd6798d8d63c",
+        "1960fd679585139a",
+        "1960fd6783380909",
+        "1960fd67808ffccf",
+        "1960fd6759aa726b"
       ]
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-06T12:16:31.000Z",
-  "versionId": "cbb28f2b-b734-4dc8-bed0-fdb4db13dc8a"
+  "updatedAt": "2025-04-07T11:04:54.000Z",
+  "versionId": "2c76f9c6-0e7b-4fe6-8a63-a1ea1307a34c"
 }
