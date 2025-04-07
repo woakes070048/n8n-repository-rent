@@ -154,7 +154,7 @@
     },
     {
       "parameters": {
-        "fromEmail": "info@blzres.com",
+        "fromEmail": "reports@blzres.com",
         "toEmail": "paramountsquare@blazeproperty.com; brandon@blazeproperty.com",
         "subject": "=New {{ $json.body.property }} Web Form Entry: {{ $json.body.firstName }} {{ $json.body.lastName }}",
         "emailFormat": "text",
@@ -169,6 +169,7 @@
         1200,
         320
       ],
+      "webhookId": "233c6ccd-ad9d-4c17-9c6d-b771936dfb27",
       "credentials": {
         "smtp": {
           "id": "CT7TQcD1DuyTHPFu",
@@ -202,6 +203,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-11-10T14:14:22.000Z",
-  "versionId": "d0a2b0cf-b66f-4a85-8ead-abf69ed45a0c"
+  "updatedAt": "2025-04-07T12:00:59.000Z",
+  "versionId": "96ab890f-c6fa-4e6e-939a-e4f1afd29522"
 }
