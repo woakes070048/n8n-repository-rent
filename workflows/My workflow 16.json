@@ -1,0 +1,66 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-06T19:30:01.114Z",
+  "id": "spuX4baZghaYQeUE",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 16",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "98d2f40a-df30-4215-b40e-38a52a383e6b",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "databaseId": 104,
+        "tableId": 536,
+        "rowId": "1"
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "3ee2f3ad-97fd-4792-88c7-9bdcca1dd884",
+      "name": "Baserow",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-06T19:30:01.114Z",
+  "versionId": "a5dee4bd-10ec-4d75-919e-92faddd35543"
+}
