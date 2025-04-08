@@ -1,0 +1,641 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Record Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Update Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Baserow": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Record Baserow": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-08T16:57:01.428Z",
+  "id": "yFFXzpspPf2wdzOL",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Tenant Directory rep-all-tenants",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "has:attachment rep-all-tenants"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1320,
+        360
+      ],
+      "id": "672f648f-810c-4e00-aaea-4b0ba751bcc3",
+      "name": "Gmail Trigger",
+      "notesInFlow": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      },
+      "notes": "Get Owner Directory rep-owners email\n"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1100,
+        360
+      ],
+      "id": "5a1bef1b-ea86-40c5-a941-3597a0214262",
+      "name": "Extract from File",
+      "notesInFlow": true,
+      "notes": "Extract Attached File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Converts Excel serial date to YYYY-MM-DD format\nfunction excelToISO(serial) {\n  if (!serial || isNaN(serial)) return null;\n  const date = new Date((serial - 25569) * 86400 * 1000);\n  return date.toISOString().split(\"T\")[0];\n}\n\n// Normalize phone to 10 digits from the first listed number\nfunction normalizePhone(phone) {\n  const first = (phone || \"\").split(/[,;|]/)[0];\n  const digits = first.replace(/\\D/g, \"\");\n  return digits.length === 10 ? digits : \"\";\n}\n\n// Extract first email from a list\nfunction normalizeEmail(email) {\n  return (email || \"\").split(/[,;|]/)[0].trim();\n}\n\n// Split \"Last, First\" or \"First Last\" format\nfunction splitName(fullName) {\n  if (!fullName) return { first_name: \"\", last_name: \"\" };\n  if (fullName.includes(\",\")) {\n    const [last, first] = fullName.split(\",\").map(s => s.trim());\n    return { first_name: first?.split(\" \")[0] || \"\", last_name: last };\n  } else {\n    const parts = fullName.trim().split(\" \");\n    return { first_name: parts[0], last_name: parts.slice(1).join(\" \") };\n  }\n}\n\nreturn $input.all().filter(item => {\n  const values = Object.values(item.json || {}).map(v => String(v).toLowerCase().trim());\n  const isBlank = values.every(v => !v);\n  const isTotal = values.some(v => v.includes(\"total\"));\n  return !isBlank && !isTotal;\n}).map(item => {\n  const data = item.json;\n\n  const { first_name, last_name } = splitName(data[\"tenant_name\"] || data[\"name\"] || \"\");\n\n  return {\n    ...data,\n    first_name,\n    last_name,\n    phone: normalizePhone(data[\"phone\"] || data[\"phone_number\"] || \"\"),\n    email: normalizeEmail(data[\"email\"] || \"\"),\n    lease_start_date: excelToISO(data[\"lease_start_date\"]),\n    lease_end_date: excelToISO(data[\"lease_end_date\"]),\n    move_in_date: excelToISO(data[\"move_in_date\"]),\n    lease_sign_date: excelToISO(data[\"lease_sign_date\"]),\n    birth_date: excelToISO(data[\"birth_date\"]),\n    application_date: excelToISO(data[\"application_date\"]),\n    created_date: excelToISO(data[\"created_date\"])\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -880,
+        350
+      ],
+      "id": "968a99b8-4feb-4776-81dc-9ff955ae8b1b",
+      "name": "Code",
+      "notesInFlow": true,
+      "notes": "Normalize the data fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -660,
+        350
+      ],
+      "id": "99a80fd3-4b47-45cd-b51b-bbbe067ca1be",
+      "name": "Loop Over Items",
+      "notesInFlow": true,
+      "notes": "Loop for records check"
+    },
+    {
+      "parameters": {
+        "url": "=https://base.blazeproperty.com/api/database/rows/table/683/?user_field_names=true&filter__owner_id__equal={{ $json[\"Tenant ID\"] }}\n",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token bUQCUSlF5KA25RihIa0TmWPX6AIE0i0s"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -380,
+        360
+      ],
+      "id": "01e4ff6e-9dee-45a6-9e25-38f82c2831d7",
+      "name": "HTTP Request",
+      "notesInFlow": true,
+      "notes": "pull 1 records"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3640e37b-1339-4284-a6cf-8cbcb7c20317",
+              "leftValue": "={{ $json.count > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        100
+      ],
+      "id": "c2ddc196-3fb4-486f-a7e8-6b66156995db",
+      "name": "If",
+      "notesInFlow": true,
+      "notes": "Is the record present based on filter"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ff3aaf68-2b36-4c11-ba86-badfec4587de",
+              "name": "row",
+              "value": "={{ $json.results[0].id }}",
+              "type": "number"
+            },
+            {
+              "id": "835a6c7d-0d13-4e78-a238-3f43a5d81cd6",
+              "name": "Last Update",
+              "value": "={{ new Date().toISOString().split('T')[0] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6f05a4e0-043d-4c44-a73a-e360a9e3a7da",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "# n8n Workflow: Owner Directory rep-owners\n\nThis workflow automates the import and update of owner records in Baserow based on attached Excel reports received via Gmail.\n",
+        "height": 240,
+        "width": 660
+      },
+      "id": "eaa16707-03c3-44c4-bf0c-9bfe993e8341",
+      "name": "Sticky ## Gmail Trigger\nTri",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1840,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Loop Over Items\nProcesses each normalized item individually.",
+        "height": 360
+      },
+      "id": "f0321498-7ef6-4bb0-b529-c033283ac36f",
+      "name": "Sticky ## Extract from File",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -730,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Gmail Trigger\nTriggers on new emails every minute that have attachments and include 'rep-owners' in the subject.",
+        "height": 360
+      },
+      "id": "26606f9d-c6ab-4920-a66b-73a866d3da78",
+      "name": "Sticky ## Code\nNormalizes t",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1390,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Code\nNormalizes the extracted data:\n  - Converts Excel dates to YYYY-MM-DD\n  - Strips non-digit characters from phone numbers\n  - Extracts and formats fields.",
+        "height": 460,
+        "width": 190
+      },
+      "id": "d6653fca-8237-4bc5-95f7-887455a88b14",
+      "name": "Sticky ## Loop Over Items\nP",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -925,
+        50
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Extract from File\nParses the attached XLSX file to extract raw data.\n",
+        "height": 360
+      },
+      "id": "073b89a9-d37f-428e-97d7-5c48f4e80768",
+      "name": "Sticky ## HTTP Request\nChec",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1170,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## If\nDetermines if the record exists (`count > 0`).",
+        "height": 280,
+        "width": 220
+      },
+      "id": "e5a8d2a7-6021-4a81-a114-6f2141189c84",
+      "name": "Sticky ## If\nDetermines if ",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        -20
+      ]
+    },
+    {
+      "parameters": {
+        "content": "\n## Baserow3\nCreates a new record in Baserow if no match was found.",
+        "height": 380,
+        "width": 260
+      },
+      "id": "43192b0f-15a7-4361-9a8e-1f3e9d1b65ab",
+      "name": "Sticky ## Edit Fields\nExtra",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Edit Fields\nExtracts the Baserow `row_id` for existing records to prepare for update.",
+        "height": 320
+      },
+      "id": "070d95dc-687f-45d5-97af-2ce28b34d620",
+      "name": "Sticky ## Baserow\nUpdates t",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -70,
+        -160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## HTTP Request\nChecks if the record already exists in Baserow by matching the `owner_id` using Baserow's API.",
+        "height": 620
+      },
+      "id": "2e68c464-268e-46a9-a9b6-369579d0597d",
+      "name": "Sticky ## Baserow3\nCreates ",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -510,
+        -360
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Baserow\nUpdates the existing record in Baserow using the extracted `row_id`.",
+        "height": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        150,
+        35
+      ],
+      "id": "d43690c8-2b30-4ea9-840b-c59ef48cede6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 130,
+        "tableId": 683,
+        "rowId": "={{ $json.row }}",
+        "dataToSend": "autoMapInputData"
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        240,
+        120
+      ],
+      "id": "2ea3533e-9df2-435f-9caa-d86436584fea",
+      "name": "Update Baserow",
+      "notesInFlow": true,
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      },
+      "notes": "Update Record"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "databaseId": 130,
+        "tableId": 683,
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 6646,
+              "fieldValue": "={{ $('Loop Over Items').item.json.first_name }}"
+            },
+            {
+              "fieldId": 6647,
+              "fieldValue": "={{ $('Loop Over Items').item.json.last_name }}"
+            },
+            {
+              "fieldId": 6648,
+              "fieldValue": "={{ $('Loop Over Items').item.json.phone }}"
+            },
+            {
+              "fieldId": 6649,
+              "fieldValue": "={{ $('Loop Over Items').item.json.email }}"
+            },
+            {
+              "fieldId": 6650,
+              "fieldValue": "={{ $('Loop Over Items').item.json.payment_type }}"
+            },
+            {
+              "fieldId": 6651,
+              "fieldValue": "={{ $('Loop Over Items').item.json.last_payment_date }}"
+            },
+            {
+              "fieldId": 6652,
+              "fieldValue": "={{ $('Loop Over Items').item.json.hold_payments }}"
+            },
+            {
+              "fieldId": 6653,
+              "fieldValue": "={{ $('Loop Over Items').item.json.owner_packet_reports }}"
+            },
+            {
+              "fieldId": 6654,
+              "fieldValue": "={{ $('Loop Over Items').item.json.email_packets }}"
+            },
+            {
+              "fieldId": 6655,
+              "fieldValue": "={{ $('Loop Over Items').item.json.properties_owned }}"
+            },
+            {
+              "fieldId": 6656,
+              "fieldValue": "={{ $('Loop Over Items').item.json.address }}"
+            },
+            {
+              "fieldId": 6657,
+              "fieldValue": "={{ $('Loop Over Items').item.json.street_address_1 }}"
+            },
+            {
+              "fieldId": 6658,
+              "fieldValue": "={{ $('Loop Over Items').item.json.street_address_2 }}"
+            },
+            {
+              "fieldId": 6659,
+              "fieldValue": "={{ $('Loop Over Items').item.json.city }}"
+            },
+            {
+              "fieldId": 6660,
+              "fieldValue": "={{ $('Loop Over Items').item.json.state }}"
+            },
+            {
+              "fieldId": 6661,
+              "fieldValue": "={{ $('Loop Over Items').item.json.zip }}"
+            },
+            {
+              "fieldId": 6662,
+              "fieldValue": "={{ $('Loop Over Items').item.json.country }}"
+            },
+            {
+              "fieldId": 6663,
+              "fieldValue": "={{ $('Loop Over Items').item.json.owner_id }}"
+            },
+            {
+              "fieldId": 6664,
+              "fieldValue": "={{ $('Loop Over Items').item.json.property_ids }}"
+            },
+            {
+              "fieldId": 6668,
+              "fieldValue": "={{ new Date().toISOString().split('T')[0] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        60,
+        360
+      ],
+      "id": "8ec8c365-0a03-41aa-882d-685bc23cd9f2",
+      "name": "Create Record Baserow",
+      "notesInFlow": true,
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      },
+      "notes": "Add record"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -920,
+        560
+      ],
+      "id": "79453d57-72e2-4676-b222-0f8e0c018b91",
+      "name": "Gmail",
+      "webhookId": "9c965658-0cb8-481f-b881-7f2502664f6f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "trash",
+        "threadId": "={{ $('Gmail Trigger').item.json.threadId }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -700,
+        560
+      ],
+      "id": "50f0949a-42a4-4b21-ac88-b8e4af1a061d",
+      "name": "Gmail1",
+      "webhookId": "f8c724ae-d3a8-4fdf-b17d-2ac892cd4823",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Gmail Trigger": {
+      "Gmail Trigger": {
+        "lastTimeChecked": 1744130767
+      }
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-04-08T17:24:42.000Z",
+  "versionId": "c78cf40b-a22e-4b03-9a87-2abb42c18107"
+}
