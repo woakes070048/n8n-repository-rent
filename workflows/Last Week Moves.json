@@ -1,0 +1,137 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-08T11:29:18.169Z",
+  "id": "vUO7FzTmkreIoUp5",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Last Week Moves",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "has:attachment rep-moves"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -640,
+        0
+      ],
+      "id": "d82e39d4-3275-4daf-86da-fe1d58c35671",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        0
+      ],
+      "id": "91b06813-ce53-4a48-9986-17cfa4c165ee",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Excel date code to JS date string in YYYY-MM-DD\nconst excelToDate = (serial) => {\n  if (!serial || isNaN(serial)) return null;\n  const date = new Date((serial - 25569) * 86400 * 1000);\n  return date.toISOString().split('T')[0]; // \"YYYY-MM-DD\"\n};\n\n// Normalize phone\nconst normalizePhone = (phone) => {\n  const match = phone.match(/\\d{10}/g);\n  return match ? match[0] : null;\n};\n\n// Normalize email\nconst normalizeEmail = (email) => {\n  return email.split(/[;,]/)[0].trim();\n};\n\n// Split tenant name\nconst splitTenant = (name) => {\n  const parts = name.split(',');\n  if (parts.length < 2) return { first_name: \"\", last_name: \"\" };\n  const last = parts[0].trim();\n  const [first] = parts[1].trim().split(' ');\n  return {\n    first_name: first,\n    last_name: last\n  };\n};\n\nreturn $input.all()\n  .map(item => item.json)\n  .filter(row => {\n    if (!row || Object.values(row).every(v => v === null || v === undefined || String(v).trim() === \"\")) return false;\n    return !Object.values(row).some(val => String(val).toLowerCase().includes(\"total\"));\n  })\n  .map(data => {\n    const { first_name, last_name } = splitTenant(data[\"Tenant\"] || \"\");\n\n    return {\n      date: excelToDate(data[\"Date\"]),\n      property_name: data[\"Property Name\"],\n      event: data[\"Event\"],\n      tenant_status: data[\"Tenant Status\"],\n      first_name,\n      last_name,\n      lease_from: excelToDate(data[\"Lease From\"]),\n      lease_to: excelToDate(data[\"Lease To\"]),\n      property_id: data[\"Property ID\"],\n      property_address: data[\"Property Address\"],\n      property_street_address: data[\"Property Street Address 1\"],\n      property_city: data[\"Property City\"],\n      property_state: data[\"Property State\"],\n      property_zip: data[\"Property Zip\"],\n      tenant_phone: normalizePhone(data[\"Tenant Phone Number\"] || \"\"),\n      tenant_email: normalizeEmail(data[\"Tenant Email\"] || \"\"),\n      move_in_date: excelToDate(data[\"Move In Date\"]),\n      lease_sign_date: excelToDate(data[\"Lease Sign Date\"]),\n      assigned_user: data[\"Assigned User\"],\n      security_deposit_return_payment: data[\"Security Deposit Return Payment\"],\n      unit_id: data[\"Unit ID\"],\n      occupancy_id: data[\"Occupancy ID\"],\n      tenant_id: data[\"Tenant ID\"],\n      rental_application_id: data[\"Rental Application ID\"],\n      portfolio_id: data[\"Portfolio ID\"],\n      eligible_for_echeck_security_deposit_return: data[\"Eligible for eCheck Security Deposit Return\"]\n    };\n  });\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        0
+      ],
+      "id": "ec4f4d7a-e2fd-4406-b30f-af7b231897d4",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "databaseId": 130,
+        "tableId": 682,
+        "dataToSend": "autoMapInputData"
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        20,
+        0
+      ],
+      "id": "84df65cd-94ac-4769-b982-14c9ad100066",
+      "name": "Baserow",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-08T11:56:30.000Z",
+  "versionId": "230fca2d-aa94-4950-b604-b74ea0dcd848"
+}
