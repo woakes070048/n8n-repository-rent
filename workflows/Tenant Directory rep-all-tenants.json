@@ -180,7 +180,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Converts Excel serial date to YYYY-MM-DD format\nfunction excelToISO(serial) {\n  if (!serial || isNaN(serial)) return null;\n  const date = new Date((serial - 25569) * 86400 * 1000);\n  return date.toISOString().split(\"T\")[0];\n}\n\n// Normalize phone to just digits\nfunction normalizePhone(phone) {\n  return (phone || \"\").split(\",\")[0].replace(/\\D/g, \"\");\n}\n\n// Get only the first email\nfunction normalizeEmail(email) {\n  return (email || \"\").split(\",\")[0].trim();\n}\n\nreturn $input.all().map(item => {\n  const data = item.json;\n\n  return {\n    first_name: data[\"First Name\"] || \"\",\n    last_name: data[\"Last Name\"] || \"\",\n    phone: normalizePhone(data[\"Phone Numbers\"] || \"\"),\n    email: normalizeEmail(data[\"Emails\"] || \"\"),\n    move_in_date: excelToISO(data[\"Move-in\"]),\n    lease_start_date: excelToISO(data[\"Lease From\"]),\n    lease_end_date: excelToISO(data[\"Lease To\"]),\n    eligible_rent_increase_date: excelToISO(data[\"Eligible for Rent Increase\"]),\n    lease_renewal_date: excelToISO(data[\"Last Lease Renewal\"]),\n    birth_date: excelToISO(data[\"Tenant Birthdate\"]),\n    tenant_id: data[\"Tenant ID\"],\n    occupancy_id: data[\"Occupancy ID\"],\n    unit_id: data[\"Unit ID\"],\n    tenant_type: data[\"Tenant Type\"] || \"\",\n    tenant_visibility: data[\"Tenant Visibility\"] || \"\",\n    online_portal_activated: data[\"Online Portal Activated\"] || \"\",\n    primary_tenant: data[\"Primary Tenant\"] || \"\"\n  };\n});\n"
+        "jsCode": "// Convert Excel date number to ISO string\nfunction excelDateToISO(excelDate) {\n  const parsed = parseFloat(excelDate);\n  if (!excelDate || isNaN(parsed)) return null;\n  const jsDate = new Date((parsed - 25569) * 86400 * 1000);\n  return jsDate.toISOString().split(\"T\")[0];\n}\n\n// Better phone number normalization\nfunction normalizePhone(phone) {\n  if (!phone) return '';\n  const digits = phone.replace(/\\D/g, '');\n  return digits.length >= 10 ? digits.slice(0, 10) : digits;\n}\n\n// Normalize email to first in list\nfunction normalizeEmail(email) {\n  if (!email) return '';\n  return email.split(/[ ,;]/)[0].trim();\n}\n\n// Clean input rows\nconst cleanedItems = items.filter(item => {\n  const values = Object.values(item.json);\n  const allBlank = values.every(val => !val || val.toString().trim() === '');\n  const isTotalRow = values.some(val => val.toString().toLowerCase().includes('total'));\n  return !allBlank && !isTotalRow;\n});\n\nreturn cleanedItems.map(item => {\n  const row = item.json;\n  const result = {};\n\n  for (const [key, value] of Object.entries(row)) {\n    if (key === \"Phone Numbers\") {\n      result[key] = normalizePhone(value);\n    } else if (key.toLowerCase().includes(\"email\")) {\n      result[key] = normalizeEmail(value);\n    } else if ([\n      \"Move-in\", \"Lease From\", \"Lease To\", \"Last Lease Renewal\", \"Move-out\",\n      \"Eligible for Rent Increase\", \"Last Rent Increase\", \"Next Rent Increase Date\",\n      \"Tenant Birthdate\"\n    ].includes(key)) {\n      result[key] = excelDateToISO(value);\n    } else {\n      result[key] = value;\n    }\n  }\n\n  return { json: result };\n});\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -210,7 +210,7 @@
     },
     {
       "parameters": {
-        "url": "=https://base.blazeproperty.com/api/database/rows/table/683/?user_field_names=true&filter__owner_id__equal={{ $json.tenant_id }}\n",
+        "url": "=https://base.blazeproperty.com/api/database/rows/table/687/?user_field_names=true&filter__Tenant ID__equal={{ $json[\"Tenant ID\"] }}\n",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -309,8 +309,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1840,
-        -160
+        -1940,
+        -480
       ]
     },
     {
@@ -446,7 +446,7 @@
       "parameters": {
         "operation": "update",
         "databaseId": 130,
-        "tableId": 683,
+        "tableId": 687,
         "rowId": "={{ $json.row }}",
         "dataToSend": "autoMapInputData"
       },
@@ -471,160 +471,68 @@
       "parameters": {
         "operation": "create",
         "databaseId": 130,
-        "tableId": 685,
+        "tableId": 687,
         "fieldsUi": {
           "fieldValues": [
             {
-              "fieldId": 6749,
-              "fieldValue": "={{ $('Loop Over Items').item.json.Property }}"
-            },
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {},
-            {
-              "fieldId": 6749,
-              "fieldValue": "={{ $('Loop Over Items').item.json.Property }}"
-            },
-            {
-              "fieldId": 6750,
-              "fieldValue": "={{ $('Loop Over Items').item.json.Unit }}"
-            },
-            {
-              "fieldId": 6751,
+              "fieldId": 6838,
               "fieldValue": "={{ $('Loop Over Items').item.json.Tenant }}"
             },
             {
-              "fieldId": 6752,
+              "fieldId": 6839,
               "fieldValue": "={{ $('Loop Over Items').item.json.Status }}"
             },
             {
-              "fieldId": 6753,
+              "fieldId": 6840,
               "fieldValue": "={{ $('Loop Over Items').item.json[\"Tenant Type\"] }}"
             },
             {
-              "fieldId": 6754,
+              "fieldId": 6841,
               "fieldValue": "={{ $('Loop Over Items').item.json[\"Phone Numbers\"] }}"
             },
             {
-              "fieldId": 6755,
-              "fieldValue": "={{ $('Loop Over Items').item.json.Emails }}"
+              "fieldId": 6843,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Move-in\"] }}"
             },
             {
-              "fieldId": 6756
+              "fieldId": 6837,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Unit }}"
             },
             {
-              "fieldId": 6757
-            },
-            {
-              "fieldId": 6758
-            },
-            {
-              "fieldId": 6759
-            },
-            {
-              "fieldId": 6805,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Transaction Fee\"] }}"
-            },
-            {
-              "fieldId": 6806,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Primary Tenant\"] }}"
-            },
-            {
-              "fieldId": 6807,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"First Name\"] }}"
-            },
-            {
-              "fieldId": 6808,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Last Name\"] }}"
-            },
-            {
-              "fieldId": 6809,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"License Plates\"] }}"
-            },
-            {
-              "fieldId": 6810,
-              "fieldValue": "={{ $('Loop Over Items').item.json.Pets }}"
-            },
-            {
-              "fieldId": 6811,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"NSF Fee Amount\"] }}"
-            },
-            {
-              "fieldId": 6812,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Require Online Payments In Full\"] }}"
-            },
-            {
-              "fieldId": 6813,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Security Deposit Return Payment\"] }}"
-            },
-            {
-              "fieldId": 6815,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Occupancy ID\"] }}"
-            },
-            {
-              "fieldId": 6816,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Unit ID\"] }}"
-            },
-            {
-              "fieldId": 6817,
+              "fieldId": 6896,
               "fieldValue": "={{ $('Loop Over Items').item.json[\"Tenant ID\"] }}"
             },
             {
-              "fieldId": 6818,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Guest Card ID\"] }}"
+              "fieldId": 6842,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Emails }}"
             },
             {
-              "fieldId": 6819,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Inquiry ID\"] }}"
+              "fieldId": 6836,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Property }}"
             },
             {
-              "fieldId": 6820,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Rental Application ID\"] }}"
+              "fieldId": 6845,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Rent }}"
             },
             {
-              "fieldId": 6821,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Portfolio ID\"] }}"
+              "fieldId": 6846,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Deposit }}"
             },
             {
-              "fieldId": 6822,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Occupancy Import UID\"] }}"
+              "fieldId": 6864,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Lease From\"] }}"
             },
             {
-              "fieldId": 6823,
-              "fieldValue": "={{ $('Loop Over Items').item.json[\"Tenant Integration ID\"] }}"
+              "fieldId": 6844,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Lease To\"] }}"
+            },
+            {
+              "fieldId": 6856,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Property ID\"] }}"
+            },
+            {
+              "fieldId": 6895,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Unit ID\"] }}"
             }
           ]
         }
@@ -703,6 +611,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-09T03:06:46.000Z",
-  "versionId": "b297d537-9f4a-4b2a-86ec-5d794433e1a2"
+  "updatedAt": "2025-04-09T12:30:55.000Z",
+  "versionId": "cdd86b03-9456-484f-8102-325b8ec34d24"
 }
