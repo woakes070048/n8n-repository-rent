@@ -625,17 +625,18 @@
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
   "staticData": {
     "node:Gmail Trigger": {
       "Gmail Trigger": {
-        "lastTimeChecked": 1744130767
+        "lastTimeChecked": 1744174807
       }
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-08T16:46:07.000Z",
-  "versionId": "786283b3-4d4b-409e-b9ea-f41aa473b1dd"
+  "updatedAt": "2025-04-09T05:00:07.179Z",
+  "versionId": "f705c770-18e3-470c-a704-6bb38df0b7e9"
 }
