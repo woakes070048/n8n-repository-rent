@@ -19,11 +19,6 @@
             "node": "Code",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Gmail",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -185,13 +180,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Converts Excel serial date to YYYY-MM-DD format\nfunction excelToISO(serial) {\n  if (!serial || isNaN(serial)) return null;\n  const date = new Date((serial - 25569) * 86400 * 1000);\n  return date.toISOString().split(\"T\")[0];\n}\n\n// Normalize phone to 10 digits from the first listed number\nfunction normalizePhone(phone) {\n  const first = (phone || \"\").split(/[,;|]/)[0];\n  const digits = first.replace(/\\D/g, \"\");\n  return digits.length === 10 ? digits : \"\";\n}\n\n// Extract first email from a list\nfunction normalizeEmail(email) {\n  return (email || \"\").split(/[,;|]/)[0].trim();\n}\n\n// Split \"Last, First\" or \"First Last\" format\nfunction splitName(fullName) {\n  if (!fullName) return { first_name: \"\", last_name: \"\" };\n  if (fullName.includes(\",\")) {\n    const [last, first] = fullName.split(\",\").map(s => s.trim());\n    return { first_name: first?.split(\" \")[0] || \"\", last_name: last };\n  } else {\n    const parts = fullName.trim().split(\" \");\n    return { first_name: parts[0], last_name: parts.slice(1).join(\" \") };\n  }\n}\n\nreturn $input.all().filter(item => {\n  const values = Object.values(item.json || {}).map(v => String(v).toLowerCase().trim());\n  const isBlank = values.every(v => !v);\n  const isTotal = values.some(v => v.includes(\"total\"));\n  return !isBlank && !isTotal;\n}).map(item => {\n  const data = item.json;\n\n  const { first_name, last_name } = splitName(data[\"tenant_name\"] || data[\"name\"] || \"\");\n\n  return {\n    ...data,\n    first_name,\n    last_name,\n    phone: normalizePhone(data[\"phone\"] || data[\"phone_number\"] || \"\"),\n    email: normalizeEmail(data[\"email\"] || \"\"),\n    lease_start_date: excelToISO(data[\"lease_start_date\"]),\n    lease_end_date: excelToISO(data[\"lease_end_date\"]),\n    move_in_date: excelToISO(data[\"move_in_date\"]),\n    lease_sign_date: excelToISO(data[\"lease_sign_date\"]),\n    birth_date: excelToISO(data[\"birth_date\"]),\n    application_date: excelToISO(data[\"application_date\"]),\n    created_date: excelToISO(data[\"created_date\"])\n  };\n});\n"
+        "jsCode": "// Converts Excel serial date to YYYY-MM-DD format\nfunction excelToISO(serial) {\n  if (!serial || isNaN(serial)) return null;\n  const date = new Date((serial - 25569) * 86400 * 1000);\n  return date.toISOString().split(\"T\")[0];\n}\n\n// Normalize phone to just digits\nfunction normalizePhone(phone) {\n  return (phone || \"\").split(\",\")[0].replace(/\\D/g, \"\");\n}\n\n// Get only the first email\nfunction normalizeEmail(email) {\n  return (email || \"\").split(\",\")[0].trim();\n}\n\nreturn $input.all().map(item => {\n  const data = item.json;\n\n  return {\n    first_name: data[\"First Name\"] || \"\",\n    last_name: data[\"Last Name\"] || \"\",\n    phone: normalizePhone(data[\"Phone Numbers\"] || \"\"),\n    email: normalizeEmail(data[\"Emails\"] || \"\"),\n    move_in_date: excelToISO(data[\"Move-in\"]),\n    lease_start_date: excelToISO(data[\"Lease From\"]),\n    lease_end_date: excelToISO(data[\"Lease To\"]),\n    eligible_rent_increase_date: excelToISO(data[\"Eligible for Rent Increase\"]),\n    lease_renewal_date: excelToISO(data[\"Last Lease Renewal\"]),\n    birth_date: excelToISO(data[\"Tenant Birthdate\"]),\n    tenant_id: data[\"Tenant ID\"],\n    occupancy_id: data[\"Occupancy ID\"],\n    unit_id: data[\"Unit ID\"],\n    tenant_type: data[\"Tenant Type\"] || \"\",\n    tenant_visibility: data[\"Tenant Visibility\"] || \"\",\n    online_portal_activated: data[\"Online Portal Activated\"] || \"\",\n    primary_tenant: data[\"Primary Tenant\"] || \"\"\n  };\n});\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         -880,
-        350
+        360
       ],
       "id": "968a99b8-4feb-4776-81dc-9ff955ae8b1b",
       "name": "Code",
@@ -215,7 +210,7 @@
     },
     {
       "parameters": {
-        "url": "=https://base.blazeproperty.com/api/database/rows/table/683/?user_field_names=true&filter__owner_id__equal={{ $json[\"Tenant ID\"] }}\n",
+        "url": "=https://base.blazeproperty.com/api/database/rows/table/683/?user_field_names=true&filter__owner_id__equal={{ $json.tenant_id }}\n",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -476,88 +471,160 @@
       "parameters": {
         "operation": "create",
         "databaseId": 130,
-        "tableId": 683,
+        "tableId": 685,
         "fieldsUi": {
           "fieldValues": [
             {
-              "fieldId": 6646,
-              "fieldValue": "={{ $('Loop Over Items').item.json.first_name }}"
+              "fieldId": 6749,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Property }}"
+            },
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {},
+            {
+              "fieldId": 6749,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Property }}"
             },
             {
-              "fieldId": 6647,
-              "fieldValue": "={{ $('Loop Over Items').item.json.last_name }}"
+              "fieldId": 6750,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Unit }}"
             },
             {
-              "fieldId": 6648,
-              "fieldValue": "={{ $('Loop Over Items').item.json.phone }}"
+              "fieldId": 6751,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Tenant }}"
             },
             {
-              "fieldId": 6649,
-              "fieldValue": "={{ $('Loop Over Items').item.json.email }}"
+              "fieldId": 6752,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Status }}"
             },
             {
-              "fieldId": 6650,
-              "fieldValue": "={{ $('Loop Over Items').item.json.payment_type }}"
+              "fieldId": 6753,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Tenant Type\"] }}"
             },
             {
-              "fieldId": 6651,
-              "fieldValue": "={{ $('Loop Over Items').item.json.last_payment_date }}"
+              "fieldId": 6754,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Phone Numbers\"] }}"
             },
             {
-              "fieldId": 6652,
-              "fieldValue": "={{ $('Loop Over Items').item.json.hold_payments }}"
+              "fieldId": 6755,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Emails }}"
             },
             {
-              "fieldId": 6653,
-              "fieldValue": "={{ $('Loop Over Items').item.json.owner_packet_reports }}"
+              "fieldId": 6756
             },
             {
-              "fieldId": 6654,
-              "fieldValue": "={{ $('Loop Over Items').item.json.email_packets }}"
+              "fieldId": 6757
             },
             {
-              "fieldId": 6655,
-              "fieldValue": "={{ $('Loop Over Items').item.json.properties_owned }}"
+              "fieldId": 6758
             },
             {
-              "fieldId": 6656,
-              "fieldValue": "={{ $('Loop Over Items').item.json.address }}"
+              "fieldId": 6759
             },
             {
-              "fieldId": 6657,
-              "fieldValue": "={{ $('Loop Over Items').item.json.street_address_1 }}"
+              "fieldId": 6805,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Transaction Fee\"] }}"
             },
             {
-              "fieldId": 6658,
-              "fieldValue": "={{ $('Loop Over Items').item.json.street_address_2 }}"
+              "fieldId": 6806,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Primary Tenant\"] }}"
             },
             {
-              "fieldId": 6659,
-              "fieldValue": "={{ $('Loop Over Items').item.json.city }}"
+              "fieldId": 6807,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"First Name\"] }}"
             },
             {
-              "fieldId": 6660,
-              "fieldValue": "={{ $('Loop Over Items').item.json.state }}"
+              "fieldId": 6808,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Last Name\"] }}"
             },
             {
-              "fieldId": 6661,
-              "fieldValue": "={{ $('Loop Over Items').item.json.zip }}"
+              "fieldId": 6809,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"License Plates\"] }}"
             },
             {
-              "fieldId": 6662,
-              "fieldValue": "={{ $('Loop Over Items').item.json.country }}"
+              "fieldId": 6810,
+              "fieldValue": "={{ $('Loop Over Items').item.json.Pets }}"
             },
             {
-              "fieldId": 6663,
-              "fieldValue": "={{ $('Loop Over Items').item.json.owner_id }}"
+              "fieldId": 6811,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"NSF Fee Amount\"] }}"
             },
             {
-              "fieldId": 6664,
-              "fieldValue": "={{ $('Loop Over Items').item.json.property_ids }}"
+              "fieldId": 6812,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Require Online Payments In Full\"] }}"
             },
             {
-              "fieldId": 6668,
-              "fieldValue": "={{ new Date().toISOString().split('T')[0] }}"
+              "fieldId": 6813,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Security Deposit Return Payment\"] }}"
+            },
+            {
+              "fieldId": 6815,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Occupancy ID\"] }}"
+            },
+            {
+              "fieldId": 6816,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Unit ID\"] }}"
+            },
+            {
+              "fieldId": 6817,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Tenant ID\"] }}"
+            },
+            {
+              "fieldId": 6818,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Guest Card ID\"] }}"
+            },
+            {
+              "fieldId": 6819,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Inquiry ID\"] }}"
+            },
+            {
+              "fieldId": 6820,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Rental Application ID\"] }}"
+            },
+            {
+              "fieldId": 6821,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Portfolio ID\"] }}"
+            },
+            {
+              "fieldId": 6822,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Occupancy Import UID\"] }}"
+            },
+            {
+              "fieldId": 6823,
+              "fieldValue": "={{ $('Loop Over Items').item.json[\"Tenant Integration ID\"] }}"
             }
           ]
         }
@@ -636,6 +703,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-08T17:24:42.000Z",
-  "versionId": "c78cf40b-a22e-4b03-9a87-2abb42c18107"
+  "updatedAt": "2025-04-09T03:06:46.000Z",
+  "versionId": "b297d537-9f4a-4b2a-86ec-5d794433e1a2"
 }
