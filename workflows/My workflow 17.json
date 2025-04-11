@@ -1,44 +1,160 @@
 {
   "active": false,
   "connections": {
-    "Get Units": {
-      "main": [
-        [
-          {
-            "node": "Extract Property IDs",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract Property IDs": {
-      "main": [
-        [
-          {
-            "node": "Find Property",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When clicking ‘Test workflow’": {
       "main": [
         [
           {
-            "node": "Get Units",
+            "node": "Get Properties1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Units2",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Find Property": {
+    "Merge": {
       "main": [
         [
           {
-            "node": "Update Unit Link",
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Update Lookup via API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Properties": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Units": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Format Link Data": {
+      "main": [
+        [
+          {
+            "node": "Update Lookup via API1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Units1": {
+      "main": [
+        [
+          {
+            "node": "Format Link Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge by Property ID": {
+      "main": [
+        [
+          {
+            "node": "Format for Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Update": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Properties1": {
+      "main": [
+        [
+          {
+            "node": "Merge by Property ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Units2": {
+      "main": [
+        [
+          {
+            "node": "Merge by Property ID",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Update Linked Property",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Linked Property": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -54,62 +170,256 @@
   "name": "My workflow 17",
   "nodes": [
     {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        -120
+      ],
+      "id": "abaf0b13-1479-48b5-b09a-c12d7f67d3ec",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "={{ $json[\"Property ID\"] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        600,
+        580
+      ],
+      "id": "5ed5acde-aa87-4c1c-a013-5e139332981a",
+      "name": "Merge",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const unitRowId = item.json.id;\n  const unitPropertyId = parseInt(item.json[\"Property ID\"]);\n\n  const propertyRowId = item.json[\"id_1\"]; // This is the internal row ID from the property table\n  const propertyId = parseInt(item.json[\"Property ID_1\"]); // This is the \"Property ID\" from the property table\n\n  // Match: if unit's Property ID matches the property's \"Property ID\"\n  const match = unitPropertyId === propertyId;\n\n  return {\n    json: {\n      table1RowId: unitRowId,\n      linkedProperty: match ? [propertyRowId] : []\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        820,
+        580
+      ],
+      "id": "02d0336c-584a-4418-b23b-7eb5a3b5e3df",
+      "name": "Code",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "PATCH",
+        "url": "=https://base.blazeproperty.com/api/database/rows/table/696/{{ $json.table1RowId }}/\n",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n  \"field_7146\": [ {{ $json.table2LinkId }} ]\n}\n\n",
+        "queryParametersJson": "={\n  \"table2\": {{ $json.table2LinkId }}\n}\n"
+      },
+      "id": "d1e37ed0-2dfb-41e6-b62f-954d30f08241",
+      "name": "Update Lookup via API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        1020,
+        580
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HTGHTGVhQpvKZvdW",
+          "name": "baserow"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 692,
+        "additionalOptions": {}
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        380,
+        480
+      ],
+      "id": "7cd3753f-a95f-41b3-a3f9-0aacce46db92",
+      "name": "Get Properties",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      },
+      "disabled": true
+    },
+    {
       "parameters": {
         "databaseId": 130,
         "tableId": 694,
         "returnAll": true,
         "additionalOptions": {}
       },
-      "id": "17e1df5d-8383-48a8-ac64-19341e9c9019",
-      "name": "Get Units",
       "type": "n8n-nodes-base.baserow",
       "typeVersion": 1,
       "position": [
-        -160,
-        0
+        380,
+        680
       ],
+      "id": "2bfdec38-ab3f-4804-bf97-0bcc5fe5ac86",
+      "name": "Get Units",
       "credentials": {
         "baserowApi": {
           "id": "5zW4AD0Cpmzo8h8d",
           "name": "Baserow account"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
-        "jsCode": "const output = [];\n\nfor (const item of items) {\n  const propertyId = item.json['Property ID'];\n  const unitName = item.json['Unit Name'];\n  const propertyName = item.json['Property Name'];\n\n  // Only include units where Property Name contains 'Westminster'\n  if (propertyName && propertyName.toLowerCase().includes(\"westminster\")) {\n    output.push({\n      json: {\n        unitRowId: item.json.id,\n        propertyId: propertyId\n      }\n    });\n  }\n}\n\nreturn output;\n"
+        "jsCode": "\nconst results = [];\nfor (const unit of items) {\n  const propertyId = unit.json['Property ID'];\n  const unitId = unit.json.id;\n  if (propertyId && !isNaN(propertyId)) {\n    results.push({\n      json: {\n        table1RowId: unitId,\n        table2LinkId: [parseInt(propertyId)]\n      }\n    });\n  }\n}\nreturn results;\n"
       },
-      "id": "57fece85-6331-44ae-a669-99e699a87081",
-      "name": "Extract Property IDs",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        40,
-        0
+        360,
+        240
+      ],
+      "id": "525222eb-c169-447e-82d9-c69a061df831",
+      "name": "Format Link Data",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 694,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        340
+      ],
+      "id": "959570a9-6ce4-4d7d-aa3e-02a8f4642596",
+      "name": "Get Units1",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "PATCH",
+        "url": "=https://base.blazeproperty.com/api/database/rows/table/694/{{$json.table1RowId}}/",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\"field_7134\": {{$json.table2LinkId}}}"
+      },
+      "id": "6f1acbda-6d13-4bb2-b3bc-1f9937f54458",
+      "name": "Update Lookup via API1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        560,
+        240
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HTGHTGVhQpvKZvdW",
+          "name": "baserow"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Property ID",
+              "field2": "Property ID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f502d94c-02fd-4e0c-8f50-e86a98176d96",
+      "name": "Merge by Property ID",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -320,
+        -120
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const units = $items(\"Get Units2\", 0).map(item => item.json);\nconst properties = $items(\"Get Properties1\", 0).map(item => item.json);\n\nreturn units.map(unit => {\n  const unitRowId = unit.id;\n  const unitPropertyId = parseInt(unit[\"Property ID\"]);\n\n  const match = properties.find(\n    property => parseInt(property[\"Property ID\"]) === unitPropertyId\n  );\n\n  return {\n    json: {\n      table1RowId: unitRowId,\n      linkedProperty: match ? [match.id] : []\n    }\n  };\n});\n"
+      },
+      "id": "06681378-fb84-4298-81a4-13d7087fbc31",
+      "name": "Format for Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -40,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "PATCH",
+        "url": "=https://base.blazeproperty.com/api/database/rows/table/694/{{ $json.table1RowId }}/",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "bodyParametersJson": "={\n  \"field_7146\": {{ $json.linkedProperty }}\n}\n",
+        "queryParametersJson": "={\n  \"table2\": {{ $json.table1RowId }}\n}"
+      },
+      "id": "449e4ee0-6684-486b-9d52-3505e14acec3",
+      "name": "Update Linked Property",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        620,
+        -120
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HTGHTGVhQpvKZvdW",
+          "name": "baserow"
+        }
+      }
     },
     {
       "parameters": {
         "databaseId": 130,
         "tableId": 692,
-        "additionalOptions": {
-          "filters": {
-            "fields": [
-              {
-                "field": 7011,
-                "value": "=187"
-              }
-            ]
-          }
-        }
+        "returnAll": true,
+        "additionalOptions": {}
       },
-      "id": "4e67a5d5-494b-4a40-9509-a45d15c30e69",
-      "name": "Find Property",
+      "id": "5273317a-ab35-4925-9158-9ba0446310c4",
+      "name": "Get Properties1",
       "type": "n8n-nodes-base.baserow",
       "typeVersion": 1,
       "position": [
-        340,
-        0
+        -560,
+        -220
       ],
       "credentials": {
         "baserowApi": {
@@ -122,15 +432,16 @@
       "parameters": {
         "databaseId": 130,
         "tableId": 694,
+        "returnAll": true,
         "additionalOptions": {}
       },
-      "id": "d8447544-a05b-464c-9a77-1f7e55a1f961",
-      "name": "Update Unit Link",
+      "id": "96be197f-d855-4e67-82f3-0d65f4887a03",
+      "name": "Get Units2",
       "type": "n8n-nodes-base.baserow",
       "typeVersion": 1,
       "position": [
-        600,
-        0
+        -560,
+        -20
       ],
       "credentials": {
         "baserowApi": {
@@ -140,15 +451,29 @@
       }
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
       "position": [
-        -340,
-        0
+        180,
+        -120
       ],
-      "id": "ce2c787b-ebf3-4b4d-9a11-07abbee92198",
-      "name": "When clicking ‘Test workflow’"
+      "id": "ea7f1285-4d9a-42ea-bb8d-4899ef18a189",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        840,
+        -120
+      ],
+      "id": "6bb39c46-04e2-4a4e-905b-6ea7604e8ecb",
+      "name": "Wait",
+      "webhookId": "d07ebc69-c03c-4c43-8853-867aba85a0eb"
     }
   ],
   "pinData": {},
@@ -158,6 +483,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-10T22:03:30.000Z",
-  "versionId": "1d964101-e272-466f-a4b9-0c46e7ba19ab"
+  "updatedAt": "2025-04-11T17:17:14.000Z",
+  "versionId": "d6f4335d-7794-487d-8dd2-c2054bdd912c"
 }
