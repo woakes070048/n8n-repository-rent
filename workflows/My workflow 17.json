@@ -1,0 +1,163 @@
+{
+  "active": false,
+  "connections": {
+    "Get Units": {
+      "main": [
+        [
+          {
+            "node": "Extract Property IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Property IDs": {
+      "main": [
+        [
+          {
+            "node": "Find Property",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Units",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Property": {
+      "main": [
+        [
+          {
+            "node": "Update Unit Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-10T21:25:50.024Z",
+  "id": "Np8lJvw4qIjK63oB",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 17",
+  "nodes": [
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 694,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "id": "17e1df5d-8383-48a8-ac64-19341e9c9019",
+      "name": "Get Units",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        0
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = [];\n\nfor (const item of items) {\n  const propertyId = item.json['Property ID'];\n  const unitName = item.json['Unit Name'];\n  const propertyName = item.json['Property Name'];\n\n  // Only include units where Property Name contains 'Westminster'\n  if (propertyName && propertyName.toLowerCase().includes(\"westminster\")) {\n    output.push({\n      json: {\n        unitRowId: item.json.id,\n        propertyId: propertyId\n      }\n    });\n  }\n}\n\nreturn output;\n"
+      },
+      "id": "57fece85-6331-44ae-a669-99e699a87081",
+      "name": "Extract Property IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        40,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 692,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7011,
+                "value": "=187"
+              }
+            ]
+          }
+        }
+      },
+      "id": "4e67a5d5-494b-4a40-9509-a45d15c30e69",
+      "name": "Find Property",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        340,
+        0
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 694,
+        "additionalOptions": {}
+      },
+      "id": "d8447544-a05b-464c-9a77-1f7e55a1f961",
+      "name": "Update Unit Link",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        600,
+        0
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        0
+      ],
+      "id": "ce2c787b-ebf3-4b4d-9a11-07abbee92198",
+      "name": "When clicking ‘Test workflow’"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-10T22:03:30.000Z",
+  "versionId": "1d964101-e272-466f-a4b9-0c46e7ba19ab"
+}
