@@ -1,0 +1,208 @@
+{
+  "active": false,
+  "connections": {
+    "Get Properties": {
+      "main": [
+        [
+          {
+            "node": "Get Units",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Units": {
+      "main": [
+        [
+          {
+            "node": "Format Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Update": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Update Unit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Unit": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-11T21:55:45.683Z",
+  "id": "kBj9VoxobvoQBQIX",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Auto Update Linked Tables v2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        300
+      ],
+      "id": "5263d57e-e42e-4add-acbf-4559538615f4",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "databaseId": 170,
+        "tableId": 699,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "id": "d55ce9b0-f2f3-45fa-a5ff-598b17adad05",
+      "name": "Get Properties",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        300
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "databaseId": 170,
+        "tableId": 700,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "id": "a1a18fb4-d1b1-4f4e-b223-67d544738f3b",
+      "name": "Get Units",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        300
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const units = $items(\"Get Units\", 0).map(item => item.json);\nconst properties = $items(\"Get Properties\", 0).map(item => item.json);\n\nreturn units.map(unit => {\n  const unitRowId = unit.id; // ✅ MUST use this — it's the Baserow row ID\n  const unitPropId = parseInt(unit[\"Property ID\"]);\n\n  const match = properties.find(p => parseInt(p[\"Property ID\"]) === unitPropId);\n\n  return {\n    json: {\n      unitRowId: unitRowId, // ✅ This is correct now\n      linkedProperty: match ? [match.id] : []\n    }\n  };\n});\n"
+      },
+      "id": "c6de573b-5fe5-44c1-97d1-2706ce3657cb",
+      "name": "Format Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 20,
+        "options": {}
+      },
+      "id": "9e7e5d1f-392a-4d6b-8573-12a3c1ab4ad7",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -40,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "PATCH",
+        "url": "=https://base.blazeproperty.com/api/database/rows/table/699/{{ $json.unitRowId }}/\n\n\n\n",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "bodyParametersJson": "={\n  \"field_7153\": {{$json[\"linkedProperty\"]}}\n}\n"
+      },
+      "id": "f020eebe-7ef4-4bd3-9bb1-216c1be2d6ec",
+      "name": "Update Unit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        280,
+        320
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HTGHTGVhQpvKZvdW",
+          "name": "baserow"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        500,
+        320
+      ],
+      "id": "b849ec2c-21dd-4dc5-9f01-2c03fc49e4ff",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-11T22:17:36.000Z",
+  "versionId": "fcddeec1-f27f-4d6b-9d2e-084c1942feb8"
+}
