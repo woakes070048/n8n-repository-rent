@@ -1,0 +1,225 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Properties",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Units",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Properties": {
+      "main": [
+        [
+          {
+            "node": "Merge by Property ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Units": {
+      "main": [
+        [
+          {
+            "node": "Merge by Property ID",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge by Property ID": {
+      "main": [
+        [
+          {
+            "node": "Format for Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Update": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Update Linked Property",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-11T18:12:48.252Z",
+  "id": "GzFtjvdors5Ib2sq",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 18",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "8fd07989-8163-47cf-9609-7274ad51ce5b",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 692,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "id": "2cde2e10-1c81-4554-be57-430c60b8e49b",
+      "name": "Get Properties",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -740,
+        20
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 694,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "id": "e59a74fc-4f37-4e4f-a70e-7b4efbb3c02c",
+      "name": "Get Units",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -740,
+        220
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Property ID",
+              "field2": "Property ID"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f29e6e09-0350-4026-864e-8d26de1f80f2",
+      "name": "Merge by Property ID",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -500,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  return {\n    json: {\n      table1RowId: item.json.id,\n      linkedProperty: item.json[\"id_1\"] ? [item.json[\"id_1\"]] : []\n    }\n  };\n});"
+      },
+      "id": "781c4af1-0dbc-4bb9-946d-7b543599d912",
+      "name": "Format for Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0492bf24-5d71-489d-97c3-e27d1cb12335",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        0,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "PATCH",
+        "url": "=https://base.blazeproperty.com/api/database/rows/table/694/{{ $json.table1RowId }}/",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "bodyParametersJson": "={\n  \"field_7146\": {{ $json.linkedProperty }}\n}\n",
+        "queryParametersJson": "={\n  \"table2\": {{ $json.table1RowId }}\n}"
+      },
+      "id": "56113312-e76e-4ec3-a7d6-1669755ab0ec",
+      "name": "Update Linked Property",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        280,
+        120
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HTGHTGVhQpvKZvdW",
+          "name": "baserow"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-11T18:34:57.000Z",
+  "versionId": "c2e97712-ebb4-4207-b228-81275d4c388f"
+}
