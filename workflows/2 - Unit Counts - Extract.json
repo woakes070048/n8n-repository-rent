@@ -2057,8 +2057,15 @@
       "recurrenceRules": []
     }
   },
-  "tags": [],
+  "tags": [
+    {
+      "createdAt": "2025-04-11T20:44:19.550Z",
+      "updatedAt": "2025-04-11T20:44:19.550Z",
+      "id": "DrPAmUegneOl4Gu1",
+      "name": "rep-apt-auto"
+    }
+  ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-04T21:49:27.000Z",
-  "versionId": "3dece5c3-9e1a-484a-8405-b790fc618df5"
+  "updatedAt": "2025-04-11T20:44:20.000Z",
+  "versionId": "832dd2ee-906f-46e7-8863-38c5c9ee7b7b"
 }
