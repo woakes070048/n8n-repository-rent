@@ -8,11 +8,6 @@
             "node": "Get Properties1",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Get Units2",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -83,17 +78,6 @@
         ]
       ]
     },
-    "Merge by Property ID": {
-      "main": [
-        [
-          {
-            "node": "Format for Update",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Format for Update": {
       "main": [
         [
@@ -109,7 +93,7 @@
       "main": [
         [
           {
-            "node": "Merge by Property ID",
+            "node": "Get Units2",
             "type": "main",
             "index": 0
           }
@@ -120,9 +104,9 @@
       "main": [
         [
           {
-            "node": "Merge by Property ID",
+            "node": "Format for Update",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
@@ -328,29 +312,6 @@
     },
     {
       "parameters": {
-        "mode": "combine",
-        "advanced": true,
-        "mergeByFields": {
-          "values": [
-            {
-              "field1": "Property ID",
-              "field2": "Property ID"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "f502d94c-02fd-4e0c-8f50-e86a98176d96",
-      "name": "Merge by Property ID",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        -320,
-        -120
-      ]
-    },
-    {
-      "parameters": {
         "jsCode": "const units = $items(\"Get Units2\", 0).map(item => item.json);\nconst properties = $items(\"Get Properties1\", 0).map(item => item.json);\n\nreturn units.map(unit => {\n  const unitRowId = unit.id;\n  const externalPropertyId = parseInt(unit[\"Property ID\"]);\n\n  const matchedProperty = properties.find(\n    property => parseInt(property[\"Property ID\"]) === externalPropertyId\n  );\n\n  return {\n    json: {\n      table1RowId: unitRowId,\n      linkedProperty: matchedProperty ? [matchedProperty.id] : []\n    }\n  };\n});\n"
       },
       "id": "06681378-fb84-4298-81a4-13d7087fbc31",
@@ -358,7 +319,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -40,
+        -280,
         -120
       ]
     },
@@ -379,8 +340,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        460,
-        -120
+        220,
+        -100
       ],
       "credentials": {
         "httpHeaderAuth": {
@@ -402,8 +363,8 @@
       "type": "n8n-nodes-base.baserow",
       "typeVersion": 1,
       "position": [
-        -560,
-        -220
+        -700,
+        -120
       ],
       "credentials": {
         "baserowApi": {
@@ -424,8 +385,8 @@
       "type": "n8n-nodes-base.baserow",
       "typeVersion": 1,
       "position": [
-        -560,
-        -20
+        -540,
+        -120
       ],
       "credentials": {
         "baserowApi": {
@@ -442,7 +403,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        180,
+        -20,
         -120
       ],
       "id": "ea7f1285-4d9a-42ea-bb8d-4899ef18a189",
@@ -456,6 +417,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-11T18:15:11.000Z",
-  "versionId": "c9fe97c7-bfe2-4abe-bc29-b7bdc7cf046a"
+  "updatedAt": "2025-04-12T10:29:34.000Z",
+  "versionId": "017786f1-c516-49ba-a9c8-3151710cee77"
 }
