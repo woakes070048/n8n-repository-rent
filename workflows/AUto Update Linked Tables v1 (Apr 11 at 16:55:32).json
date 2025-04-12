@@ -1,0 +1,182 @@
+{
+  "active": false,
+  "connections": {
+    "Get Properties": {
+      "main": [
+        [
+          {
+            "node": "Format Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Units": {
+      "main": [
+        [
+          {
+            "node": "Get Properties",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Update": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Update Unit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Units",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-12T09:49:17.954Z",
+  "id": "GLL1huZ92x6254Qp",
+  "meta": null,
+  "name": "AUto Update Linked Tables v1 (Apr 11 at 16:55:32)",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        300
+      ],
+      "id": "0935d7c9-bb0b-4ae7-8c2c-c13bc317690c",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "databaseId": 170,
+        "tableId": 699,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "id": "ea991263-9c09-4ae8-b5dd-90e23658450c",
+      "name": "Get Properties",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -500,
+        300
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "databaseId": 170,
+        "tableId": 700,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "id": "1b19679a-40f6-47e5-bc6b-634fe0dc53cd",
+      "name": "Get Units",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -680,
+        300
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const unit = $json;\nconst properties = $items(\"Get Properties\", 0).map(item => item.json);\nconst propId = parseInt(unit[\"Property ID\"]);\nconst match = properties.find(p => parseInt(p[\"Property ID\"]) === propId);\n\nreturn [\n  {\n    json: {\n      unitRowId: unit.id,\n      linkedProperty: match ? [match.id] : []\n    }\n  }\n];\n"
+      },
+      "id": "a8047f51-ef52-4519-9a16-d46cfd8fe441",
+      "name": "Format Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "batchSize": 50,
+        "options": {}
+      },
+      "id": "248b2eac-90e6-4084-9283-b87360c216a5",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "PATCH",
+        "url": "=https://base.blazeproperty.com/api/database/rows/table/699/{{ $json.unitRowId }}/\n\n",
+        "jsonParameters": true,
+        "options": {
+          "bodyContentType": "json"
+        },
+        "bodyParametersJson": "={\n  \"field_7153\": [{{ $json.linkedProperty }}]\n}\n"
+      },
+      "id": "0cc333df-f09d-44a1-b93e-ae59c10b36a9",
+      "name": "Update Unit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        160,
+        320
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "HTGHTGVhQpvKZvdW",
+          "name": "baserow"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {},
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-12T10:35:08.000Z",
+  "versionId": "61580a58-903b-4010-89f0-ba6507c65cb0"
+}
