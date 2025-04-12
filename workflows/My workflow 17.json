@@ -141,24 +141,7 @@
     },
     "Update Linked Property": {
       "main": [
-        [
-          {
-            "node": "Wait",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -368,7 +351,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const units = $items(\"Get Units2\", 0).map(item => item.json);\nconst properties = $items(\"Get Properties1\", 0).map(item => item.json);\n\nreturn units.map(unit => {\n  const unitRowId = unit.id;\n  const unitPropertyId = parseInt(unit[\"Property ID\"]);\n\n  const match = properties.find(\n    property => parseInt(property[\"Property ID\"]) === unitPropertyId\n  );\n\n  return {\n    json: {\n      table1RowId: unitRowId,\n      linkedProperty: match ? [match.id] : []\n    }\n  };\n});\n"
+        "jsCode": "const units = $items(\"Get Units2\", 0).map(item => item.json);\nconst properties = $items(\"Get Properties1\", 0).map(item => item.json);\n\nreturn units.map(unit => {\n  const unitRowId = unit.id;\n  const externalPropertyId = parseInt(unit[\"Property ID\"]);\n\n  const matchedProperty = properties.find(\n    property => parseInt(property[\"Property ID\"]) === externalPropertyId\n  );\n\n  return {\n    json: {\n      table1RowId: unitRowId,\n      linkedProperty: matchedProperty ? [matchedProperty.id] : []\n    }\n  };\n});\n"
       },
       "id": "06681378-fb84-4298-81a4-13d7087fbc31",
       "name": "Format for Update",
@@ -396,7 +379,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        620,
+        460,
         -120
       ],
       "credentials": {
@@ -404,7 +387,8 @@
           "id": "HTGHTGVhQpvKZvdW",
           "name": "baserow"
         }
-      }
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -452,6 +436,7 @@
     },
     {
       "parameters": {
+        "batchSize": 10,
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
@@ -462,18 +447,6 @@
       ],
       "id": "ea7f1285-4d9a-42ea-bb8d-4899ef18a189",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        840,
-        -120
-      ],
-      "id": "6bb39c46-04e2-4a4e-905b-6ea7604e8ecb",
-      "name": "Wait",
-      "webhookId": "d07ebc69-c03c-4c43-8853-867aba85a0eb"
     }
   ],
   "pinData": {},
@@ -483,6 +456,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-11T17:17:14.000Z",
-  "versionId": "d6f4335d-7794-487d-8dd2-c2054bdd912c"
+  "updatedAt": "2025-04-11T18:15:11.000Z",
+  "versionId": "c9fe97c7-bfe2-4abe-bc29-b7bdc7cf046a"
 }
