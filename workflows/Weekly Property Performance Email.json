@@ -77,6 +77,83 @@
           }
         ]
       ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML1": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Group Current vs Last Week Data1": {
+      "main": [
+        [
+          {
+            "node": "Calculate Deltas & Icons1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Deltas & Icons1": {
+      "main": [
+        [
+          {
+            "node": "Format Lead Sources HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Lead Sources HTML1": {
+      "main": [
+        [
+          {
+            "node": "HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Active Properties1": {
+      "main": [
+        [
+          {
+            "node": "Group Current vs Last Week Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow1": {
+      "main": [
+        [
+          {
+            "node": "Get Active Properties1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-04-05T16:07:09.980Z",
@@ -103,11 +180,12 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -580,
-        -80
+        -620,
+        -460
       ],
       "id": "70789de5-7665-4038-8bf7-c9101221a505",
-      "name": "Schedule Trigger"
+      "name": "Schedule Trigger",
+      "disabled": true
     },
     {
       "parameters": {
@@ -122,11 +200,168 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        960,
-        -80
+        920,
+        -460
       ],
       "id": "df681893-147f-4bc6-9b21-f2a88000184e",
       "name": "Gmail",
+      "webhookId": "670979d2-614a-4484-bf1c-f610a80fcffb",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "html": "<!DOCTYPE html>\n<html>\n  <body style=\"margin:0; padding:0; font-family: Arial, sans-serif; background-color: #f4f6f8; color: #2c3e50;\">\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #f4f6f8;\">\n      <tr>\n        <td align=\"center\">\n          <table width=\"700\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #ffffff; border-radius: 12px; overflow: hidden; margin: 20px auto; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);\">\n            \n            <!-- Header -->\n            <tr>\n              <td align=\"center\" style=\"background: linear-gradient(90deg, #ff6600, #ff3300); padding: 30px; border-radius: 12px 12px 0 0;\">\n                <img src=\"https://blazeproperty.com/wp-content/uploads/elementor/thumbs/Blaze-Logo@0.5x-r0a9ey5glgo1fw9bih58md769hk4ii44j6idfvlvy8.png\" alt=\"Blaze Logo\" style=\"max-height: 60px; margin-bottom: 10px;\" />\n                <h2 style=\"margin: 0; font-size: 22px; color: #fff;\">Weekly Property Performance Summary</h2>\n              </td>\n            </tr>\n\n            <!-- Beta Welcome Message -->\n            <tr>\n              <td style=\"padding: 20px 30px 10px;\">\n                <div style=\"background-color: #fff3e0; border-left: 5px solid #ff9900; padding: 15px 20px; font-size: 14px; line-height: 1.5;\">\n                  <strong>Welcome!</strong> This summary is part of our new owner reporting initiative.\n                  It’s currently in <em>beta</em>, and we welcome your feedback. Send suggestions to\n                  <a href=\"mailto:brandon@blazeproperty.com\" style=\"color: #d35400;\">brandon@blazeproperty.com</a>.\n                </div>\n              </td>\n            </tr>\n\n            <!-- Property Info -->\n            <tr>\n              <td style=\"padding: 10px 30px 0;\">\n                <p style=\"font-size: 16px; font-weight: bold; margin: 0;\">Property: {{ $json.property_name }}</p>\n              </td>\n            </tr>\n\n            <!-- Metrics Table -->\n            <tr>\n              <td style=\"padding: 0 30px 30px;\">\n                <table width=\"100%\" cellpadding=\"10\" cellspacing=\"0\" border=\"0\" style=\"border-collapse: collapse; width: 100%; text-align: center;\">\n                  <tr style=\"background-color: #ffe5d1; font-weight: bold;\">\n                    <td style=\"border: 1px solid #ddd;\">Metric</td>\n                    <td style=\"border: 1px solid #ddd;\">Last Week</td>\n                    <td style=\"border: 1px solid #ddd;\">This Week</td>\n                    <td style=\"border: 1px solid #ddd;\">Change</td>\n                  </tr>\n                  <tr style=\"background-color: #ffffff;\">\n                    <td style=\"border: 1px solid #ddd;\">Guest Cards</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.guest_cards_last }}</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.guest_cards_current }}</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.guest_cards_icon }} {{ $json.guest_cards_delta }}</td>\n                  </tr>\n                  <tr style=\"background-color: #fafafa;\">\n                    <td style=\"border: 1px solid #ddd;\">Applications</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.applications_last }}</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.applications_current }}</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.applications_icon }} {{ $json.applications_delta }}</td>\n                  </tr>\n                  <tr style=\"background-color: #ffffff;\">\n                    <td style=\"border: 1px solid #ddd;\">Showings</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.showings_last }}</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.showings_current }}</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.showings_icon }} {{ $json.showings_delta }}</td>\n                  </tr>\n                  <tr style=\"background-color: #fafafa;\">\n                    <td style=\"border: 1px solid #ddd;\">Showings Cancelled</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.showings_cancelled_last }}</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.showings_cancelled_current }}</td>\n                    <td style=\"border: 1px solid #ddd;\">{{ $json.showings_cancelled_icon }} {{ $json.showings_cancelled_delta }}</td>\n                  </tr>\n                </table>\n              </td>\n            </tr>\n\n            <!-- Lead Sources -->\n            <tr>\n              <td style=\"padding: 0 30px 20px;\">\n                <h4 style=\"color: #e67e22; font-size: 16px; margin: 0 0 8px;\">This Week’s Lead Sources</h4>\n                {{ $json.lead_sources_html }}\n              </td>\n            </tr>\n\n            <!-- Upcoming Showings -->\n            <tr>\n              <td style=\"padding: 0 30px 30px;\">\n                <h4 style=\"color: #e67e22; font-size: 16px; margin: 0 0 8px;\">Upcoming Showings</h4>\n                {{ $json.upcoming_showings_html }}\n              </td>\n            </tr>\n\n            <!-- Footer -->\n            <tr>\n              <td align=\"center\" style=\"padding: 20px; font-size: 12px; color: #888; border-top: 1px solid #eee;\">\n                This report is automatically generated by Blaze Real Estate’s reporting system.<br />\n                For questions, contact <a href=\"mailto:brandon@blazeproperty.com\" style=\"color: #d35400;\">brandon@blazeproperty.com</a>\n              </td>\n            </tr>\n            \n          </table>\n        </td>\n      </tr>\n    </table>\n  </body>\n</html>\n"
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        700,
+        -460
+      ],
+      "id": "744662d3-4948-4831-928f-5a4fb09247b3",
+      "name": "HTML",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst grouped = {};\n\n// Get the two latest weeks from the data\nconst weekSet = new Set(items.map(i => i.json.week_ending));\nconst sortedWeeks = [...weekSet].sort((a, b) => new Date(b) - new Date(a));\nconst [latestWeek, secondLatestWeek] = sortedWeeks;\n\nfor (const item of items) {\n  const {\n    property_id,\n    property_name,\n    owner_id,\n    owner_email,\n    week_ending,\n    ...metrics\n  } = item.json;\n\n  if (!grouped[property_id]) {\n    grouped[property_id] = {\n      property_id,\n      property_name,\n      owner_id,\n      owner_email,\n      current: null,\n      last: null,\n    };\n  }\n\n  if (week_ending === latestWeek) {\n    grouped[property_id].current = metrics;\n  } else if (week_ending === secondLatestWeek) {\n    grouped[property_id].last = metrics;\n  }\n}\n\nreturn Object.values(grouped).map(({ property_id, property_name, owner_id, owner_email, current, last }) => ({\n  json: {\n    property_id,\n    property_name,\n    owner_id,\n    owner_email,\n    guest_cards_current: current?.guest_cards || 0,\n    guest_cards_last: last?.guest_cards || 0,\n    applications_current: current?.applications || 0,\n    applications_last: last?.applications || 0,\n    showings_current: current?.showings || 0,\n    showings_last: last?.showings || 0,\n    showings_cancelled_current: current?.showings_cancelled || 0,\n    showings_cancelled_last: last?.showings_cancelled || 0,\n    lead_sources_current: current?.lead_sources || '{}',\n    lead_sources_last: last?.lead_sources || '{}',\n    application_statuses_current: current?.application_statuses || '{}',\n    application_statuses_last: last?.application_statuses || '{}',\n    week_ending_current: latestWeek,\n    week_ending_last: secondLatestWeek\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        40,
+        -460
+      ],
+      "id": "c993a3e5-e9f1-4e82-b317-dd8e5819ab5b",
+      "name": "Group Current vs Last Week Data",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $input.item.json;\n\nfunction getDeltaDetails(current, last) {\n  const delta = current - last;\n  const symbol = delta === 0 ? \"±\" : delta > 0 ? \"+\" : \"\";\n  const icon = delta === 0 ? \"➖\" : delta > 0 ? \"📈\" : \"📉\";\n  const color = delta === 0 ? \"#6c757d\" : delta > 0 ? \"#28a745\" : \"#dc3545\"; // gray, green, red\n  return {\n    delta: `${symbol}${delta}`,\n    icon,\n    color\n  };\n}\n\nconst guestCards = getDeltaDetails(item.guest_cards_current, item.guest_cards_last);\nconst applications = getDeltaDetails(item.applications_current, item.applications_last);\nconst showings = getDeltaDetails(item.showings_current, item.showings_last);\nconst showingsCancelled = getDeltaDetails(item.showings_cancelled_current, item.showings_cancelled_last);\n\nreturn {\n  json: {\n    ...item,\n    guest_cards_delta: guestCards.delta,\n    guest_cards_icon: guestCards.icon,\n    guest_cards_color: guestCards.color,\n\n    applications_delta: applications.delta,\n    applications_icon: applications.icon,\n    applications_color: applications.color,\n\n    showings_delta: showings.delta,\n    showings_icon: showings.icon,\n    showings_color: showings.color,\n\n    showings_cancelled_delta: showingsCancelled.delta,\n    showings_cancelled_icon: showingsCancelled.icon,\n    showings_cancelled_color: showingsCancelled.color\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        -460
+      ],
+      "id": "45fed572-84dd-4c26-bbd4-542bfd0fb8fa",
+      "name": "Calculate Deltas & Icons",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const sources = JSON.parse($json.lead_sources_current || '{}');\n\nlet sourcesHTML = '';\nfor (const [source, count] of Object.entries(sources)) {\n  sourcesHTML += `<li><strong>${source}:</strong> ${count}</li>`;\n}\n\n// Assume upcoming_showings is a number or string; update if you have richer data\nlet upcomingHTML = '';\nif ($json.upcoming_showings && $json.upcoming_showings > 0) {\n  upcomingHTML = `<p><strong>📅 Upcoming Showings:</strong> ${$json.upcoming_showings}</p>`;\n} else {\n  upcomingHTML = `<p><em>Looks quiet now, but we’re just one click away from a showing request. 📅</em></p>`;\n}\n\nreturn {\n  json: {\n    ...$json,\n    lead_sources_current_parsed: sources,\n    lead_sources_html: `<ul>${sourcesHTML}</ul>`,\n    upcoming_showings_html: upcomingHTML,\n  }\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        -460
+      ],
+      "id": "f51f835d-59cf-45ab-aa33-f13b086a2224",
+      "name": "Format Lead Sources HTML",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n  oms.property_id,\n  oms.property_name,\n  oms.owner_id,\n  oms.owner_email,\n  oms.guest_cards,\n  oms.applications,\n  oms.showings,\n  oms.showings_cancelled,\n  oms.lead_sources,\n  oms.application_statuses,\n  oms.week_ending\nFROM owner_marketing_summary oms\nJOIN (\n  SELECT DISTINCT week_ending \n  FROM owner_marketing_summary \n  ORDER BY week_ending DESC \n  LIMIT 2\n) recent_weeks ON oms.week_ending = recent_weeks.week_ending\nORDER BY oms.property_id, oms.week_ending DESC;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -180,
+        -460
+      ],
+      "id": "9e65f498-b38e-42f2-ae8e-ac98eee0e364",
+      "name": "Get Active Properties",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "TE8BPSUM26yF59XY",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -400,
+        -460
+      ],
+      "id": "60631404-a510-41b1-b167-a784c524eb25",
+      "name": "Execute Workflow",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -620,
+        -240
+      ],
+      "id": "ac1573a9-b660-4909-ae82-656d405d4067",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "=Your Property Marketing Performance for {{ $('Calculate Deltas & Icons1').item.json.property_name }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}",
+        "options": {
+          "sendTo": "={{ $('Calculate Deltas & Icons1').item.json.owner_email }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        920,
+        -240
+      ],
+      "id": "433f3ec9-ffd1-4ec5-b707-6965e850ae63",
+      "name": "Gmail1",
       "webhookId": "670979d2-614a-4484-bf1c-f610a80fcffb",
       "credentials": {
         "gmailOAuth2": {
@@ -142,24 +377,24 @@
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
       "position": [
-        740,
-        -80
+        700,
+        -240
       ],
-      "id": "744662d3-4948-4831-928f-5a4fb09247b3",
-      "name": "HTML"
+      "id": "112180a8-67dd-40fa-b233-f42cdbe872e8",
+      "name": "HTML1"
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\nconst grouped = {};\n\nfor (const item of items) {\n  const {\n    property_id,\n    property_name,\n    owner_id,\n    owner_email,\n    week_ending,\n    ...metrics\n  } = item.json;\n\n  if (!grouped[property_id]) {\n    grouped[property_id] = {\n      property_id,\n      property_name,\n      owner_id,\n      owner_email,\n      current: null,\n      last: null,\n    };\n  }\n\n  const slot = (grouped[property_id].current === null) ? 'current' : 'last';\n  grouped[property_id][slot] = metrics;\n}\n\nreturn Object.values(grouped).map(({ property_id, property_name, owner_id, owner_email, current, last }) => ({\n  json: {\n    property_id,\n    property_name,\n    owner_id,\n    owner_email,\n    guest_cards_current: current?.guest_cards || 0,\n    guest_cards_last: last?.guest_cards || 0,\n    applications_current: current?.applications || 0,\n    applications_last: last?.applications || 0,\n    showings_current: current?.showings || 0,\n    showings_last: last?.showings || 0,\n    showings_cancelled_current: current?.showings_cancelled || 0,\n    showings_cancelled_last: last?.showings_cancelled || 0,\n    lead_sources_current: current?.lead_sources || '{}',\n    lead_sources_last: last?.lead_sources || '{}',\n    application_statuses_current: current?.application_statuses || '{}',\n    application_statuses_last: last?.application_statuses || '{}',\n  }\n}));\n"
+        "jsCode": "const items = $input.all();\nconst grouped = {};\n\n// Group by property_id\nfor (const item of items) {\n  const { property_id, property_name, owner_id, owner_email, week_ending, ...metrics } = item.json;\n  \n  if (!grouped[property_id]) {\n    grouped[property_id] = {\n      property_id,\n      property_name,\n      owner_id,\n      owner_email,\n      entries: []\n    };\n  }\n\n  grouped[property_id].entries.push({\n    week_ending: new Date(week_ending),\n    ...metrics\n  });\n}\n\nconst output = [];\n\nfor (const group of Object.values(grouped)) {\n  const { property_id, property_name, owner_id, owner_email, entries } = group;\n\n  if (entries.length === 0) continue;\n\n  // Sort by week_ending descending\n  const sorted = entries.sort((a, b) => b.week_ending - a.week_ending);\n\n  const current = sorted[0];\n  const last = sorted[1] || {}; // fallback if no previous week exists\n\n  output.push({\n    json: {\n      property_id,\n      property_name,\n      owner_id,\n      owner_email,\n      guest_cards_current: current.guest_cards || 0,\n      guest_cards_last: last.guest_cards || 0,\n      applications_current: current.applications || 0,\n      applications_last: last.applications || 0,\n      showings_current: current.showings || 0,\n      showings_last: last.showings || 0,\n      showings_cancelled_current: current.showings_cancelled || 0,\n      showings_cancelled_last: last.showings_cancelled || 0,\n      lead_sources_current: current.lead_sources || '{}',\n      lead_sources_last: last.lead_sources || '{}',\n      application_statuses_current: current.application_statuses || '{}',\n      application_statuses_last: last.application_statuses || '{}',\n      week_ending_current: current.week_ending.toISOString().split('T')[0],\n      week_ending_last: last.week_ending ? last.week_ending.toISOString().split('T')[0] : null\n    }\n  });\n}\n\nreturn output;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        80,
-        -80
+        40,
+        -240
       ],
-      "id": "c993a3e5-e9f1-4e82-b317-dd8e5819ab5b",
-      "name": "Group Current vs Last Week Data"
+      "id": "3c70e4d9-4a0f-4344-99de-a4c39a2f2499",
+      "name": "Group Current vs Last Week Data1"
     },
     {
       "parameters": {
@@ -169,11 +404,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        300,
-        -80
+        260,
+        -240
       ],
-      "id": "45fed572-84dd-4c26-bbd4-542bfd0fb8fa",
-      "name": "Calculate Deltas & Icons"
+      "id": "cb3a55b0-c6c0-48d1-9bab-1c48a6e0cdcf",
+      "name": "Calculate Deltas & Icons1"
     },
     {
       "parameters": {
@@ -183,11 +418,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        520,
-        -80
+        480,
+        -240
       ],
-      "id": "f51f835d-59cf-45ab-aa33-f13b086a2224",
-      "name": "Format Lead Sources HTML"
+      "id": "d8723f64-adcc-4c5f-b756-e272b5f98246",
+      "name": "Format Lead Sources HTML1"
     },
     {
       "parameters": {
@@ -198,11 +433,11 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -140,
-        -80
+        -180,
+        -240
       ],
-      "id": "9e65f498-b38e-42f2-ae8e-ac98eee0e364",
-      "name": "Get Active Properties",
+      "id": "8eb0a3aa-daad-4bd4-a4c7-9b659d34dc41",
+      "name": "Get Active Properties1",
       "credentials": {
         "mySql": {
           "id": "OUIfR0k9k0YXHa0V",
@@ -230,11 +465,11 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        -360,
-        -80
+        -400,
+        -240
       ],
-      "id": "60631404-a510-41b1-b167-a784c524eb25",
-      "name": "Execute Workflow"
+      "id": "198d2db7-ebf0-4d14-9311-e3c8e46e7079",
+      "name": "Execute Workflow1"
     }
   ],
   "pinData": {},
@@ -244,6 +479,9 @@
   },
   "staticData": {
     "node:Schedule Trigger": {
+      "recurrenceRules": []
+    },
+    "node:Schedule Trigger1": {
       "recurrenceRules": []
     }
   },
@@ -280,6 +518,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-06T12:22:51.000Z",
-  "versionId": "c832fd8f-6c2d-45d9-a217-2d691824fa1a"
+  "updatedAt": "2025-04-13T13:52:01.000Z",
+  "versionId": "60e10875-0a7e-4b04-a1b9-ce2ed2b31b62"
 }
