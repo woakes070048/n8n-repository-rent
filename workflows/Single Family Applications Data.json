@@ -93,7 +93,7 @@
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1.2,
       "position": [
-        -620,
+        -640,
         0
       ],
       "id": "07792c93-ba37-4b62-929c-a24c746c54f0",
@@ -232,9 +232,9 @@
   "staticData": {
     "node:Applications": {
       "Applications": {
-        "lastTimeChecked": 1744452801,
+        "lastTimeChecked": 1744547025,
         "possibleDuplicates": [
-          "19607b3d92871d54"
+          "1962ebc9acf1edf8"
         ]
       }
     }
@@ -272,6 +272,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-06T12:22:02.000Z",
-  "versionId": "d3aed050-1850-4a88-99b6-29f2d5810813"
+  "updatedAt": "2025-04-13T12:23:45.000Z",
+  "versionId": "558a991f-1c69-4a56-9730-b8808dd81991"
 }
