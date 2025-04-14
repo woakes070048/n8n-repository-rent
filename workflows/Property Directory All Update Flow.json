@@ -1,0 +1,143 @@
+{
+  "active": false,
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extract CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract CSV": {
+      "main": [
+        [
+          {
+            "node": "Parse CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse CSV": {
+      "main": [
+        [
+          {
+            "node": "Upsert to MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-13T19:31:19.876Z",
+  "id": "x7VKmBSLVqzhFm9G",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Property Directory All Update Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "property_directory",
+          "readStatus": "unread"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        100
+      ],
+      "id": "64bb5b0e-49fd-43d7-9cbc-9a9a497a4b17",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "name": "Extract CSV",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        100
+      ],
+      "id": "548ee696-8f19-4a28-a1e8-ed0d594ddd1d"
+    },
+    {
+      "parameters": {
+        "jsCode": "function convertToSQLDate(value) {\n  if (!value) return null;\n\n  if (!isNaN(value) && Number(value) > 10000) {\n    const base = new Date(1899, 11, 30);\n    const date = new Date(base.getTime() + Number(value) * 86400000);\n    return date.toISOString().split(\"T\")[0];\n  }\n\n  const parts = value.split('/');\n  if (parts.length === 3) {\n    const [month, day, year] = parts;\n    return `${year.padStart(4, '20')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;\n  }\n\n  return value;\n}\n\nconst aliasMap = {\n  'Property': 'property',\n  'Market Rent': 'market_rents',\n  'Units': 'units',\n  'Management Flat Fee': 'management_flat_fee',\n  'Management Fee Percent': 'management_fee_percent',\n  'Minimum Fee': 'minimum_fee',\n  'Reserve': 'reserve',\n  'Home Warranty Expiration': 'home_warranty_expiration',\n  'Insurance Expiration': 'insurance_expiration',\n  'Tax Year End': 'tax_year_end',\n  'Description': 'description',\n  'Property Name': 'property_name',\n  'Property Address': 'property_address',\n  'Property City': 'property_city',\n  'Property State': 'property_state',\n  'Property Zip': 'property_zip',\n  'Property County': 'property_county',\n  'Tax Authority': 'tax_authority',\n  'Portfolio': 'portfolio',\n  'Premium Status': 'premium_status',\n  'Premium Monthly Cap': 'premium_monthly_cap',\n  'Premium Activation Date': 'premium_activation_date',\n  'Maintenance Limit': 'maintenance_limit',\n  'Maintenance Notes': 'maintenance_notes',\n  'Site Manager Name': 'site_manager_name',\n  'Management Fee Type': 'management_fee_type',\n  'Lease Fee Type': 'lease_fee_type',\n  'Lease Flat Fee': 'lease_flat_fee',\n  'Lease Fee Percent': 'lease_fee_percent',\n  'Owner Payment Type': 'owner_payment_type',\n  'Property Type': 'property_type',\n  'Property Created On': 'property_created_on',\n  'Property Created By': 'property_created_by',\n  'Late Fee Type': 'late_fee_type',\n  'Late Fee Base Amount': 'late_fee_base_amount',\n  'Late Fee Daily Amount': 'late_fee_daily_amount',\n  'Grace Period': 'grace_period',\n  'Grace Period Fixed Day': 'grace_period_fixed_day',\n  'Grace Balance': 'grace_balance',\n  'Max Daily Late Fees Amount': 'max_daily_late_fees_amount',\n  'Ignore Partial Payments': 'ignore_partial_payments',\n  'Year Built': 'year_built',\n  'Contract Expiration': 'contract_expiration',\n  'Management Start Date': 'management_start_date',\n  'Management End Date': 'management_end_date',\n  'Management End Reason': 'management_end_reason',\n  'Class': 'class',\n  'Amenities': 'amenities',\n  'Property ID': 'property_id',\n  'Property Integration ID': 'property_integration_id',\n  'Maximum Fee': 'maximum_fee',\n  'Waive Fees When Vacant': 'waive_fees_when_vacant',\n  'Owner ID(s)': 'owner_ids',\n  'Property Group ID(s)': 'property_group_ids',\n  'Portfolio ID': 'portfolio_id',\n  'Portfolio UUID': 'portfolio_UUID',\n  'Visibility': 'visibility',\n  'Renewal Fee Type': 'renewal_fee_type',\n  'Renewal Flat Fee': 'renewal_flat_fee',\n  'Renewal Fee Percent': 'renewal_fee_percent',\n  'Owner(s)': 'owners',\n  'Prepayment Type': 'prepayment_type',\n  'Admin Fee Amount': 'admin_fee_amount',\n  'Owner Agent': 'owner_agent',\n  'Listing Type': 'listing_type'\n};\n\nreturn $input.all().map(item => {\n  const raw = item.json;\n  const output = {};\n\n  for (const original in aliasMap) {\n    const target = aliasMap[original];\n    let value = raw[original];\n\n    if ([\n      'property_created_on',\n      'contract_expiration',\n      'management_start_date',\n      'management_end_date',\n      'premium_activation_date'\n    ].includes(target)) {\n      value = convertToSQLDate(value);\n    }\n\n    output[target] = value === '' ? null : value;\n  }\n\n  return { json: output };\n});\n"
+      },
+      "name": "Parse CSV",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        100
+      ],
+      "id": "9e26980f-5a02-4ab8-90f2-71f8cd260a2b"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "property_directory_all",
+          "mode": "list",
+          "cachedResultName": "property_directory_all"
+        },
+        "columnToMatchOn": "property_id",
+        "options": {}
+      },
+      "name": "Upsert to MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2,
+      "position": [
+        120,
+        100
+      ],
+      "id": "a3596b7c-7b3f-41da-89ca-6c63fd6c7cc8",
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-13T22:55:55.000Z",
+  "versionId": "c4c7e0d6-f776-40ae-8f1f-3a154cc40867"
+}
