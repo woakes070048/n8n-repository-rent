@@ -98,7 +98,7 @@
       "type": "n8n-nodes-base.gmailTrigger",
       "typeVersion": 1.2,
       "position": [
-        -600,
+        -560,
         -160
       ],
       "id": "c99558c1-7c68-4c0d-a1c9-21a6b4dd36d9",
@@ -112,7 +112,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\nconst summary = {};\n\nfor (const item of items) {\n  const raw = item.json.data || item.json.text;\n  if (!raw) continue;\n\n  const lines = raw.split('\\n').filter(l => l.trim());\n  const headers = lines[0].split(',').map(h => h.trim());\n  const data = lines.slice(1);\n\n  for (const line of data) {\n    const fields = line.split(/,(?=(?:(?:[^\"]*\"){2})*[^\"]*$)/).map(f => f.replace(/^\"|\"$/g, '').trim());\n    const entry = Object.fromEntries(headers.map((h, i) => [h, fields[i]]));\n\n    const propId = parseInt(entry[\"Property ID\"]);\n    const source = entry[\"Source\"]?.trim() || \"Unattributed\";\n\n    if (!propId || isNaN(propId)) continue;\n\n    if (!summary[propId]) {\n      summary[propId] = {\n        property_id: propId,\n        guest_cards: 0,\n        lead_sources: {}\n      };\n    }\n\n    summary[propId].guest_cards += 1;\n    summary[propId].lead_sources[source] = (summary[propId].lead_sources[source] || 0) + 1;\n  }\n}\n\nreturn Object.values(summary).map(item => ({\n  json: {\n    ...item,\n    lead_sources: JSON.stringify(item.lead_sources).replace(/'/g, \"\\\\'\")\n  }\n}));\n"
+        "jsCode": "function excelToISO(serial) {\n  if (!serial || isNaN(serial)) return null;\n  const date = new Date((serial - 25569) * 86400 * 1000);\n  return date.toISOString().split('T')[0];\n}\n\nfunction excelToWeekEnding(serial) {\n  const iso = excelToISO(serial);\n  if (!iso) return null;\n\n  const date = new Date(iso);\n  const day = date.getUTCDay();\n  const diff = (7 - day) % 7;\n  date.setDate(date.getDate() + diff);\n  return date.toISOString().split(\"T\")[0];\n}\n\nconst summary = {};\nlet skipped = 0;\nlet included = 0;\n\n$input.all().forEach(item => {\n  const row = item.json;\n\n  const propId = parseInt(row[\"Property ID\"]);\n  const source = row[\"Source\"]?.trim() || \"Unattributed\";\n  const weekEnding = excelToWeekEnding(row[\"Last Activity Date\"]);\n\n  if (!propId || !weekEnding) {\n    skipped += 1;\n    return;\n  }\n\n  included += 1;\n\n  const key = `${propId}_${weekEnding}`;\n  if (!summary[key]) {\n    summary[key] = {\n      property_id: propId,\n      week_ending: weekEnding,\n      guest_cards: 0,\n      lead_sources: {}\n    };\n  }\n\n  summary[key].guest_cards += 1;\n  summary[key].lead_sources[source] = (summary[key].lead_sources[source] || 0) + 1;\n});\n\nconsole.log(`Included rows: ${included}`);\nconsole.log(`Skipped rows: ${skipped}`);\n\nreturn Object.values(summary).map(item => ({\n  json: {\n    ...item,\n    lead_sources: JSON.stringify(item.lead_sources)\n  }\n}));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -125,11 +125,9 @@
     },
     {
       "parameters": {
-        "operation": "text",
+        "operation": "xlsx",
         "binaryPropertyName": "report_0",
-        "options": {
-          "keepSource": "both"
-        }
+        "options": {}
       },
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
@@ -143,7 +141,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "=INSERT INTO owner_marketing_summary (\n  property_id,\n  week_ending,\n  guest_cards,\n  lead_sources\n)\nVALUES (\n  {{ $json.property_id }},\n  CURDATE(),\n  {{ $json.guest_cards }},\n  '{{ $json.lead_sources }}'\n)\nON DUPLICATE KEY UPDATE\n  guest_cards = VALUES(guest_cards),\n  lead_sources = VALUES(lead_sources),\n  updated_at = NOW();\n",
+        "query": "INSERT INTO owner_marketing_summary (\n  property_id,\n  week_ending,\n  guest_cards,\n  lead_sources,\n  owner_id,\n  report_date\n)\nVALUES (\n  {{ $json.property_id }},\n  '{{ $json.week_ending }}',\n  {{ $json.guest_cards }},\n  '{{ $json.lead_sources }}',\n  0,\n  '{{ $json.week_ending }}'\n)\nON DUPLICATE KEY UPDATE\n  guest_cards = VALUES(guest_cards),\n  lead_sources = VALUES(lead_sources),\n  updated_at = NOW();\n",
         "options": {}
       },
       "type": "n8n-nodes-base.mySql",
@@ -237,7 +235,7 @@
   "staticData": {
     "node:Guest Cards": {
       "Guest Cards": {
-        "lastTimeChecked": 1744540833,
+        "lastTimeChecked": 1744596396,
         "possibleDuplicates": [
           "1962ebc9cc7726c9"
         ]
@@ -277,6 +275,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-06T12:19:19.000Z",
-  "versionId": "36e85507-502f-4deb-a3aa-45c41d046f56"
+  "updatedAt": "2025-04-14T02:06:36.000Z",
+  "versionId": "9a741b21-7432-44b8-bc7b-66738b40287f"
 }
