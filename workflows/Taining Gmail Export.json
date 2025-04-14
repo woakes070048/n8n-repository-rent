@@ -1,0 +1,321 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-14T13:45:55.078Z",
+  "id": "IFNfV1JTV9tyJSKQ",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Taining Gmail Export",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        0
+      ],
+      "id": "d70ed67f-250f-4cac-adb7-b65408314599",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 100,
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -340,
+        0
+      ],
+      "id": "474a7b9e-1045-4a2a-8cf9-5a8cd3ea3711",
+      "name": "Gmail",
+      "webhookId": "bdc918f8-7242-4dce-9b32-7045889779a4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  const json = item.json;\n\n  return {\n    from: json.from || \"\",\n    subject: json.subject || \"\",\n    date: json.internalDate ? new Date(parseInt(json.internalDate)).toISOString() : \"\",\n    trimmedBody: (json.text || \"\").substring(0, 500)\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -120,
+        0
+      ],
+      "id": "f3fcb1fe-646f-4e77-94d7-689ddbeba5fe",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1CDa7DRNVLrFOHgb6iKAXCNd47fCXCg88XfEkiZ2CgTA",
+          "mode": "list",
+          "cachedResultName": "Gmail Training",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CDa7DRNVLrFOHgb6iKAXCNd47fCXCg88XfEkiZ2CgTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CDa7DRNVLrFOHgb6iKAXCNd47fCXCg88XfEkiZ2CgTA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "From": "={{ $json.from.value[0].address }}",
+            "Subject": "={{ $json.subject }}",
+            "Date": "={{ $json.date }}",
+            "Trimmed Body": "={{ $json.trimmedBody }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Trimmed Body",
+              "displayName": "Trimmed Body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        100,
+        0
+      ],
+      "id": "efd673de-c574-438b-ad00-11edfba4e3bd",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -300,
+        220
+      ],
+      "id": "356160ca-f1bb-4fdd-8f64-a4396985e999",
+      "name": "Gmail1",
+      "webhookId": "21815623-c978-42a0-85d2-0b4a1dae36dd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1CDa7DRNVLrFOHgb6iKAXCNd47fCXCg88XfEkiZ2CgTA",
+          "mode": "list",
+          "cachedResultName": "Gmail Training",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CDa7DRNVLrFOHgb6iKAXCNd47fCXCg88XfEkiZ2CgTA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1068778478,
+          "mode": "list",
+          "cachedResultName": "Labels",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CDa7DRNVLrFOHgb6iKAXCNd47fCXCg88XfEkiZ2CgTA/edit#gid=1068778478"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "name": "={{ $json.name }}",
+            "messageListVisibility": "={{ $json.messageListVisibility }}",
+            "labelListVisibility": "={{ $json.labelListVisibility }}",
+            "type": "={{ $json.type }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "messageListVisibility",
+              "displayName": "messageListVisibility",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "labelListVisibility",
+              "displayName": "labelListVisibility",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -80,
+        220
+      ],
+      "id": "5e3d1bec-49ba-4eb8-adbd-1d83b8c3d6be",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OPTs28HKagi0JBEs",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-14T14:06:27.000Z",
+  "versionId": "f6e9fd78-365e-44fb-b163-7cc66e7cf0be"
+}
