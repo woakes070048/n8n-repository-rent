@@ -1,0 +1,419 @@
+{
+  "active": true,
+  "connections": {
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "MySQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [],
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-14T21:58:32.140Z",
+  "id": "5Ek37qh7erftR9xE",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Facebook Apartment Tips Direct to Paramount FB",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM apt_social_media_posts\nWHERE last_post_date IS NULL OR last_post_date <= CURDATE() - INTERVAL 90 DAY\nORDER BY last_post_date ASC\nLIMIT 1;",
+        "options": {}
+      },
+      "id": "d32a1186-e100-4da9-9fb5-40e2b87e3ccf",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        -320,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE apt_social_media_posts\nSET last_post_date = CURDATE(), post_count = post_count + 1\nWHERE number = {{ $node[\"MySQL\"].json[\"number\"] }};",
+        "options": {}
+      },
+      "id": "b43dbe37-d4b0-496e-82cd-7f0fc80b3f50",
+      "name": "MySQL1",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1520,
+        380
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "18db78ba-92bf-4656-80f4-930306e753a3",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -760,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a marketing professional for an Amaerican apartment community. Create a practical but engaging Facebook post about the topic:\n\n{{ $json.post }}\n\nDo not include or reference any external links.\n\nThe post should:\n- Be informative but casual\n- Encourage comments or interaction from readers\n- Highlight practical benefits for renters or pet owners\n- Use emojis sparingly but effectively\n- Be suitable for a property management company’s Facebook page\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b2a9d662-4384-46ae-aea4-99fbfe9aee34",
+      "name": "OpenAI1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        -100,
+        380
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=You are a professional digital illustrator for a modern American apartment community. Create a photo-realistic and inviting lifestyle image based on this topic: {{ $('MySQL').item.json.post }}\n",
+        "options": {}
+      },
+      "id": "96499061-37b6-4e0f-8e36-01bc4ae33a58",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [
+        240,
+        380
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.fileName }}",
+        "options": {}
+      },
+      "id": "a7132dd3-0dd0-41c4-9893-e91e36ea50aa",
+      "name": "Read/Write Files from Disk1",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        860,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=facebook-{{ $json.uuid }}.png",
+        "options": {
+          "append": false
+        }
+      },
+      "id": "bddc1fb8-d934-4757-8ee5-6856d41a8fb0",
+      "name": "Read/Write Files from Disk",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        640,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/wp-content/uploads/social_media_posts/{{ $json.fileName }}"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        1080,
+        380
+      ],
+      "id": "35e3bf3b-c802-4344-95d8-a985dfc336e1",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "FsHshhcCjs0YS2i9",
+          "name": "FTP account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v22.0",
+        "node": "/109463078470822",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "message",
+                "value": "={{ $('OpenAI1').item.json.message.content }}"
+              },
+              {
+                "name": "url",
+                "value": "=https://blazeproperty.com/wp-content/uploads/social_media_posts/{{ $json.fileName }}"
+              },
+              {
+                "name": "published",
+                "value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        380
+      ],
+      "id": "5a323849-e27e-48d2-9c62-3964b597bcd0",
+      "name": "Facebook Graph API",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "5LnLBeFQdPIXvziF",
+          "name": "Paramount FB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function generateUUIDv4() {\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {\n    const r = Math.random() * 16 | 0;\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\n    return v.toString(16);\n  });\n}\n\nreturn $input.all().map(item => {\n  return {\n    json: {\n      ...item.json,\n      uuid: generateUUIDv4()\n    },\n    binary: item.binary // preserve image buffer\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        380
+      ],
+      "id": "d57d7486-4f57-4685-bc36-305d1bfe5a01",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Day of week'] }}",
+                    "rightValue": "Monday",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "240fb32a-6dd1-4faf-846a-86755518c2a5"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ff415554-1106-4f8c-98fc-5de0ca8538f7",
+                    "leftValue": "={{ $json['Day of week'] }}",
+                    "rightValue": "Monday",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -540,
+        380
+      ],
+      "id": "3d918c74-2b66-4542-9e4f-cd8f34c2402b",
+      "name": "Switch"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-04-15T00:07:11.000Z",
+  "versionId": "7efdafab-c56d-4f44-91c5-27ae6b6d9d5b"
+}
