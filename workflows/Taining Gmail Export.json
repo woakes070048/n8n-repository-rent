@@ -72,7 +72,7 @@
     {
       "parameters": {
         "operation": "getAll",
-        "limit": 100,
+        "limit": 500,
         "simple": false,
         "filters": {},
         "options": {}
@@ -198,8 +198,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        -300,
-        220
+        -320,
+        300
       ],
       "id": "356160ca-f1bb-4fdd-8f64-a4396985e999",
       "name": "Gmail1",
@@ -296,8 +296,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -80,
-        220
+        -100,
+        300
       ],
       "id": "5e3d1bec-49ba-4eb8-adbd-1d83b8c3d6be",
       "name": "Google Sheets1",
@@ -316,6 +316,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-14T14:06:27.000Z",
-  "versionId": "f6e9fd78-365e-44fb-b163-7cc66e7cf0be"
+  "updatedAt": "2025-04-15T16:04:07.000Z",
+  "versionId": "1549dc5d-8647-454d-907b-f37e48eabeed"
 }
