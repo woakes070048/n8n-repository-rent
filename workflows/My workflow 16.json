@@ -1,11 +1,22 @@
 {
   "active": false,
   "connections": {
+    "Prepare Labels": {
+      "main": [
+        [
+          {
+            "node": "Create Label",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "When clicking ‘Test workflow’": {
       "main": [
         [
           {
-            "node": "Baserow",
+            "node": "Prepare Labels",
             "type": "main",
             "index": 0
           }
@@ -13,45 +24,62 @@
       ]
     }
   },
-  "createdAt": "2025-04-06T19:30:01.114Z",
-  "id": "spuX4baZghaYQeUE",
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "createdAt": "2025-04-15T01:20:04.669Z",
+  "id": "pOrQ3HLnl0StBnnT",
+  "meta": null,
   "name": "My workflow 16",
   "nodes": [
+    {
+      "parameters": {
+        "functionCode": "return [\n  {\n    json: { label: 'OWN - Statements & Requests' }\n  },\n  {\n    json: { label: 'OPS - Maintenance Requests' }\n  },\n  {\n    json: { label: 'OPS - Vendor Invoices' }\n  },\n  {\n    json: { label: 'LEAD - Guest Cards' }\n  },\n  {\n    json: { label: 'LEAD - Applications' }\n  },\n  {\n    json: { label: 'ADM - Internal Notices' }\n  },\n  {\n    json: { label: 'SYS - AppFolio Reports' }\n  },\n  {\n    json: { label: 'SYS - Automation Logs' }\n  },\n  {\n    json: { label: 'SPAM' }\n  },\n  {\n    json: { label: 'Needs Attention' }\n  },\n  {\n    json: { label: 'Review Later' }\n  },\n  {\n    json: { label: 'Done' }\n  }\n];"
+      },
+      "name": "Prepare Labels",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        100,
+        -140
+      ],
+      "id": "27fa0cc9-bc29-47fb-8f28-d010935a357d"
+    },
+    {
+      "parameters": {
+        "url": "https://gmail.googleapis.com/gmail/v1/users/me/labels",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "name": "Create Label",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        440,
+        -140
+      ],
+      "id": "75cd90e7-8921-4603-be14-5fcb8a9037a4",
+      "credentials": {
+        "googleOAuth2Api": {
+          "id": "Xj52DHfSNMcMBSiK",
+          "name": "Google account"
+        }
+      }
+    },
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -100,
+        -140
       ],
-      "id": "98d2f40a-df30-4215-b40e-38a52a383e6b",
+      "id": "320a1e8c-c26a-446e-bbc2-3d06d2e01fa4",
       "name": "When clicking ‘Test workflow’"
-    },
-    {
-      "parameters": {
-        "operation": "get",
-        "databaseId": 104,
-        "tableId": 536,
-        "rowId": "1"
-      },
-      "type": "n8n-nodes-base.baserow",
-      "typeVersion": 1,
-      "position": [
-        220,
-        0
-      ],
-      "id": "3ee2f3ad-97fd-4792-88c7-9bdcca1dd884",
-      "name": "Baserow",
-      "credentials": {
-        "baserowApi": {
-          "id": "5zW4AD0Cpmzo8h8d",
-          "name": "Baserow account"
-        }
-      }
     }
   ],
   "pinData": {},
@@ -61,6 +89,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-06T19:30:01.114Z",
-  "versionId": "a5dee4bd-10ec-4d75-919e-92faddd35543"
+  "updatedAt": "2025-04-15T01:20:04.669Z",
+  "versionId": "aa07ae3b-1dc8-40ed-89f4-f048c029b60c"
 }
