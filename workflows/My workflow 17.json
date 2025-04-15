@@ -1,413 +1,352 @@
 {
   "active": false,
   "connections": {
-    "When clicking ‘Test workflow’": {
+    "Wait": {
       "main": [
         [
           {
-            "node": "Get Properties1",
+            "node": "Gmail labelling agent",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Merge": {
+    "Gmail Trigger": {
       "main": [
         [
           {
-            "node": "Code",
+            "node": "Wait",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code": {
-      "main": [
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
         [
           {
-            "node": "Update Lookup via API",
-            "type": "main",
+            "node": "Gmail labelling agent",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
       ]
     },
-    "Get Properties": {
-      "main": [
+    "Gmail - get message": {
+      "ai_tool": [
         [
           {
-            "node": "Merge",
-            "type": "main",
+            "node": "Gmail labelling agent",
+            "type": "ai_tool",
             "index": 0
           }
         ]
       ]
     },
-    "Get Units": {
-      "main": [
+    "Gmail - read labels": {
+      "ai_tool": [
         [
           {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Format Link Data": {
-      "main": [
-        [
-          {
-            "node": "Update Lookup via API1",
-            "type": "main",
+            "node": "Gmail labelling agent",
+            "type": "ai_tool",
             "index": 0
           }
         ]
       ]
     },
-    "Get Units1": {
-      "main": [
+    "Gmail - create label": {
+      "ai_tool": [
         [
           {
-            "node": "Format Link Data",
-            "type": "main",
+            "node": "Gmail labelling agent",
+            "type": "ai_tool",
             "index": 0
           }
         ]
       ]
     },
-    "Format for Update": {
-      "main": [
+    "Window Buffer Memory": {
+      "ai_memory": [
         [
           {
-            "node": "Loop Over Items",
-            "type": "main",
+            "node": "Gmail labelling agent",
+            "type": "ai_memory",
             "index": 0
           }
         ]
       ]
     },
-    "Get Properties1": {
-      "main": [
+    "Gmail - add label to message": {
+      "ai_tool": [
         [
           {
-            "node": "Get Units2",
-            "type": "main",
+            "node": "Gmail labelling agent",
+            "type": "ai_tool",
             "index": 0
           }
         ]
-      ]
-    },
-    "Get Units2": {
-      "main": [
-        [
-          {
-            "node": "Format for Update",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items": {
-      "main": [
-        [],
-        [
-          {
-            "node": "Update Linked Property",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Update Linked Property": {
-      "main": [
-        []
       ]
     }
   },
-  "createdAt": "2025-04-10T21:25:50.024Z",
-  "id": "Np8lJvw4qIjK63oB",
+  "createdAt": "2025-04-15T11:43:10.381Z",
+  "id": "wJ6WNK2B80DJSY5H",
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "name": "My workflow 17",
   "nodes": [
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "id": "1ba18e82-e7a6-4f90-bb53-853446d7146a",
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
       "position": [
-        -880,
-        -120
+        -1080,
+        580
       ],
-      "id": "abaf0b13-1479-48b5-b09a-c12d7f67d3ec",
-      "name": "When clicking ‘Test workflow’"
+      "typeVersion": 1.2,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     },
     {
       "parameters": {
-        "mode": "combine",
-        "fieldsToMatchString": "={{ $json[\"Property ID\"] }}",
+        "options": {
+          "maxTokens": 4096
+        }
+      },
+      "id": "6503420a-05d7-4d66-9803-429630df4bcd",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "position": [
+        -940,
+        780
+      ],
+      "notesInFlow": false,
+      "typeVersion": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Tool to read all existing gmail labels",
+        "resource": "label",
+        "returnAll": true
+      },
+      "id": "d3f45bde-28ac-4e9a-bd3d-5bccfbfe8ed2",
+      "name": "Gmail - read labels",
+      "type": "n8n-nodes-base.gmailTool",
+      "position": [
+        -640,
+        800
+      ],
+      "webhookId": "d8ec9401-a9ff-4fe2-9c1e-5a8036cd96c9",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Tool to read a specific message based on the message ID",
+        "operation": "get",
+        "messageId": "={{ $fromAI('gmail_message_id', 'id of the gmail message, like 1944fdc33f544369', 'string') }}"
+      },
+      "id": "6c7ec34e-8800-4e86-b2dc-f59ef53e05ca",
+      "name": "Gmail - get message",
+      "type": "n8n-nodes-base.gmailTool",
+      "position": [
+        -460,
+        800
+      ],
+      "webhookId": "d8ec9401-a9ff-4fe2-9c1e-5a8036cd96c9",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Tool to add label to message",
+        "operation": "addLabels",
+        "messageId": "={{ $fromAI('gmail_message_id') }}",
+        "labelIds": "={{ $fromAI('gmail_categories', 'array of label ids') }}"
+      },
+      "id": "ddcabc41-d65c-4892-9fd5-3c301a2f4b27",
+      "name": "Gmail - add label to message",
+      "type": "n8n-nodes-base.gmailTool",
+      "position": [
+        -260,
+        800
+      ],
+      "webhookId": "7a87b026-1c6e-40e1-a062-aefdd1af1585",
+      "typeVersion": 2.1,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Tool to create a new label, only use if label does not already exist",
+        "resource": "label",
+        "operation": "create",
+        "name": "={{ $fromAI('new_label_name', 'new label name', 'string' ) }} ",
         "options": {}
       },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        600,
-        580
-      ],
-      "id": "5ed5acde-aa87-4c1c-a013-5e139332981a",
-      "name": "Merge",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "jsCode": "return items.map(item => {\n  const unitRowId = item.json.id;\n  const unitPropertyId = parseInt(item.json[\"Property ID\"]);\n\n  const propertyRowId = item.json[\"id_1\"]; // This is the internal row ID from the property table\n  const propertyId = parseInt(item.json[\"Property ID_1\"]); // This is the \"Property ID\" from the property table\n\n  // Match: if unit's Property ID matches the property's \"Property ID\"\n  const match = unitPropertyId === propertyId;\n\n  return {\n    json: {\n      table1RowId: unitRowId,\n      linkedProperty: match ? [propertyRowId] : []\n    }\n  };\n});\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        820,
-        580
-      ],
-      "id": "02d0336c-584a-4418-b23b-7eb5a3b5e3df",
-      "name": "Code",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "authentication": "headerAuth",
-        "requestMethod": "PATCH",
-        "url": "=https://base.blazeproperty.com/api/database/rows/table/696/{{ $json.table1RowId }}/\n",
-        "jsonParameters": true,
-        "options": {},
-        "bodyParametersJson": "={\n  \"field_7146\": [ {{ $json.table2LinkId }} ]\n}\n\n",
-        "queryParametersJson": "={\n  \"table2\": {{ $json.table2LinkId }}\n}\n"
-      },
-      "id": "d1e37ed0-2dfb-41e6-b62f-954d30f08241",
-      "name": "Update Lookup via API",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 1,
-      "position": [
-        1020,
-        580
-      ],
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "HTGHTGVhQpvKZvdW",
-          "name": "baserow"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "databaseId": 130,
-        "tableId": 692,
-        "additionalOptions": {}
-      },
-      "type": "n8n-nodes-base.baserow",
-      "typeVersion": 1,
-      "position": [
-        380,
-        480
-      ],
-      "id": "7cd3753f-a95f-41b3-a3f9-0aacce46db92",
-      "name": "Get Properties",
-      "credentials": {
-        "baserowApi": {
-          "id": "5zW4AD0Cpmzo8h8d",
-          "name": "Baserow account"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "databaseId": 130,
-        "tableId": 694,
-        "returnAll": true,
-        "additionalOptions": {}
-      },
-      "type": "n8n-nodes-base.baserow",
-      "typeVersion": 1,
-      "position": [
-        380,
-        680
-      ],
-      "id": "2bfdec38-ab3f-4804-bf97-0bcc5fe5ac86",
-      "name": "Get Units",
-      "credentials": {
-        "baserowApi": {
-          "id": "5zW4AD0Cpmzo8h8d",
-          "name": "Baserow account"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "jsCode": "\nconst results = [];\nfor (const unit of items) {\n  const propertyId = unit.json['Property ID'];\n  const unitId = unit.json.id;\n  if (propertyId && !isNaN(propertyId)) {\n    results.push({\n      json: {\n        table1RowId: unitId,\n        table2LinkId: [parseInt(propertyId)]\n      }\n    });\n  }\n}\nreturn results;\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [
-        360,
-        240
-      ],
-      "id": "525222eb-c169-447e-82d9-c69a061df831",
-      "name": "Format Link Data",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "databaseId": 130,
-        "tableId": 694,
-        "returnAll": true,
-        "additionalOptions": {}
-      },
-      "type": "n8n-nodes-base.baserow",
-      "typeVersion": 1,
+      "id": "1ac0c0e7-bc00-41c8-83e3-9b87a5928b52",
+      "name": "Gmail - create label",
+      "type": "n8n-nodes-base.gmailTool",
       "position": [
         -80,
-        340
+        800
       ],
-      "id": "959570a9-6ce4-4d7d-aa3e-02a8f4642596",
-      "name": "Get Units1",
+      "webhookId": "d8ec9401-a9ff-4fe2-9c1e-5a8036cd96c9",
+      "typeVersion": 2.1,
       "credentials": {
-        "baserowApi": {
-          "id": "5zW4AD0Cpmzo8h8d",
-          "name": "Baserow account"
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
-        "authentication": "headerAuth",
-        "requestMethod": "PATCH",
-        "url": "=https://base.blazeproperty.com/api/database/rows/table/694/{{$json.table1RowId}}/",
-        "jsonParameters": true,
-        "options": {},
-        "bodyParametersJson": "={\"field_7134\": {{$json.table2LinkId}}}"
-      },
-      "id": "6f1acbda-6d13-4bb2-b3bc-1f9937f54458",
-      "name": "Update Lookup via API1",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 1,
-      "position": [
-        560,
-        240
-      ],
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "HTGHTGVhQpvKZvdW",
-          "name": "baserow"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "jsCode": "const units = $items(\"Get Units2\", 0).map(item => item.json);\nconst properties = $items(\"Get Properties1\", 0).map(item => item.json);\n\nreturn units.map(unit => {\n  const unitRowId = unit.id;\n  const externalPropertyId = parseInt(unit[\"Property ID\"]);\n\n  const matchedProperty = properties.find(\n    property => parseInt(property[\"Property ID\"]) === externalPropertyId\n  );\n\n  return {\n    json: {\n      table1RowId: unitRowId,\n      linkedProperty: matchedProperty ? [matchedProperty.id] : []\n    }\n  };\n});\n"
-      },
-      "id": "06681378-fb84-4298-81a4-13d7087fbc31",
-      "name": "Format for Update",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -280,
-        -120
-      ]
-    },
-    {
-      "parameters": {
-        "authentication": "headerAuth",
-        "requestMethod": "PATCH",
-        "url": "=https://base.blazeproperty.com/api/database/rows/table/694/{{ $json.table1RowId }}/",
-        "jsonParameters": true,
+        "promptType": "define",
+        "text": "=Label the email based on the details below:\n{{ JSON.stringify($json) }}",
         "options": {
-          "bodyContentType": "json"
-        },
-        "bodyParametersJson": "={\n  \"field_7146\": {{ $json.linkedProperty }}\n}\n",
-        "queryParametersJson": "={\n  \"table2\": {{ $json.table1RowId }}\n}"
-      },
-      "id": "449e4ee0-6684-486b-9d52-3505e14acec3",
-      "name": "Update Linked Property",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 1,
-      "position": [
-        220,
-        -100
-      ],
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "HTGHTGVhQpvKZvdW",
-          "name": "baserow"
+          "systemMessage": "Objective:\nAutomatically categorize incoming emails based on existing Gmail labels or create a new label if none match.\n\nTools:\n- Get message\n- Read all labels\n- Create label\n- Assign label to message\n\nInstructions:\n\nLabel Matching:\n\nAnalyze the email's subject, sender, recipient, keywords, and content.\nCompare with existing Gmail labels to find the most relevant match.\nLabel Assignment:\n\nAssign the email to the most appropriate existing label.`\nRemove the inbox label if the email is of less importance (like ads, promotions, aka \"Reclame\"), keep normal and important emails in the inbox.\nIf no suitable label exists, create a new label based on the existing labels. Try reusing existing labels as much as possible. Always create a label as a sublabel, if no label applies, if the main label already exists, create the new label under the existing label, if no main label exists, create the label AI and create the new label under this label.\nLabel Creation:\n\nEnsure new labels align with the structure of existing ones, including capitalization, delimiters, and prefixes.\nExamples:\n\nIf the email subject is \"Project Alpha Update,\" assign to [Project Alpha] if it exists.\nFor \"New Vendor Inquiry,\" create \"Vendor Inquiry\" if no relevant label exists.\nOutcome:\nEmails are consistently categorized under the appropriate or newly created labels, maintaining Gmail's organizational structure.",
+          "maxIterations": 5
         }
       },
-      "onError": "continueRegularOutput"
+      "id": "5a8ff76f-68ab-4306-95d2-73bd511f289e",
+      "name": "Gmail labelling agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        -780,
+        580
+      ],
+      "notesInFlow": true,
+      "retryOnFail": false,
+      "typeVersion": 1.7,
+      "onError": "continueErrorOutput",
+      "notes": "Objective:\nAutomatically categorize incoming emails based on existing Gmail labels or create a new label if none match.\n\nTools:\n- Get message\n- Read all labels\n- Create label\n- Assign label to message\n\nInstructions:\n\nLabel Matching:\n\nAnalyze the email's subject, sender, recipient, keywords, and content.\nCompare with existing Gmail labels to find the most relevant match.\nLabel Assignment:\n\nAssign the email to the most appropriate existing label.`\nRemove the inbox label if the email is of less importance (like ads, promotions, aka \"Reclame\"), keep normal and important emails in the inbox.\nIf no suitable label exists, create a new label based on the existing labels. Try reusing existing labels as much as possible. Always create a label as a sublabel, if no label applies, if the main label already exists, create the new label under the existing label, if no main label exists, create the label AI and create the new label under this label.\nLabel Creation:\n\nEnsure new labels align with the structure of existing ones, including capitalization, delimiters, and prefixes.\nExamples:\n\nIf the email subject is \"Project Alpha Update,\" assign to [Project Alpha] if it exists.\nFor \"New Vendor Inquiry,\" create \"Vendor Inquiry\" if no relevant label exists.\nOutcome:\nEmails are consistently categorized under the appropriate or newly created labels, maintaining Gmail's organizational structure."
     },
     {
       "parameters": {
-        "databaseId": 130,
-        "tableId": 692,
-        "returnAll": true,
-        "additionalOptions": {}
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.id }}"
       },
-      "id": "5273317a-ab35-4925-9158-9ba0446310c4",
-      "name": "Get Properties1",
-      "type": "n8n-nodes-base.baserow",
-      "typeVersion": 1,
+      "id": "00f6e720-b051-427b-95a6-ecc4360f339b",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "position": [
-        -700,
-        -120
+        -780,
+        800
       ],
-      "credentials": {
-        "baserowApi": {
-          "id": "5zW4AD0Cpmzo8h8d",
-          "name": "Baserow account"
-        }
-      }
+      "typeVersion": 1.3
     },
     {
       "parameters": {
-        "databaseId": 130,
-        "tableId": 694,
-        "returnAll": true,
-        "additionalOptions": {}
+        "amount": 1
       },
-      "id": "96be197f-d855-4e67-82f3-0d65f4887a03",
-      "name": "Get Units2",
-      "type": "n8n-nodes-base.baserow",
-      "typeVersion": 1,
+      "id": "1f8318f2-e5dd-4cc6-ba2b-f38c9165c417",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
       "position": [
-        -540,
-        -120
+        -940,
+        580
       ],
-      "credentials": {
-        "baserowApi": {
-          "id": "5zW4AD0Cpmzo8h8d",
-          "name": "Baserow account"
-        }
-      }
+      "webhookId": "2066b863-4526-40cf-90aa-82229895a73c",
+      "typeVersion": 1.1
     },
     {
       "parameters": {
-        "batchSize": 10,
-        "options": {}
+        "content": "## Gmail trigger\nPoll Gmail every x minutes, trigger when a new email is received.\n\n- Gmail API"
       },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
+      "id": "be08f32c-cb2a-4ada-90ce-5bf7d38db2a3",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -20,
+        -1360,
+        540
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Gmail labelling agent\n- Read the message\n- Read existing labels\n- Create a new label if needed\n- Assign label to message\n\n----\n\nObjective:\nAutomatically categorize incoming emails based on existing Gmail labels or create a new label if none match.\n\nTools:\n- Get message\n- Read all labels\n- Create label\n- Assign label to message\n\nInstructions:\n\nLabel Matching:\n\nAnalyze the email's subject, sender, recipient, keywords, and content.\nCompare with existing Gmail labels to find the most relevant match.\nLabel Assignment:\n\nAssign the email to the most appropriate existing label.`\nRemove the inbox label if the email is of less importance (like ads, promotions, aka \"Reclame\"), keep normal and important emails in the inbox.\nIf no suitable label exists, create a new label based on the existing labels. Try reusing existing labels as much as possible. Always create a label as a sublabel, if no label applies, if the main label already exists, create the new label under the existing label, if no main label exists, create the label AI and create the new label under this label.\nLabel Creation:\n\nEnsure new labels align with the structure of existing ones, including capitalization, delimiters, and prefixes.\nExamples:\n\nIf the email subject is \"Project Alpha Update,\" assign to [Project Alpha] if it exists.\nFor \"New Vendor Inquiry,\" create \"Vendor Inquiry\" if no relevant label exists.\nOutcome:\nEmails are consistently categorized under the appropriate or newly created labels, maintaining Gmail's organizational structure.",
+        "height": 840,
+        "width": 780
+      },
+      "id": "df71ee50-d1d7-47b9-8cef-44e1941f394a",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -340,
         -120
       ],
-      "id": "ea7f1285-4d9a-42ea-bb8d-4899ef18a189",
-      "name": "Loop Over Items"
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Gmail API\n- Add credentials ",
+        "width": 440
+      },
+      "id": "fc7926b3-7f76-474e-bbe5-cd0dafab9377",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -560,
+        1000
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## OpenAI\n- Add credentials ",
+        "width": 440
+      },
+      "id": "6b97f68d-8ecb-4470-870d-4dbb8727de4b",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1300,
+        920
+      ],
+      "typeVersion": 1
     }
   ],
   "pinData": {},
@@ -417,6 +356,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-12T10:29:34.000Z",
-  "versionId": "017786f1-c516-49ba-a9c8-3151710cee77"
+  "updatedAt": "2025-04-15T11:43:10.381Z",
+  "versionId": "26f72f28-45b5-4318-9d79-28d3d2455df9"
 }
