@@ -175,7 +175,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1600,
+        1820,
         500
       ],
       "credentials": {
@@ -350,7 +350,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Use the following text about a unit for lease at NorthPark Townhomes to make a humorous post. Humor level mid. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number (806) 451-5597. {{ $json.marketing_description }}. Output in json format \n"
+              "content": "=Use the following text about a unit for lease at NorthPark Townhomes to make a humorous post. Humor level mid. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text.\n\nInclude the office phone number: 806 253 8600.\n\nFormat the output in **JSON** as:\n{\n  \"post\": \"Your clean, Facebook-ready message text\"\n}\n\nThe message should:\n- Be compatible with Facebook's Graph API posting\n- Avoid using smart quotes, curly apostrophes, or control characters\n- Avoid excessive line breaks — keep it compact and readable\n- Limit to 900 characters or less\n- Keep all emojis as-is if safe to display\n\nOriginal text: {{ $json.marketing_description }}\n"
             }
           ]
         },
@@ -377,7 +377,7 @@
       "parameters": {
         "httpRequestMethod": "POST",
         "graphApiVersion": "v20.0",
-        "node": "/100759946413354",
+        "node": "/657991767391965",
         "edge": "photos",
         "options": {
           "queryParameters": {
@@ -399,7 +399,7 @@
       "type": "n8n-nodes-base.facebookGraphApi",
       "typeVersion": 1,
       "position": [
-        1400,
+        1620,
         500
       ],
       "credentials": {
@@ -431,7 +431,7 @@
             {
               "id": "4f899ba4-1256-462f-af3c-97f55a2129db",
               "name": "post",
-              "value": "={{ $json.choices[0].message.content.post.content }}",
+              "value": "={{ $json.choices[0].message.content.post }}",
               "type": "string"
             }
           ]
@@ -441,7 +441,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1240,
+        1460,
         500
       ],
       "id": "d8d02495-c652-4683-a7d0-0c3be89f52df",
@@ -483,6 +483,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-02-09T23:47:21.000Z",
-  "versionId": "53947651-766d-44de-bc41-c3fef31e932a"
+  "updatedAt": "2025-04-14T19:18:55.000Z",
+  "versionId": "7050b8c9-ad39-42dc-a700-5b6db4f8bf4a"
 }
