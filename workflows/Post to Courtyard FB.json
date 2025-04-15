@@ -67,7 +67,7 @@
         ],
         [
           {
-            "node": "No Operation, do nothing",
+            "node": "Execute Workflow",
             "type": "main",
             "index": 0
           }
@@ -112,6 +112,17 @@
         [
           {
             "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
             "type": "main",
             "index": 0
           }
@@ -164,7 +175,7 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1580,
+        1800,
         500
       ],
       "credentials": {
@@ -303,8 +314,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        820,
-        600
+        1300,
+        780
       ]
     },
     {
@@ -338,7 +349,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Use the following text about a unit for lease at Courtyard Apartments to make a humorous post. Humor level high. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-414-6021. {{ $json.marketing_description }}\n"
+              "content": "=Use the following text about a unit for lease at Courtyard Apartments to make a semi-humorous post. Humor level mid. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text.\n\nInclude the office phone number: (806) 414-6021.\n\nFormat the output in **JSON** as:\n{\n  \"post\": \"Your clean, Facebook-ready message text\"\n}\n\nThe message should:\n- Be compatible with Facebook's Graph API posting\n- Avoid using smart quotes, curly apostrophes, or control characters\n- Avoid excessive line breaks — keep it compact and readable\n- Limit to 900 characters or less\n- Keep all emojis as-is if safe to display\n\nOriginal text: {{ $json.marketing_description }}\n"
             }
           ]
         },
@@ -351,7 +362,7 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.3,
       "position": [
-        940,
+        1160,
         500
       ],
       "credentials": {
@@ -387,7 +398,7 @@
       "type": "n8n-nodes-base.facebookGraphApi",
       "typeVersion": 1,
       "position": [
-        1380,
+        1600,
         500
       ],
       "credentials": {
@@ -411,6 +422,32 @@
       ],
       "id": "a11c4e5f-26bb-455c-a8ff-168f8eae591c",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mOeCSsrvo6sLlwrG",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        860,
+        620
+      ],
+      "id": "fe390b2f-7263-4373-9a23-37f760806aa0",
+      "name": "Execute Workflow"
     }
   ],
   "pinData": {},
@@ -448,6 +485,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-02-09T23:52:32.000Z",
-  "versionId": "8b0ef2f2-86df-4251-9dc3-f478c6700a31"
+  "updatedAt": "2025-04-15T00:17:08.000Z",
+  "versionId": "f83e514d-71e0-4068-95f0-9a11fef66c9d"
 }
