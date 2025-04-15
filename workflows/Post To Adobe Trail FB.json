@@ -339,7 +339,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Use the following text about a unit for lease at NorthPark Townhomes to make a humorous post. Humor level mid. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number (806) 451-5597. Format the response as a **strict JSON object** with this exact structure: { \\\"post\\\": \\\"Generated post content\\\", \\\"phone\\\": \\\"806-451-5597\\\" }. Do not add any extra text or explanations."
+              "content": "=Use the following text about a unit for lease at Adobe Trail Apartments to make a humorous post. Humor level mid. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text.\n\nInclude the office phone number: 806 253 8600.\n\nFormat the output in **JSON** as:\n{\n  \"post\": \"Your clean, Facebook-ready message text\"\n}\n\nThe message should:\n- Be compatible with Facebook's Graph API posting\n- Avoid using smart quotes, curly apostrophes, or control characters\n- Avoid excessive line breaks — keep it compact and readable\n- Limit to 900 characters or less\n- Keep all emojis as-is if safe to display\n\nOriginal text: {{ $json.marketing_description }}\n"
             }
           ]
         },
@@ -479,6 +479,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-02-21T16:02:53.000Z",
-  "versionId": "ae01dc57-e5bd-4458-b563-cf05efd1bf40"
+  "updatedAt": "2025-04-14T19:20:00.000Z",
+  "versionId": "5e7e6c42-7ce5-4389-8534-77ffd898607f"
 }
