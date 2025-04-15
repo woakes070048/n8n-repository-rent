@@ -1,287 +1,256 @@
 {
   "active": false,
   "connections": {
-    "Determine Type": {
+    "Schedule Trigger": {
       "main": [
         [
           {
-            "node": "Switch",
+            "node": "Execute Courtyard",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "When clicking ‘Test workflow’": {
+    "Execute Courtyard": {
       "main": [
         [
           {
-            "node": "Gmail",
+            "node": "Wait",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Gmail": {
+    "Execute Adobe": {
       "main": [
         [
           {
-            "node": "Determine Type",
+            "node": "Wait1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Switch": {
+    "Execute Northpark": {
       "main": [
         [
           {
-            "node": "AI Agent",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "No Operation, do nothing",
+            "node": "Wait2",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "AI Agent": {
+    "Wait": {
       "main": [
-        []
-      ]
-    },
-    "OpenAI Chat Model": {
-      "ai_languageModel": [
         [
           {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
+            "node": "Execute Adobe",
+            "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Simple Memory": {
-      "ai_memory": [
+    "Wait1": {
+      "main": [
         [
           {
-            "node": "AI Agent",
-            "type": "ai_memory",
+            "node": "Execute Northpark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Execute Paramount",
+            "type": "main",
             "index": 0
           }
         ]
       ]
     }
   },
-  "createdAt": "2025-04-14T12:40:11.562Z",
-  "id": "ECCZeyMGJRCEG4kj",
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "createdAt": "2025-04-15T00:25:50.854Z",
+  "id": "8zkuRbcpnqnxdACF",
+  "meta": null,
   "name": "My workflow 15",
   "nodes": [
     {
       "parameters": {
-        "language": "javascript",
-        "jsCode": "const subject = ($json.subject || \"\").toLowerCase();\nconst from = typeof $json.from === \"string\" ? $json.from.toLowerCase() : \"\";\nconst text = ($json.text || \"\").toLowerCase();\nconst trimmedBody = text.substring(0, 500);\n\nconst labelMap = [\n  { keyword: \"guest card\", label: \"LEAD - Guest Cards\" },\n  { keyword: \"application\", label: \"LEAD - Applications\" },\n  { keyword: \"receivable\", label: \"SYS - AppFolio Reports\" },\n  { keyword: \"rent total\", label: \"SYS - AppFolio Reports\" },\n  { keyword: \"owner\", label: \"OWN - Statements & Requests\" },\n  { keyword: \"delinquency\", label: \"OPS - Tenant Issues\" },\n  { keyword: \"maintenance\", label: \"OPS - Maintenance Requests\" },\n  { keyword: \"invoice\", label: \"OPS - Vendor Invoices\" },\n  { keyword: \"marketing\", label: \"MKT - Ad Campaigns\" },\n  { keyword: \"n8n\", label: \"SYS - Automation Logs\" },\n  { keyword: \"promotion\", label: \"SPAM\" },\n  { keyword: \"newsletter\", label: \"SPAM\" },\n  { keyword: \"deal\", label: \"SPAM\" },\n  { keyword: \"offer\", label: \"SPAM\" },\n  { keyword: \"admin\", label: \"ADM - Internal Notices\" }\n];\n\nlet emailLabel = \"REVIEW\";\nlet isSpam = false;\nlet isUrgent = false;\nlet skipAI = false;\n\nfor (const { keyword, label } of labelMap) {\n  if (subject.includes(keyword)) {\n    emailLabel = label;\n    if (label === \"SPAM\") isSpam = true;\n    if (label === \"OPS - Maintenance Requests\") isUrgent = true;\n    break;\n  }\n}\n\n// Skip AI summarization for guest cards, interests, or known report senders\nif (\n  subject.includes(\"guest card\") ||\n  subject.includes(\"interest\") ||\n  from.includes(\"donotreply@appfolio.com\")\n) {\n  skipAI = true;\n}\n\nreturn [{\n  ...$json,\n  emailLabel,\n  isSpam,\n  isUrgent,\n  skipAI,\n  trimmedBody\n}];\n"
-      },
-      "id": "8eb1abf9-8cfb-4356-99ef-1d3d657fd683",
-      "name": "Determine Type",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [
-        260,
-        -100
-      ]
-    },
-    {
-      "parameters": {
-        "resource": "message",
-        "operation": "get",
-        "additionalFields": {}
-      },
-      "id": "15a6be7d-1357-4d0c-b909-ad056bb90da3",
-      "name": "Label Email",
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 1,
-      "position": [
-        780,
-        -380
-      ],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -100,
-        -100
-      ],
-      "id": "17adc604-e0aa-4c21-adc7-07b1de4e6c71",
-      "name": "When clicking ‘Test workflow’"
-    },
-    {
-      "parameters": {
-        "operation": "getAll",
-        "limit": 1,
-        "simple": false,
-        "filters": {},
-        "options": {}
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
-      "position": [
-        80,
-        -100
-      ],
-      "id": "4a24bf7e-074f-4a29-8ee2-da22dee4f207",
-      "name": "Gmail",
-      "webhookId": "da152cd7-a4a5-4f67-8849-1be4d093470c",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        800,
-        180
-      ],
-      "id": "75c44e92-505b-4316-b884-8a2a6d8aabab",
-      "name": "No Operation, do nothing"
-    },
-    {
-      "parameters": {
-        "rules": {
-          "values": [
+        "rule": {
+          "interval": [
             {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $json.skipAI }}",
-                    "rightValue": "",
-                    "operator": {
-                      "type": "boolean",
-                      "operation": "false",
-                      "singleValue": true
-                    },
-                    "id": "10280d0b-08a2-430f-b87f-814d2013d6f6"
-                  }
-                ],
-                "combinator": "and"
-              }
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "991e10a4-91c3-4f73-950e-75fee6bb041d",
-                    "leftValue": "={{ $json.skipAI }}",
-                    "rightValue": "",
-                    "operator": {
-                      "type": "boolean",
-                      "operation": "true",
-                      "singleValue": true
-                    }
-                  }
-                ],
-                "combinator": "and"
-              }
+              "triggerAtHour": 8
             }
           ]
-        },
-        "options": {}
+        }
       },
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3.2,
-      "position": [
-        500,
-        -100
-      ],
-      "id": "8908f20a-db7e-4e15-b9d0-ccc3ad9ff7f3",
-      "name": "Switch"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=You are an assistant summarizing real estate-related emails. Summarize this message in 2-3 sentences with relevant dates, tasks, or names. Do not summarize guest card or AppFolio reports.\n\nIf the email is a maintenance request, mark it as **[Urgent - Maintenance Issue]**.\n\nIf it's not relevant, return **[No summary needed]**.\n {{ $json.trimmedBody }}",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 1.8,
-      "position": [
-        860,
-        -200
-      ],
-      "id": "7b795eb1-c4e2-4811-a3ed-db32af3adfe5",
-      "name": "AI Agent"
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "value": "gpt-4",
-          "mode": "list",
-          "cachedResultName": "gpt-4"
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        820,
-        0
+        -520,
+        -320
       ],
-      "id": "6a637a18-1378-4508-abe1-bcaba5b1f988",
-      "name": "OpenAI Chat Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "Navm9hDUnjwpRcbB",
-          "name": "OpenAi account"
-        }
-      }
+      "id": "90bde870-a8b5-4ae4-9986-e799ca28f3cc",
+      "name": "Schedule Trigger"
     },
     {
-      "parameters": {},
-      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
-      "typeVersion": 1.3,
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "mOeCSsrvo6sLlwrG",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
       "position": [
-        960,
-        0
+        -480,
+        -80
       ],
-      "id": "25c89001-dbae-4efb-9150-88328faa6aaa",
-      "name": "Simple Memory"
+      "id": "05ee9012-a469-4d60-8b4e-427de8b3a7b8",
+      "name": "Execute Courtyard"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "gxQivPe3QQF0cqiC",
+          "mode": "list",
+          "cachedResultName": "Facebook Apartment Tips Direct to Adobe FB"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        -80
+      ],
+      "id": "914364b1-98fe-4b9a-93cb-299bbde01750",
+      "name": "Execute Adobe"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "h4zre3aRc0vqTTWq",
+          "mode": "list",
+          "cachedResultName": "Facebook Apartment Tips Direct to Northpark FB"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -280,
+        160
+      ],
+      "id": "a02498e6-e7c6-44ed-bb64-bc02481f50e7",
+      "name": "Execute Northpark"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "5Ek37qh7erftR9xE",
+          "mode": "list",
+          "cachedResultName": "Facebook Apartment Tips Direct to Paramount FB"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -480,
+        380
+      ],
+      "id": "1a3dac02-0b98-48ea-bc31-463cc8f1e91e",
+      "name": "Execute Paramount"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -280,
+        -80
+      ],
+      "id": "25ee8dcd-ad1a-4b31-ab55-af96ce0ee9f8",
+      "name": "Wait",
+      "webhookId": "04f8f188-6442-4192-ba9d-06879a2159e9"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        160
+      ],
+      "id": "ccbc629f-689e-4e73-8054-40ac2401e1c0",
+      "name": "Wait1",
+      "webhookId": "452c50a7-679f-43c1-8241-5064932062b3"
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        160
+      ],
+      "id": "7835560a-85fd-4778-858f-6445bfc746d4",
+      "name": "Wait2",
+      "webhookId": "8a48e026-62a8-4663-aec2-da85031e8a32"
     }
   ],
   "pinData": {},
@@ -291,6 +260,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-14T15:51:22.000Z",
-  "versionId": "deb4ade3-6cd3-4b54-87fe-f41d002862fe"
+  "updatedAt": "2025-04-15T00:27:27.000Z",
+  "versionId": "deb42436-dedf-4e5c-9a70-e7df6a83a19a"
 }
