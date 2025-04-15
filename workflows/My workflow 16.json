@@ -1,22 +1,100 @@
 {
   "active": false,
   "connections": {
-    "Prepare Labels": {
+    "Watch Gmail": {
       "main": [
         [
           {
-            "node": "Create Label",
+            "node": "Gmail1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "When clicking ‘Test workflow’": {
+    "Classify Email": {
       "main": [
         [
           {
-            "node": "Prepare Labels",
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Summarize Email": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Classify Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Gmail2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Summarize Email",
             "type": "main",
             "index": 0
           }
@@ -26,60 +104,274 @@
   },
   "createdAt": "2025-04-15T01:20:04.669Z",
   "id": "pOrQ3HLnl0StBnnT",
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "My workflow 16",
   "nodes": [
     {
       "parameters": {
-        "functionCode": "return [\n  {\n    json: { label: 'OWN - Statements & Requests' }\n  },\n  {\n    json: { label: 'OPS - Maintenance Requests' }\n  },\n  {\n    json: { label: 'OPS - Vendor Invoices' }\n  },\n  {\n    json: { label: 'LEAD - Guest Cards' }\n  },\n  {\n    json: { label: 'LEAD - Applications' }\n  },\n  {\n    json: { label: 'ADM - Internal Notices' }\n  },\n  {\n    json: { label: 'SYS - AppFolio Reports' }\n  },\n  {\n    json: { label: 'SYS - Automation Logs' }\n  },\n  {\n    json: { label: 'SPAM' }\n  },\n  {\n    json: { label: 'Needs Attention' }\n  },\n  {\n    json: { label: 'Review Later' }\n  },\n  {\n    json: { label: 'Done' }\n  }\n];"
-      },
-      "name": "Prepare Labels",
-      "type": "n8n-nodes-base.function",
-      "typeVersion": 1,
-      "position": [
-        100,
-        -140
-      ],
-      "id": "27fa0cc9-bc29-47fb-8f28-d010935a357d"
-    },
-    {
-      "parameters": {
-        "url": "https://gmail.googleapis.com/gmail/v1/users/me/labels",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "googleOAuth2Api",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {}
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
           ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "is:unread"
         },
         "options": {}
       },
-      "name": "Create Label",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4,
+      "id": "1548a5fb-def4-473f-bdf3-c7e2d8b870c5",
+      "name": "Watch Gmail",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
       "position": [
-        440,
-        -140
+        -740,
+        -40
       ],
-      "id": "75cd90e7-8921-4603-be14-5fcb8a9037a4",
       "credentials": {
-        "googleOAuth2Api": {
-          "id": "Xj52DHfSNMcMBSiK",
-          "name": "Google account"
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
         }
       }
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
+      "parameters": {
+        "jsCode": "// Normalize subject and body\nconst subjectRaw = $json.subject || '';\nconst subject = subjectRaw.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').trim(); // Normalize subject more aggressively\nconst body = ($json.text || '').toLowerCase();\n\n// Extract from email address (handles structured + string)\nlet fromEmail = '';\nif ($json.from?.value?.[0]?.address) {\n  fromEmail = $json.from.value[0].address.toLowerCase();\n} else if (typeof $json.from === 'string') {\n  const match = $json.from.match(/<(.+)>/);\n  fromEmail = match ? match[1].toLowerCase() : $json.from.toLowerCase();\n}\n\n// Defaults\nlet emailLabel = 'Review Later';\nlet isUrgent = false;\nlet skipAI = false;\n\n// Classification logic with defensive matches\nif (subject.includes('weekly guest cards') || subject.includes('report all')) {\n  emailLabel = 'SYS - AppFolio Reports';\n  skipAI = true;\n} else if (subject.includes('guest card')) {\n  emailLabel = 'LEAD - Guest Cards';\n  skipAI = true;\n} else if (subject.includes('application')) {\n  emailLabel = 'LEAD - Applications';\n} else if (fromEmail.includes('donotreply@appfolio.com')) {\n  emailLabel = 'SYS - AppFolio Reports';\n  skipAI = true;\n} else if (subject.includes('maintenance')) {\n  emailLabel = 'OPS - Maintenance Requests';\n  isUrgent = true;\n} else if (subject.includes('invoice')) {\n  emailLabel = 'OPS - Vendor Invoices';\n} else if (subject.includes('owner')) {\n  emailLabel = 'OWN - Statements & Requests';\n} else if (['promo', 'newsletter', 'deal', 'offer'].some(k => subject.includes(k))) {\n  emailLabel = 'SPAM';\n  skipAI = true;\n}\n\n// Look up the labelId from the labelMap\nconst labelId = $json.labelMap?.[emailLabel] || null;\n\n// Return all fields including the resolved label ID\nreturn [{\n  ...$json,\n  subjectRaw,\n  subjectNormalized: subject,\n  fromEmail,\n  emailLabel,\n  isUrgent,\n  skipAI,\n  labelId\n}];"
+      },
+      "name": "Classify Email",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        -100,
-        -140
+        -180,
+        -40
       ],
-      "id": "320a1e8c-c26a-446e-bbc2-3d06d2e01fa4",
-      "name": "When clicking ‘Test workflow’"
+      "id": "4d0263c8-34ec-4b3b-8125-89c1b166716c"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an email assistant. Summarize this message for a property manager in 2-3 sentences. Skip greetings and signatures.\nSubject: {{ $json.subject }}\nFrom: {{ $json.headers.from }}\nBody: {{ $json.text }}\n\nKeep original data\n",
+              "role": "system"
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "name": "Summarize Email",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -60
+      ],
+      "id": "a3c8f580-79cb-4065-b2cf-2f4b1b58d395",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messageLabel",
+        "messageId": "={{ $('Classify Email').item.json.id }}",
+        "labelIds": "={{ $('Classify Email').item.json.emailLabel }}"
+      },
+      "name": "Apply Label + Archive",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [
+        940,
+        -280
+      ],
+      "id": "79cd3ec5-ce89-46ec-9a76-713fc0fa454d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.skipAI }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "c6c19987-a3d9-4bcf-b594-9b8ef1d49075"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9a8b79b1-fccb-4bef-8ab2-8bd85c526614",
+                    "leftValue": "={{ $json.skipAI }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        0,
+        -40
+      ],
+      "id": "951fd048-774c-4115-90dd-170e93292e44",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": "={{ $json.labelId }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -740,
+        220
+      ],
+      "id": "3410d1cb-1a02-42b8-998c-12648f7137cc",
+      "name": "Gmail",
+      "webhookId": "d71a6b4f-29d8-4e37-99d7-c4c01aaf025f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -540,
+        -40
+      ],
+      "id": "6c8d7040-59d2-491c-b880-4963d29af8fe",
+      "name": "Gmail1",
+      "webhookId": "af1f1ccb-e89c-4a4b-894e-0e0485c4251b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build labelMap from all label inputs\nconst labelMap = {};\n$input.all().forEach(item => {\n  const label = item.json;\n  if (label.type !== 'system') {\n    labelMap[label.name] = label.id;\n  }\n});\n\n// Get the first email item from prior node (like Classify Email)\nconst emailItem = $items(\"Watch Gmail\")[0].json;\n\n// Combine the original email info with the label map\nreturn [\n  {\n    json: {\n      ...emailItem,\n      labelMap\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -360,
+        -40
+      ],
+      "id": "2ea4712a-55be-4406-abab-44d5382ab2e7",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": "=INBOX"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -580,
+        220
+      ],
+      "id": "fd8da1a7-c49c-48ff-b237-5bcc7d9e77b8",
+      "name": "Gmail2",
+      "webhookId": "e10cfc9b-21ea-4379-9329-11e22926376f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map(item => {\n  const summary = item.json.message?.content || 'No summary returned';\n\n  return {\n    json: {\n      ...item.json,\n      summary,\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        760,
+        -60
+      ],
+      "id": "0757e22b-b70f-4314-891d-089754e7fb0a",
+      "name": "Code1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        280,
+        -60
+      ],
+      "id": "e16afb81-c8f9-401b-add4-119d382e433e",
+      "name": "Merge"
     }
   ],
   "pinData": {},
@@ -89,6 +381,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-15T01:20:04.669Z",
-  "versionId": "aa07ae3b-1dc8-40ed-89f4-f048c029b60c"
+  "updatedAt": "2025-04-15T11:40:42.000Z",
+  "versionId": "06c08f08-4fd9-461b-89f2-8a4bf3a620a6"
 }
