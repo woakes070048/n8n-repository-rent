@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "Watch Gmail": {
       "main": [
@@ -107,17 +107,6 @@
         ]
       ]
     },
-    "Gmail - Add Label1": {
-      "ai_tool": [
-        [
-          {
-            "node": "Gmail labelling agent1",
-            "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "OpenAI Chat Model2": {
       "ai_languageModel": [
         [
@@ -146,6 +135,28 @@
           {
             "node": "Gmail labelling agent1",
             "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail labelling agent1": {
+      "main": [
+        [
+          {
+            "node": "Gmail4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail4": {
+      "main": [
+        [
+          {
+            "node": "Gmail5",
+            "type": "main",
             "index": 0
           }
         ]
@@ -197,8 +208,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        -260,
-        -160
+        -220,
+        -140
       ],
       "id": "80106992-4b95-4862-afea-fea38d160748"
     },
@@ -403,7 +414,7 @@
       "name": "Gmail - Get Message1",
       "type": "n8n-nodes-base.gmailTool",
       "position": [
-        440,
+        420,
         200
       ],
       "typeVersion": 2.1,
@@ -417,35 +428,11 @@
     },
     {
       "parameters": {
-        "descriptionType": "manual",
-        "toolDescription": "Tool to add label to message",
-        "operation": "addLabels",
-        "messageId": "={{ $fromAI('gmail_message_id') }}",
-        "labelIds": "=={{ (() => {\n  const id = $json.labelMap[$fromAI('gmail_label_name')];\n  return id ? [id] : null;\n})() }}\n"
-      },
-      "id": "5f9d254c-361c-4fe7-a4b2-86fd545e3f07",
-      "name": "Gmail - Add Label1",
-      "type": "n8n-nodes-base.gmailTool",
-      "position": [
-        580,
-        200
-      ],
-      "typeVersion": 2.1,
-      "webhookId": "15800640-c449-4a16-8b19-06d37d6557d2",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "promptType": "define",
         "text": "=You are an assistant to a real estate broker and property manager and are assigned the task of classifying emails by label. Label the email based on the details below:\nfrom: {{ $json.headers.from }}\nsubject: {{ $json.headers.subject }}\ntext: {{ $json.text }}\ngmail message id: {{ $json.id }}\nLabel IDs: {{ $json.labelIds }}\nto: {{ $json.headers.to }}",
         "hasOutputParser": true,
         "options": {
-          "systemMessage": "Objective: Classify and summarize incoming emails for Blaze Real Estate. You are the primary labeling agent and must assign the correct Gmail label and generate a professional summary for each message. You do not have knowledge of or access to any preclassification logic.\n\n🧰 Tools: get message, read labels, create label, assign label to message\n\n🏷️ Label Rules: Use context in subject, sender, and body to apply the correct label. Available options include but are not limited to:\nCOMM - Tenant Communication, COMM - Vendor Notifications, COMM - Owner Communication, DOC - Document Notices, SYS - Automation Logs, ORDERS - Shipping Notifications, MARKETING - Promotions, LEAD - Applications, LEAD - Guest Cards, OWN - Statements & Requests, @Unsubscribe, Urgent (use if immediate action is implied), Personal (use if the email is not work-related or clearly about health/personal matters), Review Later (use only if no other label applies)",
+          "systemMessage": "Objective:  \nClassify and summarize incoming emails for Blaze Real Estate.  \nYou are the primary labeling agent and must assign the correct Gmail label and generate a professional summary for each message.  \nYou do not have knowledge of or access to any preclassification logic.\n\n🧰 Tools:  \nget message  \nread labels  \ncreate label  \nassign label to message\n\n🏷️ Label Rules:  \nUse context in subject, sender, and body to apply the correct label.  \nAvailable options include but are not limited to:\n\n\"COMM - Tenant Communication\"  \n\"COMM - Vendor Notifications\"  \n...  \n\"@Unsubscribe\"  \n\"Urgent\" (use if immediate action is implied)  \n\"Personal\" (use if the email is not work-related or clearly about health/personal matters)  \n\"Review Later\" (use only if no other label applies)\n\n**You must return both the Gmail label name and its corresponding Gmail label ID using the `labelMap` object passed into the prompt. Use the exact match of the label name to retrieve its ID. If no label applies, use \"Review Later\". If the label name is not found in the map, set the label ID to null.**\n",
           "maxIterations": 10
         }
       },
@@ -454,7 +441,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "position": [
         240,
-        -80
+        0
       ],
       "notesInFlow": true,
       "retryOnFail": false,
@@ -501,16 +488,60 @@
     },
     {
       "parameters": {
-        "jsonSchemaExample": "{\n  \"gmail_message_id\": \"MESSAGE_ID\",\n  \"gmail_label_name\": \"LABEL NAME\",\n  \"summary\": \"Short summary for a property manager (1–3 sentences)\",\n  \"remove_inbox\": true,\n  \"skip\": false\n}"
+        "jsonSchemaExample": "{\n  \"gmail_message_id\": \"MESSAGE_ID\",\n  \"gmail_label_name\": \"LABEL NAME\",\n  \"gmail_label_id\": \"LABEL_ID\",\n  \"summary\": \"Short summary for a property manager (1–3 sentences)\",\n  \"remove_inbox\": true,\n  \"skip\": false\n}\n"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
       "position": [
-        720,
+        760,
         200
       ],
       "id": "bc16b8e8-60c1-49c9-81ab-f25450e14ae6",
       "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.output.gmail_message_id }}",
+        "labelIds": "={{ $json.output.gmail_label_id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        600,
+        -100
+      ],
+      "id": "3fdfeada-bc5b-4190-a39f-0dc040e68496",
+      "name": "Gmail4",
+      "webhookId": "6f82694d-213d-47c2-82f9-da5c027d6434",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "removeLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": "={{ $json.labelIds[2] }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        820,
+        -100
+      ],
+      "id": "62eb616a-19b0-451b-81e5-8a038264d6da",
+      "name": "Gmail5",
+      "webhookId": "26f2dde1-45fb-403d-9fff-167cc6bce9a7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -520,12 +551,15 @@
   "staticData": {
     "node:Watch Gmail": {
       "Watch Gmail": {
-        "lastTimeChecked": 1744733595
+        "lastTimeChecked": 1744743911,
+        "possibleDuplicates": [
+          "1963ad78991681f0"
+        ]
       }
     }
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-15T16:13:15.000Z",
-  "versionId": "c7e1dba5-6d00-4db8-bcea-5075d7cc6f08"
+  "updatedAt": "2025-04-15T19:08:55.000Z",
+  "versionId": "0674611d-d35f-40f8-a15a-02545bb9b5e2"
 }
