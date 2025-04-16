@@ -1,0 +1,303 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get Property page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Property page": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "FTP Upload Renamed Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP Upload Renamed Image": {
+      "main": [
+        [
+          {
+            "node": "Baserow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-15T21:08:30.983Z",
+  "id": "Ch7iSxVoLBdS3fmW",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Update Baserow Images and Links of Active Marketed Properties",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -600,
+        -40
+      ],
+      "id": "4c331a8d-c0c8-4586-b0c3-b9cc85989426",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 694,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7100,
+                "value": "Yes"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -380,
+        -40
+      ],
+      "id": "1198cb7b-1d30-4cc3-b4de-61d62a9db76b",
+      "name": "Baserow",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fc3b0e62-239d-4097-b22c-6e48e9d3b5e6",
+              "name": "image_name",
+              "value": "={{ $json['Rentable UID'] }}.jpg",
+              "type": "string"
+            },
+            {
+              "id": "24175ff1-e5fc-451e-99b8-b05072622050",
+              "name": "property_link",
+              "value": "=https://blazepropertymanagement.appfolio.com/listings/detail/{{$json[\"Rentable UID\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "405b2cb2-dd33-4c27-902a-0c4967555704",
+              "name": "image_url",
+              "value": "=https://blzres.com/data/images/{{$json[\"Rentable UID\"]}}.jpg",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -40
+      ],
+      "id": "fe2976a6-9997-474a-9288-04132168a8b6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.property_link }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "followRedirects": false
+            }
+          },
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "id": "d6e8aa87-76c1-46ae-90f7-5763677a29bf",
+      "name": "Get Property page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        40,
+        -40
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "img",
+              "cssSelector": "img.gallery__large-image",
+              "returnValue": "attribute",
+              "attribute": "src"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cfbf8b9a-faa3-4e8f-95de-3ee98136e6b7",
+      "name": "HTML",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        -40
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.img }}",
+        "options": {
+          "redirect": {
+            "redirect": {
+              "maxRedirects": 1
+            }
+          }
+        }
+      },
+      "id": "7a32e825-e011-4aae-be94-2940ce4f2f4b",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        -40
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/data/images/{{ $('Edit Fields').item.json.image_name }}",
+        "binaryPropertyName": "=data"
+      },
+      "id": "6f87f5e5-d702-4fd5-8586-f5334efaff7d",
+      "name": "FTP Upload Renamed Image",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        680,
+        -60
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 130,
+        "tableId": 694,
+        "rowId": "={{ $('Baserow').item.json.id }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 7185,
+              "fieldValue": "={{ $('Edit Fields').item.json.image_url }}"
+            },
+            {
+              "fieldId": 7187,
+              "fieldValue": "={{ $('Edit Fields').item.json.property_link }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        840,
+        -60
+      ],
+      "id": "22f3977b-15c7-485e-8d5c-8b4fddea13e8",
+      "name": "Baserow1",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-16T02:37:37.000Z",
+  "versionId": "e005c7e8-2901-42d2-a702-5ddd1e0b584c"
+}
