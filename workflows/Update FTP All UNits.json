@@ -1,0 +1,229 @@
+{
+  "active": false,
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Check Filename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Filename": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-15T20:36:48.728Z",
+  "id": "sb0zQxDhDcXqt8HX",
+  "meta": null,
+  "name": "Update FTP All UNits",
+  "nodes": [
+    {
+      "parameters": {
+        "downloadAttachments": true,
+        "options": {
+          "customEmailConfig": "[\"UNSEEN\", [\"SUBJECT\", \"Daily List\"]]"
+        }
+      },
+      "id": "24cf518f-c263-4b34-869d-c0591b482605",
+      "name": "Email Trigger (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        200,
+        -100
+      ],
+      "credentials": {
+        "imap": {
+          "id": "jiJskG7OLUbWOE4M",
+          "name": "Reports IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$binary.attachment_0.fileName}}",
+              "operation": "regex",
+              "value2": "^report_builder-unit_directory-\\d{8}\\.csv$"
+            }
+          ]
+        }
+      },
+      "name": "Check Filename",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -100
+      ],
+      "id": "7965a6dc-0dc0-4bb6-b4e0-c4a11b42b75d"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "/public_html/data/full-list.csv"
+      },
+      "id": "d77771f8-c755-4e4a-9328-9603d051e734",
+      "name": "FTP",
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        460,
+        140
+      ],
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xls",
+        "binaryPropertyName": "attachment_0",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "id": "8f99f96d-eabe-43ce-a3bc-f5553a450a49",
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        620,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "1c5b520d-e22a-46ea-af37-ba86c2c9a5c1",
+      "name": "Convert to File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        260,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "xyabXMpKFXidJwVv",
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "23412067-40e9-4e86-94b2-1adf4730cd08",
+      "name": "Execute Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        620,
+        140
+      ],
+      "notesInFlow": true,
+      "notes": "Blaze Get Photos of Active Properties"
+    },
+    {
+      "parameters": {
+        "content": "## Call Workflow\nall_listing and get photos copy"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        800,
+        120
+      ],
+      "id": "2bcbf18c-4778-4141-b589-f6fd6546defe",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Workflow Documentation: **Email to FTP with Image Processing**\n\n## **Workflow Function**\nThis workflow automates the process of retrieving an email with a CSV attachment, validating its filename, extracting and converting its data, uploading it to an FTP server, and triggering a secondary workflow to retrieve associated images.\n\n---\n\n## **Workflow Actions**\n### **1. Email Retrieval**\n- **Node:** `Email Trigger (IMAP)`\n- **Action:** Connects to an IMAP email account to retrieve unseen emails with the subject \"Daily List\".\n- **Credentials Used:** `Reports IMAP account`\n- **Purpose:** Ensures the workflow only processes new, relevant reports.\n\n### **2. Filename Validation**\n- **Node:** `Check Filename`\n- **Action:** Checks if the email attachment matches the pattern `^report_builder-unit_directory-\\d{8}\\.csv$`.\n- **Purpose:** Ensures only correctly formatted report files proceed in the workflow.\n\n### **3. Extract Data from CSV**\n- **Node:** `Extract from File`\n- **Action:** Reads data from the validated CSV file.\n- **Options:** Header row is recognized for structured data extraction.\n- **Purpose:** Prepares data for further processing.\n\n### **4. Convert to File**\n- **Node:** `Convert to File`\n- **Action:** Converts the extracted data into a suitable format for uploading.\n- **Purpose:** Prepares the data for FTP transfer.\n",
+        "height": 1320,
+        "width": 420
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        -200
+      ],
+      "id": "4c06bc5d-bd76-42d3-8f8a-79e886099adf",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "\n### **5. Upload to FTP**\n- **Node:** `FTP`\n- **Action:** Uploads the converted file to `/public_html/data/full-list.csv` on an FTP server.\n- **Credentials Used:** `n8n Data FTP account`\n- **Purpose:** Stores the file in a public-accessible location for further use.\n\n### **6. Execute Secondary Workflow**\n- **Node:** `Execute Workflow`\n- **Action:** Calls the `Blaze Get Photos of Active Properties` workflow.\n- **Options:** Waits for the sub-workflow to complete before proceeding.\n- **Purpose:** Ensures image retrieval and association with the newly uploaded data.\n\n### **7. Notes**\n- **Node:** `Sticky Note`\n- **Content:** \"## Call Workflow all_listing and get photos copy\"\n- **Purpose:** Provides an inline documentation note for reference within the n8n editor.\n\n---\n\n## **Workflow Connections**\n| **From Node**            | **To Node**            | **Purpose** |\n|--------------------------|------------------------|-------------|\n| `Email Trigger (IMAP)`   | `Check Filename`       | Ensures only emails with relevant attachments are processed. |\n| `Check Filename`         | `Extract from File`    | Ensures only correctly named CSV files are processed. |\n| `Extract from File`      | `Convert to File`      | Converts structured data into a usable format. |\n| `Convert to File`        | `FTP`                  | Uploads the processed file to FTP. |\n| `FTP`                   | `Execute Workflow`     | Triggers the workflow to retrieve property photos. |\n\n---\n\n## **Suggested New Workflow Name**\n**`EMAIL_FTP_PropertyListings`**\n- **Prefix (`EMAIL_FTP_`)** indicates it handles email retrieval and file uploads.\n- **`PropertyListings`** describes the type of data being processed.\n\n---\n\n## **Additional Notes**\n- This workflow is **dependent** on the `Blaze Get Photos of Active Properties` workflow.\n- If any step fails, logs should be checked for IMAP retrieval issues, filename mismatches, or FTP errors.\n- To modify this workflow for another data type, update the filename validation pattern and FTP destination.\n\n---\n**Maintainer:** [Brandon Blaze](https://github.com/brandonblaze1/n8n-repository)  \n_Last Updated:_ `March 2025`\n",
+        "height": 1240,
+        "width": 860
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        180,
+        320
+      ],
+      "id": "90ece499-3b0d-4322-9d2a-84fd63e26a4d",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-15T20:36:48.728Z",
+  "versionId": "d4babaa9-45be-49d0-8866-aeb102f011c9"
+}
