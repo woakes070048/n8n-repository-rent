@@ -142,8 +142,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        -300,
-        380
+        -340,
+        220
       ],
       "credentials": {
         "mySql": {
@@ -163,8 +163,8 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1520,
-        380
+        1576,
+        220
       ],
       "credentials": {
         "mySql": {
@@ -190,8 +190,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -760,
-        380
+        -780,
+        320
       ]
     },
     {
@@ -216,8 +216,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.4,
       "position": [
-        -100,
-        380
+        -120,
+        220
       ],
       "credentials": {
         "openAiApi": {
@@ -237,8 +237,8 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.4,
       "position": [
-        240,
-        380
+        256,
+        220
       ],
       "credentials": {
         "openAiApi": {
@@ -257,8 +257,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        860,
-        380
+        916,
+        220
       ]
     },
     {
@@ -274,8 +274,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        640,
-        380
+        696,
+        220
       ]
     },
     {
@@ -286,8 +286,8 @@
       "type": "n8n-nodes-base.ftp",
       "typeVersion": 1,
       "position": [
-        1080,
-        380
+        1136,
+        220
       ],
       "id": "3c8108fb-5ab0-48ee-b91f-868e9bf9ba14",
       "name": "FTP",
@@ -326,8 +326,8 @@
       "type": "n8n-nodes-base.facebookGraphApi",
       "typeVersion": 1,
       "position": [
-        1300,
-        380
+        1356,
+        220
       ],
       "id": "41d00a35-ca64-4fdd-9782-fe74db19e307",
       "name": "Facebook Graph API",
@@ -345,8 +345,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        420,
-        380
+        476,
+        220
       ],
       "id": "7951f4ad-0cd6-49c2-8c1e-f634e4118204",
       "name": "Code"
@@ -406,8 +406,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -540,
-        380
+        -560,
+        220
       ],
       "id": "140ef95e-7197-44f6-9875-022804d18c54",
       "name": "Switch"
@@ -438,6 +438,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-15T00:29:54.000Z",
-  "versionId": "b1e178c4-d8de-4c39-82f9-0c8b96c5ce71"
+  "updatedAt": "2025-04-15T19:32:54.000Z",
+  "versionId": "f93b6322-af83-418c-9b5a-26dedf8d4fea"
 }
