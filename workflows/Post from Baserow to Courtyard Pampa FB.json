@@ -1,0 +1,384 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "OpenAI2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MySQL": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI2": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "MySQL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-15T19:48:04.643Z",
+  "id": "BvIgUBXtj3okAn61",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Post from Baserow to Courtyard Pampa FB",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "56859843-c4cf-4c3d-b803-1a1a16113046",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        520
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "all_rental_properties",
+          "mode": "list",
+          "cachedResultName": "all_rental_properties"
+        },
+        "dataMode": "defineBelow",
+        "columnToMatchOn": "rentable_uid",
+        "valueToMatchOn": "={{ $('MySQL Node').item.json.rentable_uid }}",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "fb_post_id",
+              "value": "={{ $json.post_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "199d8a33-0d7a-4d9e-a296-c7054a585fe9",
+      "name": "MySQL",
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        700,
+        400
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "OUIfR0k9k0YXHa0V",
+          "name": "Blazedata Hostinger"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d1db1a60-0572-4f37-9148-89f88a42b375",
+              "name": "property_name",
+              "value": "={{ $json['Property Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9c456f0c-c98b-4172-a342-75b5720fea6b",
+              "name": "advertised_rent",
+              "value": "={{ $json['Advertised Rent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4b6deb3b-b4cd-485d-93f5-02102cd5ccf4",
+              "name": "marketing_description",
+              "value": "={{ $json['Marketing Description'] }}",
+              "type": "string"
+            },
+            {
+              "id": "51058094-5ac3-476b-adec-f01fc3eeef9c",
+              "name": "property_link",
+              "value": "={{ $json.property_link }}",
+              "type": "string"
+            },
+            {
+              "id": "846ec8db-3f37-4d6c-adee-6b706218ab16",
+              "name": "image_link",
+              "value": "={{ $json.Image_link }}",
+              "type": "string"
+            },
+            {
+              "id": "f08b8595-411d-4d9c-9651-f1bb209e5693",
+              "name": "property_link",
+              "value": "={{ $json.property_link }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4434a3f7-89a4-4316-9e13-dbdd2140312a",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        -220,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "id": "9c5cceee-337e-4f61-a814-dbf1e06d4830",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -660,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Use the following text about a unit for lease at Courtyard Apartments in Pampa to make a humorous post. Humor level high. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806 419 5800. {{ $json.marketing_description }}\n"
+            }
+          ]
+        },
+        "simplify": false,
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "91e7f657-2251-4517-9f95-ff68cf087b99",
+      "name": "OpenAI2",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        340
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v20.0",
+        "node": "/585154691350821",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.choices[0].message.content.post }}{{ $('Edit Fields').item.json.property_link }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $('Edit Fields').item.json.image_link }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "276c3091-8b08-4677-9c7a-20708bbaec78",
+      "name": "Facebook Graph API",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        380,
+        340
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "XgrgAoK4LmqkXAln",
+          "name": "Facebook Courtyard Pampa Graph API"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 694,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7100,
+                "value": "Yes"
+              },
+              {
+                "field": 7089,
+                "value": "Courtyard Pampa"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -440,
+        320
+      ],
+      "id": "f7434920-0147-424c-9c92-983332d16d34",
+      "name": "Baserow",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "brandon@blazeproperty.com",
+        "subject": "No photo on listing",
+        "message": "test",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        260
+      ],
+      "id": "11d3d02d-d274-431a-8b81-da59408cc109",
+      "name": "Gmail",
+      "webhookId": "6018a4a0-21e4-4832-9767-8b74b4af77c1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "LD5x69eYRRI6cdrn",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
+  },
+  "staticData": {
+    "node:Cron 8am": {
+      "recurrencyRules": []
+    },
+    "node:cron 10am": {
+      "recurrencyRules": []
+    },
+    "node:Cron 12": {
+      "recurrencyRules": []
+    },
+    "node:Cron 14": {
+      "recurrencyRules": []
+    },
+    "node:Cron 16": {
+      "recurrencyRules": []
+    },
+    "node:Schedule Trigger": {
+      "recurrencyRules": [],
+      "recurrenceRules": []
+    }
+  },
+  "tags": [
+    {
+      "createdAt": "2024-07-27T22:16:08.252Z",
+      "updatedAt": "2024-07-27T22:16:08.252Z",
+      "id": "Uk7axlMxGS79ju2M",
+      "name": "Facebook"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-04-16T02:51:04.000Z",
+  "versionId": "9deeebc4-aa0b-4f31-8e68-4f0fa2dbee3b"
+}
