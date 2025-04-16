@@ -111,17 +111,6 @@
           }
         ]
       ]
-    },
-    "When Executed by Another Workflow": {
-      "main": [
-        [
-          {
-            "node": "Switch",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "createdAt": "2025-04-15T19:44:49.337Z",
@@ -190,8 +179,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -780,
-        320
+        -800,
+        220
       ]
     },
     {
@@ -411,19 +400,6 @@
       ],
       "id": "74cdcc10-d98f-4f18-ae33-9972577ff4a0",
       "name": "Switch"
-    },
-    {
-      "parameters": {
-        "inputSource": "passthrough"
-      },
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1.1,
-      "position": [
-        -780,
-        120
-      ],
-      "id": "802405ed-0029-4ff5-9beb-47f24ce3ff83",
-      "name": "When Executed by Another Workflow"
     }
   ],
   "pinData": {},
@@ -438,6 +414,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2025-04-15T19:45:38.000Z",
-  "versionId": "ac936fc7-d6d2-41ee-8414-f1792e5dffad"
+  "updatedAt": "2025-04-16T15:32:08.000Z",
+  "versionId": "379728b6-f29d-4a1c-8077-5e87f16c84d0"
 }
