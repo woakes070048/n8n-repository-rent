@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "When clicking ‘Test workflow’": {
       "main": [
@@ -60,7 +60,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -79,6 +79,35 @@
         [
           {
             "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Baserow1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow1": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
             "type": "main",
             "index": 0
           }
@@ -242,8 +271,8 @@
       "type": "n8n-nodes-base.facebookGraphApi",
       "typeVersion": 1,
       "position": [
-        596,
-        495
+        600,
+        500
       ],
       "credentials": {
         "facebookGraphApi": {
@@ -275,8 +304,8 @@
       "type": "n8n-nodes-base.baserow",
       "typeVersion": 1,
       "position": [
-        -440,
-        395
+        -460,
+        380
       ],
       "id": "0d75a6fb-ae20-4290-9fd2-efce05e094f5",
       "name": "Baserow",
@@ -344,6 +373,98 @@
         }
       },
       "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f6de5811-b98a-4014-8ce4-a35bbe0c4bdb",
+              "leftValue": "={{ Object.keys($json).length > 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -260,
+        260
+      ],
+      "id": "de67329c-dd41-4c5e-bafe-97e04c102011",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "databaseId": 172,
+        "tableId": 702,
+        "rowId": "2"
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -20,
+        100
+      ],
+      "id": "5162cc8f-c3b0-4e9b-9fcd-a5b1c299429f",
+      "name": "Baserow1",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v20.0",
+        "node": "/113664604954950",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.Description }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $json.photo_link }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "8caf8538-242f-4351-954e-26c85be1d962",
+      "name": "Facebook Graph API1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        220,
+        100
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "Rzy9PLmDb6ms5AnK",
+          "name": "Nelson Facebook Graph"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -381,6 +502,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-16T02:59:26.000Z",
-  "versionId": "7c54b321-91e9-470c-9948-3e716683f45f"
+  "updatedAt": "2025-04-16T17:09:14.000Z",
+  "versionId": "36a8d823-d69e-462c-aaee-ba85e03e62eb"
 }
