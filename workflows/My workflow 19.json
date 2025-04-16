@@ -1,56 +1,60 @@
 {
   "active": false,
   "connections": {
-    "When clicking ‘Test workflow’": {
+    "Daily Trigger": {
       "main": [
         [
           {
-            "node": "Get Units",
+            "node": "Baserow",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Get Units": {
+    "Pick Random Post": {
       "main": [
         [
           {
-            "node": "Get Properties",
+            "node": "Attach Post to Each Page",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Get Properties": {
+    "Baserow": {
       "main": [
         [
           {
-            "node": "Format Update",
+            "node": "Pick Random Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Format Update": {
+    "HTTP Request": {
       "main": [
         [
           {
-            "node": "Split In Batches",
+            "node": "Attach Post to Each Page",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Split In Batches": {
+    "Code": {
       "main": [
-        [],
         [
           {
-            "node": "Update Unit",
+            "node": "HTTP Request1",
             "type": "main",
             "index": 0
           }
@@ -58,8 +62,8 @@
       ]
     }
   },
-  "createdAt": "2025-04-12T10:36:18.553Z",
-  "id": "X0UeUCFUK1fBxNnD",
+  "createdAt": "2025-04-16T11:48:22.057Z",
+  "id": "PuEf0l8EBppmScqh",
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -67,111 +71,127 @@
   "nodes": [
     {
       "parameters": {},
-      "id": "318303af-9acf-4494-9c7b-ed326e4d65c1",
-      "name": "When clicking ‘Test workflow’",
-      "type": "n8n-nodes-base.manualTrigger",
+      "name": "Daily Trigger",
+      "type": "n8n-nodes-base.cron",
       "typeVersion": 1,
       "position": [
-        0,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "databaseId": 170,
-        "tableId": 700,
-        "returnAll": true,
-        "additionalOptions": {}
-      },
-      "id": "aa1426f8-a7e6-4cd7-a1b3-6359ca7f958b",
-      "name": "Get Units",
-      "type": "n8n-nodes-base.baserow",
-      "typeVersion": 1,
-      "position": [
-        180,
+        -60,
         0
       ],
-      "credentials": {
-        "baserowApi": {
-          "id": "5zW4AD0Cpmzo8h8d",
-          "name": "Baserow account"
-        }
-      }
+      "id": "c7b609db-5810-4efc-b68b-53d1afa3e297"
     },
     {
       "parameters": {
-        "databaseId": 170,
-        "tableId": 699,
-        "returnAll": true,
-        "additionalOptions": {}
+        "jsCode": "// items is already an array of individual post records\nif (!items || items.length === 0) {\n  throw new Error(\"No active posts available.\");\n}\n\n// Pick one record at random\nconst selected = items[Math.floor(Math.random() * items.length)];\n\n// Defensive fallback for missing Description\nselected.json.Description = selected.json.Description || selected.json.Name || '';\n\nif (\n  !selected.json.File ||\n  !Array.isArray(selected.json.File) ||\n  !selected.json.File[0] ||\n  !selected.json.File[0].url\n) {\n  throw new Error(\"No valid image found in selected post.\");\n}\n\nreturn [selected];\n"
       },
-      "id": "3f954432-4a32-42e0-9eba-09dc8647b91e",
-      "name": "Get Properties",
-      "type": "n8n-nodes-base.baserow",
-      "typeVersion": 1,
-      "position": [
-        360,
-        0
-      ],
-      "credentials": {
-        "baserowApi": {
-          "id": "5zW4AD0Cpmzo8h8d",
-          "name": "Baserow account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const unit = $json;\nconst properties = $items(\"Get Properties\", 0).map(i => i.json);\nconst propId = parseInt(unit[\"Property ID\"]);\nconst match = properties.find(p => parseInt(p[\"Property ID\"]) === propId);\n\nreturn [{\n  json: {\n    unitRowId: unit.id,\n    linkedProperty: match ? [match.id] : []\n  }\n}];"
-      },
-      "id": "15670b27-e917-4a82-bd59-38361e3910a2",
-      "name": "Format Update",
+      "name": "Pick Random Post",
       "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "typeVersion": 1,
       "position": [
-        560,
-        0
-      ]
+        380,
+        80
+      ],
+      "id": "addc1f03-5cab-445e-ac61-83212da1f971"
     },
     {
       "parameters": {
-        "batchSize": 20,
+        "databaseId": 172,
+        "tableId": 703,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        160,
+        0
+      ],
+      "id": "67184866-8d9c-42b6-81c0-1874a4fcadeb",
+      "name": "Baserow",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://base.blazeproperty.com/api/database/rows/table/704/?user_field_names=true&filter__Active__equal=true",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
         "options": {}
       },
-      "id": "898cbbe8-521b-437a-80a2-4ebe7b7b85cb",
-      "name": "Split In Batches",
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        740,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "authentication": "headerAuth",
-        "requestMethod": "PATCH",
-        "url": "=https://base.blazeproperty.com/api/database/rows/table/699/{{$json.unitRowId}}/",
-        "jsonParameters": true,
-        "options": {
-          "bodyContentType": "json"
-        },
-        "bodyParametersJson": "={ \"field_7153\": [{{$json.linkedProperty}}] }"
-      },
-      "id": "079f0be7-9c26-4c4f-a68f-e8e6d493d9fe",
-      "name": "Update Unit",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 1,
+      "typeVersion": 4.2,
       "position": [
-        960,
-        0
+        380,
+        -160
       ],
+      "id": "8df553ac-10a7-40d3-81d9-3156a714a457",
+      "name": "HTTP Request",
       "credentials": {
         "httpHeaderAuth": {
           "id": "HTGHTGVhQpvKZvdW",
           "name": "baserow"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "const records = items[0].json.results;\n\nreturn records.map(row => ({\n  json: {\n    page_id: row[\"Facebook ID\"],\n    token: row[\"Facebook Key\"],\n    name: row[\"Name\"],\n    url: row[\"Facebook Address\"] || '',\n    expiration: row[\"Expiration\"] || ''\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "243e4f41-dbb8-410a-99f3-ef6f2d948369",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $json.page_id }}/photos",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.page_id }}"
+            },
+            {
+              "name": "caption"
+            },
+            {
+              "name": "access_token"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1240,
+        0
+      ],
+      "id": "dae12701-2bf7-4990-9b6a-6819a301b615",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const post = $items(\"Pick Random Post\")[0].json; // The single selected post\n\nreturn items.map(item => {\n  const page = item.json;\n  return {\n    json: {\n      ...page,\n      post_url: post.File?.[0]?.url || '',\n      caption: post.Description || post.Name || ''\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        620,
+        -60
+      ],
+      "id": "49301f35-be1f-4b04-b54b-1200f13fed50",
+      "name": "Attach Post to Each Page"
     }
   ],
   "pinData": {},
@@ -181,6 +201,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2025-04-12T10:36:18.553Z",
-  "versionId": "823041bf-7111-497d-ba48-f468dfb61689"
+  "updatedAt": "2025-04-16T15:30:39.000Z",
+  "versionId": "c838a57f-0f14-4619-8680-6a2a23d6da1c"
 }
