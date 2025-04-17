@@ -222,7 +222,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Use the following text about a unit for lease at Courtyard Apartments in Pampa to make a humorous post. Humor level high. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806 419 5800. {{ $json.marketing_description }}\n"
+              "content": "=Use the following text about a unit for lease at Nelson Street Apartments to make a humorous post. Humor level high. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806-414-6021. {{ $json.marketing_description }}\n"
             }
           ]
         },
@@ -502,6 +502,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-16T17:09:14.000Z",
-  "versionId": "36a8d823-d69e-462c-aaee-ba85e03e62eb"
+  "updatedAt": "2025-04-16T18:28:45.000Z",
+  "versionId": "f220f58b-17fc-4f82-9961-f84bc5147b6d"
 }
