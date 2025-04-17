@@ -1,0 +1,460 @@
+{
+  "active": true,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Baserow2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Baserow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-17T10:20:25.253Z",
+  "id": "z2MXzg5d0B6GgxpL",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "FB Holidy Social Media Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        -140
+      ],
+      "id": "0dd4bdaf-5eb6-4702-84de-22852425fba0",
+      "name": "When clicking ‘Test workflow’",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "databaseId": 172,
+        "tableId": 708,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7231,
+                "value": "True"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        0
+      ],
+      "id": "1bd2ab4f-8ac5-4410-8639-7f126d683f2a",
+      "name": "Baserow",
+      "executeOnce": true,
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "=You are a graphic designer for an American property management company in Texas. You task is to create an image with {{ $('AI Agent').item.json.output.image_description }}",
+        "options": {
+          "quality": "hd",
+          "size": "1024x1024",
+          "style": "vivid",
+          "returnImageUrls": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        696,
+        125
+      ],
+      "id": "124782b5-0d20-4819-a822-6ea5b2466c42",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/data/images/social/{{ $json.uuid }}.png"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        1356,
+        125
+      ],
+      "id": "ff457ff2-6469-42c6-bd1d-b7a71dc7aa31",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        916,
+        125
+      ],
+      "id": "b8721287-0a30-4a8e-9b0b-109137e271aa",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Current image download result\nconst imageItem = $input.item;\n\nlet baserowData;\ntry {\n  baserowData = $('Baserow').item.json;\n} catch (err) {\n  baserowData = {}; // fallback if testing\n}\n\n\n// Reuse or generate UUID\nconst uuid = imageItem.json.uuid || `image-${Date.now()}`;\n\n// Construct final image URL (adjust to your public-facing URL pattern)\nconst imageUrl = `https://blzres.com/data/images/social/${uuid}.png`;\n\n// Merge all data\nconst mergedJson = {\n  ...baserowData,\n  ...imageItem.json,\n  uuid,\n  image_url: imageUrl,\n  holiday_post: imageItem.json.post || '',               // From earlier split\n  img_description: imageItem.json.image_description || '' // Optional\n};\n\n// Copy binary data and rename the image\nconst binary = { ...imageItem.binary };\nif (binary.image) {\n  binary.image.fileName = `${uuid}.png`;\n}\n\nreturn [\n  {\n    json: mergedJson,\n    binary\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        125
+      ],
+      "id": "aa4f724f-7fcf-48ba-8469-edfe69d13cce",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 172,
+        "tableId": 708,
+        "rowId": "={{ $('Baserow').item.json.id }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 7229,
+              "fieldValue": "={{ $('Code1').item.json.image_url }}"
+            },
+            {
+              "fieldId": 7230,
+              "fieldValue": "={{ $json.revised_prompt }}"
+            },
+            {
+              "fieldId": 7231,
+              "fieldValue": "False"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        1796,
+        0
+      ],
+      "id": "9e2bb73d-e4f2-4124-b5a3-031d153c1d55",
+      "name": "Baserow1",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a marketing professional for an American property management company.\n\nCreate an engaging post about {{ $json.holiday_name }} that is light-hearted but professional, and loosely related to property management. Do not make any commitments or guarantees. Focus on how the viewer can celebrate or participate.\n\nRespond ONLY with a JSON object in the following format:\n\n{\n  \"post\": \"string - the social media caption\",\n  \"image_description\": \"string - a vivid image idea to match the post\"\n}\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        100,
+        125
+      ],
+      "id": "dcecdc0e-1296-4a33-8635-80f765437f38",
+      "name": "AI Agent",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        128,
+        345
+      ],
+      "id": "f1a0d52c-e651-4f6a-96a5-94ac5f85cbf4",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"post\": \"Celebrate Earth Day with sustainable living tips at your home!\",\n  \"image_description\": \"A vibrant community garden at sunset with families planting together and recycling bins in view.\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        248,
+        345
+      ],
+      "id": "76d9eef8-972f-4b80-aab0-8566d941905e",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1576,
+        0
+      ],
+      "id": "8ed3d632-79d9-4c46-bfdf-76a14d3583d7",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 172,
+        "tableId": 708,
+        "rowId": "={{ $('Baserow').item.json.id }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 7227,
+              "fieldValue": "={{ $json.output.post }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        476,
+        125
+      ],
+      "id": "037a9139-b905-42f9-9cc6-21fa72d06b26",
+      "name": "Baserow2",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nreturn [items[0]];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -120,
+        0
+      ],
+      "id": "a6561870-b5c1-4555-ae90-ffe5d4a44ba9",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -540,
+        100
+      ],
+      "id": "9947f179-c24a-4772-8dc1-fa3fa97227b7",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2025-04-17T13:51:15.000Z",
+  "versionId": "93b1c13c-4b23-4a90-9dc3-020ac24387e4"
+}
