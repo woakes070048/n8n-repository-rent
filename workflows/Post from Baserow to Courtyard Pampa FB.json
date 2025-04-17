@@ -34,17 +34,6 @@
         ]
       ]
     },
-    "MySQL": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "OpenAI2": {
       "main": [
         [
@@ -60,25 +49,48 @@
       "main": [
         [
           {
-            "node": "MySQL",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
         ],
-        [
-          {
-            "node": "Gmail",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Baserow": {
       "main": [
         [
           {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Baserow1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
             "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow1": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API1",
             "type": "main",
             "index": 0
           }
@@ -103,44 +115,6 @@
         -440,
         520
       ]
-    },
-    {
-      "parameters": {
-        "operation": "upsert",
-        "table": {
-          "__rl": true,
-          "value": "all_rental_properties",
-          "mode": "list",
-          "cachedResultName": "all_rental_properties"
-        },
-        "dataMode": "defineBelow",
-        "columnToMatchOn": "rentable_uid",
-        "valueToMatchOn": "={{ $('MySQL Node').item.json.rentable_uid }}",
-        "valuesToSend": {
-          "values": [
-            {
-              "column": "fb_post_id",
-              "value": "={{ $json.post_id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "199d8a33-0d7a-4d9e-a296-c7054a585fe9",
-      "name": "MySQL",
-      "type": "n8n-nodes-base.mySql",
-      "typeVersion": 2.4,
-      "position": [
-        700,
-        400
-      ],
-      "credentials": {
-        "mySql": {
-          "id": "OUIfR0k9k0YXHa0V",
-          "name": "Blazedata Hostinger"
-        }
-      },
-      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -322,24 +296,93 @@
     },
     {
       "parameters": {
-        "sendTo": "brandon@blazeproperty.com",
-        "subject": "No photo on listing",
-        "message": "test",
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f6de5811-b98a-4014-8ce4-a35bbe0c4bdb",
+              "leftValue": "={{ Object.keys($json).length > 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
         "options": {}
       },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.1,
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
       "position": [
-        640,
-        260
+        -280,
+        180
       ],
-      "id": "11d3d02d-d274-431a-8b81-da59408cc109",
-      "name": "Gmail",
-      "webhookId": "6018a4a0-21e4-4832-9767-8b74b4af77c1",
+      "id": "13565421-aad8-42d2-8913-2ca0e2362adb",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "databaseId": 172,
+        "tableId": 702,
+        "rowId": "2"
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        100
+      ],
+      "id": "04558d38-42a8-479b-ab13-6612955022e6",
+      "name": "Baserow1",
       "credentials": {
-        "gmailOAuth2": {
-          "id": "LD5x69eYRRI6cdrn",
-          "name": "Gmail account"
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v20.0",
+        "node": "/585154691350821",
+        "edge": "photos",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "=message",
+                "value": "={{ $json.Description }}"
+              },
+              {
+                "name": "url",
+                "value": "={{ $json.photo_link }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "2af18e76-d898-41bc-90e4-6712c1f94974",
+      "name": "Facebook Graph API1",
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        200,
+        100
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "XgrgAoK4LmqkXAln",
+          "name": "Facebook Courtyard Pampa Graph API"
         }
       }
     }
@@ -379,6 +422,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-16T02:51:04.000Z",
-  "versionId": "9deeebc4-aa0b-4f31-8e68-4f0fa2dbee3b"
+  "updatedAt": "2025-04-16T17:17:48.000Z",
+  "versionId": "0302eea1-3d28-4ff8-b406-e73da28258a5"
 }
