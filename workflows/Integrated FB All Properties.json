@@ -1,0 +1,748 @@
+{
+  "active": false,
+  "connections": {
+    "Get Available Units": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for Units": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get FB Page Info": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge FB Data": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get Multifamily Properties",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Available Units",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Check for Units",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get FB Page Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Multifamily Properties": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Post to Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Merge FB Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Post to Facebook": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-18T14:03:25.545Z",
+  "id": "xK7iPWKvjNDoZtM1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Integrated FB All Properties",
+  "nodes": [
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 694,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7100,
+                "operator": "contains",
+                "value": "Yes"
+              }
+            ]
+          }
+        }
+      },
+      "id": "7f9f2525-e206-4797-9135-555e78ffe533",
+      "name": "Get Available Units",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        20,
+        -115
+      ],
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Optionally filter empty or malformed records\nconst cleanItems = items.filter(item => item.json && item.json[\"Property ID\"]);\n\nreturn cleanItems;\n"
+      },
+      "id": "1b4f338b-ed82-4f89-88d0-8308dce7088f",
+      "name": "Check for Units",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        900,
+        -115
+      ]
+    },
+    {
+      "parameters": {
+        "databaseId": 172,
+        "tableId": 704,
+        "returnAll": true,
+        "additionalOptions": {}
+      },
+      "id": "ba464c73-4c76-48bb-8a36-a2ffbdd7ae06",
+      "name": "Get FB Page Info",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        900,
+        85
+      ],
+      "executeOnce": true,
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all()\n  .filter(item =>\n    item.json[\"Facebook Key\"] &&\n    item.json[\"Image_link\"] &&\n    item.json[\"Image_link\"].trim() !== \"\"\n  )\n  .map(item => {\n    return {\n      json: {\n        ...item.json,\n        page_id: String(item.json[\"Facebook ID\"] || \"\").trim(),\n        page_token: item.json[\"Facebook Key\"]\n      }\n    };\n  });\n"
+      },
+      "id": "92ca4803-0c1e-4553-9a24-0a84676bd4bd",
+      "name": "Merge FB Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1560,
+        -15
+      ]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{ $('Merge FB Data').item.json['Facebook ID'] }}/photos",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "message",
+              "value": "={{ $json.output.facebook_message }}"
+            },
+            {
+              "name": "url",
+              "value": "={{ $('Merge FB Data').item.json.Image_link }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $('Merge FB Data').item.json['Facebook Key'] }}"
+            },
+            {}
+          ]
+        }
+      },
+      "id": "75e66543-f5f4-4ed0-a385-e129184e1c37",
+      "name": "HTTP Post to Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        2596,
+        -15
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -15
+      ],
+      "id": "676222d3-4026-4faf-af13-690bfb7d93b9",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get allowed Property IDs from multifamily property node\nconst allowedPropertyIds = new Set(\n  $items(\"Get Multifamily Properties\").map(p => String(p.json[\"Property ID\"]).trim())\n);\n\n// Filter only units matching those properties and pass all fields\nreturn $input.all().filter(item => \n  allowedPropertyIds.has(String(item.json[\"Property ID\"]).trim())\n);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        -15
+      ],
+      "id": "83b244fa-b5db-47f5-a9c5-08783cd9d3e8",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "databaseId": 130,
+        "tableId": 692,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7047,
+                "value": "Multi-Family"
+              },
+              {
+                "field": 6998,
+                "operator": "higher_than",
+                "value": "10"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        20,
+        85
+      ],
+      "id": "9ec434a2-df96-46fe-9169-2de8f6dda041",
+      "name": "Get Multifamily Properties",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "['Property ID']",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        460,
+        -15
+      ],
+      "id": "9e992d09-46b9-407a-a88b-9cfe1df4b138",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "638a729f-babe-4201-868f-2a549185434b",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "dc639ee2-4827-42ff-9498-4a9c7a4c3b9a",
+              "name": "Unit Name",
+              "value": "={{ $json['Unit Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "89f781e1-00fa-4801-a72d-c595fddf9330",
+              "name": "Market Rent",
+              "value": "={{ $json['Market Rent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "339e3b60-6251-4db2-a550-0cd1cf6f4efd",
+              "name": "Default Deposit",
+              "value": "={{ $json['Default Deposit'] }}",
+              "type": "string"
+            },
+            {
+              "id": "45edecd7-8a27-4a05-990b-6188ddbc9280",
+              "name": "Sqft",
+              "value": "={{ $json.Sqft }}",
+              "type": "string"
+            },
+            {
+              "id": "f47ec78b-fc8a-4b51-9da9-e3d1504a80b1",
+              "name": "Bedrooms",
+              "value": "={{ $json.Bedrooms }}",
+              "type": "string"
+            },
+            {
+              "id": "b82941e8-21e5-40c1-86ef-465720e5b595",
+              "name": "Bathrooms",
+              "value": "={{ $json.Bathrooms }}",
+              "type": "string"
+            },
+            {
+              "id": "cc9c6fb2-ec6d-4459-80d7-31c22a6b60b7",
+              "name": "Property Name",
+              "value": "={{ $json['Property Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3baff4f1-8a48-4abf-a2fc-c8b63f1a33a9",
+              "name": "Property ID",
+              "value": "={{ $json['Property ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "2fab5011-ddc9-490a-9fe7-5b92c5c1be7a",
+              "name": "Marketing Title",
+              "value": "={{ $json['Marketing Title'] }}",
+              "type": "string"
+            },
+            {
+              "id": "00f93b54-a8bd-45f2-83b3-a7630ccff46e",
+              "name": "Marketing Description",
+              "value": "={{ $json['Marketing Description'] }}",
+              "type": "string"
+            },
+            {
+              "id": "bcf18664-242f-4a85-9bbb-bf57bdb3ecbe",
+              "name": "Advertised Rent",
+              "value": "={{ $json['Advertised Rent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4d0a2bc8-c463-4feb-8148-d2a82c04b8e9",
+              "name": "Posted To Website",
+              "value": "={{ $json['Posted To Website'] }}",
+              "type": "string"
+            },
+            {
+              "id": "24b4a98c-3eb4-487f-ae0b-1683048b1c39",
+              "name": "Application Fee",
+              "value": "={{ $json['Application Fee'] }}",
+              "type": "string"
+            },
+            {
+              "id": "66927a14-a543-4031-8829-64edd64758a8",
+              "name": "Rent Ready",
+              "value": "={{ $json['Rent Ready'] }}",
+              "type": "string"
+            },
+            {
+              "id": "194e6ca7-881b-4c8a-9c61-f0814f5335f7",
+              "name": "Unit ID",
+              "value": "={{ $json['Unit ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "bed9a092-cba8-4a2a-85b4-5ac523f0d102",
+              "name": "Rentable UID",
+              "value": "={{ $json['Rentable UID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b6a1ab14-b2fc-4eec-b9b1-12745f3dacb4",
+              "name": "Amenities",
+              "value": "={{ $json.Amenities }}",
+              "type": "string"
+            },
+            {
+              "id": "67518d3e-ab88-408b-af9b-a8692c1ebae6",
+              "name": "Appliances",
+              "value": "={{ $json.Appliances }}",
+              "type": "string"
+            },
+            {
+              "id": "f3a4a5f8-b00f-4b85-ab95-a829a7e69a4d",
+              "name": "Utilities",
+              "value": "={{ $json.Utilities }}",
+              "type": "string"
+            },
+            {
+              "id": "943ad732-1cd3-4a3f-b794-79229ca719a6",
+              "name": "Image_link",
+              "value": "={{ $json.Image_link }}",
+              "type": "string"
+            },
+            {
+              "id": "b18e676f-4bde-42ca-801f-2301dc2c053c",
+              "name": "property_link",
+              "value": "={{ $json.property_link }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        -115
+      ],
+      "id": "f23eb330-fe6d-4065-8711-317a0b7145a9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "638a729f-babe-4201-868f-2a549185434b",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "89f781e1-00fa-4801-a72d-c595fddf9330",
+              "name": "Market Rent",
+              "value": "={{ $json['Market Rent'] }}",
+              "type": "string"
+            },
+            {
+              "id": "cc9c6fb2-ec6d-4459-80d7-31c22a6b60b7",
+              "name": "Property Name",
+              "value": "={{ $json['Property Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "3baff4f1-8a48-4abf-a2fc-c8b63f1a33a9",
+              "name": "Property ID",
+              "value": "={{ $json['Property ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4c6e2928-56b6-436f-a366-ef8c8aca901c",
+              "name": "Site Manager Name",
+              "value": "={{ $json['Site Manager Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "0be9d64f-21ce-4e59-afbc-6de7bcb03491",
+              "name": "Site Manager Phone Number",
+              "value": "={{ $json['Site Manager Phone Number'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d8676fe4-e0bf-41b7-8daf-93b8c13cebca",
+              "name": "Property Type",
+              "value": "={{ $json['Property Type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "435d9901-a7fa-48d8-9dfe-1aa8604c3f42",
+              "name": "Listing Type",
+              "value": "={{ $json['Listing Type'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        85
+      ],
+      "id": "f2fe1342-1cb2-4317-a942-1b028d384e9a",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "Property Name",
+              "field2": "Name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        1120,
+        -15
+      ],
+      "id": "6b3ab7e5-01ca-49cd-80a3-442658eda429",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Use the following text about a unit for lease at {{ $json.Name }} to make a light-hearted but professional Facebook post. Emojis are encouraged. \n\nDo not reference or suggest amenities that are not explicitly stated in the original text. \nInclude the office phone number: {{ $json['Site Manager Phone Number'] }}.\n\nDescription: {{ $json['Marketing Description'] }}  \nTitle: {{ $json['Marketing Title'] }}  \nSqft: {{ $json.Sqft }}  \nBeds: {{ $json.Bedrooms }}  \nBaths: {{ $json.Bathrooms }}  \nDeposit: {{ $json['Default Deposit'] }}  \nAppliances: {{ $json.Appliances }}  \nUtilities Included: {{ $json.Utilities }}  \nAdvertised Rent: {{ $json['Advertised Rent'] }}\n\nYour output must be a JSON object in this exact structure:\n\n{\n  \"facebook_message\": \"Write a detailed but concise post here...\",\n  \"facebook_title\": \"Short listing title here...\",\n  \"facebook_page_id\": \"{{ $json.page_id }}\",\n  \"facebook_key\": \"{{ $json.page_token }}\"\n}\n\nDO NOT include explanations or formatting outside of the JSON structure.\nOnly include fields exactly as shown.\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        2220,
+        -140
+      ],
+      "id": "4fa14c30-6a0f-485a-ab85-c54a94dfc37e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"facebook_message\": \"Write a detailed but concise post here...\",\n  \"facebook_title\": \"Short listing title here...\",\n  \"facebook_page_id\": \"{{ $json.page_id }}\",\n  \"facebook_key\": \"{{ $json.page_token }}\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2368,
+        80
+      ],
+      "id": "15ad424e-eb4a-431b-b777-6cdad7109b59",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2248,
+        80
+      ],
+      "id": "224f7e04-d569-4a91-8629-cb045a1841f9",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const seen = new Set();\nconst output = [];\n\nfor (const item of $input.all()) {\n  const key = `${item.json[\"Property ID\"]}-${item.json[\"Unit Name\"]}`;\n\n\n  if (!seen.has(key)) {\n    seen.add(key);\n    output.push(item);\n  }\n}\n\nreturn output;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        -15
+      ],
+      "id": "b832a774-f07c-45af-ae2b-7321187a4c39",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1780,
+        -15
+      ],
+      "id": "44af13bc-1efd-410f-8db7-33ff9106ae4e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2000,
+        -140
+      ],
+      "id": "1e0d85ff-db37-4533-b21e-cc3ad4f1edeb",
+      "name": "Wait",
+      "webhookId": "7794d3cd-9222-4fae-9904-2d38900a7d4a"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-18T16:53:49.000Z",
+  "versionId": "716bfe82-c294-4768-b674-aba5fe7f64a1"
+}
