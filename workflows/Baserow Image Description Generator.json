@@ -1,0 +1,122 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baserow": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-17T22:00:10.084Z",
+  "id": "5jzHzaclI6STgyrD",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Baserow Image Description Generator",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "3651b27d-8652-4566-b2d7-3b96f6b5e262",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "databaseId": 172,
+        "tableId": 709,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7242,
+                "operator": "contains",
+                "value": "Daily"
+              },
+              {
+                "field": 7235,
+                "operator": "empty"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        0
+      ],
+      "id": "ecae655b-638c-4ece-a9bc-d2c392b2f41d",
+      "name": "Baserow",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a marketing professional for a Texas based property management company. "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -40,
+        0
+      ],
+      "id": "ca5d38f5-b796-44a7-9f27-d6cbbbadf210",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-17T22:03:19.000Z",
+  "versionId": "1cab73d6-11bb-4464-912a-185c8c4f675a"
+}
