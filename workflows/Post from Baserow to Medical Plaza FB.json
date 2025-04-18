@@ -223,7 +223,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Use the following text about a unit for lease at Medical Plaza Townhomes to make a humorous post. Humor level high. Emojis are encouraged. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806 414 6021. {{ $json.marketing_description }}\n"
+              "content": "=Use the following text about a unit for lease at Medical Plaza Townhomes to make a light-hearted but professional post. Professional emojis. Do not reference or suggest amenities that are not explicitly stated in the original text. Include office phone number 806 414 6021. {{ $json.marketing_description }}\n"
             }
           ]
         },
@@ -506,6 +506,6 @@
     }
   ],
   "triggerCount": 1,
-  "updatedAt": "2025-04-17T02:46:07.000Z",
-  "versionId": "790d8ef9-992c-4573-966e-3323651414c9"
+  "updatedAt": "2025-04-17T22:07:10.000Z",
+  "versionId": "495e58a7-139b-45f5-bf40-1dbde3d0dfc0"
 }
