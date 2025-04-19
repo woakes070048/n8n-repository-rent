@@ -1,0 +1,381 @@
+{
+  "active": false,
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Today": {
+      "main": [
+        [
+          {
+            "node": "Get Holiday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Holiday": {
+      "main": [
+        [
+          {
+            "node": "If Holiday Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Holiday Found": {
+      "main": [
+        [
+          {
+            "node": "Set Post Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Tips",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Tips": {
+      "main": [
+        [
+          {
+            "node": "Pick Random Tip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Random Tip": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "FTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "FTP": {
+      "main": [
+        [
+          {
+            "node": "Baserow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-18T17:30:12.610Z",
+  "id": "haQ8DfaB2k1kPgo9",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 20",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\n\n// Today formats\nconst today = now.toISOString().split('T')[0];\nconst today_mmddyyyy = `${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getDate().toString().padStart(2,'0')}/${now.getFullYear()}`;\n\n// 90 days ago\nconst cutoff = new Date();\ncutoff.setDate(cutoff.getDate() - 190);\nconst cutoff_date = cutoff.toISOString().split('T')[0];\n\nreturn [{\n  json: {\n    today,\n    today_mmddyyyy,\n    cutoff_date\n  }\n}];\n"
+      },
+      "name": "Set Today",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -20
+      ],
+      "id": "7902f919-874a-4753-b7b7-0356b6721275"
+    },
+    {
+      "parameters": {
+        "databaseId": 172,
+        "tableId": 708,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7225,
+                "operator": "date_equals_today",
+                "value": "={{ $json.today_mmddyyyy }}"
+              },
+              {
+                "field": 7231,
+                "value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Get Holiday",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -20
+      ],
+      "id": "f439fac3-c171-48d3-a5ce-97e3e72d300c",
+      "alwaysOutputData": true,
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "If Holiday Found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        660,
+        -20
+      ],
+      "id": "68540ecc-6580-409b-81ab-140dfcfa934b"
+    },
+    {
+      "parameters": {
+        "databaseId": 172,
+        "tableId": 707,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7222,
+                "operator": "date_before",
+                "value": "={{ $('Set Today').item.json.cutoff_date }}"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Get Tips",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        880,
+        80
+      ],
+      "id": "1661e507-f20f-4a30-94ae-3c2720b37967",
+      "executeOnce": true,
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tips = $input.all().filter(t => t.json.post && t.json.id);\nconst random = tips[Math.floor(Math.random() * tips.length)];\n\n// Retain all fields and explicitly pass the row ID as `baserow_tip_id` too\nreturn [{\n  json: {\n    ...random.json,\n    baserow_tip_id: random.json.id\n  }\n}];\n"
+      },
+      "name": "Pick Random Tip",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        80
+      ],
+      "id": "d3e25804-8ac0-42fa-baef-56bc0ab3c5fe"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "holiday name",
+              "value": "={{ $('Get Holiday').item.json.holiday_name }}"
+            },
+            {
+              "name": "holiday post",
+              "value": "={{ $('Get Holiday').item.json.holiday_post }}"
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $('Get Holiday').item.json.image_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Post Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -120
+      ],
+      "id": "7a8bd7b9-7a85-4edb-b02a-fe2f4c6b65c2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -20
+      ],
+      "id": "12d6a875-adda-48ac-9f2d-b32aaf0cbd5b",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "={{ $json['Image Instructions'] }}",
+        "options": {
+          "returnImageUrls": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1320,
+        80
+      ],
+      "id": "15af87bf-410e-445c-b076-7ed5e00cbe28",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -20,
+        280
+      ],
+      "id": "9f0dc873-b17d-452b-9bf5-c65ec40a0e9d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/data/images/social/{{ $json.uuid }}.png"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        160,
+        280
+      ],
+      "id": "b122f8c1-5a4a-4c52-b4f1-0e133fd64c6f",
+      "name": "FTP",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const imageItem = $input.item;\n\n// Fallback-safe merge\nlet baserowData = {};\ntry {\n  const nodeData = $('Baserow').item;\n  if (nodeData && nodeData.json) {\n    baserowData = nodeData.json;\n  }\n} catch (err) {\n  baserowData = {}; // safe fallback\n}\n\n// UUID logic\nconst uuid = imageItem.json.uuid || `image-${Date.now()}`;\nconst imageUrl = `https://blzres.com/data/images/social/${uuid}.png`;\n\n// Final merge\nconst mergedJson = {\n  ...imageItem.json,\n  ...baserowData,\n  uuid,\n  image_url: imageUrl,\n  holiday_post: imageItem.json.post || imageItem.json.holiday_post || '',\n  img_description: imageItem.json.image_description || '',\n  row_id: imageItem.json.row_id || imageItem.json.id || null\n};\n\n// Binary rename\nconst binary = { ...imageItem.binary };\nif (binary.image) {\n  binary.image.fileName = `${uuid}.png`;\n}\n\nreturn [{\n  json: mergedJson,\n  binary\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -20,
+        280
+      ],
+      "id": "f193d232-52c2-4594-8ed0-35ed8de9440d",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 172,
+        "tableId": 707
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        380,
+        280
+      ],
+      "id": "5f6f1616-2f0d-4368-a569-b072ba5d8c95",
+      "name": "Baserow",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-19T02:59:53.000Z",
+  "versionId": "d5b5723a-a797-42ca-a781-d2c9dcfb2ecd"
+}
