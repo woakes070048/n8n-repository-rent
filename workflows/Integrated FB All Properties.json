@@ -1,5 +1,5 @@
 {
-  "active": false,
+  "active": true,
   "connections": {
     "Get Available Units": {
       "main": [
@@ -39,22 +39,6 @@
         [
           {
             "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "When clicking ‘Test workflow’": {
-      "main": [
-        [
-          {
-            "node": "Get Multifamily Properties",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get Available Units",
             "type": "main",
             "index": 0
           }
@@ -209,6 +193,22 @@
           }
         ]
       ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Multifamily Properties",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Available Units",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2025-04-18T14:03:25.545Z",
@@ -330,17 +330,6 @@
         2596,
         -15
       ]
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -200,
-        -15
-      ],
-      "id": "676222d3-4026-4faf-af13-690bfb7d93b9",
-      "name": "When clicking ‘Test workflow’"
     },
     {
       "parameters": {
@@ -734,15 +723,39 @@
       "id": "1e0d85ff-db37-4533-b21e-cc3ad4f1edeb",
       "name": "Wait",
       "webhookId": "7794d3cd-9222-4fae-9904-2d38900a7d4a"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -240,
+        -20
+      ],
+      "id": "41a78266-344d-492f-9f3d-8d61465926ae",
+      "name": "Schedule Trigger"
     }
   ],
   "pinData": {},
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "Etm1h3dHXQYzby5C"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "tags": [],
-  "triggerCount": 0,
-  "updatedAt": "2025-04-18T16:53:49.000Z",
-  "versionId": "716bfe82-c294-4768-b674-aba5fe7f64a1"
+  "triggerCount": 1,
+  "updatedAt": "2025-04-19T05:00:20.048Z",
+  "versionId": "92073ed4-3814-4a80-b48e-43f9e43ab1f7"
 }
