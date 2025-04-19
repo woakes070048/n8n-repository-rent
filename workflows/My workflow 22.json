@@ -1,0 +1,396 @@
+{
+  "active": false,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Today",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Today": {
+      "main": [
+        [
+          {
+            "node": "Get Holiday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Holiday": {
+      "main": [
+        [
+          {
+            "node": "If Holiday Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Holiday Found": {
+      "main": [
+        [
+          {
+            "node": "Set Post Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Tips",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Tips": {
+      "main": [
+        [
+          {
+            "node": "Pick Random Tip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Random Tip": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Merge Final Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Final Data": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "FTP Upload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FTP Upload": {
+      "main": [
+        [
+          {
+            "node": "Baserow Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2025-04-19T03:04:11.596Z",
+  "id": "Sf63PQ6ETTCfdXNu",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "My workflow 22",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\n\nconst today = now.toISOString().split('T')[0];\nconst today_mmddyyyy = `${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getDate().toString().padStart(2,'0')}/${now.getFullYear()}`;\n\nconst cutoff = new Date();\ncutoff.setDate(cutoff.getDate() - 90);\nconst cutoff_date = cutoff.toISOString().split('T')[0];\n\nreturn [{\n  json: {\n    today,\n    today_mmddyyyy,\n    cutoff_date\n  }\n}];"
+      },
+      "name": "Set Today",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        -80
+      ],
+      "id": "6fa755ec-48f4-46d9-9a4b-899240be6b88"
+    },
+    {
+      "parameters": {
+        "databaseId": 172,
+        "tableId": 708,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7225,
+                "operator": "date_equals_today",
+                "value": "={{ $json.today_mmddyyyy }}"
+              },
+              {
+                "field": 7231,
+                "value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Get Holiday",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        20,
+        -80
+      ],
+      "id": "ed0b359c-71bf-4a5d-9d65-894db579190c",
+      "alwaysOutputData": true,
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "name": "If Holiday Found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -80
+      ],
+      "id": "e8a2c263-c0f7-4777-b89c-795e3cb49fb5"
+    },
+    {
+      "parameters": {
+        "databaseId": 172,
+        "tableId": 707,
+        "returnAll": true,
+        "additionalOptions": {
+          "filters": {
+            "fields": [
+              {
+                "field": 7222,
+                "operator": "date_before",
+                "value": "={{ $('Set Today').item.json.cutoff_date }}"
+              }
+            ]
+          }
+        }
+      },
+      "name": "Get Tips",
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        460,
+        20
+      ],
+      "id": "409ae63a-8f07-45c7-96ff-07feafed570f",
+      "executeOnce": true,
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const tips = $input.all().filter(t => t.json.post && t.json.id);\nconst random = tips[Math.floor(Math.random() * tips.length)];\n\nreturn [{ json: { ...random.json, row_id: random.json.id } }];"
+      },
+      "name": "Pick Random Tip",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        680,
+        20
+      ],
+      "id": "b3459b2f-dd9c-4b5b-b6e2-54799d582775"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "holiday name",
+              "value": "={{ $('Get Holiday').item.json.holiday_name }}"
+            },
+            {
+              "name": "holiday post",
+              "value": "={{ $('Get Holiday').item.json.holiday_post }}"
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $('Get Holiday').item.json.image_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Post Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        460,
+        -180
+      ],
+      "id": "08af9149-f10c-4d69-9c23-a48db316f38e"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -80
+      ],
+      "id": "114a08aa-6984-421f-a845-ac0469a04e36",
+      "name": "Manual Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "prompt": "={{ $json['Image Instructions'] }}",
+        "options": {
+          "returnImageUrls": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        900,
+        20
+      ],
+      "id": "e627cd6d-b9c9-4025-96a0-9ed1c33652e6",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "Navm9hDUnjwpRcbB",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -440,
+        220
+      ],
+      "id": "587f0ce4-1e82-4834-bdb9-cbf1178bf063",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "path": "=/public_html/data/images/social/{{ $json.uuid }}.png"
+      },
+      "type": "n8n-nodes-base.ftp",
+      "typeVersion": 1,
+      "position": [
+        -260,
+        220
+      ],
+      "id": "d8889350-c4e6-4569-bd9c-6f56c51e7cff",
+      "name": "FTP Upload",
+      "credentials": {
+        "ftp": {
+          "id": "87ZwJT7N7b5rycj4",
+          "name": "n8n Data FTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const imageItem = $input.item;\n\nconst uuid = imageItem.json.uuid || `image-${Date.now()}`;\nconst imageUrl = `https://blzres.com/data/images/social/${uuid}.png`;\n\nconst mergedJson = {\n  ...imageItem.json,\n  uuid,\n  image_url: imageUrl,\n  holiday_post: imageItem.json.post || imageItem.json.holiday_post || '',\n  img_description: imageItem.json.image_description || '',\n  row_id: imageItem.json.row_id || null\n};\n\nconst binary = { ...imageItem.binary };\nif (binary.image) {\n  binary.image.fileName = `${uuid}.png`;\n}\n\nreturn [{ json: mergedJson, binary }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -600,
+        220
+      ],
+      "id": "7f7823ea-7146-45cc-8f6a-2eff32c51f98",
+      "name": "Merge Final Data"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "databaseId": 172,
+        "tableId": 707,
+        "rowId": "={{ $json.row_id }}",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": 7222,
+              "fieldValue": "={{ $json.today }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.baserow",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        220
+      ],
+      "id": "6dc18d1a-0c01-4ef7-a015-470b411197e2",
+      "name": "Baserow Update",
+      "credentials": {
+        "baserowApi": {
+          "id": "5zW4AD0Cpmzo8h8d",
+          "name": "Baserow account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-04-19T03:04:51.000Z",
+  "versionId": "3091632e-4d33-4b6a-87f2-2b11a36771c0"
+}
